@@ -67,29 +67,77 @@ export const deleteTicket = async (ticketId: string) => {
 
 // Real-time listeners
 export const listenToTickets = (callback: (tickets: Ticket[]) => void) => {
-  const q = query(collection(db, COLLECTIONS.TICKETS), orderBy('dateCreated', 'desc'));
-  
-  return onSnapshot(q, (querySnapshot) => {
-    const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
-    callback(tickets);
-  }, (error) => {
-    console.error('Error listening to tickets:', error);
-  });
+  // Try to order by dateCreated, but fall back to no ordering if field doesn't exist
+  try {
+    const q = query(collection(db, COLLECTIONS.TICKETS), orderBy('dateCreated', 'desc'));
+    
+    return onSnapshot(q, (querySnapshot) => {
+      const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
+      callback(tickets);
+    }, (error) => {
+      console.error('Error listening to tickets with ordering:', error);
+      // Fallback to query without ordering
+      const fallbackQ = query(collection(db, COLLECTIONS.TICKETS));
+      return onSnapshot(fallbackQ, (fallbackQuerySnapshot) => {
+        const tickets = fallbackQuerySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
+        callback(tickets);
+      }, (fallbackError) => {
+        console.error('Error listening to tickets without ordering:', fallbackError);
+      });
+    });
+  } catch (error) {
+    console.error('Error setting up ticket listener:', error);
+    // Fallback to query without ordering
+    const q = query(collection(db, COLLECTIONS.TICKETS));
+    return onSnapshot(q, (querySnapshot) => {
+      const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
+      callback(tickets);
+    }, (error) => {
+      console.error('Error listening to tickets:', error);
+    });
+  }
 };
 
 export const listenToUserTickets = (userId: string, callback: (tickets: Ticket[]) => void) => {
-  const q = query(
-    collection(db, COLLECTIONS.TICKETS), 
-    where('userId', '==', userId),
-    orderBy('dateCreated', 'desc')
-  );
-  
-  return onSnapshot(q, (querySnapshot) => {
-    const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
-    callback(tickets);
-  }, (error) => {
-    console.error('Error listening to user tickets:', error);
-  });
+  // Try to order by dateCreated, but fall back if field doesn't exist
+  try {
+    const q = query(
+      collection(db, COLLECTIONS.TICKETS), 
+      where('userId', '==', userId),
+      orderBy('dateCreated', 'desc')
+    );
+    
+    return onSnapshot(q, (querySnapshot) => {
+      const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
+      callback(tickets);
+    }, (error) => {
+      console.error('Error listening to user tickets with ordering:', error);
+      // Fallback to query without ordering
+      const fallbackQ = query(
+        collection(db, COLLECTIONS.TICKETS), 
+        where('userId', '==', userId)
+      );
+      return onSnapshot(fallbackQ, (fallbackQuerySnapshot) => {
+        const tickets = fallbackQuerySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
+        callback(tickets);
+      }, (fallbackError) => {
+        console.error('Error listening to user tickets without ordering:', fallbackError);
+      });
+    });
+  } catch (error) {
+    console.error('Error setting up user ticket listener:', error);
+    // Fallback to query without ordering
+    const q = query(
+      collection(db, COLLECTIONS.TICKETS), 
+      where('userId', '==', userId)
+    );
+    return onSnapshot(q, (querySnapshot) => {
+      const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
+      callback(tickets);
+    }, (error) => {
+      console.error('Error listening to user tickets:', error);
+    });
+  }
 };
 
 // User operations

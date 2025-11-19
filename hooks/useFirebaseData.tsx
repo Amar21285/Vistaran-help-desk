@@ -42,6 +42,13 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
     templates: []
   });
   
+  // Debug state
+  const [debugInfo, setDebugInfo] = useState({
+    initialized: false,
+    ticketsListenerActive: false,
+    dataFetchAttempts: 0
+  });
+  
   // Loading and error states
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -92,8 +99,13 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
     refreshData();
     
     // Set up real-time listeners
+    console.log('Setting up Firebase listeners...');
+    setDebugInfo(prev => ({ ...prev, initialized: true }));
+    
     const unsubscribeTickets = listenToTickets((tickets) => {
+      console.log('Received tickets update from Firebase:', tickets.length);
       setFirebaseData(prev => ({ ...prev, tickets }));
+      setDebugInfo(prev => ({ ...prev, ticketsListenerActive: true }));
     });
     
     // TODO: Add listeners for other collections as needed
@@ -101,6 +113,9 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
     
     const intervalId = setInterval(() => {
       // Refresh non-ticket data periodically
+      console.log('Refreshing non-ticket data from Firebase...');
+      setDebugInfo(prev => ({ ...prev, dataFetchAttempts: prev.dataFetchAttempts + 1 }));
+      
       Promise.all([
         getUsers(),
         getTechnicians(),
@@ -108,6 +123,7 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
         getFiles(),
         getTemplates()
       ]).then(([users, technicians, symptoms, files, templates]) => {
+        console.log('Received non-ticket data from Firebase');
         setFirebaseData(prev => ({
           ...prev,
           users,
@@ -123,6 +139,7 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
     
     // Clean up listeners on unmount
     return () => {
+      console.log('Cleaning up Firebase listeners...');
       unsubscribeTickets();
       clearInterval(intervalId);
     };
@@ -132,6 +149,7 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
     ...firebaseData,
     isLoading,
     error,
-    refreshData
+    refreshData,
+    debugInfo
   };
 };

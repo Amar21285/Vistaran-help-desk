@@ -75,7 +75,8 @@ const AppContent: React.FC = () => {
         technicians: firebaseTechnicians, 
         symptoms: firebaseSymptoms, 
         files: firebaseFiles, 
-        templates: firebaseTemplates 
+        templates: firebaseTemplates,
+        debugInfo
     } = useFirebaseData(); // Use Firebase for real-time updates
     const { isConnected, isLoading, error } = useDatabase(); // Initialize database connection
     
@@ -94,6 +95,14 @@ const AppContent: React.FC = () => {
     const effectiveTechnicians = firebaseTechnicians.length > 0 ? firebaseTechnicians : allTechnicians;
     const effectiveSymptoms = firebaseSymptoms.length > 0 ? firebaseSymptoms : allSymptoms;
     const effectiveTemplates = firebaseTemplates.length > 0 ? firebaseTemplates : allTemplates;
+    
+    // Debug logging
+    useEffect(() => {
+        console.log('Firebase data debug info:', debugInfo);
+        console.log('Firebase tickets:', firebaseTickets.length);
+        console.log('Local storage tickets:', allTickets.length);
+        console.log('Effective tickets (used in app):', effectiveTickets.length);
+    }, [debugInfo, firebaseTickets.length, allTickets.length, effectiveTickets.length]);
     
     const deriveInitialDepartments = (): string[] => {
         const deptSet = new Set<string>();
