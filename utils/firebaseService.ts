@@ -9,7 +9,9 @@ import {
   onSnapshot, 
   query, 
   where, 
-  orderBy 
+  orderBy,
+  writeBatch,
+  getDoc
 } from 'firebase/firestore';
 import { Ticket, User, Technician, Symptom, ManagedFile, TicketTemplate } from '../types';
 
@@ -30,6 +32,13 @@ export const createTicket = async (ticket: Omit<Ticket, 'id'>) => {
     return { id: docRef.id, ...ticket };
   } catch (error) {
     console.error('Error creating ticket:', error);
+    // If offline, store in local storage as backup
+    if (!navigator.onLine) {
+      const offlineTickets = JSON.parse(localStorage.getItem('offline-tickets') || '[]');
+      const offlineTicket = { ...ticket, id: `offline-${Date.now()}`, offline: true };
+      localStorage.setItem('offline-tickets', JSON.stringify([...offlineTickets, offlineTicket]));
+      return offlineTicket;
+    }
     throw error;
   }
 };
@@ -51,6 +60,13 @@ export const updateTicket = async (ticketId: string, updates: Partial<Ticket>) =
     return { id: ticketId, ...updates };
   } catch (error) {
     console.error('Error updating ticket:', error);
+    // If offline, store update for later
+    if (!navigator.onLine) {
+      const offlineUpdates = JSON.parse(localStorage.getItem('offline-updates') || '[]');
+      const offlineUpdate = { ticketId, updates, timestamp: Date.now() };
+      localStorage.setItem('offline-updates', JSON.stringify([...offlineUpdates, offlineUpdate]));
+      return { id: ticketId, ...updates };
+    }
     throw error;
   }
 };
@@ -61,6 +77,12 @@ export const deleteTicket = async (ticketId: string) => {
     return ticketId;
   } catch (error) {
     console.error('Error deleting ticket:', error);
+    // If offline, store deletion for later
+    if (!navigator.onLine) {
+      const offlineDeletions = JSON.parse(localStorage.getItem('offline-deletions') || '[]');
+      localStorage.setItem('offline-deletions', JSON.stringify([...offlineDeletions, ticketId]));
+      return ticketId;
+    }
     throw error;
   }
 };
@@ -73,14 +95,18 @@ export const listenToTickets = (callback: (tickets: Ticket[]) => void) => {
     
     return onSnapshot(q, (querySnapshot) => {
       const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
-      callback(tickets);
+      // Include offline tickets if any
+      const offlineTickets = JSON.parse(localStorage.getItem('offline-tickets') || '[]');
+      callback([...tickets, ...offlineTickets]);
     }, (error) => {
       console.error('Error listening to tickets with ordering:', error);
       // Fallback to query without ordering
       const fallbackQ = query(collection(db, COLLECTIONS.TICKETS));
       return onSnapshot(fallbackQ, (fallbackQuerySnapshot) => {
         const tickets = fallbackQuerySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
-        callback(tickets);
+        // Include offline tickets if any
+        const offlineTickets = JSON.parse(localStorage.getItem('offline-tickets') || '[]');
+        callback([...tickets, ...offlineTickets]);
       }, (fallbackError) => {
         console.error('Error listening to tickets without ordering:', fallbackError);
       });
@@ -91,7 +117,9 @@ export const listenToTickets = (callback: (tickets: Ticket[]) => void) => {
     const q = query(collection(db, COLLECTIONS.TICKETS));
     return onSnapshot(q, (querySnapshot) => {
       const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
-      callback(tickets);
+      // Include offline tickets if any
+      const offlineTickets = JSON.parse(localStorage.getItem('offline-tickets') || '[]');
+      callback([...tickets, ...offlineTickets]);
     }, (error) => {
       console.error('Error listening to tickets:', error);
     });
@@ -109,7 +137,10 @@ export const listenToUserTickets = (userId: string, callback: (tickets: Ticket[]
     
     return onSnapshot(q, (querySnapshot) => {
       const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
-      callback(tickets);
+      // Include offline tickets for this user if any
+      const offlineTickets = JSON.parse(localStorage.getItem('offline-tickets') || '[]')
+        .filter((ticket: any) => ticket.userId === userId);
+      callback([...tickets, ...offlineTickets]);
     }, (error) => {
       console.error('Error listening to user tickets with ordering:', error);
       // Fallback to query without ordering
@@ -119,7 +150,10 @@ export const listenToUserTickets = (userId: string, callback: (tickets: Ticket[]
       );
       return onSnapshot(fallbackQ, (fallbackQuerySnapshot) => {
         const tickets = fallbackQuerySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
-        callback(tickets);
+        // Include offline tickets for this user if any
+        const offlineTickets = JSON.parse(localStorage.getItem('offline-tickets') || '[]')
+          .filter((ticket: any) => ticket.userId === userId);
+        callback([...tickets, ...offlineTickets]);
       }, (fallbackError) => {
         console.error('Error listening to user tickets without ordering:', fallbackError);
       });
@@ -133,7 +167,10 @@ export const listenToUserTickets = (userId: string, callback: (tickets: Ticket[]
     );
     return onSnapshot(q, (querySnapshot) => {
       const tickets = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
-      callback(tickets);
+      // Include offline tickets for this user if any
+      const offlineTickets = JSON.parse(localStorage.getItem('offline-tickets') || '[]')
+        .filter((ticket: any) => ticket.userId === userId);
+      callback([...tickets, ...offlineTickets]);
     }, (error) => {
       console.error('Error listening to user tickets:', error);
     });
@@ -147,6 +184,10 @@ export const getUsers = async () => {
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
   } catch (error) {
     console.error('Error fetching users:', error);
+    // Return cached users if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-users') || '[]');
+    }
     throw error;
   }
 };
@@ -158,6 +199,13 @@ export const updateUser = async (userId: string, updates: Partial<User>) => {
     return { id: userId, ...updates };
   } catch (error) {
     console.error('Error updating user:', error);
+    // If offline, store update for later
+    if (!navigator.onLine) {
+      const offlineUserUpdates = JSON.parse(localStorage.getItem('offline-user-updates') || '[]');
+      const offlineUpdate = { userId, updates, timestamp: Date.now() };
+      localStorage.setItem('offline-user-updates', JSON.stringify([...offlineUserUpdates, offlineUpdate]));
+      return { id: userId, ...updates };
+    }
     throw error;
   }
 };
@@ -169,6 +217,10 @@ export const getTechnicians = async () => {
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Technician));
   } catch (error) {
     console.error('Error fetching technicians:', error);
+    // Return cached technicians if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-technicians') || '[]');
+    }
     throw error;
   }
 };
@@ -180,6 +232,10 @@ export const getSymptoms = async () => {
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Symptom));
   } catch (error) {
     console.error('Error fetching symptoms:', error);
+    // Return cached symptoms if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-symptoms') || '[]');
+    }
     throw error;
   }
 };
@@ -191,6 +247,10 @@ export const getFiles = async () => {
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ManagedFile));
   } catch (error) {
     console.error('Error fetching files:', error);
+    // Return cached files if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-files') || '[]');
+    }
     throw error;
   }
 };
@@ -202,6 +262,10 @@ export const getTemplates = async () => {
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as TicketTemplate));
   } catch (error) {
     console.error('Error fetching templates:', error);
+    // Return cached templates if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-templates') || '[]');
+    }
     throw error;
   }
 };

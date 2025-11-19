@@ -5,6 +5,7 @@ import { ThemeProvider } from './hooks/useTheme.tsx';
 import useLocalStorage from './hooks/useLocalStorage.tsx';
 import { useFirebaseData } from './hooks/useFirebaseData'; // Added Firebase data hook
 import useDatabase from './hooks/useDatabase.tsx'; // Added database hook
+import { initOfflineSync } from './src/offlineSyncService'; // Added offline sync service
 import Login from './components/Login';
 import TopNav from './components/TopNav';
 import Sidebar from './components/Sidebar';
@@ -69,6 +70,11 @@ const InfoModal: React.FC<{
 
 const AppContent: React.FC = () => {
     const { user, realUser, logout, updateUser, startImpersonation, stopImpersonation } = useAuth();
+    
+    // Initialize offline sync service
+    useEffect(() => {
+        initOfflineSync();
+    }, []);
     const { 
         tickets: firebaseTickets, 
         users: firebaseUsers, 
