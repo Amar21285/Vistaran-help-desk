@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
+import { getFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 // Firebase configuration from environment variables
@@ -27,15 +27,12 @@ if (isFirebaseConfigValid) {
     // Initialize Firestore
     db = getFirestore(app);
     
-    // Enable offline persistence
-    enableIndexedDbPersistence(db).catch((err) => {
-      if (err.code == 'failed-precondition') {
-        // Multiple tabs open, persistence can only be enabled in one tab at a time
-        console.warn('Firebase persistence failed: Multiple tabs open');
-      } else if (err.code == 'unimplemented') {
-        // The current browser doesn't support all of the features required to enable persistence
-        console.warn('Firebase persistence not supported by browser');
-      }
+    // Enable offline persistence using the new API
+    // Note: This is the replacement for the deprecated enableIndexedDbPersistence()
+    db.settings({
+      cache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager()
+      })
     });
     
     // Initialize Firebase Authentication

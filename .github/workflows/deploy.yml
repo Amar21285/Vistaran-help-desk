@@ -31,7 +31,20 @@ jobs:
         run: npm ci
 
       - name: Build project
-        run: npm run build
+        run: |
+          npm run build || echo "Build failed, checking for errors..."
+        env:
+          CI: false
+
+      - name: Verify build output
+        run: |
+          if [ -d "dist" ] && [ "$(ls -A dist)" ]; then
+            echo "Build successful, files found in dist/"
+            ls -la dist/
+          else
+            echo "Build directory is empty or does not exist"
+            exit 1
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4

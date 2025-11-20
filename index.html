@@ -22,136 +22,14 @@
     -->
     <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
     
-    <style>
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      }
-      /* Custom scrollbar for a more polished look */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #f1f5f9;
-      }
-      .dark ::-webkit-scrollbar-track {
-        background: #1e293b;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #94a3b8;
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #64748b;
-      }
-
-      @media print {
-        .no-print {
-          display: none !important;
-        }
-        body {
-          background-color: white !important;
-          color: black !important;
-        }
-        main {
-          padding: 0 !important;
-          overflow: visible !important;
-          background-color: white !important;
-        }
-        .printable-area, .printable-area > div {
-          box-shadow: none !important;
-          border: none !important;
-          background-color: white !important;
-          color: black !important;
-        }
-        h1, h2, h3, h4, p, span, div, th, td {
-           color: black !important;
-        }
-      }
-
-      /* Subtle Modal Animations */
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      @keyframes scaleIn {
-        from { opacity: 0; transform: scale(0.95) translateY(10px); }
-        to { opacity: 1; transform: scale(1) translateY(0); }
-      }
-      .modal-backdrop {
-        animation: fadeIn 0.2s ease-out forwards;
-      }
-      .modal-content {
-        animation: scaleIn 0.2s ease-out forwards;
-      }
-      
-      /* DYNAMIC THEME COLORS */
-      :root, :root[data-theme='default'] {
-        --color-primary-rgb: 59 130 246; /* blue-500 */
-        --color-primary-hover-rgb: 37 99 235; /* blue-600 */
-        --color-primary-dark-rgb: 96 165 250; /* blue-400 */
-        --color-primary-light-bg: 239 246 255; /* blue-50 */
-        --color-primary-light-bg-dark: 29 78 216; /* blue-500 with opacity */
-        --color-primary-light-text: 29 78 216; /* blue-800 */
-        --color-primary-light-text-dark: 191 219 254; /* blue-200 */
-      }
-      :root[data-theme='emerald'] {
-        --color-primary-rgb: 16 185 129; /* emerald-500 */
-        --color-primary-hover-rgb: 5 150 105; /* emerald-600 */
-        --color-primary-dark-rgb: 52 211 153; /* emerald-400 */
-        --color-primary-light-bg: 236 253 245; /* emerald-50 */
-        --color-primary-light-bg-dark: 6 95 70; /* emerald-500 with opacity */
-        --color-primary-light-text: 6 95 70; /* emerald-800 */
-        --color-primary-light-text-dark: 167 243 208; /* emerald-200 */
-      }
-      :root[data-theme='crimson'] {
-        --color-primary-rgb: 220 38 38; /* red-600 */
-        --color-primary-hover-rgb: 185 28 28; /* red-700 */
-        --color-primary-dark-rgb: 248 113 113; /* red-400 */
-        --color-primary-light-bg: 254 242 242; /* red-50 */
-        --color-primary-light-bg-dark: 153 27 27; /* red-500 with opacity */
-        --color-primary-light-text: 153 27 27; /* red-800 */
-        --color-primary-light-text-dark: 254 202 202; /* red-200 */
-      }
-      :root[data-theme='royal'] {
-        --color-primary-rgb: 124 58 237; /* violet-600 */
-        --color-primary-hover-rgb: 109 40 217; /* violet-700 */
-        --color-primary-dark-rgb: 139 92 246; /* violet-400 */
-        --color-primary-light-bg: 245 243 255; /* violet-50 */
-        --color-primary-light-bg-dark: 91 33 182; /* violet-500 with opacity */
-        --color-primary-light-text: 91 33 182; /* violet-800 */
-        --color-primary-light-text-dark: 209 196 247; /* violet-200 */
-      }
-      :root[data-theme='sunset'] {
-        --color-primary-rgb: 249 115 22; /* orange-500 */
-        --color-primary-hover-rgb: 234 88 12; /* orange-600 */
-        --color-primary-dark-rgb: 251 146 60; /* orange-400 */
-        --color-primary-light-bg: 255 247 237; /* orange-50 */
-        --color-primary-light-bg-dark: 194 65 12; /* orange-500 with opacity */
-        --color-primary-light-text: 194 65 12; /* orange-800 */
-        --color-primary-light-text-dark: 254 215 170; /* orange-200 */
-      }
-      
-      .bg-primary { background-color: rgb(var(--color-primary-rgb)); }
-      .text-primary { color: rgb(var(--color-primary-rgb)); }
-      .border-primary { border-color: rgb(var(--color-primary-rgb)); }
-      .ring-primary { --tw-ring-color: rgb(var(--color-primary-rgb)); }
-      .hover\:bg-primary-hover:hover { background-color: rgb(var(--color-primary-hover-rgb)); }
-      .dark .dark\:text-primary-dark { color: rgb(var(--color-primary-dark-rgb)); }
-      .dark .dark\:border-primary-dark { border-color: rgb(var(--color-primary-dark-rgb)); }
-
-      .bg-primary-light { background-color: var(--color-primary-light-bg); }
-      .dark .dark\:bg-primary-light-dark { background-color: rgba(var(--color-primary-light-bg-dark), 0.5); }
-      .text-primary-light-text { color: var(--color-primary-light-text); }
-      .dark .dark\:text-primary-light-text-dark { color: var(--color-primary-light-text-dark); }
-      
-    </style>
+    <!-- The build process will automatically inject CSS. Tailwind is now handled by npm. -->
+    <link rel="stylesheet" href="./index.css">
+    
     <!--
       The importmap is specific to this development environment and is removed
       for a standard production build. The build tool will handle imports.
     -->
   <!-- Importmap removed for production build -->
-<!-- <link rel="stylesheet" href="./index.css"> -->
 </head>
   <body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-200">
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -160,6 +38,6 @@
       The bundler (used by Vercel) will automatically inject the final
       JavaScript file here in a production build.
     -->
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>

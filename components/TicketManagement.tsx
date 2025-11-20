@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Ticket, TicketStatus, Priority, User, Technician, Symptom, Role, TicketHistory } from '../types';
+import { TicketStatus, Priority, Role } from '../types';
+import type { Ticket, User, Technician, Symptom, TicketHistory } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import TicketList from './TicketList';
 import TicketModal from './TicketModal';
 import { getSlaDueDate } from '../utils/sla';
+import { updateTicket } from '../utils/firebaseService'; // Add Firebase update function
 
 interface TicketManagementProps {
     tickets: Ticket[];
@@ -71,7 +73,7 @@ const TicketManagement: React.FC<TicketManagementProps> = ({ tickets, setTickets
                 || (techFilter === 'unassigned' && ticket.assignedTechId === null)
                 || ticket.assignedTechId === techFilter;
             
-            const ticketDateStr = ticket.dateCreated.substring(0, 10);
+            const ticketDateStr = ticket.dateCreated ? ticket.dateCreated.substring(0, 10) : '';
             const matchesDate = 
                 (!startDateFilter || ticketDateStr >= startDateFilter) &&
                 (!endDateFilter || ticketDateStr <= endDateFilter);
@@ -115,9 +117,22 @@ const TicketManagement: React.FC<TicketManagementProps> = ({ tickets, setTickets
     
     // --- Handlers ---
     
-    const handleTicketSave = (updatedTicket: Ticket) => {
-        setTickets(prevTickets => prevTickets.map(t => t.id === updatedTicket.id ? updatedTicket : t));
-        setEditingTicket(null);
+    const handleTicketSave = async (updatedTicket: Ticket) => {
+        try {
+            // Update in Firebase
+            await updateTicket(updatedTicket.id, updatedTicket);
+            
+            // Update local state
+            setTickets(prevTickets => prevTickets.map(t => t.id === updatedTicket.id ? updatedTicket : t));
+            setEditingTicket(null);
+        } catch (error) {
+            console.error('Error updating ticket:', error);
+            // Show error message to user
+            setInfoModalContent({
+                title: 'Error',
+                message: 'Failed to update ticket. Please try again.'
+            });
+        }
     };
     
     const handleResetFilters = () => {
@@ -139,7 +154,7 @@ const TicketManagement: React.FC<TicketManagementProps> = ({ tickets, setTickets
         );
     };
 
-    const handleBulkUpdate = (updates: Partial<Omit<Ticket, 'id' | 'userId' | 'email'>>) => {
+    const handleBulkUpdate = async (updates: Partial<Omit<Ticket, 'id' | 'userId' | 'email'>>) => {
         if (selectedTicketIds.length === 0 || !user) return;
 
         let changeDescription = '';
@@ -150,33 +165,60 @@ const TicketManagement: React.FC<TicketManagementProps> = ({ tickets, setTickets
             changeDescription = `Assigned technician changed to ${techName}`;
         }
         
-        setTickets(prevTickets =>
-            prevTickets.map(ticket => {
-                if (selectedTicketIds.includes(ticket.id)) {
-                    const newHistoryEntry: TicketHistory = {
-                        id: `HIST${Date.now()}_${ticket.id.slice(-4)}`,
-                        ticketId: ticket.id,
-                        userId: user.id,
-                        change: `${changeDescription} (via bulk action).`,
-                        timestamp: new Date().toISOString()
-                    };
-                    
-                    const dateResolvedUpdate = (updates.status === TicketStatus.RESOLVED && ticket.status !== TicketStatus.RESOLVED)
-                        ? { dateResolved: new Date().toISOString() }
-                        : {};
-
-                    return {
-                        ...ticket,
-                        ...updates,
-                        ...dateResolvedUpdate,
-                        history: [...(ticket.history || []), newHistoryEntry]
-                    };
-                }
-                return ticket;
-            })
-        );
-
-        setSelectedTicketIds([]);
+        try {
+            // Update all selected tickets in Firebase
+            const updatePromises = selectedTicketIds.map(async (ticketId) => {
+                const ticket = tickets.find(t => t.id === ticketId);
+                if (!ticket) return;
+                
+                const newHistoryEntry: TicketHistory = {
+                    id: `HIST${Date.now()}_${ticket.id ? ticket.id.slice(-4) : '0000'}`,
+                    ticketId: ticket.id,
+                    userId: user.id,
+                    change: `${changeDescription} (via bulk action).`,
+                    timestamp: new Date().toISOString()
+                };
+                
+                const dateResolvedUpdate = (updates.status === TicketStatus.RESOLVED && ticket.status !== TicketStatus.RESOLVED)
+                    ? { dateResolved: new Date().toISOString() }
+                    : {};
+                
+                const updatedTicket = {
+                    ...ticket,
+                    ...updates,
+                    ...dateResolvedUpdate,
+                    history: [...(ticket.history || []), newHistoryEntry]
+                };
+                
+                // Update in Firebase
+                await updateTicket(ticketId, updatedTicket);
+                
+                return updatedTicket;
+            });
+            
+            // Wait for all updates to complete
+            await Promise.all(updatePromises);
+            
+            // Update local state
+            setTickets(prevTickets =>
+                prevTickets.map(ticket => {
+                    if (selectedTicketIds.includes(ticket.id)) {
+                        const updatedTicket = updatePromises.find(p => p.then);
+                        return updatedTicket ? updatedTicket : ticket;
+                    }
+                    return ticket;
+                })
+            );
+            
+            setSelectedTicketIds([]);
+        } catch (error) {
+            console.error('Error updating tickets:', error);
+            // Show error message to user
+            setInfoModalContent({
+                title: 'Error',
+                message: 'Failed to update tickets. Please try again.'
+            });
+        }
     };
     
     const confirmBulkDelete = () => {

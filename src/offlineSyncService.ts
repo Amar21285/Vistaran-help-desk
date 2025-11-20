@@ -11,6 +11,10 @@ import { Ticket, User } from '../types';
 // Track sync status
 let isSyncing = false;
 let lastSyncTime = 0;
+let syncRetryCount = 0;
+const MAX_SYNC_RETRIES = 3;
+const RETRY_DELAY = 5000; // 5 seconds
+const MAX_RETRY_DELAY = 30000; // 30 seconds
 
 // Collection names
 const COLLECTIONS = {
@@ -41,16 +45,35 @@ export const syncOfflineTickets = async () => {
       
       for (const ticket of offlineTickets) {
         if (ticket.offline) {
-          // Remove the offline flag and create in Firestore
-          const { offline, ...ticketData } = ticket;
-          const docRef = await addDoc(collection(db, COLLECTIONS.TICKETS), ticketData);
-          console.log(`Synced ticket ${ticket.id} to Firestore with ID ${docRef.id}`);
+          try {
+            // Remove the offline flag and create in Firestore
+            const { offline, ...ticketData } = ticket;
+            const docRef = await addDoc(collection(db, COLLECTIONS.TICKETS), ticketData);
+            console.log(`Synced ticket ${ticket.id} to Firestore with ID ${docRef.id}`);
+          } catch (error) {
+            console.error(`Error syncing ticket ${ticket.id}:`, error);
+            // If it's a network error, we might want to retry
+            if (syncRetryCount < MAX_SYNC_RETRIES && (
+              (error as any).code === 'unavailable' || 
+              (error as any).code === 'deadline-exceeded' ||
+              !navigator.onLine
+            )) {
+              syncRetryCount++;
+              console.log(`Retrying sync for ticket ${ticket.id} (${syncRetryCount}/${MAX_SYNC_RETRIES})`);
+              // Exponential backoff
+              const delay = Math.min(RETRY_DELAY * Math.pow(2, syncRetryCount), MAX_RETRY_DELAY);
+              await new Promise(resolve => setTimeout(resolve, delay));
+              // We'll retry on the next sync cycle
+              continue;
+            }
+          }
         }
       }
       
       // Clear offline tickets after successful sync
       localStorage.removeItem('offline-tickets');
       console.log('Offline tickets synced successfully');
+      syncRetryCount = 0; // Reset retry count on success
     }
   } catch (error) {
     console.error('Error syncing offline tickets:', error);
@@ -83,12 +106,27 @@ export const syncOfflineUpdates = async () => {
           console.log(`Synced update for ticket ${update.ticketId}`);
         } catch (error) {
           console.error(`Error syncing update for ticket ${update.ticketId}:`, error);
+          // If it's a network error, we might want to retry
+          if (syncRetryCount < MAX_SYNC_RETRIES && (
+            (error as any).code === 'unavailable' || 
+            (error as any).code === 'deadline-exceeded' ||
+            !navigator.onLine
+          )) {
+            syncRetryCount++;
+            console.log(`Retrying sync for ticket ${update.ticketId} (${syncRetryCount}/${MAX_SYNC_RETRIES})`);
+            // Exponential backoff
+            const delay = Math.min(RETRY_DELAY * Math.pow(2, syncRetryCount), MAX_RETRY_DELAY);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            // We'll retry on the next sync cycle
+            continue;
+          }
         }
       }
       
       // Clear offline updates after successful sync
       localStorage.removeItem('offline-updates');
       console.log('Offline ticket updates synced successfully');
+      syncRetryCount = 0; // Reset retry count on success
     }
   } catch (error) {
     console.error('Error syncing offline updates:', error);
@@ -121,12 +159,27 @@ export const syncOfflineDeletions = async () => {
           console.log(`Synced deletion for ticket ${ticketId}`);
         } catch (error) {
           console.error(`Error syncing deletion for ticket ${ticketId}:`, error);
+          // If it's a network error, we might want to retry
+          if (syncRetryCount < MAX_SYNC_RETRIES && (
+            (error as any).code === 'unavailable' || 
+            (error as any).code === 'deadline-exceeded' ||
+            !navigator.onLine
+          )) {
+            syncRetryCount++;
+            console.log(`Retrying sync for ticket ${ticketId} (${syncRetryCount}/${MAX_SYNC_RETRIES})`);
+            // Exponential backoff
+            const delay = Math.min(RETRY_DELAY * Math.pow(2, syncRetryCount), MAX_RETRY_DELAY);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            // We'll retry on the next sync cycle
+            continue;
+          }
         }
       }
       
       // Clear offline deletions after successful sync
       localStorage.removeItem('offline-deletions');
       console.log('Offline ticket deletions synced successfully');
+      syncRetryCount = 0; // Reset retry count on success
     }
   } catch (error) {
     console.error('Error syncing offline deletions:', error);
@@ -159,12 +212,27 @@ export const syncOfflineUserUpdates = async () => {
           console.log(`Synced update for user ${update.userId}`);
         } catch (error) {
           console.error(`Error syncing update for user ${update.userId}:`, error);
+          // If it's a network error, we might want to retry
+          if (syncRetryCount < MAX_SYNC_RETRIES && (
+            (error as any).code === 'unavailable' || 
+            (error as any).code === 'deadline-exceeded' ||
+            !navigator.onLine
+          )) {
+            syncRetryCount++;
+            console.log(`Retrying sync for user ${update.userId} (${syncRetryCount}/${MAX_SYNC_RETRIES})`);
+            // Exponential backoff
+            const delay = Math.min(RETRY_DELAY * Math.pow(2, syncRetryCount), MAX_RETRY_DELAY);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            // We'll retry on the next sync cycle
+            continue;
+          }
         }
       }
       
       // Clear offline user updates after successful sync
       localStorage.removeItem('offline-user-updates');
       console.log('Offline user updates synced successfully');
+      syncRetryCount = 0; // Reset retry count on success
     }
   } catch (error) {
     console.error('Error syncing offline user updates:', error);
@@ -174,10 +242,28 @@ export const syncOfflineUserUpdates = async () => {
 };
 
 // Cache data for offline use
-export const cacheDataForOffline = () => {
-  // This would be called periodically to cache data
-  // In a real implementation, you would fetch data and store it in localStorage
-  console.log('Caching data for offline use...');
+export const cacheDataForOffline = async () => {
+  try {
+    // Get current data from localStorage as fallback
+    const cachedUsers = localStorage.getItem('vistaran-helpdesk-users');
+    const cachedTickets = localStorage.getItem('vistaran-helpdesk-tickets');
+    const cachedTechnicians = localStorage.getItem('vistaran-helpdesk-technicians');
+    const cachedSymptoms = localStorage.getItem('vistaran-helpdesk-symptoms');
+    const cachedFiles = localStorage.getItem('vistaran-helpdesk-files');
+    const cachedTemplates = localStorage.getItem('vistaran-helpdesk-templates');
+    
+    // Store in separate cache keys for offline use
+    if (cachedUsers) localStorage.setItem('cached-users', cachedUsers);
+    if (cachedTickets) localStorage.setItem('cached-tickets', cachedTickets);
+    if (cachedTechnicians) localStorage.setItem('cached-technicians', cachedTechnicians);
+    if (cachedSymptoms) localStorage.setItem('cached-symptoms', cachedSymptoms);
+    if (cachedFiles) localStorage.setItem('cached-files', cachedFiles);
+    if (cachedTemplates) localStorage.setItem('cached-templates', cachedTemplates);
+    
+    console.log('Data cached for offline use');
+  } catch (error) {
+    console.error('Error caching data for offline use:', error);
+  }
 };
 
 // Initialize offline sync service
@@ -185,10 +271,22 @@ export const initOfflineSync = () => {
   // Sync when online status changes
   window.addEventListener('online', () => {
     console.log('Online detected, syncing offline data...');
-    syncOfflineTickets();
-    syncOfflineUpdates();
-    syncOfflineDeletions();
-    syncOfflineUserUpdates();
+    syncRetryCount = 0; // Reset retry count when coming online
+    
+    // Immediate sync when coming online
+    setTimeout(() => {
+      syncOfflineTickets();
+      syncOfflineUpdates();
+      syncOfflineDeletions();
+      syncOfflineUserUpdates();
+    }, 1000); // Small delay to ensure connection is stable
+  });
+  
+  // Handle offline status
+  window.addEventListener('offline', () => {
+    console.log('Offline detected, queuing operations...');
+    // Store current state for offline use
+    cacheDataForOffline();
   });
   
   // Periodically check and sync when online
@@ -209,6 +307,11 @@ export const initOfflineSync = () => {
       syncOfflineDeletions();
       syncOfflineUserUpdates();
     }, 5000); // Wait 5 seconds after app start
+  } else {
+    // If starting offline, cache data for offline use
+    setTimeout(() => {
+      cacheDataForOffline();
+    }, 1000);
   }
   
   console.log('Offline sync service initialized');

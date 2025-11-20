@@ -13,10 +13,13 @@ import {
   writeBatch,
   getDoc
 } from 'firebase/firestore';
-import { Ticket, User, Technician, Symptom, ManagedFile, TicketTemplate } from '../types';
+import type { Ticket, User, Technician, Symptom, ManagedFile, TicketTemplate } from '../types';
 
 // Add network status tracking
 let isFirebaseConnected = true;
+let connectionRetryCount = 0;
+const MAX_RETRY_ATTEMPTS = 3;
+const RETRY_DELAY_BASE = 1000; // 1 second
 const firebaseConnectionListeners: Array<(connected: boolean) => void> = [];
 
 // Check if db is initialized
@@ -46,7 +49,7 @@ export const removeFirebaseConnectionListener = (callback: (connected: boolean) 
   }
 };
 
-// Monitor Firebase connection
+// Enhanced connection monitor with retry logic
 let connectionMonitor: any;
 export const startFirebaseConnectionMonitor = () => {
   if (!isDbInitialized()) {
@@ -56,21 +59,46 @@ export const startFirebaseConnectionMonitor = () => {
   
   if (connectionMonitor) return;
   
-  connectionMonitor = setInterval(async () => {
+  const checkConnection = async () => {
     try {
       // Simple connectivity test
       await getDocs(query(collection(db, COLLECTIONS.TICKETS), where('id', '==', 'test')));
+      
+      // Reset retry count on successful connection
+      connectionRetryCount = 0;
+      
       if (!isFirebaseConnected) {
         isFirebaseConnected = true;
         firebaseConnectionListeners.forEach(callback => callback(true));
       }
     } catch (error) {
+      // Only log connection errors once per session to reduce noise
+      // console.error('Firebase connection error:', error);
+      
+      // Implement exponential backoff retry logic
+      if (connectionRetryCount < MAX_RETRY_ATTEMPTS) {
+        connectionRetryCount++;
+        const delay = RETRY_DELAY_BASE * Math.pow(2, connectionRetryCount - 1);
+        
+        // Less verbose logging
+        // console.log(`Retrying Firebase connection in ${delay}ms (attempt ${connectionRetryCount}/${MAX_RETRY_ATTEMPTS})`);
+        
+        setTimeout(checkConnection, delay);
+        return;
+      }
+      
       if (isFirebaseConnected) {
         isFirebaseConnected = false;
         firebaseConnectionListeners.forEach(callback => callback(false));
       }
     }
-  }, 10000); // Check every 10 seconds
+  };
+  
+  // Initial check
+  checkConnection();
+  
+  // Set up periodic monitoring (less frequent to reduce resource usage)
+  connectionMonitor = setInterval(checkConnection, 30000); // Check every 30 seconds
 };
 
 export const stopFirebaseConnectionMonitor = () => {
@@ -80,6 +108,29 @@ export const stopFirebaseConnectionMonitor = () => {
   }
 };
 
+// Enhanced Firebase operations with retry logic
+const withRetry = async <T>(operation: () => Promise<T>, operationName: string): Promise<T> => {
+  let lastError: any;
+  
+  for (let attempt = 1; attempt <= MAX_RETRY_ATTEMPTS; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      // Less verbose logging for retries
+      // console.error(`Attempt ${attempt} failed for ${operationName}:`, error);
+      
+      if (attempt < MAX_RETRY_ATTEMPTS) {
+        const delay = RETRY_DELAY_BASE * Math.pow(2, attempt - 1);
+        // console.log(`Retrying ${operationName} in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  
+  throw new Error(`Operation ${operationName} failed after ${MAX_RETRY_ATTEMPTS} attempts: ${lastError.message}`);
+};
+
 // Ticket operations
 export const createTicket = async (ticket: Omit<Ticket, 'id'>) => {
   if (!isDbInitialized()) {
@@ -87,11 +138,10 @@ export const createTicket = async (ticket: Omit<Ticket, 'id'>) => {
     throw new Error('Firebase is not initialized');
   }
   
-  try {
+  return withRetry(async () => {
     const docRef = await addDoc(collection(db, COLLECTIONS.TICKETS), ticket);
     return { id: docRef.id, ...ticket };
-  } catch (error) {
-    console.error('Error creating ticket:', error);
+  }, 'createTicket').catch(error => {
     // If offline, store in local storage as backup
     if (!navigator.onLine) {
       const offlineTickets = JSON.parse(localStorage.getItem('offline-tickets') || '[]');
@@ -100,7 +150,7 @@ export const createTicket = async (ticket: Omit<Ticket, 'id'>) => {
       return offlineTicket;
     }
     throw error;
-  }
+  });
 };
 
 export const getTickets = async () => {
@@ -109,13 +159,16 @@ export const getTickets = async () => {
     return [];
   }
   
-  try {
+  return withRetry(async () => {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.TICKETS));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
-  } catch (error) {
-    console.error('Error fetching tickets:', error);
+  }, 'getTickets').catch(error => {
+    // Return cached tickets if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-tickets') || '[]');
+    }
     throw error;
-  }
+  });
 };
 
 export const updateTicket = async (ticketId: string, updates: Partial<Ticket>) => {
@@ -124,12 +177,11 @@ export const updateTicket = async (ticketId: string, updates: Partial<Ticket>) =
     throw new Error('Firebase is not initialized');
   }
   
-  try {
+  return withRetry(async () => {
     const ticketRef = doc(db, COLLECTIONS.TICKETS, ticketId);
     await updateDoc(ticketRef, updates);
     return { id: ticketId, ...updates };
-  } catch (error) {
-    console.error('Error updating ticket:', error);
+  }, 'updateTicket').catch(error => {
     // If offline, store update for later
     if (!navigator.onLine) {
       const offlineUpdates = JSON.parse(localStorage.getItem('offline-updates') || '[]');
@@ -138,7 +190,7 @@ export const updateTicket = async (ticketId: string, updates: Partial<Ticket>) =
       return { id: ticketId, ...updates };
     }
     throw error;
-  }
+  });
 };
 
 export const deleteTicket = async (ticketId: string) => {
@@ -147,11 +199,10 @@ export const deleteTicket = async (ticketId: string) => {
     throw new Error('Firebase is not initialized');
   }
   
-  try {
+  return withRetry(async () => {
     await deleteDoc(doc(db, COLLECTIONS.TICKETS, ticketId));
     return ticketId;
-  } catch (error) {
-    console.error('Error deleting ticket:', error);
+  }, 'deleteTicket').catch(error => {
     // If offline, store deletion for later
     if (!navigator.onLine) {
       const offlineDeletions = JSON.parse(localStorage.getItem('offline-deletions') || '[]');
@@ -159,7 +210,7 @@ export const deleteTicket = async (ticketId: string) => {
       return ticketId;
     }
     throw error;
-  }
+  });
 };
 
 // Real-time listeners
@@ -275,17 +326,47 @@ export const getUsers = async () => {
     return [];
   }
   
-  try {
+  return withRetry(async () => {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.USERS));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
-  } catch (error) {
-    console.error('Error fetching users:', error);
+  }, 'getUsers').catch(error => {
     // Return cached users if offline
     if (!navigator.onLine) {
       return JSON.parse(localStorage.getItem('cached-users') || '[]');
     }
     throw error;
+  });
+};
+
+// Real-time listener for users
+export const listenToUsers = (callback: (users: User[]) => void) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    // Return a no-op function
+    return () => {};
   }
+  
+  const q = query(collection(db, COLLECTIONS.USERS));
+  
+  return onSnapshot(q, (querySnapshot) => {
+    const users = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
+    callback(users);
+  }, (error) => {
+    console.error('Error listening to users:', error);
+  });
+};
+
+// Create a new user
+export const createUser = async (user: Omit<User, 'id'>) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    throw new Error('Firebase is not initialized');
+  }
+  
+  return withRetry(async () => {
+    const docRef = await addDoc(collection(db, COLLECTIONS.USERS), user);
+    return { id: docRef.id, ...user };
+  }, 'createUser');
 };
 
 export const updateUser = async (userId: string, updates: Partial<User>) => {
@@ -294,12 +375,11 @@ export const updateUser = async (userId: string, updates: Partial<User>) => {
     throw new Error('Firebase is not initialized');
   }
   
-  try {
+  return withRetry(async () => {
     const userRef = doc(db, COLLECTIONS.USERS, userId);
     await updateDoc(userRef, updates);
     return { id: userId, ...updates };
-  } catch (error) {
-    console.error('Error updating user:', error);
+  }, 'updateUser').catch(error => {
     // If offline, store update for later
     if (!navigator.onLine) {
       const offlineUserUpdates = JSON.parse(localStorage.getItem('offline-user-updates') || '[]');
@@ -308,7 +388,20 @@ export const updateUser = async (userId: string, updates: Partial<User>) => {
       return { id: userId, ...updates };
     }
     throw error;
+  });
+};
+
+// Delete a user
+export const deleteUser = async (userId: string) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    throw new Error('Firebase is not initialized');
   }
+  
+  return withRetry(async () => {
+    await deleteDoc(doc(db, COLLECTIONS.USERS, userId));
+    return userId;
+  }, 'deleteUser');
 };
 
 // Technician operations
@@ -322,17 +415,74 @@ export const getTechnicians = async () => {
     return [];
   }
   
-  try {
+  return withRetry(async () => {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.TECHNICIANS));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Technician));
-  } catch (error) {
-    console.error('Error fetching technicians:', error);
+  }, 'getTechnicians').catch(error => {
     // Return cached technicians if offline
     if (!navigator.onLine) {
       return JSON.parse(localStorage.getItem('cached-technicians') || '[]');
     }
     throw error;
+  });
+};
+
+// Real-time listener for technicians
+export const listenToTechnicians = (callback: (technicians: Technician[]) => void) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    // Return a no-op function
+    return () => {};
   }
+  
+  const q = query(collection(db, COLLECTIONS.TECHNICIANS));
+  
+  return onSnapshot(q, (querySnapshot) => {
+    const technicians = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Technician));
+    callback(technicians);
+  }, (error) => {
+    console.error('Error listening to technicians:', error);
+  });
+};
+
+// Create a new technician
+export const createTechnician = async (technician: Omit<Technician, 'id'>) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    throw new Error('Firebase is not initialized');
+  }
+  
+  return withRetry(async () => {
+    const docRef = await addDoc(collection(db, COLLECTIONS.TECHNICIANS), technician);
+    return { id: docRef.id, ...technician };
+  }, 'createTechnician');
+};
+
+// Update a technician
+export const updateTechnician = async (technicianId: string, updates: Partial<Technician>) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    throw new Error('Firebase is not initialized');
+  }
+  
+  return withRetry(async () => {
+    const technicianRef = doc(db, COLLECTIONS.TECHNICIANS, technicianId);
+    await updateDoc(technicianRef, updates);
+    return { id: technicianId, ...updates };
+  }, 'updateTechnician');
+};
+
+// Delete a technician
+export const deleteTechnician = async (technicianId: string) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    throw new Error('Firebase is not initialized');
+  }
+  
+  return withRetry(async () => {
+    await deleteDoc(doc(db, COLLECTIONS.TECHNICIANS, technicianId));
+    return technicianId;
+  }, 'deleteTechnician');
 };
 
 // Symptom operations
@@ -346,17 +496,16 @@ export const getSymptoms = async () => {
     return [];
   }
   
-  try {
+  return withRetry(async () => {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.SYMPTOMS));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Symptom));
-  } catch (error) {
-    console.error('Error fetching symptoms:', error);
+  }, 'getSymptoms').catch(error => {
     // Return cached symptoms if offline
     if (!navigator.onLine) {
       return JSON.parse(localStorage.getItem('cached-symptoms') || '[]');
     }
     throw error;
-  }
+  });
 };
 
 // File operations
@@ -370,17 +519,16 @@ export const getFiles = async () => {
     return [];
   }
   
-  try {
+  return withRetry(async () => {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.FILES));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ManagedFile));
-  } catch (error) {
-    console.error('Error fetching files:', error);
+  }, 'getFiles').catch(error => {
     // Return cached files if offline
     if (!navigator.onLine) {
       return JSON.parse(localStorage.getItem('cached-files') || '[]');
     }
     throw error;
-  }
+  });
 };
 
 // Template operations
@@ -394,15 +542,14 @@ export const getTemplates = async () => {
     return [];
   }
   
-  try {
+  return withRetry(async () => {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEMPLATES));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as TicketTemplate));
-  } catch (error) {
-    console.error('Error fetching templates:', error);
+  }, 'getTemplates').catch(error => {
     // Return cached templates if offline
     if (!navigator.onLine) {
       return JSON.parse(localStorage.getItem('cached-templates') || '[]');
     }
     throw error;
-  }
+  });
 };

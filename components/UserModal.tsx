@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { User, Role, UserStatus } from '../types';
+import type { User } from '../types';
+import { Role, UserStatus } from '../types';
 import { logUserAction } from '../utils/auditLogger';
+import { updateUser } from '../utils/firebaseService'; // Add Firebase function
 
 interface UserModalProps {
     userToEdit: User;
@@ -24,7 +26,7 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
     const isSelfEdit = currentUser.id === userToEdit.id;
     const isAdmin = currentUser.role === Role.ADMIN;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
         const updatedUser: User = {
@@ -43,8 +45,16 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
             updatedUser.password = password;
         }
         
-        logUserAction(currentUser, `Updated profile for user '${userToEdit.name}'.`);
-        onSave(updatedUser);
+        try {
+            // Update user in Firebase
+            await updateUser(userToEdit.id, updatedUser);
+            // Update local state
+            logUserAction(currentUser, `Updated profile for user '${userToEdit.name}'.`);
+            onSave(updatedUser);
+        } catch (error) {
+            console.error('Error updating user:', error);
+            alert('Failed to update user. Please try again.');
+        }
     };
 
     return (

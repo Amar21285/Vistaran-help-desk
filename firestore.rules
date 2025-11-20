@@ -1,0 +1,105 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAdmin() {
+      return request.auth.token.admin == true;
+    }
+    
+    function isTechnician() {
+      return request.auth.token.role == 'Technician';
+    }
+    
+    function isUser() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isValidTicket() {
+      return request.resource.data.keys().hasAll([
+        'title', 'description', 'priority', 'status', 'userId', 'dateCreated'
+      ]);
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own data
+      allow read: if isUser() && isOwner(userId);
+      
+      // Users can update their own data
+      allow update: if isUser() && isOwner(userId);
+      
+      // Admins can read/update all users
+      allow read, update: if isAdmin();
+      
+      // Admins can create users
+      allow create: if isAdmin();
+      
+      // No one can delete users through the app
+      allow delete: if false;
+    }
+    
+    // Tickets collection
+    match /tickets/{ticketId} {
+      // Authenticated users can read tickets
+      allow read: if isUser();
+      
+      // Users can create tickets
+      allow create: if isUser() && isValidTicket() && 
+        request.resource.data.userId == request.auth.uid;
+      
+      // Users can update their own tickets
+      allow update: if isUser() && 
+        (resource.data.userId == request.auth.uid || isAdmin() || isTechnician());
+      
+      // Only admins can delete tickets
+      allow delete: if isAdmin();
+    }
+    
+    // Technicians collection
+    match /technicians/{technicianId} {
+      // Authenticated users can read technicians
+      allow read: if isUser();
+      
+      // Only admins can create/update/delete technicians
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Symptoms collection
+    match /symptoms/{symptomId} {
+      // Authenticated users can read symptoms
+      allow read: if isUser();
+      
+      // Only admins can create/update/delete symptoms
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Files collection
+    match /files/{fileId} {
+      // Authenticated users can read files
+      allow read: if isUser();
+      
+      // Users can create files
+      allow create: if isUser();
+      
+      // Users can update their own files, admins can update all
+      allow update: if isUser() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      
+      // Only admins can delete files
+      allow delete: if isAdmin();
+    }
+    
+    // Templates collection
+    match /templates/{templateId} {
+      // Authenticated users can read templates
+      allow read: if isUser();
+      
+      // Only admins can create/update/delete templates
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Ticket, User, TicketStatus, Role, UserStatus } from '../types';
+import type { Ticket, User } from '../types';
+import { TicketStatus, Role, UserStatus } from '../types';
 import ServerIcon from './icons/ServerIcon';
 import { useAuth } from '../hooks/useAuth.tsx';
 import { useRealTimeData } from '../hooks/useRealTimeData'; // Added real-time data hook
 import { logUserAction } from '../utils/auditLogger';
+import { createUser, deleteUser } from '../utils/firebaseService'; // Add Firebase functions
 
 interface AdminDashboardProps {
     tickets: Ticket[];
@@ -57,7 +59,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
         };
     }, [effectiveTickets, effectiveUsers]);
     
-    const handleCreateUser = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const newUser: User = {
@@ -70,11 +72,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
             status: formData.get('status') as UserStatus,
             joinedDate: new Date().toISOString(),
         };
-        setUsers(prev => [...prev, newUser]);
-        logUserAction(realUser, `Created new user from dashboard: ${newUser.name} (ID: ${newUser.id})`);
-        alert(`User ${newUser.name} created successfully.`);
-        e.currentTarget.reset();
-        setCreateFormVisible(false);
+        
+        try {
+            // Create user in Firebase
+            const createdUser = await createUser(newUser);
+            // Update local state
+            setUsers(prev => [...prev, createdUser]);
+            logUserAction(realUser, `Created new user from dashboard: ${createdUser.name} (ID: ${createdUser.id})`);
+            alert(`User ${createdUser.name} created successfully.`);
+            e.currentTarget.reset();
+            setCreateFormVisible(false);
+        } catch (error) {
+            console.error('Error creating user:', error);
+            alert('Failed to create user. Please try again.');
+        }
     };
 
     const handleDeleteUser = (user: User) => {
@@ -85,11 +96,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
         setUserToDelete(user);
     };
 
-    const confirmDeleteUser = () => {
+    const confirmDeleteUser = async () => {
         if (!userToDelete) return;
-        setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
-        logUserAction(realUser, `Deleted user from dashboard: ${userToDelete.name} (ID: ${userToDelete.id})`);
-        setUserToDelete(null);
+        
+        try {
+            // Delete user from Firebase
+            await deleteUser(userToDelete.id);
+            // Update local state
+            setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
+            logUserAction(realUser, `Deleted user from dashboard: ${userToDelete.name} (ID: ${userToDelete.id})`);
+            setUserToDelete(null);
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            alert('Failed to delete user. Please try again.');
+        }
     };
 
 

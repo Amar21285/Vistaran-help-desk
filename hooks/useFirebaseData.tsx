@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { 
   listenToTickets, 
+  listenToUsers,
+  listenToTechnicians,
   getTickets, 
   getUsers, 
   getTechnicians, 
@@ -12,7 +14,7 @@ import {
   startFirebaseConnectionMonitor,
   stopFirebaseConnectionMonitor
 } from '../utils/firebaseService';
-import { Ticket, User, Technician, Symptom, ManagedFile, TicketTemplate } from '../types';
+import type { Ticket, User, Technician, Symptom, ManagedFile, TicketTemplate } from '../types';
 
 interface FirebaseData {
   tickets: Ticket[];
@@ -30,6 +32,11 @@ interface UseFirebaseDataProps {
 interface DebugInfo {
   initialized: boolean;
   ticketsListenerActive: boolean;
+  usersListenerActive: boolean;
+  techniciansListenerActive: boolean;
+  symptomsListenerActive: boolean;
+  filesListenerActive: boolean;
+  templatesListenerActive: boolean;
   dataFetchAttempts: number;
   firebaseConnected: boolean;
 }
@@ -57,6 +64,11 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
   const [debugInfo, setDebugInfo] = useState<DebugInfo>({
     initialized: false,
     ticketsListenerActive: false,
+    usersListenerActive: false,
+    techniciansListenerActive: false,
+    symptomsListenerActive: false,
+    filesListenerActive: false,
+    templatesListenerActive: false,
     dataFetchAttempts: 0,
     firebaseConnected: true
   });
@@ -112,7 +124,8 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
     
     // Add connection listener
     const handleConnectionChange = (connected: boolean) => {
-      console.log('Firebase connection status changed:', connected);
+      // Less verbose logging
+      // console.log('Firebase connection status changed:', connected);
       setDebugInfo(prev => ({ ...prev, firebaseConnected: connected }));
       
       // If we just reconnected, refresh data
@@ -131,31 +144,42 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
     setDebugInfo(prev => ({ ...prev, initialized: true }));
     
     const unsubscribeTickets = listenToTickets((tickets) => {
-      console.log('Received tickets update from Firebase:', tickets.length);
+      // Less verbose logging
+      // console.log('Received tickets update from Firebase:', tickets.length);
       setFirebaseData(prev => ({ ...prev, tickets }));
       setDebugInfo(prev => ({ ...prev, ticketsListenerActive: true }));
     });
     
-    // TODO: Add listeners for other collections as needed
-    // For now, we'll fetch other data periodically
+    // Set up real-time listeners for users and technicians which are critical for admin/client sync
+    const unsubscribeUsers = listenToUsers((users) => {
+      // Less verbose logging
+      // console.log('Received users update from Firebase:', users.length);
+      setFirebaseData(prev => ({ ...prev, users }));
+      setDebugInfo(prev => ({ ...prev, usersListenerActive: true }));
+    });
     
+    const unsubscribeTechnicians = listenToTechnicians((technicians) => {
+      // Less verbose logging
+      // console.log('Received technicians update from Firebase:', technicians.length);
+      setFirebaseData(prev => ({ ...prev, technicians }));
+      setDebugInfo(prev => ({ ...prev, techniciansListenerActive: true }));
+    });
+    
+    // We'll fetch other data periodically but with a shorter interval for better sync
     const intervalId = setInterval(() => {
-      // Refresh non-ticket data periodically
-      console.log('Refreshing non-ticket data from Firebase...');
+      // Refresh non-ticket data periodically (less verbose logging)
+      // console.log('Refreshing non-ticket data from Firebase...');
       setDebugInfo(prev => ({ ...prev, dataFetchAttempts: prev.dataFetchAttempts + 1 }));
       
       Promise.all([
-        getUsers(),
-        getTechnicians(),
         getSymptoms(),
         getFiles(),
         getTemplates()
-      ]).then(([users, technicians, symptoms, files, templates]) => {
-        console.log('Received non-ticket data from Firebase');
+      ]).then(([symptoms, files, templates]) => {
+        // Less verbose logging
+        // console.log('Received non-ticket data from Firebase');
         setFirebaseData(prev => ({
           ...prev,
-          users,
-          technicians,
           symptoms,
           files,
           templates
@@ -163,12 +187,14 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
       }).catch(err => {
         console.error('Error refreshing non-ticket data:', err);
       });
-    }, 30000); // Refresh non-ticket data every 30 seconds
+    }, 60000); // Refresh non-ticket data every 60 seconds to reduce network usage
     
     // Clean up listeners on unmount
     return () => {
       console.log('Cleaning up Firebase listeners...');
       unsubscribeTickets();
+      unsubscribeUsers();
+      unsubscribeTechnicians();
       clearInterval(intervalId);
       removeFirebaseConnectionListener(handleConnectionChange);
       stopFirebaseConnectionMonitor();

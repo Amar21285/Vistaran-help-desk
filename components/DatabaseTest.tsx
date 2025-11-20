@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useDatabase from '../hooks/useDatabase.tsx';
-import { Ticket } from '../types';
+import type { Ticket } from '../types';
 
 const DatabaseTest: React.FC = () => {
   const { 
@@ -110,8 +110,8 @@ const DatabaseTest: React.FC = () => {
               <tbody>
                 {tickets.slice(0, 5).map(ticket => (
                   <tr key={ticket.id} className="border-t">
-                    <td className="p-2 text-sm">{ticket.id.substring(0, 8)}...</td>
-                    <td className="p-2 text-sm">{ticket.description.substring(0, 30)}...</td>
+                    <td className="p-2 text-sm">{ticket.id ? ticket.id.substring(0, 8) : 'N/A'}...</td>
+                    <td className="p-2 text-sm">{ticket.description ? ticket.description.substring(0, 30) : 'No description'}...</td>
                     <td className="p-2 text-sm">{ticket.status}</td>
                   </tr>
                 ))}

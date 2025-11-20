@@ -104,39 +104,6 @@ const AppContent: React.FC = () => {
     const effectiveSymptoms = firebaseSymptoms.length > 0 ? firebaseSymptoms : allSymptoms;
     const effectiveTemplates = firebaseTemplates.length > 0 ? firebaseTemplates : allTemplates;
     
-    // Show loading state while Firebase is initializing
-    if (firebaseLoading && firebaseTickets.length === 0 && allTickets.length === 0) {
-        return (
-            <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-slate-900">
-                <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-                    <p className="text-slate-600 dark:text-slate-300">Loading application...</p>
-                </div>
-            </div>
-        );
-    }
-
-    // Show error state if Firebase failed to load
-    if (firebaseError) {
-        return (
-            <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-slate-900">
-                <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-lg shadow-lg max-w-md">
-                    <div className="text-red-500 mb-4">
-                        <i className="fas fa-exclamation-circle fa-3x"></i>
-                    </div>
-                    <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Connection Error</h2>
-                    <p className="text-slate-600 dark:text-slate-300 mb-4">Failed to connect to the database. Please check your internet connection and try again.</p>
-                    <button 
-                        onClick={() => window.location.reload()}
-                        className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
-    }
-    
     const deriveInitialDepartments = (): string[] => {
         const deptSet = new Set<string>();
         [...USERS, ...TECHNICIANS, ...SYMPTOMS, ...TICKETS, ...TICKET_TEMPLATES].forEach(item => {
@@ -158,35 +125,16 @@ const AppContent: React.FC = () => {
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [infoModalContent, setInfoModalContent] = useState<{ title: string; message: React.ReactNode; actions?: ModalAction[] } | null>(null);
 
-    useEffect(() => {
-        if (user?.role !== 'Admin' && (currentView === 'dashboard' || currentView === 'users' || currentView === 'app-settings' || currentView === 'reports')) {
-            setCurrentView('tickets');
-        } else if (user?.role === 'Admin' && currentView !== 'dashboard' && currentView !== 'users' && currentView !== 'app-settings' && currentView !== 'reports' && currentView !== 'tickets' && currentView !== 'assigned-tickets' && currentView !== 'create-ticket' && currentView !== 'file-manager' && currentView !== 'my-profile') {
-            setCurrentView('dashboard');
-        }
-    }, [user, currentView]);
-
-    const handleUpdateUser = (updatedUser: User) => {
-        setAllUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
-        updateUser(updatedUser); // Update auth context as well
-        setEditingUser(null);
-    };
-    
-    const handlePhotoUpdate = (userId: string, photoDataUrl: string) => {
-        const userToUpdate = allUsers.find(u => u.id === userId);
-        if (userToUpdate) {
-            handleUpdateUser({ ...userToUpdate, photo: photoDataUrl });
-        }
-    };
-    
-    if (!user) {
-        return <Login />;
-    }
-
-    const currentUserTechnician = allTechnicians.find(tech => tech.email === user.email);
+    // Define these variables early to maintain consistent hook order
+    const currentUserTechnician = user ? allTechnicians.find(tech => tech.email === user.email) : undefined;
     const currentUserTechId = currentUserTechnician?.id;
-
+    
+    // Define renderView early to maintain consistent hook order
     const renderView = () => {
+        if (!user) {
+            return <Login />;
+        }
+        
         switch (currentView) {
             case 'dashboard':
                 return user.role === Role.ADMIN 
@@ -234,6 +182,60 @@ const AppContent: React.FC = () => {
         }
     };
 
+    useEffect(() => {
+        if (user?.role !== 'Admin' && (currentView === 'dashboard' || currentView === 'users' || currentView === 'app-settings' || currentView === 'reports')) {
+            setCurrentView('tickets');
+        } else if (user?.role === 'Admin' && currentView !== 'dashboard' && currentView !== 'users' && currentView !== 'app-settings' && currentView !== 'reports' && currentView !== 'tickets' && currentView !== 'assigned-tickets' && currentView !== 'create-ticket' && currentView !== 'file-manager' && currentView !== 'my-profile') {
+            setCurrentView('dashboard');
+        }
+    }, [user, currentView]);
+
+    const handleUpdateUser = (updatedUser: User) => {
+        setAllUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
+        updateUser(updatedUser); // Update auth context as well
+        setEditingUser(null);
+    };
+    
+    const handlePhotoUpdate = (userId: string, photoDataUrl: string) => {
+        const userToUpdate = allUsers.find(u => u.id === userId);
+        if (userToUpdate) {
+            handleUpdateUser({ ...userToUpdate, photo: photoDataUrl });
+        }
+    };
+    
+    // Show loading state while Firebase is initializing
+    if (firebaseLoading && firebaseTickets.length === 0 && allTickets.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-slate-900">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                    <p className="text-slate-600 dark:text-slate-300">Loading application...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Show error state if Firebase failed to load
+    if (firebaseError) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-slate-900">
+                <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-lg shadow-lg max-w-md">
+                    <div className="text-red-500 mb-4">
+                        <i className="fas fa-exclamation-circle fa-3x"></i>
+                    </div>
+                    <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Connection Error</h2>
+                    <p className="text-slate-600 dark:text-slate-300 mb-4">Failed to connect to the database. Please check your internet connection and try again.</p>
+                    <button 
+                        onClick={() => window.location.reload()}
+                        className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
+    
     return (
         <div className="relative flex h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans">
             <Sidebar currentView={currentView} setCurrentView={setCurrentView} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />

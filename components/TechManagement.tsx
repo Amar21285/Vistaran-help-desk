@@ -1,11 +1,11 @@
-
 import React, { useState, useMemo } from 'react';
-import { Technician } from '../types';
+import type { Technician } from '../types';
 import PlusIcon from './icons/PlusIcon';
 import EditIcon from './icons/EditIcon';
 import TrashIcon from './icons/TrashIcon';
 import TechModal from './TechModal';
 import SearchIcon from './icons/SearchIcon';
+import { createTechnician, updateTechnician, deleteTechnician } from '../utils/firebaseService'; // Add Firebase functions
 
 interface TechManagementProps {
     technicians: Technician[];
@@ -39,19 +39,36 @@ const TechManagement: React.FC<TechManagementProps> = ({ technicians, onTechnici
         setIsModalOpen(true);
     };
 
-    const handleDelete = (techId: string) => {
+    const handleDelete = async (techId: string) => {
         if (window.confirm('Are you sure you want to delete this technician? This will also unassign them from any open tickets.')) {
-            onTechnicianDelete(techId);
+            try {
+                // Delete from Firebase
+                await deleteTechnician(techId);
+                // Update local state
+                onTechnicianDelete(techId);
+            } catch (error) {
+                console.error('Error deleting technician:', error);
+                alert('Failed to delete technician. Please try again.');
+            }
         }
     };
 
-    const handleSave = (techData: Omit<Technician, 'id'> | Technician) => {
-        if ('id' in techData) {
-            onTechnicianUpdate(techData);
-        } else {
-            onTechnicianCreate(techData);
+    const handleSave = async (techData: Omit<Technician, 'id'> | Technician) => {
+        try {
+            if ('id' in techData) {
+                // Update existing technician
+                await updateTechnician(techData.id, techData);
+                onTechnicianUpdate(techData);
+            } else {
+                // Create new technician
+                const newTechnician = await createTechnician(techData);
+                onTechnicianCreate(newTechnician);
+            }
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error('Error saving technician:', error);
+            alert('Failed to save technician. Please try again.');
         }
-        setIsModalOpen(false);
     };
 
     return (

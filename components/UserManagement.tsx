@@ -1,7 +1,9 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { User, Role, UserStatus } from '../types';
+import type { User } from '../types';
+import { Role, UserStatus } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { logUserAction } from '../utils/auditLogger';
+import { updateUser } from '../utils/firebaseService'; // Add Firebase update function
 
 interface UserManagementProps {
     users: User[];
@@ -79,7 +81,23 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
             const reader = new FileReader();
             reader.onload = (event) => {
                 const photoDataUrl = event.target?.result as string;
-                if (photoDataUrl) onPhotoUpdate(editingPhotoForUserId, photoDataUrl);
+                if (photoDataUrl) {
+                    // Update photo in Firebase
+                    const user = users.find(u => u.id === editingPhotoForUserId);
+                    if (user) {
+                        updateUser(editingPhotoForUserId, { photo: photoDataUrl })
+                            .then(() => {
+                                onPhotoUpdate(editingPhotoForUserId, photoDataUrl);
+                            })
+                            .catch(error => {
+                                console.error('Failed to update user photo in Firebase:', error);
+                                // Fallback to local update
+                                onPhotoUpdate(editingPhotoForUserId, photoDataUrl);
+                            });
+                    } else {
+                        onPhotoUpdate(editingPhotoForUserId, photoDataUrl);
+                    }
+                }
                 setEditingPhotoForUserId(null);
             };
             reader.readAsDataURL(file);
@@ -124,10 +142,35 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
     };
     
     // --- Bulk Action Handlers ---
-    const handleBulkStatusChange = (status: UserStatus) => {
-        setUsers(prev => prev.map(u => selectedUserIds.includes(u.id) ? { ...u, status } : u));
-        logUserAction(realUser, `Bulk updated status to "${status}" for ${selectedUserIds.length} users.`);
-        setSelectedUserIds([]);
+    const handleBulkStatusChange = async (status: UserStatus) => {
+        try {
+            // Update all selected users in Firebase
+            const updatePromises = selectedUserIds.map(async (userId) => {
+                const user = users.find(u => u.id === userId);
+                if (!user || (realUser?.id === user.id)) return; // Skip self
+                
+                // Update in Firebase
+                await updateUser(userId, { status });
+                
+                return { userId, status };
+            });
+            
+            // Wait for all updates to complete
+            await Promise.all(updatePromises);
+            
+            // Update local state
+            setUsers(prev => prev.map(u => 
+                selectedUserIds.includes(u.id) && realUser?.id !== u.id 
+                    ? { ...u, status } 
+                    : u
+            ));
+            
+            logUserAction(realUser, `Bulk updated status to "${status}" for ${selectedUserIds.length} users.`);
+            setSelectedUserIds([]);
+        } catch (error) {
+            console.error('Error updating users:', error);
+            alert('Failed to update users. Please try again.');
+        }
     };
 
     const handleConfirmBulkDelete = () => {
@@ -135,6 +178,39 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
         logUserAction(realUser, `Bulk deleted ${selectedUserIds.length} users.`);
         setSelectedUserIds([]);
         setIsConfirmingBulkDelete(false);
+    };
+
+    // Handler for role changes
+    const handleUserRoleChange = async (userId: string, role: Role) => {
+        try {
+            // Update in Firebase
+            await updateUser(userId, { role });
+            
+            // Update local state
+            setUsers(prev => prev.map(u => u.id === userId ? { ...u, role } : u));
+        } catch (error) {
+            console.error('Error updating user role:', error);
+            alert('Failed to update user role. Please try again.');
+        }
+    };
+
+    // Handler for status changes
+    const handleUserStatusChange = async (userId: string, status: UserStatus) => {
+        if (realUser?.id === userId) {
+            alert("You cannot change your own status.");
+            return;
+        }
+        
+        try {
+            // Update in Firebase
+            await updateUser(userId, { status });
+            
+            // Update local state
+            setUsers(prev => prev.map(u => u.id === userId ? { ...u, status } : u));
+        } catch (error) {
+            console.error('Error updating user status:', error);
+            alert('Failed to update user status. Please try again.');
+        }
     };
 
 
@@ -265,7 +341,19 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                                                         <span>Upload Photo</span>
                                                     </button>
                                                     {user.photo && (
-                                                        <button onClick={() => { onPhotoUpdate(user.id, ''); setPhotoMenuForUserId(null); }} className="w-full text-left flex items-center space-x-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-slate-600">
+                                                        <button onClick={() => { 
+                                                            // Remove photo in Firebase
+                                                            updateUser(user.id, { photo: '' })
+                                                                .then(() => {
+                                                                    onPhotoUpdate(user.id, '');
+                                                                })
+                                                                .catch(error => {
+                                                                    console.error('Failed to remove user photo in Firebase:', error);
+                                                                    // Fallback to local update
+                                                                    onPhotoUpdate(user.id, '');
+                                                                });
+                                                            setPhotoMenuForUserId(null); 
+                                                        }} className="w-full text-left flex items-center space-x-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-slate-600">
                                                             <i className="fas fa-trash-alt w-4 text-center"></i>
                                                             <span>Remove Photo</span>
                                                         </button>
@@ -308,7 +396,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                                     {realUser?.id === user.id ? (
                                         <span className="font-semibold" title="You cannot change your own role.">{user.role}</span>
                                     ) : (
-                                        <select value={user.role} onChange={(e) => setUsers(prev => prev.map(u => u.id === user.id ? { ...u, role: e.target.value as Role } : u))} className="w-full p-1 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition" aria-label={`Change role for ${user.name}`}>
+                                        <select value={user.role} onChange={(e) => handleUserRoleChange(user.id, e.target.value as Role)} className="w-full p-1 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition" aria-label={`Change role for ${user.name}`}>
                                             <option value={Role.USER}>User</option>
                                             <option value={Role.ADMIN}>Admin</option>
                                         </select>
@@ -326,7 +414,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                                      {realUser?.id === user.id ? (
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === UserStatus.ACTIVE ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{user.status}</span>
                                      ) : (
-                                        <select value={user.status} onChange={(e) => setUsers(prev => prev.map(u => u.id === user.id ? { ...u, status: e.target.value as UserStatus } : u))} className="w-full p-1 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition" aria-label={`Change status for ${user.name}`}>
+                                        <select value={user.status} onChange={(e) => handleUserStatusChange(user.id, e.target.value as UserStatus)} className="w-full p-1 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition" aria-label={`Change status for ${user.name}`}>
                                             <option value={UserStatus.ACTIVE}>Active</option>
                                             <option value={UserStatus.INACTIVE}>Inactive</option>
                                         </select>

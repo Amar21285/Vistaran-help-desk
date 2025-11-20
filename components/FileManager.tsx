@@ -1,7 +1,8 @@
 
 
 import React, { useState, useMemo, useCallback, useRef } from 'react';
-import { ManagedFile, FileType, Role } from '../types';
+import type { ManagedFile } from '../types';
+import { FileType, Role } from '../types';
 import { useAuth } from '../hooks/useAuth';
 
 // Corrected: Use computed property names with the FileType enum for keys.
@@ -155,7 +156,12 @@ const FileManager: React.FC<FileManagerProps> = ({ globalFilter, files, onFileAd
     }, [handleFileSelect]);
 
     const handleFileDownload = (file: ManagedFile) => {
-        const dummyContent = `This is a simulated file download for:\n\nName: ${file.name}\nSize: ${file.size}\nType: ${file.type}\nDate: ${file.date}`;
+        const dummyContent = `This is a simulated file download for:
+
+Name: ${file.name}
+Size: ${file.size}
+Type: ${file.type}
+Date: ${file.date}`;
         const blob = new Blob([dummyContent], { type: 'text/plain;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');

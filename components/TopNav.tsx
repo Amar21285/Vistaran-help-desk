@@ -1,11 +1,9 @@
-
-
 import React, { useState, useRef, useEffect } from 'react';
 import { User } from '../types';
 import Logo from './icons/Logo';
 
 interface TopNavProps {
-    user: User;
+    user: User | null;
     onLogout: () => void;
     globalFilter: string;
     setGlobalFilter: (filter: string) => void;
@@ -33,6 +31,23 @@ const TopNav: React.FC<TopNavProps> = ({ user, onLogout, globalFilter, setGlobal
         action();
         setDropdownOpen(false);
     };
+
+    // Handle case where user is null
+    if (!user) {
+        return (
+            <header className="bg-white dark:bg-slate-800 shadow-md z-20 shrink-0 no-print">
+                <div className="p-3 flex justify-between items-center">
+                    <div className="flex items-center space-x-3">
+                        <button className="p-1 text-slate-500 rounded-md md:hidden" onClick={onToggleSidebar} aria-label="Open sidebar">
+                            <i className="fas fa-bars text-xl"></i>
+                        </button>
+                        <Logo className="h-9" />
+                        <span className="text-xl font-semibold text-slate-700 dark:text-slate-200 hidden md:block">Vistaran Help Desk</span>
+                    </div>
+                </div>
+            </header>
+        );
+    }
 
     return (
         <header className="bg-white dark:bg-slate-800 shadow-md z-20 shrink-0 no-print">

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Ticket, TicketStatus, Priority, Symptom, Role, TicketTemplate } from '../types';
+import { TicketStatus, Priority, Role } from '../types';
+import type { Ticket, Symptom, TicketTemplate } from '../types';
 import { 
     sendEmail, 
     getNewTicketManualMailto,
@@ -220,23 +221,31 @@ const CreateTicket: React.FC<CreateTicketProps> = ({ symptoms, setTickets, setCu
         };
 
         // Save ticket to Firebase
+        let ticketToLog: Ticket;
         try {
-            await createTicket(newTicket);
+            const createdTicket = await createTicket(newTicket);
+            // Update local state with the ticket returned from Firebase (which includes the actual ID)
+            setTickets(prev => [...prev, createdTicket]);
+            ticketToLog = createdTicket; // Use Firebase-generated ID for logging
         } catch (error) {
             console.error('Failed to save ticket to Firebase:', error);
-            // Fallback to localStorage
+            // Fallback to localStorage with client-generated ID
             setTickets(prev => [...prev, newTicket]);
+            ticketToLog = newTicket; // Use client-generated ID for logging
         }
-        logUserAction(user, `Created new ticket #${newTicket.id}.`);
+        logUserAction(user, `Created new ticket #${ticketToLog.id}.`);
         
         // --- UX Flow: Show modal and navigate ---
         resetForm(); // Reset form for next time
+        
+        // Use the correct ticket ID (either Firebase or client-generated)
+        const ticketIdToShow = ticketToLog.id;
         
         setInfoModalContent({
             title: 'Ticket Submitted Successfully!',
             message: (
                 <>
-                    <p>Your ticket #{newTicket.id} has been created.</p>
+                    <p>Your ticket #{ticketIdToShow} has been created.</p>
                     <p className="mt-2">You will now be redirected to the ticket list. You may receive an email confirmation shortly.</p>
                 </>
             ),
@@ -247,10 +256,13 @@ const CreateTicket: React.FC<CreateTicketProps> = ({ symptoms, setTickets, setCu
         // --- ASYNC EMAIL NOTIFICATION LOGIC ---
         const emailPromises: Promise<{success: boolean, message?: string}>[] = [];
         
+        // Create a ticket object with the correct ID for email notifications
+        const ticketForEmail = { ...newTicket, id: ticketIdToShow };
+        
         if (notificationSettings.adminOnNewTicket) {
             const admins = USERS.filter(u => u.role === Role.ADMIN);
             admins.forEach(admin => {
-                const { subject, body, to_email, to_name } = generateNewTicketAdminEmail(newTicket, user, admin, emailTemplates);
+                const { subject, body, to_email, to_name } = generateNewTicketAdminEmail(ticketForEmail, user, admin, emailTemplates);
                 const templateParams = { subject, message: body, to_email, to_name, user_name: to_name };
                 emailPromises.push(sendEmail(
                     emailjsServiceId,
@@ -262,7 +274,7 @@ const CreateTicket: React.FC<CreateTicketProps> = ({ symptoms, setTickets, setCu
         }
         
         if (notificationSettings.userOnNewTicket) {
-            const { subject, body, to_email, to_name } = generateNewTicketUserEmail(newTicket, user, emailTemplates);
+            const { subject, body, to_email, to_name } = generateNewTicketUserEmail(ticketForEmail, user, emailTemplates);
             const templateParams = { subject, message: body, to_email, to_name, user_name: to_name };
             emailPromises.push(sendEmail(
                 emailjsServiceId,
@@ -280,7 +292,7 @@ const CreateTicket: React.FC<CreateTicketProps> = ({ symptoms, setTickets, setCu
                 const mailtoAction = adminUser ? {
                     label: 'Notify Admin Manually',
                     onClick: () => {
-                        const mailtoLink = getNewTicketManualMailto(newTicket, user, adminUser);
+                        const mailtoLink = getNewTicketManualMailto(ticketForEmail, user, adminUser);
                         window.location.href = mailtoLink;
                     },
                     className: 'bg-amber-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-amber-700 transition'
