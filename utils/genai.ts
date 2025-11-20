@@ -1,9 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { Ticket, User, Symptom } from '../types';
+import type { Ticket, User, Symptom } from '../types';
 
 // Per the coding guidelines, the API key is assumed to be available in the execution environment.
 // The GoogleGenAI instance is initialized directly, without checking for the key's existence.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.API_KEY;
+const ai = new GoogleGenAI({ apiKey });
 
 const modelName = 'gemini-2.5-flash';
 
