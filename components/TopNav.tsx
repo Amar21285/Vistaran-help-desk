@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User } from '../types';
+import type { User } from '../types';
 import Logo from './icons/Logo';
+import { useNavigate } from 'react-router-dom';
 
 interface TopNavProps {
     user: User | null;
@@ -9,13 +10,13 @@ interface TopNavProps {
     setGlobalFilter: (filter: string) => void;
     isImpersonating?: boolean;
     stopImpersonation?: () => void;
-    onViewProfile: () => void;
     onToggleSidebar: () => void;
 }
 
-const TopNav: React.FC<TopNavProps> = ({ user, onLogout, globalFilter, setGlobalFilter, isImpersonating, stopImpersonation, onViewProfile, onToggleSidebar }) => {
+const TopNav: React.FC<TopNavProps> = ({ user, onLogout, globalFilter, setGlobalFilter, isImpersonating, stopImpersonation, onToggleSidebar }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -30,6 +31,10 @@ const TopNav: React.FC<TopNavProps> = ({ user, onLogout, globalFilter, setGlobal
     const handleDropdownClick = (action: () => void) => {
         action();
         setDropdownOpen(false);
+    };
+
+    const handleViewProfile = () => {
+        navigate('/profile');
     };
 
     // Handle case where user is null
@@ -113,7 +118,7 @@ const TopNav: React.FC<TopNavProps> = ({ user, onLogout, globalFilter, setGlobal
                     {dropdownOpen && (
                         <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-md shadow-lg py-1 z-20 ring-1 ring-black dark:ring-slate-600 ring-opacity-5">
                             <button
-                                onClick={() => handleDropdownClick(onViewProfile)}
+                                onClick={() => handleDropdownClick(handleViewProfile)}
                                 className="w-full text-left flex items-center space-x-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
                             >
                                 <i className="fas fa-user-circle w-5 text-center text-slate-500 dark:text-slate-400"></i>

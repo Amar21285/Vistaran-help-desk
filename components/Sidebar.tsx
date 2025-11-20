@@ -2,10 +2,9 @@ import React from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Role } from '../types';
 import { DashboardIcon, TicketIcon, PlusCircleIcon, UserCircleIcon, UsersIcon, FolderOpenIcon, CogsIcon, ChartBarIcon, UserTagIcon } from './icons/FontAwesome';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface SidebarProps {
-    currentView: string;
-    setCurrentView: (view: string) => void;
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
 }
@@ -31,20 +30,26 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isActive, onClick }) => 
     </li>
 );
 
-const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, setIsOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
     const { user, realUser } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+    
     if (!user) return null;
     
     // Base the admin check on the 'realUser' to ensure an admin's UI persists during impersonation.
     const isAdmin = realUser?.role === Role.ADMIN;
     
-    const handleNavigation = (view: string) => {
-        setCurrentView(view);
+    const handleNavigation = (path: string) => {
+        navigate(path);
         // Close sidebar on navigation on smaller screens
         if (window.innerWidth < 768) { // md breakpoint
             setIsOpen(false);
         }
     };
+
+    // Determine active view based on current location
+    const currentPath = location.pathname;
 
     return (
         <aside className={`w-64 bg-white dark:bg-slate-800 shadow-xl flex-shrink-0 p-4 flex flex-col no-print fixed inset-y-0 left-0 z-30 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
@@ -54,35 +59,35 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
                         <NavItem
                             icon={<DashboardIcon />}
                             label="Dashboard"
-                            isActive={currentView === 'dashboard'}
-                            onClick={() => handleNavigation('dashboard')}
+                            isActive={currentPath === '/dashboard'}
+                            onClick={() => handleNavigation('/dashboard')}
                         />
                     )}
                     <NavItem
                         icon={<TicketIcon />}
                         label={isAdmin ? "Ticket Management" : "My Tickets"}
-                        isActive={currentView === 'tickets'}
-                        onClick={() => handleNavigation('tickets')}
+                        isActive={currentPath === '/tickets'}
+                        onClick={() => handleNavigation('/tickets')}
                     />
                     <NavItem
                         icon={<PlusCircleIcon />}
                         label="Create Ticket"
-                        isActive={currentView === 'create-ticket'}
-                        onClick={() => handleNavigation('create-ticket')}
+                        isActive={currentPath === '/create-ticket'}
+                        onClick={() => handleNavigation('/create-ticket')}
                     />
                     {isAdmin && (
                         <NavItem
                             icon={<UserTagIcon />}
                             label="My Assigned Tickets"
-                            isActive={currentView === 'assigned-tickets'}
-                            onClick={() => handleNavigation('assigned-tickets')}
+                            isActive={currentPath === '/assigned-tickets'}
+                            onClick={() => handleNavigation('/assigned-tickets')}
                         />
                     )}
                     <NavItem
                         icon={<FolderOpenIcon />}
                         label="File Manager"
-                        isActive={currentView === 'file-manager'}
-                        onClick={() => handleNavigation('file-manager')}
+                        isActive={currentPath === '/files'}
+                        onClick={() => handleNavigation('/files')}
                     />
                     {isAdmin && (
                         <>
@@ -90,20 +95,20 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
                             <NavItem
                                 icon={<UsersIcon />}
                                 label="Users"
-                                isActive={currentView === 'users'}
-                                onClick={() => handleNavigation('users')}
+                                isActive={currentPath === '/users'}
+                                onClick={() => handleNavigation('/users')}
                             />
                             <NavItem
                                 icon={<CogsIcon />}
                                 label="App Settings"
-                                isActive={currentView === 'app-settings'}
-                                onClick={() => handleNavigation('app-settings')}
+                                isActive={currentPath === '/settings'}
+                                onClick={() => handleNavigation('/settings')}
                             />
                              <NavItem
                                 icon={<ChartBarIcon />}
                                 label="Reports"
-                                isActive={currentView === 'reports'}
-                                onClick={() => handleNavigation('reports')}
+                                isActive={currentPath === '/reports'}
+                                onClick={() => handleNavigation('/reports')}
                             />
                         </>
                     )}
