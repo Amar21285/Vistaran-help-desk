@@ -28,8 +28,7 @@ export default defineConfig(({ mode }) => {
             manualChunks: {
               // Split vendor and firebase chunks to reduce main bundle size
               vendor: ['react', 'react-dom'],
-              firebase: ['firebase/app', 'firebase/firestore', 'firebase/auth'],
-              recharts: ['recharts']
+              firebase: ['firebase/app', 'firebase/firestore', 'firebase/auth']
             }
           }
         }
