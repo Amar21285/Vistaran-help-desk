@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth, AuthProvider } from './hooks/useAuth.tsx';
 import { SettingsProvider } from './hooks/useSettings.tsx';
 import { ThemeProvider } from './hooks/useTheme.tsx';
@@ -21,7 +22,8 @@ import FileManager from './components/FileManager';
 import UserModal from './components/UserModal';
 import Chatbot from './components/Chatbot'; // Import the new Chatbot component
 import { USERS, TICKETS, TECHNICIANS, SYMPTOMS, FILES, TICKET_TEMPLATES } from './constants';
-import { User, Ticket, ManagedFile, Technician, Symptom, Role, TicketTemplate } from './types';
+import type { User, Ticket, ManagedFile, Technician, Symptom, TicketTemplate } from './types';
+import { Role } from './types';
 
 interface ModalAction {
     label: string;
@@ -116,79 +118,12 @@ const AppContent: React.FC = () => {
 
     const [allDepartments, setAllDepartments] = useLocalStorage<string[]>('vistaran-helpdesk-departments', deriveInitialDepartments());
 
-
-    const [currentView, setCurrentView] = useState('dashboard');
     const [globalFilter, setGlobalFilter] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Modal States
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [infoModalContent, setInfoModalContent] = useState<{ title: string; message: React.ReactNode; actions?: ModalAction[] } | null>(null);
-
-    // Define these variables early to maintain consistent hook order
-    const currentUserTechnician = user ? allTechnicians.find(tech => tech.email === user.email) : undefined;
-    const currentUserTechId = currentUserTechnician?.id;
-    
-    // Define renderView early to maintain consistent hook order
-    const renderView = () => {
-        if (!user) {
-            return <Login />;
-        }
-        
-        switch (currentView) {
-            case 'dashboard':
-                return user.role === Role.ADMIN 
-                    ? <AdminDashboard 
-                        tickets={effectiveTickets} 
-                        users={effectiveUsers} 
-                        setUsers={setAllUsers}
-                        onEditUser={setEditingUser}
-                        setCurrentView={setCurrentView}
-                        departments={allDepartments}
-                      />
-                    : <Dashboard tickets={effectiveTickets} users={effectiveUsers} globalFilter={globalFilter} />;
-            case 'tickets':
-                return <TicketManagement key="tickets" tickets={effectiveTickets} setTickets={setAllTickets} users={effectiveUsers} technicians={effectiveTechnicians} symptoms={effectiveSymptoms} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setInfoModalContent={setInfoModalContent} departments={allDepartments} />;
-            case 'assigned-tickets':
-                return <TicketManagement key="assigned-tickets" tickets={effectiveTickets} setTickets={setAllTickets} users={effectiveUsers} technicians={effectiveTechnicians} symptoms={effectiveSymptoms} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setInfoModalContent={setInfoModalContent} assignedToMeTechId={currentUserTechId} departments={allDepartments} />;
-            case 'create-ticket':
-                return <CreateTicket templates={effectiveTemplates} symptoms={effectiveSymptoms} setTickets={setAllTickets} setCurrentView={setCurrentView} setInfoModalContent={setInfoModalContent} departments={allDepartments} />;
-            case 'users':
-                return <UserManagement users={effectiveUsers} setUsers={setAllUsers} globalFilter={globalFilter} onImpersonate={startImpersonation} onEditUser={setEditingUser} onPhotoUpdate={handlePhotoUpdate} departments={allDepartments} />;
-            case 'app-settings':
-                return <Settings templates={effectiveTemplates} setTemplates={setAllTemplates} symptoms={effectiveSymptoms} setSymptoms={setAllSymptoms} departments={allDepartments} setDepartments={setAllDepartments} users={effectiveUsers} tickets={effectiveTickets} />;
-            case 'my-profile':
-                 return <Profile tickets={effectiveTickets} onEditUser={setEditingUser} />;
-            case 'reports':
-                return <Reports tickets={effectiveTickets} users={effectiveUsers} departments={allDepartments} />;
-            case 'file-manager':
-                return <FileManager 
-                    globalFilter={globalFilter}
-                    files={effectiveFiles} 
-                    onFileAdd={(file) => setAllFiles(prev => [...prev, file])} 
-                    onFileDelete={(id) => setAllFiles(prev => prev.filter(f => f.id !== id))}
-                />;
-            default:
-                return user.role === Role.ADMIN 
-                    ? <AdminDashboard 
-                        tickets={effectiveTickets} 
-                        users={effectiveUsers}
-                        setUsers={setAllUsers}
-                        onEditUser={setEditingUser} 
-                        setCurrentView={setCurrentView}
-                        departments={allDepartments}
-                      />
-                    : <Dashboard tickets={effectiveTickets} users={effectiveUsers} globalFilter={globalFilter} />;
-        }
-    };
-
-    useEffect(() => {
-        if (user?.role !== 'Admin' && (currentView === 'dashboard' || currentView === 'users' || currentView === 'app-settings' || currentView === 'reports')) {
-            setCurrentView('tickets');
-        } else if (user?.role === 'Admin' && currentView !== 'dashboard' && currentView !== 'users' && currentView !== 'app-settings' && currentView !== 'reports' && currentView !== 'tickets' && currentView !== 'assigned-tickets' && currentView !== 'create-ticket' && currentView !== 'file-manager' && currentView !== 'my-profile') {
-            setCurrentView('dashboard');
-        }
-    }, [user, currentView]);
 
     const handleUpdateUser = (updatedUser: User) => {
         setAllUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
@@ -202,6 +137,10 @@ const AppContent: React.FC = () => {
             handleUpdateUser({ ...userToUpdate, photo: photoDataUrl });
         }
     };
+
+    // Define these variables early to maintain consistent hook order
+    const currentUserTechnician = user ? allTechnicians.find(tech => tech.email === user.email) : undefined;
+    const currentUserTechId = currentUserTechnician?.id;
     
     // Show loading state while Firebase is initializing
     if (firebaseLoading && firebaseTickets.length === 0 && allTickets.length === 0) {
@@ -238,7 +177,7 @@ const AppContent: React.FC = () => {
     
     return (
         <div className="relative flex h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans">
-            <Sidebar currentView={currentView} setCurrentView={setCurrentView} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+            <Sidebar />
             
             {/* Overlay for mobile */}
             {isSidebarOpen && (
@@ -257,11 +196,34 @@ const AppContent: React.FC = () => {
                     setGlobalFilter={setGlobalFilter}
                     isImpersonating={!!(realUser && user.id !== realUser.id)}
                     stopImpersonation={stopImpersonation}
-                    onViewProfile={() => setCurrentView('my-profile')}
+                    onViewProfile={() => {}} // Will be handled by router
                     onToggleSidebar={() => setIsSidebarOpen(true)}
                 />
                 <main className="flex-1 overflow-y-auto p-4 md:p-8">
-                    {renderView()}
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/dashboard" element={user?.role === Role.ADMIN ? <AdminDashboard 
+                            tickets={effectiveTickets} 
+                            users={effectiveUsers} 
+                            setUsers={setAllUsers}
+                            onEditUser={setEditingUser}
+                            departments={allDepartments}
+                          /> : <Dashboard tickets={effectiveTickets} users={effectiveUsers} globalFilter={globalFilter} />} />
+                        <Route path="/tickets" element={<TicketManagement key="tickets" tickets={effectiveTickets} setTickets={setAllTickets} users={effectiveUsers} technicians={effectiveTechnicians} symptoms={effectiveSymptoms} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setInfoModalContent={setInfoModalContent} departments={allDepartments} />} />
+                        <Route path="/assigned-tickets" element={<TicketManagement key="assigned-tickets" tickets={effectiveTickets} setTickets={setAllTickets} users={effectiveUsers} technicians={effectiveTechnicians} symptoms={effectiveSymptoms} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setInfoModalContent={setInfoModalContent} assignedToMeTechId={currentUserTechId} departments={allDepartments} />} />
+                        <Route path="/create-ticket" element={<CreateTicket templates={effectiveTemplates} symptoms={effectiveSymptoms} setTickets={setAllTickets} setInfoModalContent={setInfoModalContent} departments={allDepartments} />} />
+                        <Route path="/users" element={<UserManagement users={effectiveUsers} setUsers={setAllUsers} globalFilter={globalFilter} onImpersonate={startImpersonation} onEditUser={setEditingUser} onPhotoUpdate={handlePhotoUpdate} departments={allDepartments} />} />
+                        <Route path="/settings" element={<Settings templates={effectiveTemplates} setTemplates={setAllTemplates} symptoms={effectiveSymptoms} setSymptoms={setAllSymptoms} departments={allDepartments} setDepartments={setAllDepartments} users={effectiveUsers} tickets={effectiveTickets} />} />
+                        <Route path="/profile" element={<Profile tickets={effectiveTickets} onEditUser={setEditingUser} />} />
+                        <Route path="/reports" element={<Reports tickets={effectiveTickets} users={effectiveUsers} departments={allDepartments} />} />
+                        <Route path="/files" element={<FileManager 
+                            globalFilter={globalFilter}
+                            files={effectiveFiles} 
+                            onFileAdd={(file) => setAllFiles(prev => [...prev, file])} 
+                            onFileDelete={(id) => setAllFiles(prev => prev.filter(f => f.id !== id))}
+                        />} />
+                        <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} replace />} />
+                    </Routes>
                 </main>
             </div>
             
@@ -283,13 +245,15 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => (
-    <ThemeProvider>
-        <SettingsProvider>
-            <AuthProvider>
-                <AppContent />
-            </AuthProvider>
-        </SettingsProvider>
-    </ThemeProvider>
+    <Router>
+        <ThemeProvider>
+            <SettingsProvider>
+                <AuthProvider>
+                    <AppContent />
+                </AuthProvider>
+            </SettingsProvider>
+        </ThemeProvider>
+    </Router>
 );
 
 export default App;
