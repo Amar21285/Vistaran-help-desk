@@ -19,6 +19,11 @@ import { Ticket, User, Technician, Symptom, ManagedFile, TicketTemplate } from '
 let isFirebaseConnected = true;
 const firebaseConnectionListeners: Array<(connected: boolean) => void> = [];
 
+// Check if db is initialized
+const isDbInitialized = () => {
+  return db !== undefined;
+};
+
 // Collection names
 const COLLECTIONS = {
   TICKETS: 'tickets',
@@ -44,6 +49,11 @@ export const removeFirebaseConnectionListener = (callback: (connected: boolean) 
 // Monitor Firebase connection
 let connectionMonitor: any;
 export const startFirebaseConnectionMonitor = () => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    return;
+  }
+  
   if (connectionMonitor) return;
   
   connectionMonitor = setInterval(async () => {
@@ -72,6 +82,11 @@ export const stopFirebaseConnectionMonitor = () => {
 
 // Ticket operations
 export const createTicket = async (ticket: Omit<Ticket, 'id'>) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    throw new Error('Firebase is not initialized');
+  }
+  
   try {
     const docRef = await addDoc(collection(db, COLLECTIONS.TICKETS), ticket);
     return { id: docRef.id, ...ticket };
@@ -89,6 +104,11 @@ export const createTicket = async (ticket: Omit<Ticket, 'id'>) => {
 };
 
 export const getTickets = async () => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    return [];
+  }
+  
   try {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.TICKETS));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ticket));
@@ -99,6 +119,11 @@ export const getTickets = async () => {
 };
 
 export const updateTicket = async (ticketId: string, updates: Partial<Ticket>) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    throw new Error('Firebase is not initialized');
+  }
+  
   try {
     const ticketRef = doc(db, COLLECTIONS.TICKETS, ticketId);
     await updateDoc(ticketRef, updates);
@@ -117,6 +142,11 @@ export const updateTicket = async (ticketId: string, updates: Partial<Ticket>) =
 };
 
 export const deleteTicket = async (ticketId: string) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    throw new Error('Firebase is not initialized');
+  }
+  
   try {
     await deleteDoc(doc(db, COLLECTIONS.TICKETS, ticketId));
     return ticketId;
@@ -134,6 +164,12 @@ export const deleteTicket = async (ticketId: string) => {
 
 // Real-time listeners
 export const listenToTickets = (callback: (tickets: Ticket[]) => void) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    // Return a no-op function
+    return () => {};
+  }
+  
   // Try to order by dateCreated, but fall back to no ordering if field doesn't exist
   try {
     const q = query(collection(db, COLLECTIONS.TICKETS), orderBy('dateCreated', 'desc'));
@@ -172,6 +208,12 @@ export const listenToTickets = (callback: (tickets: Ticket[]) => void) => {
 };
 
 export const listenToUserTickets = (userId: string, callback: (tickets: Ticket[]) => void) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    // Return a no-op function
+    return () => {};
+  }
+  
   // Try to order by dateCreated, but fall back if field doesn't exist
   try {
     const q = query(
@@ -224,6 +266,15 @@ export const listenToUserTickets = (userId: string, callback: (tickets: Ticket[]
 
 // User operations
 export const getUsers = async () => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    // Return cached users if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-users') || '[]');
+    }
+    return [];
+  }
+  
   try {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.USERS));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
@@ -238,6 +289,11 @@ export const getUsers = async () => {
 };
 
 export const updateUser = async (userId: string, updates: Partial<User>) => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    throw new Error('Firebase is not initialized');
+  }
+  
   try {
     const userRef = doc(db, COLLECTIONS.USERS, userId);
     await updateDoc(userRef, updates);
@@ -257,6 +313,15 @@ export const updateUser = async (userId: string, updates: Partial<User>) => {
 
 // Technician operations
 export const getTechnicians = async () => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    // Return cached technicians if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-technicians') || '[]');
+    }
+    return [];
+  }
+  
   try {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.TECHNICIANS));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Technician));
@@ -272,6 +337,15 @@ export const getTechnicians = async () => {
 
 // Symptom operations
 export const getSymptoms = async () => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    // Return cached symptoms if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-symptoms') || '[]');
+    }
+    return [];
+  }
+  
   try {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.SYMPTOMS));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Symptom));
@@ -287,6 +361,15 @@ export const getSymptoms = async () => {
 
 // File operations
 export const getFiles = async () => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    // Return cached files if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-files') || '[]');
+    }
+    return [];
+  }
+  
   try {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.FILES));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ManagedFile));
@@ -302,6 +385,15 @@ export const getFiles = async () => {
 
 // Template operations
 export const getTemplates = async () => {
+  if (!isDbInitialized()) {
+    console.error('Firebase is not initialized');
+    // Return cached templates if offline
+    if (!navigator.onLine) {
+      return JSON.parse(localStorage.getItem('cached-templates') || '[]');
+    }
+    return [];
+  }
+  
   try {
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.TEMPLATES));
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as TicketTemplate));

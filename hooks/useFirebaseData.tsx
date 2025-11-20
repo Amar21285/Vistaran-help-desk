@@ -95,7 +95,7 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
       });
     } catch (err) {
       console.error('Error fetching Firebase data:', err);
-      setError('Failed to fetch data from Firebase');
+      setError('Failed to fetch data from Firebase: ' + (err as Error).message);
     } finally {
       setIsLoading(false);
     }

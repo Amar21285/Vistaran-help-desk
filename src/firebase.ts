@@ -12,24 +12,39 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+// Validate Firebase configuration
+const isFirebaseConfigValid = Object.values(firebaseConfig).every(value => value !== undefined);
+
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
+let db;
+let auth;
 
-// Initialize Firestore
-const db = getFirestore(app);
-
-// Enable offline persistence
-enableIndexedDbPersistence(db).catch((err) => {
-  if (err.code == 'failed-precondition') {
-    // Multiple tabs open, persistence can only be enabled in one tab at a time
-    console.warn('Firebase persistence failed: Multiple tabs open');
-  } else if (err.code == 'unimplemented') {
-    // The current browser doesn't support all of the features required to enable persistence
-    console.warn('Firebase persistence not supported by browser');
+if (isFirebaseConfigValid) {
+  try {
+    app = initializeApp(firebaseConfig);
+    
+    // Initialize Firestore
+    db = getFirestore(app);
+    
+    // Enable offline persistence
+    enableIndexedDbPersistence(db).catch((err) => {
+      if (err.code == 'failed-precondition') {
+        // Multiple tabs open, persistence can only be enabled in one tab at a time
+        console.warn('Firebase persistence failed: Multiple tabs open');
+      } else if (err.code == 'unimplemented') {
+        // The current browser doesn't support all of the features required to enable persistence
+        console.warn('Firebase persistence not supported by browser');
+      }
+    });
+    
+    // Initialize Firebase Authentication
+    auth = getAuth(app);
+  } catch (error) {
+    console.error('Firebase initialization error:', error);
   }
-});
-
-// Initialize Firebase Authentication
-const auth = getAuth(app);
+} else {
+  console.error('Firebase configuration is invalid. Please check your environment variables.');
+}
 
 export { db, auth };

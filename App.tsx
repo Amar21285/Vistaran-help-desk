@@ -82,7 +82,9 @@ const AppContent: React.FC = () => {
         symptoms: firebaseSymptoms, 
         files: firebaseFiles, 
         templates: firebaseTemplates,
-        debugInfo
+        debugInfo,
+        isLoading: firebaseLoading,
+        error: firebaseError
     } = useFirebaseData(); // Use Firebase for real-time updates
     const { isConnected, isLoading, error } = useDatabase(); // Initialize database connection
     
@@ -102,13 +104,38 @@ const AppContent: React.FC = () => {
     const effectiveSymptoms = firebaseSymptoms.length > 0 ? firebaseSymptoms : allSymptoms;
     const effectiveTemplates = firebaseTemplates.length > 0 ? firebaseTemplates : allTemplates;
     
-    // Debug logging
-    useEffect(() => {
-        console.log('Firebase data debug info:', debugInfo);
-        console.log('Firebase tickets:', firebaseTickets.length);
-        console.log('Local storage tickets:', allTickets.length);
-        console.log('Effective tickets (used in app):', effectiveTickets.length);
-    }, [debugInfo, firebaseTickets.length, allTickets.length, effectiveTickets.length]);
+    // Show loading state while Firebase is initializing
+    if (firebaseLoading && firebaseTickets.length === 0 && allTickets.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-slate-900">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                    <p className="text-slate-600 dark:text-slate-300">Loading application...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Show error state if Firebase failed to load
+    if (firebaseError) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-slate-900">
+                <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-lg shadow-lg max-w-md">
+                    <div className="text-red-500 mb-4">
+                        <i className="fas fa-exclamation-circle fa-3x"></i>
+                    </div>
+                    <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Connection Error</h2>
+                    <p className="text-slate-600 dark:text-slate-300 mb-4">Failed to connect to the database. Please check your internet connection and try again.</p>
+                    <button 
+                        onClick={() => window.location.reload()}
+                        className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
     
     const deriveInitialDepartments = (): string[] => {
         const deptSet = new Set<string>();
