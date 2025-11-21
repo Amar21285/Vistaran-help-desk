@@ -8,7 +8,7 @@ import TemplateSettings from './settings/TemplateSettings';
 import EmailTemplates from './settings/EmailTemplates';
 import DepartmentSettings from './settings/DepartmentSettings';
 import NetworkSettings from './settings/NetworkSettings';
-import { TicketTemplate, Symptom, User, Ticket } from '../types';
+import type { TicketTemplate, Symptom, User, Ticket } from '../types';
 
 interface SettingsProps {
     templates: TicketTemplate[];

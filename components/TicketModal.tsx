@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Ticket, TicketStatus, Priority, Technician, User, TicketHistory, Role, ChatMessage } from '../types';
+import type { Ticket, Technician, User, TicketHistory, ChatMessage } from '../types';
+import { TicketStatus, Priority, Role } from '../types';
 import { useAuth } from '../hooks/useAuth';
+import { useSettings } from '../hooks/useSettings';
 import { generateTicketSummary, suggestTicketReply, researchTicketIssue } from '../utils/genai';
 import TicketHistoryView from './TicketHistoryView';
-import { useSettings } from '../hooks/useSettings';
 import { 
     sendEmail, 
     getAssignedTicketManualMailto, 
@@ -18,6 +19,18 @@ import { getSlaDueDate, isSlaBreached } from '../utils/sla';
 import { GENERIC_EMAIL_TEMPLATE_ID } from '../utils/email';
 import { USERS } from '../constants';
 import { logUserAction } from '../utils/auditLogger';
+import SearchIcon from './icons/SearchIcon';
+import MailIcon from './icons/MailIcon';
+import MailOpenIcon from './icons/MailOpenIcon';
+import ClockIcon from './icons/ClockIcon';
+import ClipboardListIcon from './icons/ClipboardListIcon';
+import UserIcon from './icons/UserIcon';
+import CheckCircleIcon from './icons/CheckCircleIcon';
+import EditIcon from './icons/EditIcon';
+import TrashIcon from './icons/TrashIcon';
+import PlusIcon from './icons/PlusIcon';
+// import XIcon from './icons/XIcon'; // Commented out as it doesn't exist
+// import { sendNotification } from '../utils/notificationService'; // Commented out as it doesn't exist
 
 interface TicketModalProps {
     ticket: Ticket;

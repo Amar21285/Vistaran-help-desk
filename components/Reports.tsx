@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Ticket, TicketStatus, User, Priority } from '../types';
 import TicketStatusChart from './charts/TicketStatusChart';
-import TicketsTrendChart from './charts/TicketsTrendChart';
 import DepartmentChart from './charts/DepartmentChart';
+import TicketsTrendChart from './charts/TicketsTrendChart';
+import type { Ticket, User } from '../types';
+import { TicketStatus, Priority } from '../types';
 
 interface ReportsProps {
     tickets: Ticket[];

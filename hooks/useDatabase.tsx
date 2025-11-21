@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { databaseService, initializeDatabase } from '../utils/database';
-import { Ticket, User, Technician, Symptom, TicketTemplate, ManagedFile } from '../types';
+import type { Ticket, User, Technician, Symptom, TicketTemplate, ManagedFile } from '../types';
 
 export const useDatabase = () => {
   const [isConnected, setIsConnected] = useState(false);

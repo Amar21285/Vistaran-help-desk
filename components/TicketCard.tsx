@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Ticket, TicketStatus, Role, Priority } from '../types';
+import type { Ticket, Technician, Symptom } from '../types';
+import { Priority, TicketStatus, Role } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import EditIcon from './icons/EditIcon';
 import { getSlaDueDate, isSlaBreached } from '../utils/sla';

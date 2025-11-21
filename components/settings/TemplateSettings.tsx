@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { TicketTemplate, Symptom } from '../../types';
 import TemplateModal from '../modals/TemplateModal';
+import type { TicketTemplate, Symptom } from '../../types';
 
 interface TemplateSettingsProps {
     templates: TicketTemplate[];

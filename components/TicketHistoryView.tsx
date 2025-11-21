@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { TicketHistory, User } from '../types';
+import type { TicketHistory, User } from '../types';
 
 interface TicketHistoryViewProps {
     history?: TicketHistory[];

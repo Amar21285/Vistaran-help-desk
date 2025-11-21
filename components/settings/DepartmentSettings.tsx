@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Symptom, User, Ticket } from '../../types';
+import type { Symptom, User, Ticket } from '../../types';
 
 interface DepartmentSettingsProps {
     departments: string[];

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import type { Ticket, Technician, Symptom } from '../types';
 import TicketCard from './TicketCard';
-import { Ticket, Technician, Symptom } from '../types';
-import { useRealTimeData } from '../hooks/useRealTimeData'; // Added real-time data hook
+import SearchIcon from './icons/SearchIcon';
+import { useRealTimeData } from '../hooks/useRealTimeData';
 
 interface TicketListProps {
     tickets: Ticket[];

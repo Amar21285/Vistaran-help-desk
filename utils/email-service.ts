@@ -1,6 +1,6 @@
 import emailjs from '@emailjs/browser';
-import { Ticket, User, Technician } from '../types';
-import { EmailTemplateSettings } from '../hooks/useSettings';
+import type { Ticket, User, Technician } from '../types';
+import type { EmailTemplateSettings } from '../hooks/useSettings';
 
 // This file now uses the EmailJS browser SDK, imported via importmap in index.html
 
@@ -182,25 +182,91 @@ export const getNewTicketManualMailto = (ticket: Ticket, user: User, admin: User
     to: admin.email,
     cc: user.email,
     subject: `[Manual] New Ticket Created: #${ticket.id}`,
-    body: `Hello,\n\nThis is a manual notification for a new support ticket.\n\n--- Ticket Details ---\nID: ${ticket.id}\nUser: ${user.name} (${user.email})\nDepartment: ${ticket.department}\nPriority: ${ticket.priority}\n\nDescription:\n${ticket.description}\n\n---------------------\n\nThis email was generated because the automated notification system failed. Please review the ticket in the help desk system.\n\nRegards,\n${user.name}`
+    body: `Hello,
+
+This is a manual notification for a new support ticket.
+
+--- Ticket Details ---
+ID: ${ticket.id}
+User: ${user.name} (${user.email})
+Department: ${ticket.department}
+Priority: ${ticket.priority}
+
+Description:
+${ticket.description}
+
+---------------------
+
+This email was generated because the automated notification system failed. Please review the ticket in the help desk system.
+
+Regards,
+${user.name}`
 });
 
 export const getResolvedTicketManualMailto = (ticket: Ticket, user: User) => generateMailto({
     to: user.email,
     cc: ticket.cc,
     subject: `[Manual] Ticket Resolved: #${ticket.id}`,
-    body: `Hi ${user.name},\n\nThis is a manual notification to inform you that your support ticket has been resolved.\n\n--- Ticket Details ---\nID: ${ticket.id}\nDescription: ${ticket.description}\n\nResolution Notes:\n${ticket.notes || 'The issue has been addressed by our team.'}\n\n---------------------\n\nThis email was generated because the automated notification system failed.\n\nRegards,\nHelp Desk Team`
+    body: `Hi ${user.name},
+
+This is a manual notification to inform you that your support ticket has been resolved.
+
+--- Ticket Details ---
+ID: ${ticket.id}
+Description: ${ticket.description}
+
+Resolution Notes:
+${ticket.notes || 'The issue has been addressed by our team.'}
+
+---------------------
+
+This email was generated because the automated notification system failed.
+
+Regards,
+Help Desk Team`
 });
 
 export const getStatusUpdateManualMailto = (ticket: Ticket, user: User) => generateMailto({
     to: user.email,
     cc: ticket.cc,
     subject: `[Manual] Ticket Updated: #${ticket.id}`,
-    body: `Hi ${user.name},\n\nThis is a manual notification to inform you that your support ticket #${ticket.id} has been updated.\n\nThe new status is: ${ticket.status}\n\n--- Ticket Details ---\nID: ${ticket.id}\nDescription: ${ticket.description}\n\nUpdated Notes:\n${ticket.notes || 'No new notes were added.'}\n\n---------------------\n\nThis email was generated because the automated notification system failed.\n\nRegards,\nHelp Desk Team`
+    body: `Hi ${user.name},
+
+This is a manual notification to inform you that your support ticket #${ticket.id} has been updated.
+
+The new status is: ${ticket.status}
+
+--- Ticket Details ---
+ID: ${ticket.id}
+Description: ${ticket.description}
+
+Updated Notes:
+${ticket.notes || 'No new notes were added.'}
+
+---------------------
+
+This email was generated because the automated notification system failed.
+
+Regards,
+Help Desk Team`
 });
 
 export const getAssignedTicketManualMailto = (ticket: Ticket, tech: Technician, user: User) => generateMailto({
     to: tech.email,
     subject: `[Manual] Ticket Assigned: #${ticket.id}`,
-    body: `Hi ${tech.name},\n\nThis is a manual notification that a ticket has been assigned to you.\n\n--- Ticket Details ---\nID: ${ticket.id}\nUser: ${user.name} (${user.email})\nPriority: ${ticket.priority}\n\nDescription:\n${ticket.description}\n\n---------------------\n\nThis email was generated because the automated notification system failed. Please review the ticket in the help desk system.`
+    body: `Hi ${tech.name},
+
+This is a manual notification that a ticket has been assigned to you.
+
+--- Ticket Details ---
+ID: ${ticket.id}
+User: ${user.name} (${user.email})
+Priority: ${ticket.priority}
+
+Description:
+${ticket.description}
+
+---------------------
+
+This email was generated because the automated notification system failed. Please review the ticket in the help desk system.`
 });

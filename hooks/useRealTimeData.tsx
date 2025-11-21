@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Ticket, User, Technician, Symptom, ManagedFile, TicketTemplate } from '../types';
+import type { Ticket, User, Technician, Symptom, ManagedFile, TicketTemplate } from '../types';
 
 interface RealTimeData {
   tickets: Ticket[];

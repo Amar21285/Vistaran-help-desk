@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { TicketTemplate, Priority, Symptom } from '../../types';
+import type { TicketTemplate, Symptom } from '../../types';
+import { Priority } from '../../types';
 
 interface TemplateModalProps {
     templateToEdit: TicketTemplate | null;

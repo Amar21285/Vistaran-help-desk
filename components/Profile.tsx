@@ -1,6 +1,9 @@
-import React, { useMemo } from 'react';
-import { User, Ticket, TicketStatus } from '../types';
+import React, { useState, useMemo } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import ProfileModal from './ProfileModal';
+import TicketCard from './TicketCard';
+import type { User, Ticket } from '../types';
+import { TicketStatus } from '../types';
 
 interface ProfileProps {
     tickets: Ticket[];
@@ -19,7 +22,8 @@ const StatItem: React.FC<{ iconClass: string; value: string | number; label: str
 
 const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser }) => {
     const { user } = useAuth();
-    
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const userStats = useMemo(() => {
         if (!user) return { total: 0, pending: 0, resolved: 0, lastActivity: 'Never' };
         const userTickets = tickets.filter(t => t.userId === user.id);
@@ -42,7 +46,7 @@ const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser }) => {
                     <p className="text-slate-500 dark:text-slate-400 mt-1">Manage your personal account settings and information</p>
                 </div>
                 <button 
-                    onClick={() => onEditUser(user)} 
+                    onClick={() => setIsModalOpen(true)} 
                     className="bg-primary text-white font-semibold px-4 py-2 rounded-lg hover:bg-primary-hover transition flex items-center gap-2"
                 >
                     <i className="fas fa-edit"></i> Edit Profile

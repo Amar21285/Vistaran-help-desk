@@ -6,7 +6,32 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     rollupOptions: {
-      input: './index.html'
-    }
+      input: './index.html',
+      output: {
+        manualChunks: {
+          // Split vendor chunks to reduce bundle size
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'firebase-vendor': ['firebase/app', 'firebase/firestore', 'firebase/auth'],
+          'chart-vendor': ['recharts'],
+          'ui-vendor': ['@fortawesome/fontawesome-free']
+        }
+      }
+    },
+    // Enable minification
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.logs in production
+        drop_debugger: true // Remove debuggers in production
+      }
+    },
+    // Enable CSS code splitting
+    cssCodeSplit: true,
+    // Reduce chunk size warnings limit
+    chunkSizeWarningLimit: 1000
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom']
   }
 });

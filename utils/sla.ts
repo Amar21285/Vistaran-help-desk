@@ -1,5 +1,5 @@
-
-import { Ticket, Priority } from '../types';
+import type { Ticket } from '../types';
+import { Priority } from '../types';
 
 // Service Level Agreement (SLA) response times in hours
 const SLA_TIMES: Record<Priority, number> = {

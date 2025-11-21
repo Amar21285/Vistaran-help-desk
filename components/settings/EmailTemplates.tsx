@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useSettings, DEFAULT_EMAIL_TEMPLATES, EmailTemplate } from '../../hooks/useSettings';
+import { useSettings, DEFAULT_EMAIL_TEMPLATES } from '../../hooks/useSettings';
+import type { EmailTemplate, EmailTemplateSettings } from '../../hooks/useSettings';
 
-const TEMPLATE_NAMES: Record<string, string> = {
+const TEMPLATE_NAMES: Record<keyof EmailTemplateSettings, string> = {
   adminOnNewTicket: "Admin: New Ticket Created",
   adminOnTicketResolved: "Admin: Ticket Resolved",
   userOnNewTicket: "User: New Ticket Confirmation",
@@ -10,7 +11,7 @@ const TEMPLATE_NAMES: Record<string, string> = {
   userOnTicketStatusChanged: "User: Ticket Status Updated",
 };
 
-const PLACEHOLDERS: Record<string, string[]> = {
+const PLACEHOLDERS: Record<keyof EmailTemplateSettings, string[]> = {
   adminOnNewTicket: ["ticket.id", "ticket.department", "ticket.priority", "ticket.description", "user.name", "user.email"],
   adminOnTicketResolved: ["ticket.id", "ticket.description", "ticket.notes", "user.name", "user.email", "resolver.name"],
   userOnNewTicket: ["ticket.id", "ticket.priority", "ticket.description", "user.name"],
@@ -21,8 +22,10 @@ const PLACEHOLDERS: Record<string, string[]> = {
 
 const EmailTemplates: React.FC = () => {
     const { emailTemplates, setEmailTemplates } = useSettings();
-    const [selectedTemplateKey, setSelectedTemplateKey] = useState<keyof typeof TEMPLATE_NAMES>('adminOnNewTicket');
-    const [currentTemplate, setCurrentTemplate] = useState<EmailTemplate>(emailTemplates[selectedTemplateKey]);
+    const [selectedTemplateKey, setSelectedTemplateKey] = useState<keyof EmailTemplateSettings>('adminOnNewTicket');
+    const [currentTemplate, setCurrentTemplate] = useState<EmailTemplate>(
+        emailTemplates[selectedTemplateKey]
+    );
 
     useEffect(() => {
         setCurrentTemplate(emailTemplates[selectedTemplateKey]);
@@ -60,7 +63,7 @@ const EmailTemplates: React.FC = () => {
                 <select 
                     id="template-selector"
                     value={selectedTemplateKey}
-                    onChange={(e) => setSelectedTemplateKey(e.target.value as keyof typeof TEMPLATE_NAMES)}
+                    onChange={(e) => setSelectedTemplateKey(e.target.value as keyof EmailTemplateSettings)}
                     className="mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700"
                 >
                     {Object.entries(TEMPLATE_NAMES).map(([key, name]) => (

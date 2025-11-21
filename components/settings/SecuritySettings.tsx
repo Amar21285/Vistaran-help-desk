@@ -1,9 +1,7 @@
-
-
 import React, { useState, useEffect } from 'react';
 import ToggleSwitch from '../ToggleSwitch';
 import TwoFactorAuthModal from '../modals/TwoFactorAuthModal';
-import { AuditLogEntry } from '../../types';
+import type { AuditLogEntry } from '../../types';
 
 const SecuritySettings: React.FC = () => {
     const [is2faEnabled, setIs2faEnabled] = useState(false);

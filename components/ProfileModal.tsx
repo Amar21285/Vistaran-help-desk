@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { User } from '../types';
+import React, { useState, useRef, useEffect } from 'react';
+import type { User } from '../types';
 
 interface ProfileModalProps {
     user: User;
