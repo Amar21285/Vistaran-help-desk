@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useSettings } from '../../hooks/useSettings.tsx';
-import { useTheme } from '../../hooks/useTheme.tsx';
+import { useSettings } from '../../hooks/useSettings';
+import { useTheme } from '../../hooks/useTheme';
 
 const SystemActionCard: React.FC<{ title: string; description: string; buttonText: string; buttonIcon: string; onClick: () => void; buttonClass?: string; }> = ({ title, description, buttonText, buttonIcon, onClick, buttonClass = 'bg-blue-600 hover:bg-blue-700' }) => (
     <div className="bg-slate-50 dark:bg-slate-700/50 p-6 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-col md:flex-row items-start md:items-center gap-4">

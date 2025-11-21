@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import useDatabase from '../hooks/useDatabase.tsx';
+import useDatabase from '../hooks/useDatabase';
 import type { Ticket } from '../types';
 
 const DatabaseTest: React.FC = () => {

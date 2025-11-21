@@ -15,6 +15,7 @@ import {
   stopFirebaseConnectionMonitor
 } from '../utils/firebaseService';
 import type { Ticket, User, Technician, Symptom, ManagedFile, TicketTemplate } from '../types';
+import { db } from '../src/firebase';
 
 interface FirebaseData {
   tickets: Ticket[];
@@ -50,6 +51,9 @@ interface DebugInfo {
 export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
   const { enabled = true } = props;
   
+  // Check if Firebase is initialized
+  const isFirebaseInitialized = !!db;
+  
   // State for Firebase data
   const [firebaseData, setFirebaseData] = useState<FirebaseData>({
     tickets: [],
@@ -70,7 +74,7 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
     filesListenerActive: false,
     templatesListenerActive: false,
     dataFetchAttempts: 0,
-    firebaseConnected: true
+    firebaseConnected: isFirebaseInitialized
   });
   
   // Loading and error states
@@ -81,7 +85,7 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
    * Function to manually trigger a data refresh
    */
   const refreshData = useCallback(async () => {
-    if (!enabled) return;
+    if (!enabled || !isFirebaseInitialized) return;
     
     setIsLoading(true);
     setError(null);
@@ -111,13 +115,13 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
     } finally {
       setIsLoading(false);
     }
-  }, [enabled]);
+  }, [enabled, isFirebaseInitialized]);
   
   /**
    * Set up real-time listeners for Firebase data
    */
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !isFirebaseInitialized) return;
     
     // Start Firebase connection monitor
     startFirebaseConnectionMonitor();
@@ -199,7 +203,7 @@ export const useFirebaseData = (props: UseFirebaseDataProps = {}) => {
       removeFirebaseConnectionListener(handleConnectionChange);
       stopFirebaseConnectionMonitor();
     };
-  }, [refreshData, enabled]);
+  }, [refreshData, enabled, isFirebaseInitialized]);
   
   return {
     ...firebaseData,

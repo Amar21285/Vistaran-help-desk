@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { TicketStatus, Role } from '../types';
 import type { Ticket, User } from '../types';
-import { useAuth } from '../hooks/useAuth.tsx';
+import { useAuth } from '../hooks/useAuth';
 import { useRealTimeData } from '../hooks/useRealTimeData'; // Added real-time data hook
 import StatCard from './StatCard';
 import TicketStatusChart from './charts/TicketStatusChart';

@@ -39,9 +39,15 @@ if (isFirebaseConfigValid) {
     auth = getAuth(app);
   } catch (error) {
     console.error('Firebase initialization error:', error);
+    // Initialize with empty objects to prevent crashes
+    db = null;
+    auth = null;
   }
 } else {
-  console.error('Firebase configuration is invalid. Please check your environment variables.');
+  console.warn('Firebase configuration is invalid. Running in offline mode.');
+  // Initialize with empty objects to prevent crashes
+  db = null;
+  auth = null;
 }
 
 export { db, auth };

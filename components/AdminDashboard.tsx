@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { Ticket, User } from '../types';
 import { TicketStatus, Role, UserStatus } from '../types';
 import ServerIcon from './icons/ServerIcon';
-import { useAuth } from '../hooks/useAuth.tsx';
+import { useAuth } from '../hooks/useAuth';
 import { useRealTimeData } from '../hooks/useRealTimeData'; // Added real-time data hook
 import { logUserAction } from '../utils/auditLogger';
 import { createUser, deleteUser } from '../utils/firebaseService'; // Add Firebase functions
