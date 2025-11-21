@@ -4,19 +4,24 @@ import './index.css'; // Import CSS file for global styles
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Font Awesome
 import App from './App';
 
-console.log('Index.tsx loading');
+// Only log in development mode
+if (import.meta.env.DEV) {
+  console.log('Index.tsx loading');
+}
 
 // Enhanced global error handling
 window.addEventListener('error', (event) => {
-  console.error('Global error caught:', event.error);
-  console.error('Error filename:', event.filename);
-  console.error('Error lineno:', event.lineno);
-  console.error('Error colno:', event.colno);
-  console.error('Error message:', event.message);
-  
-  // Try to get more detailed error info
-  if (event.error && event.error.stack) {
-    console.error('Error stack:', event.error.stack);
+  if (import.meta.env.DEV) {
+    console.error('Global error caught:', event.error);
+    console.error('Error filename:', event.filename);
+    console.error('Error lineno:', event.lineno);
+    console.error('Error colno:', event.colno);
+    console.error('Error message:', event.message);
+    
+    // Try to get more detailed error info
+    if (event.error && event.error.stack) {
+      console.error('Error stack:', event.error.stack);
+    }
   }
   
   // Prevent default error handling
@@ -24,9 +29,11 @@ window.addEventListener('error', (event) => {
 }, true); // Use capturing phase
 
 window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
-  if (event.reason && event.reason.stack) {
-    console.error('Rejection stack:', event.reason.stack);
+  if (import.meta.env.DEV) {
+    console.error('Unhandled promise rejection:', event.reason);
+    if (event.reason && event.reason.stack) {
+      console.error('Rejection stack:', event.reason.stack);
+    }
   }
   
   // Prevent default rejection handling
@@ -38,7 +45,9 @@ const getRootElement = () => {
   let rootElement = document.getElementById('root');
   
   if (!rootElement) {
-    console.warn('Root element not found, creating one');
+    if (import.meta.env.DEV) {
+      console.warn('Root element not found, creating one');
+    }
     rootElement = document.createElement('div');
     rootElement.id = 'root';
     document.body.appendChild(rootElement);
@@ -50,7 +59,10 @@ const getRootElement = () => {
 // Add safety wrapper for the entire initialization
 const initializeApp = () => {
   try {
-    console.log('Attempting to render app');
+    if (import.meta.env.DEV) {
+      console.log('Attempting to render app');
+    }
+    
     const rootElement = getRootElement();
     
     // Add extra safety check
@@ -63,15 +75,19 @@ const initializeApp = () => {
       rootElement.removeChild(rootElement.firstChild);
     }
     
-    // Debug information
-    console.log('React version:', (React as any).version);
-    console.log('ReactDOM version:', (ReactDOM as any).version);
-    console.log('Root element:', rootElement);
+    // Debug information (only in development)
+    if (import.meta.env.DEV) {
+      console.log('React version:', (React as any).version);
+      console.log('ReactDOM version:', (ReactDOM as any).version);
+      console.log('Root element:', rootElement);
+    }
     
     const root = ReactDOM.createRoot(rootElement);
     
-    // Add extra logging
-    console.log('ReactDOM root created successfully');
+    // Add extra logging (only in development)
+    if (import.meta.env.DEV) {
+      console.log('ReactDOM root created successfully');
+    }
     
     root.render(
       <React.StrictMode>
@@ -79,7 +95,9 @@ const initializeApp = () => {
       </React.StrictMode>
     );
     
-    console.log('App rendered successfully');
+    if (import.meta.env.DEV) {
+      console.log('App rendered successfully');
+    }
   } catch (error: any) {
     console.error('Critical error during app initialization:', error);
     
@@ -112,4 +130,6 @@ if (document.readyState === 'loading') {
   initializeApp();
 }
 
-console.log('Index.tsx execution completed');
+if (import.meta.env.DEV) {
+  console.log('Index.tsx execution completed');
+}

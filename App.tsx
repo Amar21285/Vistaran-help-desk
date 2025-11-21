@@ -94,7 +94,10 @@ const InfoModal: React.FC<{
 };
 
 const AppContent: React.FC = () => {
-    console.log('AppContent component initializing');
+    // Only log in development mode
+    if (import.meta.env.DEV) {
+        console.log('AppContent component initializing');
+    }
     
     // Add safety wrapper for useAuth
     let authData;
@@ -117,7 +120,9 @@ const AppContent: React.FC = () => {
     
     // Initialize offline sync service
     useEffect(() => {
-        console.log('Initializing offline sync service');
+        if (import.meta.env.DEV) {
+            console.log('Initializing offline sync service');
+        }
         try {
             initOfflineSync();
         } catch (error) {
@@ -125,9 +130,11 @@ const AppContent: React.FC = () => {
         }
     }, []);
     
-    // Debug logging
+    // Debug logging (only in development)
     useEffect(() => {
-        console.log('AppContent rendered', { user, realUser });
+        if (import.meta.env.DEV) {
+            console.log('AppContent rendered', { user, realUser });
+        }
     }, [user, realUser]);
     
     // Use Firebase for real-time updates
@@ -293,7 +300,9 @@ const AppContent: React.FC = () => {
     
     // Show loading state while Firebase is initializing
     if (firebaseLoading && firebaseTickets && firebaseTickets.length === 0 && allTickets && allTickets.length === 0) {
-        console.log('Showing loading state', { firebaseLoading, firebaseTicketsLength: firebaseTickets.length, allTicketsLength: allTickets.length });
+        if (import.meta.env.DEV) {
+            console.log('Showing loading state', { firebaseLoading, firebaseTicketsLength: firebaseTickets.length, allTicketsLength: allTickets.length });
+        }
         return (
             <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-slate-900">
                 <div className="text-center">
@@ -306,7 +315,9 @@ const AppContent: React.FC = () => {
 
     // Show error state if Firebase failed to load
     if (firebaseError) {
-        console.log('Showing Firebase error state', { firebaseError });
+        if (import.meta.env.DEV) {
+            console.log('Showing Firebase error state', { firebaseError });
+        }
         return (
             <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-slate-900">
                 <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-lg shadow-lg max-w-md">
