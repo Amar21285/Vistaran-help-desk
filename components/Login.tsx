@@ -61,7 +61,7 @@ const Login: React.FC = () => {
           </div>
           {error && <p className="text-red-500 text-sm text-center font-semibold">{error}</p>}
           <div>
-            <button type="submit" className="w-full flex items-center justify-center gap-2 bg-primary text-gray-100 p-3 rounded-lg tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-300 hover:bg-primary-hover">
+            <button type="submit" className="w-full flex items-center justify-center gap-2 bg-blue-500 text-gray-100 p-3 rounded-lg tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-300 hover:bg-blue-600">
               <i className="fas fa-sign-in-alt"></i>
               Sign in
             </button>

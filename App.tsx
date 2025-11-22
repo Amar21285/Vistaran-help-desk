@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth, AuthProvider } from './hooks/useAuth.tsx';
-import { SettingsProvider } from './hooks/useSettings.tsx';
-import { ThemeProvider } from './hooks/useTheme.tsx';
-import useLocalStorage from './hooks/useLocalStorage.tsx';
+import { useAuth, AuthProvider } from './hooks/useAuth';
+import { SettingsProvider } from './hooks/useSettings';
+import { ThemeProvider } from './hooks/useTheme';
+import useLocalStorage from './hooks/useLocalStorage';
 import { useRealTimeData } from './hooks/useRealTimeData'; // Added real-time data hook
-import useDatabase from './hooks/useDatabase.tsx'; // Added database hook
+import useDatabase from './hooks/useDatabase'; // Added database hook
 import Login from './components/Login';
 import TopNav from './components/TopNav';
 import Sidebar from './components/Sidebar';
@@ -20,7 +20,8 @@ import FileManager from './components/FileManager';
 import UserModal from './components/UserModal';
 import Chatbot from './components/Chatbot'; // Import the new Chatbot component
 import { USERS, TICKETS, TECHNICIANS, SYMPTOMS, FILES, TICKET_TEMPLATES } from './constants';
-import { User, Ticket, ManagedFile, Technician, Symptom, Role, TicketTemplate } from './types';
+import type { User, Ticket, ManagedFile, Technician, Symptom, TicketTemplate } from './types';
+import { Role } from './types';
 
 interface ModalAction {
     label: string;
@@ -194,7 +195,7 @@ const AppContent: React.FC = () => {
 
     return (
         <div className="relative flex h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans">
-            <Sidebar currentView={currentView} setCurrentView={setCurrentView} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+            <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
             
             {/* Overlay for mobile */}
             {isSidebarOpen && (
@@ -213,7 +214,6 @@ const AppContent: React.FC = () => {
                     setGlobalFilter={setGlobalFilter}
                     isImpersonating={!!(realUser && user.id !== realUser.id)}
                     stopImpersonation={stopImpersonation}
-                    onViewProfile={() => setCurrentView('my-profile')}
                     onToggleSidebar={() => setIsSidebarOpen(true)}
                 />
                 <main className="flex-1 overflow-y-auto p-4 md:p-8">

@@ -77,8 +77,7 @@ const initializeApp = () => {
     
     // Debug information (only in development)
     if (import.meta.env.DEV) {
-      console.log('React version:', (React as any).version);
-      console.log('ReactDOM version:', (ReactDOM as any).version);
+      console.log('React version:', React.version);
       console.log('Root element:', rootElement);
     }
     
@@ -128,6 +127,42 @@ if (document.readyState === 'loading') {
 } else {
   // DOM is already ready
   initializeApp();
+}
+
+// Add a fallback in case the app doesn't load
+setTimeout(() => {
+  if (!document.getElementById('root')?.hasChildNodes()) {
+    console.warn('App may not have loaded properly, attempting re-initialization');
+    initializeApp();
+  }
+}, 3000);
+
+// Additional error handling for production
+if (!import.meta.env.DEV) {
+  // If we're in production and the app hasn't loaded after 5 seconds, show an error
+  setTimeout(() => {
+    const rootElement = document.getElementById('root');
+    if (rootElement && !rootElement.hasChildNodes()) {
+      // Create a more user-friendly error message
+      rootElement.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; height: 100vh; background: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+          <div style="text-align: center; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px;">
+            <h2 style="color: #dc3545; margin-bottom: 1rem;">Application Failed to Load</h2>
+            <p style="color: #6c757d; margin-bottom: 1rem;">We're sorry, but the application failed to load properly.</p>
+            <p style="color: #6c757d; margin-bottom: 1rem; font-size: 0.9rem;">This could be due to:</p>
+            <ul style="text-align: left; color: #6c757d; margin-bottom: 1rem; font-size: 0.9rem;">
+              <li>Network connectivity issues</li>
+              <li>Browser compatibility problems</li>
+              <li>Blocked JavaScript execution</li>
+            </ul>
+            <button onclick="window.location.reload()" style="padding: 0.5rem 1rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+              Try Again
+            </button>
+          </div>
+        </div>
+      `;
+    }
+  }, 5000);
 }
 
 if (import.meta.env.DEV) {
