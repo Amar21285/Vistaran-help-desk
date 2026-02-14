@@ -7,16 +7,16 @@
     "role": "Admin",
     "department": "IT",
     "status": "Active",
-    "joinedDate": "2026-01-14T06:47:56.253Z"
+    "joinedDate": "2026-02-09T14:56:26.064Z"
   },
   {
     "id": "USR002",
     "name": "John Doe",
-    "email": "john@example.com",
+    "email": "john.doe@example.com",
     "password": "user123",
     "role": "User",
     "department": "Sales",
     "status": "Active",
-    "joinedDate": "2026-01-14T06:47:56.254Z"
+    "joinedDate": "2026-02-09T14:56:26.065Z"
   }
 ]

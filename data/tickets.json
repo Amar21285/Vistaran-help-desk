@@ -2,12 +2,12 @@
   {
     "id": "TKT001",
     "userId": "USR002",
-    "email": "john@example.com",
+    "email": "john.doe@example.com",
     "description": "This is a sample ticket for testing purposes",
     "department": "IT",
     "priority": "Medium",
     "status": "Open",
-    "dateCreated": "2026-01-14",
+    "dateCreated": "2026-02-09",
     "dateResolved": null,
     "assignedTechId": "TECH001",
     "symptomId": ""
@@ -15,12 +15,12 @@
   {
     "id": "TKT002",
     "userId": "USR002",
-    "email": "john@example.com",
+    "email": "john.doe@example.com",
     "description": "Internet is not working in the development department",
     "department": "IT",
     "priority": "High",
     "status": "In Progress",
-    "dateCreated": "2026-01-14",
+    "dateCreated": "2026-02-09",
     "dateResolved": null,
     "assignedTechId": "TECH001",
     "symptomId": ""

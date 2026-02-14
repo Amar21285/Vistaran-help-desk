@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "id": "VEND-HP-001",
+    "name": "HP",
+    "contactPerson": "HP Support",
+    "email": "support@hp.com",
+    "phone": "+1-800-HP-INVENT",
+    "whatsapp": "+1-800-HP-INVENT",
+    "address": "HP Inc., Palo Alto, CA",
+    "gstin": "HP-GST-12345",
+    "state": "California",
+    "stateCode": "CA"
+  },
+  {
+    "id": "VEND-ASUS-001",
+    "name": "ASUS",
+    "contactPerson": "ASUS Support",
+    "email": "support@asus.com",
+    "phone": "+1-888-657-7877",
+    "whatsapp": "+1-888-657-7877",
+    "address": "ASUS Computer International, Fremont, CA",
+    "gstin": "ASUS-GST-67890",
+    "state": "California",
+    "stateCode": "CA"
+  },
+  {
+    "id": "VEND-ZEBRONICS-001",
+    "name": "Zebronics",
+    "contactPerson": "Zebronics Support",
+    "email": "support@zebronics.com",
+    "phone": "+91-11-41404444",
+    "whatsapp": "+91-11-41404444",
+    "address": "Zebronics India Pvt Ltd, Delhi",
+    "gstin": "ZEB-GST-11111",
+    "state": "Delhi",
+    "stateCode": "DL"
+  },
+  {
+    "id": "VEND-HONEYWELL-001",
+    "name": "Honeywell",
+    "contactPerson": "Honeywell Support",
+    "email": "support@honeywell.com",
+    "phone": "+1-612-329-3111",
+    "whatsapp": "+1-612-329-3111",
+    "address": "Honeywell International Inc., Morris Township, NJ",
+    "gstin": "HON-GST-22222",
+    "state": "New Jersey",
+    "stateCode": "NJ"
+  },
+  {
+    "id": "VEND-TVS-001",
+    "name": "TVS",
+    "contactPerson": "TVS Support",
+    "email": "support@tvs.com",
+    "phone": "+91-44-28585858",
+    "whatsapp": "+91-44-28585858",
+    "address": "TVS Electronics Limited, Chennai",
+    "gstin": "TVS-GST-33333",
+    "state": "Tamil Nadu",
+    "stateCode": "TN"
+  },
+  {
+    "id": "VEND-RETSOL-001",
+    "name": "Retsol",
+    "contactPerson": "Retsol Support",
+    "email": "support@retsol.com",
+    "phone": "+91-11-25858585",
+    "whatsapp": "+91-11-25858585",
+    "address": "Retsol India Pvt Ltd, Delhi",
+    "gstin": "RET-GST-44444",
+    "state": "Delhi",
+    "stateCode": "DL"
+  },
+  {
+    "id": "VEND-BIOMAX-001",
+    "name": "Biomax",
+    "contactPerson": "Biomax Support",
+    "email": "support@biomax.com",
+    "phone": "+91-22-28585858",
+    "whatsapp": "+91-22-28585858",
+    "address": "Biomax Systems Pvt Ltd, Mumbai",
+    "gstin": "BIO-GST-55555",
+    "state": "Maharashtra",
+    "stateCode": "MH"
+  }
+]
