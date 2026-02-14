@@ -7,8 +7,13 @@ const { Server } = require('socket.io');
 const app = express();
 const server = createServer(app);
 
+// Check if running on Railway (production) or locally
+const isProduction = process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production';
+const dataDir = isProduction 
+  ? path.join(__dirname, 'dist', 'data') 
+  : path.join(__dirname, 'data');
+
 // Create data directory if it doesn't exist
-const dataDir = path.join(__dirname, 'data');
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
