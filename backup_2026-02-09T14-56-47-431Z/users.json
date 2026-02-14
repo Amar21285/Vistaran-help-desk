@@ -1,0 +1,22 @@
+[
+  {
+    "id": "USR001",
+    "name": "Admin User",
+    "email": "admin@example.com",
+    "password": "hashed_password_here",
+    "role": "admin",
+    "department": "IT",
+    "createdAt": "2026-02-09T14:56:26.064Z",
+    "isActive": true
+  },
+  {
+    "id": "USR002",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "password": "hashed_password_here",
+    "role": "user",
+    "department": "Sales",
+    "createdAt": "2026-02-09T14:56:26.065Z",
+    "isActive": true
+  }
+]

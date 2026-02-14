@@ -1,0 +1,44 @@
+# API Security Best Practices
+
+## Current Implementation
+The application currently uses the Google Gemini API key directly in client-side code via environment variables. This approach has security implications that need to be addressed.
+
+## Security Risks
+1. API keys exposed in client-side code can be intercepted
+2. Unauthorized usage of your API quota
+3. Potential billing charges if quotas are exceeded
+4. Risk of API key compromise
+
+## Recommended Solutions
+
+### Option 1: Backend Proxy Server (Recommended)
+Create a backend service that:
+- Acts as an intermediary between the frontend and Google's API
+- Keeps your API key secure on the server
+- Handles rate limiting and authentication
+- Provides additional business logic if needed
+
+### Option 2: Restrict API Key Usage
+In Google Cloud Console:
+- Restrict the API key to specific HTTP referrers
+- Limit the key to only the required APIs (Gemini API)
+- Set up application restrictions to prevent misuse
+
+### Option 3: Environment-based Configuration
+For different environments:
+- Development: Use a separate API key with limited quotas
+- Production: Use a production API key with monitoring
+- Staging: Use a staging API key for testing
+
+## Immediate Actions Required
+1. Monitor your Google Cloud Console for API usage
+2. Consider regenerating the API key after initial testing
+3. Implement proper error handling for API failures
+4. Plan for a backend proxy implementation in production
+
+## Temporary Solution for Deployment
+For immediate deployment with the current frontend-only architecture:
+- The API key will be embedded during the build process
+- Use the VITE_API_KEY environment variable during build
+- Consider implementing rate limiting on the client side
+- Add proper error handling for API quota exceeded scenarios

@@ -1,0 +1,319 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font family configuration */
+:root {
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+  font-family: var(--font-family) !important;
+  overscroll-behavior-y: contain;
+}
+
+.font-sans { font-family: var(--font-family), ui-sans-serif, system-ui, sans-serif; }
+.font-serif { font-family: var(--font-family), ui-serif, Georgia, serif; }
+.font-mono { font-family: var(--font-family), ui-monospace, 'SFMono-Regular', monospace; }
+
+.font-bold-app {
+  font-weight: 600 !important;
+}
+.font-bold-app h1, .font-bold-app h2, .font-bold-app h3, .font-bold-app p, .font-bold-app span, .font-bold-app div {
+  font-weight: 700 !important;
+}
+
+input, button, select, textarea {
+  font-family: inherit !important;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+.dark ::-webkit-scrollbar-track { background: #1e293b; }
+::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+/* Print styles */
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: none !important;
+  }
+  body {
+    background-color: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  #root, main {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+  .printable-area {
+    box-shadow: none !important;
+    border: none !important;
+    display: block !important;
+    margin: 0 auto !important;
+    padding: 15mm !important;
+    width: auto !important;
+    min-height: 100vh !important;
+    page-break-inside: avoid;
+    font-size: 11pt;
+  }
+  
+  /* Goods Receipt specific print styles */
+  .print-padding {
+    padding: 12mm !important;
+  }
+  
+  .print-border-spacing {
+    padding-bottom: 6mm !important;
+    margin-bottom: 6mm !important;
+  }
+  
+  .print-logo-size {
+    height: 10mm !important;
+    width: auto !important;
+  }
+  
+  .print-title-size {
+    font-size: 18pt !important;
+    margin-bottom: 2mm !important;
+  }
+  
+  .print-subtitle-size {
+    font-size: 8pt !important;
+    margin-top: 1mm !important;
+  }
+  
+  .print-header-box {
+    padding: 4mm 6mm !important;
+    border-radius: 3mm !important;
+  }
+  
+  .print-header-text {
+    font-size: 7pt !important;
+    margin-bottom: 0.5mm !important;
+  }
+  
+  .print-id-size {
+    font-size: 14pt !important;
+  }
+  
+  .print-date-text {
+    font-size: 9pt !important;
+    margin-top: 2mm !important;
+  }
+  
+  .print-grid-spacing {
+    gap: 5mm !important;
+    margin-bottom: 5mm !important;
+  }
+  
+  .print-section-box {
+    padding: 4mm !important;
+    border-left-width: 3pt !important;
+    border-radius: 2.5mm !important;
+  }
+  
+  .print-label-text {
+    font-size: 7pt !important;
+    margin-bottom: 1mm !important;
+  }
+  
+  .print-vendor-text, .print-purpose-text {
+    font-size: 11pt !important;
+  }
+  
+  .print-table-spacing {
+    margin-bottom: 5mm !important;
+  }
+  
+  .print-table-header {
+    font-size: 8pt !important;
+  }
+  
+  .print-table-cell {
+    padding: 2mm 2mm !important;
+  }
+  
+  .print-table-row {
+    border-bottom: 1pt solid #ccc !important;
+  }
+  
+  .print-item-desc {
+    font-size: 10pt !important;
+  }
+  
+  .print-item-remark {
+    font-size: 7pt !important;
+    margin-top: 1mm !important;
+  }
+  
+  .print-notes-box {
+    padding: 4mm !important;
+    border-radius: 2mm !important;
+    margin-bottom: 6mm !important;
+  }
+  
+  .print-notes-header {
+    font-size: 7pt !important;
+    margin-bottom: 1.5mm !important;
+  }
+  
+  .print-notes-text {
+    font-size: 9pt !important;
+  }
+  
+  .print-signature-area {
+    margin-top: 10mm !important;
+    gap: 10mm !important;
+  }
+  
+  .print-signature-box {
+    margin-bottom: 3mm !important;
+  }
+  
+  .print-signature-line {
+    height: 8mm !important;
+    border-bottom: 1.5pt solid #666 !important;
+  }
+  
+  .print-signature-label {
+    font-size: 8pt !important;
+    margin-top: 2mm !important;
+  }
+  
+  .print-signature-sublabel {
+    font-size: 6pt !important;
+    margin-top: 1mm !important;
+  }
+  
+  .print-footer {
+    margin-top: 4mm !important;
+  }
+  
+  .print-footer-text {
+    font-size: 6pt !important;
+  }
+  
+  .asset-label-print-container {
+    border-width: 1px !important;
+    background: white !important;
+  }
+  
+  h1, h2, h3, h4, p, span, div, th, td {
+    color: black !important;
+  }
+  
+  /* Prevent page breaks in critical areas */
+  .printable-area > * {
+    page-break-inside: avoid;
+  }
+  
+  /* Ensure proper spacing between elements */
+  .printable-area * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
+
+/* Screen styles for print-only elements */
+.print-only {
+  display: none;
+}
+
+/* Print styles for print-only elements */
+@media print {
+  .print-only {
+    display: block !important;
+  }
+  .print-block {
+    display: block !important;
+  }
+  .print-flex {
+    display: flex !important;
+  }
+  .print-hidden {
+    display: none !important;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-backdrop { animation: fadeIn 0.2s ease-out forwards; }
+.modal-content { animation: scaleIn 0.2s ease-out forwards; }
+
+/* Theme colors */
+:root, :root[data-theme='default'] {
+  --color-primary-rgb: 59 130 246; 
+  --color-primary-hover-rgb: 37 99 235;
+  --color-primary-dark-rgb: 96 165 250;
+  --color-primary-light-bg: 239 246 255;
+  --color-primary-light-bg-dark: 29 78 216;
+  --color-primary-light-text: 29 78 216;
+  --color-primary-light-text-dark: 191 219 254;
+}
+:root[data-theme='emerald'] {
+  --color-primary-rgb: 16 185 129;
+  --color-primary-hover-rgb: 50 150 105;
+  --color-primary-dark-rgb: 52 211 153;
+  --color-primary-light-bg: 236 253 245;
+  --color-primary-light-bg-dark: 6 95 70;
+  --color-primary-light-text: 6 95 70;
+  --color-primary-light-text-dark: 167 243 208;
+}
+:root[data-theme='crimson'] {
+  --color-primary-rgb: 220 38 38;
+  --color-primary-hover-rgb: 185 28 28;
+  --color-primary-dark-rgb: 248 113 113;
+  --color-primary-light-bg: 254 242 242;
+  --color-primary-light-bg-dark: 153 27 27;
+  --color-primary-light-text: 153 27 27;
+  --color-primary-light-text-dark: 254 202 202;
+}
+:root[data-theme='royal'] {
+  --color-primary-rgb: 124 58 237;
+  --color-primary-hover-rgb: 109 40 217;
+  --color-primary-dark-rgb: 139 92 246;
+  --color-primary-light-bg: 245 243 255;
+  --color-primary-light-bg-dark: 91 33 182;
+  --color-primary-light-text: 91 33 182;
+  --color-primary-light-text-dark: 209 196 247;
+}
+:root[data-theme='sunset'] {
+  --color-primary-rgb: 249 115 22;
+  --color-primary-hover-rgb: 234 88 12;
+  --color-primary-dark-rgb: 251 146 60;
+  --color-primary-light-bg: 255 247 237;
+  --color-primary-light-bg-dark: 194 65 12;
+  --color-primary-light-text: 194 65 12;
+  --color-primary-light-text-dark: 254 215 170;
+}
+
+.bg-primary { background-color: rgb(var(--color-primary-rgb)); }
+.text-primary { color: rgb(var(--color-primary-rgb)); }
+.border-primary { border-color: rgb(var(--color-primary-rgb)); }
+.ring-primary { --tw-ring-color: rgb(var(--color-primary-rgb)); }
+.hover\:bg-primary-hover:hover { background-color: rgb(var(--color-primary-hover-rgb)); }
+.dark .dark\:text-primary-dark { color: rgb(var(--color-primary-dark-rgb)); }
+.dark .dark\:border-primary-dark { border-color: rgb(var(--color-primary-dark-rgb)); }
+.bg-primary-light { background-color: var(--color-primary-light-bg); }
+.dark .dark\:bg-primary-light-dark { background-color: rgba(var(--color-primary-light-bg-dark), 0.5); }
+.text-primary-light-text { color: var(--color-primary-light-text); }
+.dark .dark\:text-primary-light-text-dark { color: var(--color-primary-light-text-dark); }

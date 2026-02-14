@@ -1,0 +1,28 @@
+VISTARAN HELP DESK DEPLOYMENT INSTRUCTIONS
+=========================================
+
+FILES TO UPLOAD VIA FTP:
+- All files in this package should be uploaded to your web server root directory
+
+UPLOAD STEPS:
+1. Upload all files to your web server via FTP
+2. Ensure your server has Node.js installed
+3. Run 'npm install' to install dependencies
+4. Run 'npm start' or use PM2 to start the server
+
+SERVER CONFIGURATION:
+- The application will run on port 3000 by default
+- Data is stored in the 'data' directory as JSON files
+- All application data persists in the data directory
+
+FILE STRUCTURE:
+- dist/: Frontend build files
+- data/: Application data (JSON files)
+- server.cjs: Main server file
+- package.json: Dependencies and scripts
+- ecosystem.config.cjs: PM2 configuration (optional)
+
+TROUBLESHOOTING:
+- If the application doesn't start, check that Node.js is installed
+- Ensure port 3000 is available
+- Check file permissions on your server

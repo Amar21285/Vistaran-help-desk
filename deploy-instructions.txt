@@ -1,0 +1,60 @@
+# Deployment Instructions for cPanel
+
+## To deploy this React application to your cPanel hosting:
+
+### Step 1: Build the project
+Run the following command in your project directory:
+```
+npm run build
+```
+
+This will create a `dist` folder containing all the production-ready files.
+
+### Step 2: Upload to cPanel
+1. After running the build command, locate the `dist` folder in your project
+2. Upload all contents of the `dist` folder to your cPanel's public_html directory (or the specific domain folder)
+3. You can do this via cPanel's File Manager or through FTP
+
+### Step 3: Configure your domain
+- If you're using the main domain, upload to public_html
+- If you're using a subdomain, upload to the subdomain's specific folder
+
+### Important Notes:
+- Make sure your hosting supports static file hosting
+- The Vite configuration is already set with `base: './'` which is correct for subdirectory deployment
+- All necessary assets will be included in the build process
+
+### Troubleshooting:
+- If the app doesn't load properly, ensure all files from the `dist` folder are uploaded
+- Check browser console for any loading errors
+- Make sure JavaScript is enabled in your browser
+
+Your application should now be live on your domain!
+
+### For cPanel Specific Instructions:
+1. Log into your cPanel dashboard
+2. Go to the "File Manager"
+3. Navigate to your domain's directory (usually public_html)
+4. Upload all files from the 'dist' folder to this directory
+5. If your domain is example.com, the site will be accessible at https://example.com
+
+### Alternative method using FTP:
+1. Connect to your hosting via FTP
+2. Upload all files from the 'dist' folder to the root directory of your domain
+3. Make sure to upload all files and subdirectories
+
+### After deployment:
+- The site should be accessible via your domain
+- All routes should work correctly due to the proper configuration
+- If you encounter any issues, refresh your browser cache and check the browser console for errors
+
+### Important Note about API Keys:
+- The .env file containing the API key is typically NOT deployed with the build files
+- If your hosting environment supports environment variables, you'll need to set VITE_API_KEY as an environment variable in your hosting panel
+- For static hosting, you may need to rebuild the project on the server with the API key set as an environment variable
+
+### Security Warning:
+- IMPORTANT: This application uses the API key directly in client-side code, which poses a security risk
+- In a production environment, you should implement a backend proxy server to protect your API key
+- The API key provided (AIzaSyB-0UjTR4BT_Uc0LAaYa6C4ORAGBpZLqh4) should be regenerated after testing
+- Monitor your API usage regularly to prevent unauthorized usage

@@ -1,0 +1,1125 @@
+{
+  "vistaran-helpdesk-attendance": [
+    {
+      "id": "ATT-1769149996794",
+      "userId": "USR035",
+      "userName": "Owais",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:33:16.794Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149774247",
+      "userId": "USR029",
+      "userName": "Sagar",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:29:34.247Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149768303",
+      "userId": "USR048",
+      "userName": "Tejana",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:29:28.303Z",
+      "status": "Absent",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149670563",
+      "userId": "USR057",
+      "userName": "Supriya .k",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:50.563Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149666227",
+      "userId": "USR056",
+      "userName": "Anjali",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:46.227Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149663790",
+      "userId": "USR055",
+      "userName": "Kajal",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:43.790Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149658195",
+      "userId": "USR054",
+      "userName": "Vaishali",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:38.195Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149649071",
+      "userId": "USR052",
+      "userName": "Supriya Tai",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:29.071Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149647853",
+      "userId": "USR051",
+      "userName": "Megha",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:27.853Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149646731",
+      "userId": "USR050",
+      "userName": "Vaishnavi",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:26.731Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149645200",
+      "userId": "USR049",
+      "userName": "Manda Tai",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:25.200Z",
+      "status": "Absent",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149639200",
+      "userId": "USR046",
+      "userName": "Dipali",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:19.200Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149638062",
+      "userId": "USR047",
+      "userName": "Sonali",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:27:18.062Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149614934",
+      "userId": "USR045",
+      "userName": "Kareena",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:54.934Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149613584",
+      "userId": "USR044",
+      "userName": "Pratibha",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:53.584Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149612470",
+      "userId": "USR043",
+      "userName": "Manasi",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:52.470Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149611237",
+      "userId": "USR042",
+      "userName": "Rupa",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:51.237Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149609600",
+      "userId": "USR041",
+      "userName": "Ashwini Pawaskar",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:49.600Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149603540",
+      "userId": "USR040",
+      "userName": "Ayesha .Y",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:43.540Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149599306",
+      "userId": "USR039",
+      "userName": "Trupti",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:39.306Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149598194",
+      "userId": "USR038",
+      "userName": "Shalu",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:38.194Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149596910",
+      "userId": "USR037",
+      "userName": "Vimalesh",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:36.910Z",
+      "status": "Absent",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149590763",
+      "userId": "USR036",
+      "userName": "SATYAWAN",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:30.763Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149588044",
+      "userId": "USR034",
+      "userName": "Kailash",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:28.044Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149586701",
+      "userId": "USR033",
+      "userName": "Adarsh",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:26.701Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149582310",
+      "userId": "USR032",
+      "userName": "Umesh",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:22.310Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149581310",
+      "userId": "USR031",
+      "userName": "Aditya",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:21.310Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1769149580218",
+      "userId": "USR030",
+      "userName": "Amarjeet",
+      "date": "2026-01-23",
+      "checkIn": "2026-01-23T06:26:20.218Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    }
+  ],
+  "vistaran-helpdesk-reimbursements": [
+    {
+      "id": "EXP-1769150699835",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "date": "2026-01-23T06:44:59.835Z",
+      "category": "House Rent / Light Bill",
+      "amount": 14478,
+      "purpose": "adds:403, SRA Scheme,Park Site CTS No. 19A PT 110111, OPP Kailash IND, Vikhroli (W) Mumbai 400079",
+      "status": "Paid",
+      "approvedBy": "Amarjeet yadav"
+    }
+  ],
+  "vistaran-helpdesk-auditlog": [
+    {
+      "id": "LOG_1769153940936_aif24i8",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Established Real-time Local Drive Sync.",
+      "timestamp": "2026-01-23T07:39:00.936Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769153875698_sic21h8",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Established Real-time Local Drive Sync.",
+      "timestamp": "2026-01-23T07:37:55.698Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769152809884_6vgaj79",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated reimbursement EXP-1769150699835 status to Paid",
+      "timestamp": "2026-01-23T07:20:09.884Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769152808780_8mqt81b",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated reimbursement EXP-1769150699835 status to Approved",
+      "timestamp": "2026-01-23T07:20:08.780Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769152776907_zf0wgy9",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Established Real-time Local Drive Sync.",
+      "timestamp": "2026-01-23T07:19:36.907Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769150699835_fe8zohc",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Created new reimbursement claim EXP-1769150699835 for Amarjeet yadav",
+      "timestamp": "2026-01-23T06:44:59.835Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149996794_juy5gda",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Owais as Present.",
+      "timestamp": "2026-01-23T06:33:16.794Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149774247_dji84vz",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Sagar as Present.",
+      "timestamp": "2026-01-23T06:29:34.247Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149768303_ieghb3l",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Tejana as Absent.",
+      "timestamp": "2026-01-23T06:29:28.303Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149751728_fcb8jsy",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Deleted user: Ankita (ID: USR053)",
+      "timestamp": "2026-01-23T06:29:11.728Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149670563_lkd03j9",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya .k as Present.",
+      "timestamp": "2026-01-23T06:27:50.563Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149666227_dl8md3x",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Anjali as Present.",
+      "timestamp": "2026-01-23T06:27:46.227Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149663790_mg0gb7i",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kajal as Present.",
+      "timestamp": "2026-01-23T06:27:43.790Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149658195_und0m1e",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishali as Present.",
+      "timestamp": "2026-01-23T06:27:38.195Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149649071_ir2qakw",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya Tai as Present.",
+      "timestamp": "2026-01-23T06:27:29.071Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149647854_s2xd4pj",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Megha as Present.",
+      "timestamp": "2026-01-23T06:27:27.854Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149646731_oedog89",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishnavi as Present.",
+      "timestamp": "2026-01-23T06:27:26.731Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149645201_0eliq40",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Manda Tai as Absent.",
+      "timestamp": "2026-01-23T06:27:25.201Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149639200_223xsz1",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Dipali as Present.",
+      "timestamp": "2026-01-23T06:27:19.200Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149638063_8ftdksk",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Sonali as Present.",
+      "timestamp": "2026-01-23T06:27:18.063Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149614934_kn5x21m",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kareena as Present.",
+      "timestamp": "2026-01-23T06:26:54.934Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149613584_1u8rgho",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Pratibha as Present.",
+      "timestamp": "2026-01-23T06:26:53.584Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149612470_qvl6mhv",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Manasi as Present.",
+      "timestamp": "2026-01-23T06:26:52.470Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149611238_1ykxybg",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Rupa as Present.",
+      "timestamp": "2026-01-23T06:26:51.238Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149609600_ovw458f",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Ashwini Pawaskar as Present.",
+      "timestamp": "2026-01-23T06:26:49.600Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149603540_jfn74cx",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Ayesha .Y as Present.",
+      "timestamp": "2026-01-23T06:26:43.540Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149599306_v8rb9rk",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Trupti as Present.",
+      "timestamp": "2026-01-23T06:26:39.306Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149598194_x5p7dbb",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Shalu as Present.",
+      "timestamp": "2026-01-23T06:26:38.194Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149596910_yd3kyto",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vimalesh as Absent.",
+      "timestamp": "2026-01-23T06:26:36.910Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149590764_iz0zeun",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked SATYAWAN as Present.",
+      "timestamp": "2026-01-23T06:26:30.764Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149588044_6v1ngpm",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kailash as Present.",
+      "timestamp": "2026-01-23T06:26:28.044Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149586701_82hktpc",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Adarsh as Present.",
+      "timestamp": "2026-01-23T06:26:26.701Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149582310_s8erq1a",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Umesh as Present.",
+      "timestamp": "2026-01-23T06:26:22.310Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149581310_mtxqrz2",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aditya as Present.",
+      "timestamp": "2026-01-23T06:26:21.310Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769149580218_7eq94ug",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Amarjeet as Present.",
+      "timestamp": "2026-01-23T06:26:20.218Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1769094558372_1bveibz",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Logged in.",
+      "timestamp": "2026-01-22T15:09:18.372Z",
+      "ip": "127.0.0.1"
+    }
+  ],
+  "vistaran-helpdesk-userId": "USR001",
+  "vistaran-helpdesk-users": [
+    {
+      "id": "USR001",
+      "name": "Amarjeet yadav",
+      "email": "ITsupport@vistaran.in",
+      "password": "88283671",
+      "role": "Admin",
+      "department": "IT",
+      "status": "Active",
+      "joinedDate": "2023-01-15T10:00:00Z",
+      "photo": "https://randomuser.me/api/portraits/men/1.jpg",
+      "phone": "+918828367178",
+      "whatsapp": "+918828367178"
+    },
+    {
+      "id": "USR002",
+      "name": "BHANDUOP -001",
+      "email": "purchasebhandup@vistaran.in",
+      "password": "10001",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR003",
+      "name": "VIKHROLI -002",
+      "email": "purchasevikhroli@vistaran.in",
+      "password": "10002",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR004",
+      "name": "HIRANANDANI -003",
+      "email": "purchasepowai@vistaran.in",
+      "password": "10003",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR005",
+      "name": "POWAI -004",
+      "email": "purchasepowai2@vistaran.in",
+      "password": "10004",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR006",
+      "name": "Mulund -005",
+      "email": "purchasemulund@vistaran.in",
+      "password": "10005",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR007",
+      "name": "Mulund -006",
+      "email": "purchaseveenanagar@vistaran.in",
+      "password": "10006",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR008",
+      "name": "Mulund -007",
+      "email": "purchasecyprus@vistaran.in",
+      "password": "10007",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR009",
+      "name": "Hindustan Chowk 008",
+      "email": "purchasecolonymul@vistaran.in",
+      "password": "10008",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR010",
+      "name": "Tambe Nagar 009",
+      "email": "purchasetambenagar@vistaran.in",
+      "password": "10009",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR011",
+      "name": "Romell vasant 010",
+      "email": "purchaseromellmul@vistaran.in",
+      "password": "10010",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR012",
+      "name": "Chandiwali 011",
+      "email": "purchasechandivali@vistaran.in",
+      "password": "10011",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR013",
+      "name": "Sakinaka 012",
+      "email": "purchasesakinaka@vistaran.in",
+      "password": "10012",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR014",
+      "name": "Godrej 013",
+      "email": "purchasegodrej@vistaran.in",
+      "password": "10013",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR015",
+      "name": "Tagore Nagar014",
+      "email": "purchasetagore@vistaran.in",
+      "password": "10014",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR016",
+      "name": "Veena Two 015",
+      "email": "purchaseveena2@vistaran.in",
+      "password": "10015",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR017",
+      "name": "Hanuman Chowk 016",
+      "email": "purchasehanuman@vistaran.in",
+      "password": "10016",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR018",
+      "name": "KailashBranch 017",
+      "email": "purchasekailash@vistaran.in",
+      "password": "10017",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR019",
+      "name": "Lok kedar branch 018",
+      "email": "purchaselokkedar@vistaran.in",
+      "password": "10018",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR020",
+      "name": "Sai Dham Branch 019",
+      "email": "purchasesaidham@vistaran.in",
+      "password": "10019",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR021",
+      "name": "Civilhospital Branch 20",
+      "email": "purchasecivilhospital@vistaran.in",
+      "password": "10020",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR022",
+      "name": "Talaopali Branch 21",
+      "email": "purchasetalaopali@vistaran.in",
+      "password": "10021",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR023",
+      "name": "Vartaknagar Branch 22",
+      "email": "purchasevartaknagar@vistaran.in",
+      "password": "10022",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR024",
+      "name": "Parksite Branch",
+      "email": "purchaseparksite@vistaran.in",
+      "password": "11111",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR025",
+      "name": "Customer Support ID",
+      "email": "pillsandmore@vistaran.in",
+      "password": "77661",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR026",
+      "name": "Vistaran office Ho",
+      "email": "purchase@vistaran.in",
+      "password": "776688",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR027",
+      "name": "Warehouse 501",
+      "email": "purchasedc@vistaran.in",
+      "password": "50001",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR028",
+      "name": "Dhokali Naka 023",
+      "email": "purchasedhokali@vistaran.in",
+      "password": "10023",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2023-02-20T11:30:00Z"
+    },
+    {
+      "id": "USR029",
+      "name": "Sagar",
+      "email": "sagar@vistaran.in",
+      "password": "10029",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-01-10T09:00:00Z"
+    },
+    {
+      "id": "USR030",
+      "name": "Amarjeet",
+      "email": "amarjeet.s@vistaran.in",
+      "password": "10030",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-01-10T09:00:00Z"
+    },
+    {
+      "id": "USR031",
+      "name": "Aditya",
+      "email": "aditya@vistaran.in",
+      "password": "10031",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-01-10T09:00:00Z"
+    },
+    {
+      "id": "USR032",
+      "name": "Umesh",
+      "email": "umesh@vistaran.in",
+      "password": "10032",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-01-10T09:00:00Z"
+    },
+    {
+      "id": "USR033",
+      "name": "Adarsh",
+      "email": "adarsh@vistaran.in",
+      "password": "10033",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-01-10T09:00:00Z"
+    },
+    {
+      "id": "USR034",
+      "name": "Kailash",
+      "email": "kailash.s@vistaran.in",
+      "password": "10034",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-01-10T09:00:00Z"
+    },
+    {
+      "id": "USR035",
+      "name": "Owais",
+      "email": "owais@vistaran.in",
+      "password": "10035",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-01-10T09:00:00Z"
+    },
+    {
+      "id": "USR036",
+      "name": "SATYAWAN",
+      "email": "satyawan@vistaran.in",
+      "password": "10036",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR037",
+      "name": "Vimalesh",
+      "email": "vimalesh@vistaran.in",
+      "password": "10037",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-01-10T09:00:00Z"
+    },
+    {
+      "id": "USR038",
+      "name": "Shalu",
+      "email": "shalu@vistaran.in",
+      "password": "10038",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR039",
+      "name": "Trupti",
+      "email": "trupti@vistaran.in",
+      "password": "10039",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR040",
+      "name": "Ayesha .Y",
+      "email": "ayesha.y@vistaran.in",
+      "password": "10040",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR041",
+      "name": "Ashwini Pawaskar",
+      "email": "ashwini.p@vistaran.in",
+      "password": "10041",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR042",
+      "name": "Rupa",
+      "email": "rupa@vistaran.in",
+      "password": "10042",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR043",
+      "name": "Manasi",
+      "email": "manasi@vistaran.in",
+      "password": "10043",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR044",
+      "name": "Pratibha",
+      "email": "pratibha@vistaran.in",
+      "password": "10044",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR045",
+      "name": "Kareena",
+      "email": "kareena@vistaran.in",
+      "password": "10045",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR046",
+      "name": "Dipali",
+      "email": "dipali@vistaran.in",
+      "password": "10046",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR047",
+      "name": "Sonali",
+      "email": "sonali@vistaran.in",
+      "password": "10047",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR048",
+      "name": "Tejana",
+      "email": "tejana@vistaran.in",
+      "password": "10048",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR049",
+      "name": "Manda Tai",
+      "email": "manda.t@vistaran.in",
+      "password": "10049",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR050",
+      "name": "Vaishnavi",
+      "email": "vaishnavi@vistaran.in",
+      "password": "10050",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR051",
+      "name": "Megha",
+      "email": "megha@vistaran.in",
+      "password": "10051",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR052",
+      "name": "Supriya Tai",
+      "email": "supriya.t@vistaran.in",
+      "password": "10052",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR054",
+      "name": "Vaishali",
+      "email": "vaishali@vistaran.in",
+      "password": "10054",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR055",
+      "name": "Kajal",
+      "email": "kajal@vistaran.in",
+      "password": "10055",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR056",
+      "name": "Anjali",
+      "email": "anjali@vistaran.in",
+      "password": "10056",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    },
+    {
+      "id": "USR057",
+      "name": "Supriya .k",
+      "email": "supriya.k@vistaran.in",
+      "password": "10057",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2024-05-20T09:00:00Z"
+    }
+  ]
+}
