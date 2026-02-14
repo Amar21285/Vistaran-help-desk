@@ -9,9 +9,13 @@ const app = express();
 const server = createServer(app);
 
 // Supabase configuration
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-const useSupabase = supabaseUrl && supabaseKey && supabaseUrl !== 'https://your-project.supabase.co';
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || '';
+const useSupabase = !!(supabaseUrl && supabaseKey && supabaseUrl.includes('supabase.co'));
+
+console.log('SUPABASE_URL:', supabaseUrl ? 'SET' : 'NOT SET');
+console.log('SUPABASE_ANON_KEY:', supabaseKey ? 'SET' : 'NOT SET');
+console.log('useSupabase:', useSupabase);
 
 let supabase;
 if (useSupabase) {
