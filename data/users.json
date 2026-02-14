@@ -1,22 +1,552 @@
 [
   {
     "id": "USR001",
-    "name": "Admin User",
-    "email": "admin@example.com",
-    "password": "admin123",
+    "name": "Amarjeet yadav",
+    "email": "ITsupport@vistaran.in",
+    "password": "88283671",
     "role": "Admin",
     "department": "IT",
-    "status": "Active",
-    "joinedDate": "2026-02-09T14:56:26.064Z"
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
   },
   {
     "id": "USR002",
-    "name": "John Doe",
-    "email": "john.doe@example.com",
-    "password": "user123",
+    "name": "BHANDUP -001",
+    "email": "purchasebhandup@vistaran.in",
+    "password": "10001",
     "role": "User",
-    "department": "Sales",
-    "status": "Active",
-    "joinedDate": "2026-02-09T14:56:26.065Z"
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR003",
+    "name": "VIKHROLI -002",
+    "email": "purchasevikhroli@vistaran.in",
+    "password": "10002",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR004",
+    "name": "HIRANANDANI -003",
+    "email": "purchasepowai@vistaran.in",
+    "password": "10003",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR005",
+    "name": "POWAI -004",
+    "email": "purchasepowai2@vistaran.in",
+    "password": "10004",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR006",
+    "name": "Mulund -005",
+    "email": "purchasemulund@vistaran.in",
+    "password": "10005",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR007",
+    "name": "Mulund -006",
+    "email": "purchaseveenanagar@vistaran.in",
+    "password": "10006",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR008",
+    "name": "Mulund -007",
+    "email": "purchasecyprus@vistaran.in",
+    "password": "10007",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR009",
+    "name": "Hindustan Chowk 008",
+    "email": "purchasecolonymul@vistaran.in",
+    "password": "10008",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR010",
+    "name": "Tambe Nagar 009",
+    "email": "purchasetambenagar@vistaran.in",
+    "password": "10009",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR011",
+    "name": "Romell vasant 010",
+    "email": "purchaseromellmul@vistaran.in",
+    "password": "10010",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR012",
+    "name": "Chandiwali 011",
+    "email": "purchasechandivali@vistaran.in",
+    "password": "10011",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR013",
+    "name": "Sakinaka 012",
+    "email": "purchasesakinaka@vistaran.in",
+    "password": "10012",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR014",
+    "name": "Godrej 013",
+    "email": "purchasegodrej@vistaran.in",
+    "password": "10013",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR015",
+    "name": "Tagore Nagar014",
+    "email": "purchasetagore@vistaran.in",
+    "password": "10014",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR016",
+    "name": "Veena Two 015",
+    "email": "purchaseveena2@vistaran.in",
+    "password": "10015",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR017",
+    "name": "Hanuman Chowk 016",
+    "email": "purchasehanuman@vistaran.in",
+    "password": "10016",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR018",
+    "name": "KailashBranch 017",
+    "email": "purchasekailash@vistaran.in",
+    "password": "10017",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR019",
+    "name": "Lok kedar branch 018",
+    "email": "purchaselokkedar@vistaran.in",
+    "password": "10018",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR020",
+    "name": "Sai Dham Branch 019",
+    "email": "purchasesaidham@vistaran.in",
+    "password": "10019",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR021",
+    "name": "Civilhospital Branch 20",
+    "email": "purchasecivilhospital@vistaran.in",
+    "password": "10020",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR022",
+    "name": "Talaopali Branch 21",
+    "email": "purchasetalaopali@vistaran.in",
+    "password": "10021",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR023",
+    "name": "Vartaknagar Branch 22",
+    "email": "purchasevartaknagar@vistaran.in",
+    "password": "10022",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR025",
+    "name": "Customer Support ID",
+    "email": "pillsandmore@vistaran.in",
+    "password": "77661",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR026",
+    "name": "Vistaran office Ho",
+    "email": "purchase@vistaran.in",
+    "password": "776688",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR028",
+    "name": "Dhokali Naka 023",
+    "email": "purchasedhokali@vistaran.in",
+    "password": "10023",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR029",
+    "name": "Sagar",
+    "email": "sagar@vistaran.in",
+    "password": "10029",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR030",
+    "name": "Amarjeet",
+    "email": "amarjeet.s@vistaran.in",
+    "password": "10030",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR031",
+    "name": "Aditya",
+    "email": "aditya@vistaran.in",
+    "password": "10031",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR032",
+    "name": "Umesh",
+    "email": "umesh@vistaran.in",
+    "password": "10032",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR033",
+    "name": "Adarsh",
+    "email": "adarsh@vistaran.in",
+    "password": "10033",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR034",
+    "name": "Kailash",
+    "email": "kailash.s@vistaran.in",
+    "password": "10034",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR035",
+    "name": "Owais",
+    "email": "owais@vistaran.in",
+    "password": "10035",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR036",
+    "name": "SATYAWAN",
+    "email": "satyawan@vistaran.in",
+    "password": "10036",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR037",
+    "name": "Vimalesh",
+    "email": "vimalesh@vistaran.in",
+    "password": "10037",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR038",
+    "name": "Shalu",
+    "email": "shalu@vistaran.in",
+    "password": "10038",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR039",
+    "name": "Trupti",
+    "email": "trupti@vistaran.in",
+    "password": "10039",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR040",
+    "name": "Aishwarya.D",
+    "email": "Aishwarya@vistaran.in",
+    "password": "10040",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR041",
+    "name": "Ashwini Pawaskar",
+    "email": "ashwini.p@vistaran.in",
+    "password": "10041",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR042",
+    "name": "Rupa",
+    "email": "rupa@vistaran.in",
+    "password": "10042",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR043",
+    "name": "Manasi",
+    "email": "manasi@vistaran.in",
+    "password": "10043",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR044",
+    "name": "Pratibha",
+    "email": "pratibha@vistaran.in",
+    "password": "10044",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR045",
+    "name": "Kareena",
+    "email": "kareena@vistaran.in",
+    "password": "10045",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR046",
+    "name": "Dipali",
+    "email": "dipali@vistaran.in",
+    "password": "10046",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR047",
+    "name": "Sonali",
+    "email": "sonali@vistaran.in",
+    "password": "10047",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR048",
+    "name": "Tejana",
+    "email": "tejana@vistaran.in",
+    "password": "10048",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR049",
+    "name": "Somesh",
+    "email": "Somesh@vistaran.in",
+    "password": "10049",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR050",
+    "name": "Vaishnavi",
+    "email": "vaishnavi@vistaran.in",
+    "password": "10050",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR051",
+    "name": "Megha",
+    "email": "megha@vistaran.in",
+    "password": "10051",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR052",
+    "name": "Supriya Tai",
+    "email": "supriya.t@vistaran.in",
+    "password": "10052",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR054",
+    "name": "Vaishali",
+    "email": "vaishali@vistaran.in",
+    "password": "10054",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR056",
+    "name": "Anjali",
+    "email": "anjali@vistaran.in",
+    "password": "10056",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR057",
+    "name": "Supriya .k",
+    "email": "supriya.k@vistaran.in",
+    "password": "10057",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR1769245099806",
+    "name": "Azhar Sir",
+    "email": "azhar.k@vistaran.in",
+    "password": "123456",
+    "role": "Read-only",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR1769248072661",
+    "name": "Warehouse(DC-501)",
+    "email": "purchasedc@vistaran.in",
+    "password": "501",
+    "role": "User",
+    "department": "Operations",
+    "status": "Inactive",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
   }
 ]

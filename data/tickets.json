@@ -1,28 +1,28 @@
 [
   {
-    "id": "TKT001",
-    "userId": "USR002",
-    "email": "john.doe@example.com",
-    "description": "This is a sample ticket for testing purposes",
+    "id": "TKT1769244477252",
+    "userId": "USR001",
+    "email": "ITsupport@vistaran.in",
+    "description": "Printer not printing or paper jam.",
     "department": "IT",
-    "priority": "Medium",
-    "status": "Open",
-    "dateCreated": "2026-02-09",
-    "dateResolved": null,
+    "priority": "Urgent",
+    "status": "Resolved",
+    "dateCreated": "2026-02-14",
+    "dateResolved": "2026-02-14T14:26:22.222Z",
     "assignedTechId": "TECH001",
-    "symptomId": ""
+    "symptomId": "SYM011"
   },
   {
-    "id": "TKT002",
-    "userId": "USR002",
-    "email": "john.doe@example.com",
-    "description": "Internet is not working in the development department",
-    "department": "IT",
-    "priority": "High",
-    "status": "In Progress",
-    "dateCreated": "2026-02-09",
+    "id": "TKT1770982791371",
+    "userId": "USR030",
+    "email": "amarjeet.s@vistaran.in",
+    "description": "[Custom Issue: printer issue]\n\npls chek",
+    "department": "Staff",
+    "priority": "Medium",
+    "status": "Open",
+    "dateCreated": "2026-02-14",
     "dateResolved": null,
     "assignedTechId": "TECH001",
-    "symptomId": ""
+    "symptomId": "CUSTOM_1770982791371"
   }
 ]
