@@ -113,16 +113,55 @@ async function loadDataFromSupabase() {
 // Save data to Supabase
 async function saveDataToSupabase(collection, data) {
   try {
+    // Transform data to match database columns
+    let transformedData = data;
+    
+    // Map data to match app's expected format
+    if (collection === 'users' && data && data.length > 0) {
+      transformedData = data.map(u => ({
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        password: u.password,
+        role: u.role || u.status,
+        department: u.department,
+        status: u.isActive ? 'Active' : 'Inactive',
+        joinedDate: u.createdAt || new Date().toISOString(),
+        phone: u.phone || '',
+        whatsapp: u.whatsapp || '',
+        employeeId: u.employeeId || '',
+        designation: u.designation || ''
+      }));
+    }
+    
+    if (collection === 'tickets' && data && data.length > 0) {
+      transformedData = data.map(t => ({
+        id: t.id,
+        userId: t.reporter || t.userId || '',
+        email: t.email || '',
+        description: t.description || t.title || '',
+        department: t.department || '',
+        priority: t.priority || 'medium',
+        status: t.status || 'Open',
+        dateCreated: t.createdAt || t.dateCreated || new Date().toISOString(),
+        dateResolved: t.dateResolved || null,
+        assignedTechId: t.assignee || t.assignedTechId || null,
+        symptomId: t.symptomId || '',
+        notes: t.notes || '',
+        cc: t.cc || ''
+      }));
+    }
+    
     // First delete all existing records
     await supabase.from(collection).delete().neq('id', '00000000-0000-0000-0000-000000000000');
     
     // Then insert new data
-    if (data && data.length > 0) {
-      const { error } = await supabase.from(collection).insert(data);
+    if (transformedData && transformedData.length > 0) {
+      const { error } = await supabase.from(collection).insert(transformedData);
       if (error) throw error;
     }
     
-    console.log(`Saved ${collection} to Supabase: ${data?.length || 0} records`);
+    console.log(`Saved ${collection} to Supabase: ${transformedData?.length || 0} records`);
   } catch (err) {
     console.error(`Error saving ${collection} to Supabase:`, err.message);
   }
