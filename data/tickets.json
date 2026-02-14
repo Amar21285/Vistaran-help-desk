@@ -5,11 +5,11 @@
     "description": "This is a sample ticket for testing purposes",
     "priority": "Medium",
     "status": "Open",
-    "assignee": "USR001",
+    "assignee": "TECH001",
     "reporter": "USR002",
     "department": "IT",
-    "createdAt": "2026-01-14T06:47:56.254Z",
-    "updatedAt": "2026-01-14T06:47:56.254Z"
+    "createdAt": "2026-01-14",
+    "updatedAt": "2026-01-14"
   },
   {
     "id": "TKT002",
@@ -17,10 +17,10 @@
     "description": "Internet is not working in the development department",
     "priority": "High",
     "status": "In Progress",
-    "assignee": "USR001",
+    "assignee": "TECH001",
     "reporter": "USR002",
     "department": "IT",
-    "createdAt": "2026-01-14T06:47:56.254Z",
-    "updatedAt": "2026-01-14T06:47:56.254Z"
+    "createdAt": "2026-01-14",
+    "updatedAt": "2026-01-14"
   }
 ]
