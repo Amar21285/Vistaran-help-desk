@@ -11,11 +11,13 @@ const server = createServer(app);
 // Supabase configuration
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_ANON_KEY || '';
-const useSupabase = !!(supabaseUrl && supabaseKey && supabaseUrl.includes('supabase.co'));
+
+// Force disable Supabase for now - use local file storage
+const useSupabase = false;
 
 console.log('SUPABASE_URL:', supabaseUrl ? 'SET' : 'NOT SET');
 console.log('SUPABASE_ANON_KEY:', supabaseKey ? 'SET' : 'NOT SET');
-console.log('useSupabase:', useSupabase);
+console.log('Using local file storage');
 
 let supabase;
 if (useSupabase) {
