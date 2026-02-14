@@ -9,9 +9,6 @@
     "numReplicas": 1,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10,
-    "startCommand": "node server.cjs",
-    "env": {
-      "VITE_API_KEY": "AIzaSyBvc4dcMjVDO1RAguf3NEFCiDfxDYPjP7A"
-    }
+    "startCommand": "node server.cjs"
   }
 }

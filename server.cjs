@@ -3,9 +3,23 @@ const path = require('path');
 const fs = require('fs');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const server = createServer(app);
+
+// Supabase configuration
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+const useSupabase = supabaseUrl && supabaseKey && supabaseUrl !== 'https://your-project.supabase.co';
+
+let supabase;
+if (useSupabase) {
+  supabase = createClient(supabaseUrl, supabaseKey);
+  console.log('Using Supabase for data storage');
+} else {
+  console.log('Using local file storage');
+}
 
 // Check if running on Railway (production) or locally
 const isProduction = process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production';
@@ -76,8 +90,52 @@ function saveDataToFile(collection, data) {
   }
 }
 
+// Load data from Supabase
+async function loadDataFromSupabase() {
+  const collections = ['users', 'tickets', 'technicians', 'files', 'symptoms', 'templates', 'departments', 'inventory', 'vendors', 'challans', 'outward-invoices', 'purchase-orders'];
+  
+  for (const collection of collections) {
+    try {
+      const { data, error } = await supabase
+        .from(collection)
+        .select('*');
+      
+      if (error) throw error;
+      dataStores.set(collection, data || []);
+      console.log(`Loaded ${collection} from Supabase: ${data?.length || 0} records`);
+    } catch (err) {
+      console.error(`Error loading ${collection} from Supabase:`, err.message);
+      dataStores.set(collection, []);
+    }
+  }
+}
+
+// Save data to Supabase
+async function saveDataToSupabase(collection, data) {
+  try {
+    // First delete all existing records
+    await supabase.from(collection).delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    
+    // Then insert new data
+    if (data && data.length > 0) {
+      const { error } = await supabase.from(collection).insert(data);
+      if (error) throw error;
+    }
+    
+    console.log(`Saved ${collection} to Supabase: ${data?.length || 0} records`);
+  } catch (err) {
+    console.error(`Error saving ${collection} to Supabase:`, err.message);
+  }
+}
+
 // Load data when server starts
-loadDataFromFile();
+if (useSupabase) {
+  loadDataFromSupabase().then(() => {
+    console.log('Initial data loaded from Supabase');
+  });
+} else {
+  loadDataFromFile();
+}
 
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
@@ -94,8 +152,13 @@ io.on('connection', (socket) => {
     if (collection && items !== undefined) {
       dataStores.set(collection, items);
       
-      // Save to file
-      saveDataToFile(collection, items);
+      // Save to file and/or Supabase
+      if (!useSupabase) {
+        saveDataToFile(collection, items);
+      }
+      if (useSupabase) {
+        saveDataToSupabase(collection, items);
+      }
       
       // Broadcast the update to all other connected clients
       socket.broadcast.emit('data_update', {
