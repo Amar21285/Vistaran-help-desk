@@ -3,6 +3,7 @@ import { useAuth, AuthProvider } from './hooks/useAuth';
 import { SettingsProvider, useSettings } from './hooks/useSettings';
 import { ThemeProvider, useTheme } from './hooks/useTheme';
 import useLocalStorage from './hooks/useLocalStorage';
+import useRealtimeSync from './hooks/useRealtimeSync';
 import Login from './components/Login';
 import TopNav from './components/TopNav';
 import BottomNav from './components/BottomNav';
@@ -75,6 +76,7 @@ const AppContent: React.FC = () => {
     const { user, realUser, logout, updateUser, startImpersonation, stopImpersonation, can } = useAuth();
     const { wallpaper } = useTheme();
     const { appName, notificationSettings } = useSettings();
+    const { connect, disconnect, isConnected, triggerManualSync } = useRealtimeSync();
     
     const [allUsers, setAllUsers] = useLocalStorage<User[]>('vistaran-helpdesk-users', USERS);
     const [allTickets, setAllTickets] = useLocalStorage<Ticket[]>('vistaran-helpdesk-tickets', TICKETS);
@@ -97,6 +99,28 @@ const AppContent: React.FC = () => {
     const [isScannerOpen, setIsScannerOpen] = useState(false);
     const [isQuickTicketOpen, setIsQuickTicketOpen] = useState(false);
     const [scanToast, setScanToast] = useState<string | null>(null);
+    
+    // Connect to sync service when user logs in
+    useEffect(() => {
+        if (user) {
+            const userRole = user.role;
+            const role = userRole === Role.ADMIN ? 'admin' : 'client';
+            connect(user.id, role);
+            console.log('Connected to sync service as', role);
+        } else {
+            disconnect();
+        }
+        return () => {
+            disconnect();
+        };
+    }, [user, connect, disconnect]);
+    
+    // Sync tickets when they change
+    useEffect(() => {
+        if (user && isConnected && allTickets.length > 0) {
+            triggerManualSync('tickets');
+        }
+    }, [allTickets, user, isConnected, triggerManualSync]);
 
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
