@@ -32,7 +32,6 @@
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.2.2",
-    "vite": "^5.3.1",
-    "@types/jsbarcode": "^3.11.6"
+    "vite": "^5.3.1"
   }
 }
