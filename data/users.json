@@ -3,8 +3,8 @@
     "id": "USR001",
     "name": "Admin User",
     "email": "admin@example.com",
-    "password": "hashed_password_here",
-    "role": "admin",
+    "password": "admin123",
+    "role": "Admin",
     "department": "IT",
     "createdAt": "2026-01-14T06:47:56.253Z",
     "isActive": true
@@ -12,9 +12,9 @@
   {
     "id": "USR002",
     "name": "John Doe",
-    "email": "john.doe@example.com",
-    "password": "hashed_password_here",
-    "role": "user",
+    "email": "john@example.com",
+    "password": "user123",
+    "role": "User",
     "department": "Sales",
     "createdAt": "2026-01-14T06:47:56.254Z",
     "isActive": true
