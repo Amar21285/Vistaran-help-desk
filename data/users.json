@@ -6,8 +6,8 @@
     "password": "admin123",
     "role": "Admin",
     "department": "IT",
-    "createdAt": "2026-01-14T06:47:56.253Z",
-    "isActive": true
+    "status": "Active",
+    "joinedDate": "2026-01-14T06:47:56.253Z"
   },
   {
     "id": "USR002",
@@ -16,7 +16,7 @@
     "password": "user123",
     "role": "User",
     "department": "Sales",
-    "createdAt": "2026-01-14T06:47:56.254Z",
-    "isActive": true
+    "status": "Active",
+    "joinedDate": "2026-01-14T06:47:56.254Z"
   }
 ]

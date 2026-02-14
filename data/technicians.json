@@ -6,6 +6,6 @@
     "phone": "+1234567890",
     "specialization": "General IT Support",
     "department": "IT",
-    "isActive": true
+    "status": "Active"
   }
 ]
