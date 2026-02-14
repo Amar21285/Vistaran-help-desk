@@ -2,12 +2,12 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "npm run build",
-    "outputDirectory": "dist"
+    "buildCommand": "rm -f package-lock.json && npm install --no-audit --legacy-peer-deps && npm run build"
   },
   "deploy": {
     "numReplicas": 1,
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
+    "restartPolicyMaxRetries": 10,
+    "outputDirectory": "dist"
   }
 }
