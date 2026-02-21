@@ -67,7 +67,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
         setPurpose(req.purpose);
         setTargetStaffId(req.userId);
         setPayeeName(req.userName);
-        
+
         if (CATEGORIES.includes(req.category)) {
             setCategory(req.category);
             setIsCustomCategory(false);
@@ -77,7 +77,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
             setIsCustomCategory(true);
             setCustomCategoryName(req.category);
         }
-        
+
         setIsFormModalOpen(true);
     };
 
@@ -87,16 +87,16 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
         if (!payeeName || !amount || !purpose || !finalCategory) return;
 
         if (editingRequest) {
-            const updatedRequests = requests.map(r => 
-                r.id === editingRequest.id 
-                    ? { 
-                        ...r, 
-                        userId: targetStaffId || 'GUEST', 
-                        userName: payeeName, 
-                        category: finalCategory as any, 
-                        amount: parseFloat(amount), 
-                        purpose 
-                    } 
+            const updatedRequests = requests.map(r =>
+                r.id === editingRequest.id
+                    ? {
+                        ...r,
+                        userId: targetStaffId || 'GUEST',
+                        userName: payeeName,
+                        category: finalCategory as any,
+                        amount: parseFloat(amount),
+                        purpose
+                    }
                     : r
             );
             setRequests(updatedRequests);
@@ -104,8 +104,8 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
         } else {
             const newRequest: ReimbursementRequest = {
                 id: `EXP-${Date.now()}`,
-                userId: targetStaffId || 'GUEST', 
-                userName: payeeName, 
+                userId: targetStaffId || 'GUEST',
+                userName: payeeName,
                 date: new Date().toISOString(),
                 category: finalCategory as any,
                 amount: parseFloat(amount),
@@ -146,21 +146,43 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
         if (!voucherRef.current || !viewingRequest) return;
         setIsGeneratingPDF(true);
         try {
-            const canvas = await html2canvas(voucherRef.current, { 
-                scale: 3, 
-                useCORS: true, 
+            const element = voucherRef.current;
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
                 backgroundColor: '#ffffff',
-                logging: false
+                logging: false,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight
             });
+
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const imgProps = pdf.getImageProperties(imgData);
-            const margin = 10;
-            const pdfWidth = pageWidth - (margin * 2);
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            pdf.addImage(imgData, 'JPEG', margin, margin, pdfWidth, pdfHeight);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+            const ratio = pdfWidth / imgWidth;
+            const totalPdfHeight = imgHeight * ratio;
+
+            let heightLeft = totalPdfHeight;
+            let position = 0;
+
+            // First page
+            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
+            heightLeft -= pdfHeight;
+
+            // Additional pages if needed
+            while (heightLeft > 0) {
+                position = heightLeft - totalPdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
+                heightLeft -= pdfHeight;
+            }
+
             pdf.save(`Voucher-${viewingRequest.id}.pdf`);
+        } catch (error) {
+            console.error("Error generating PDF:", error);
         } finally {
             setIsGeneratingPDF(false);
         }
@@ -173,7 +195,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                     <h3 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Petty Cash & Reimbursements</h3>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Office Expense Claim Portal</p>
                 </div>
-                <button 
+                <button
                     onClick={handleOpenCreate}
                     className="bg-primary text-white font-black px-6 py-3 rounded-2xl shadow-xl hover:bg-primary-hover transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center gap-2"
                 >
@@ -208,17 +230,16 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap font-black text-slate-900 dark:text-white text-sm">₹{req.amount.toLocaleString()}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                                        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${
-                                            req.status === ReimbursementStatus.PAID ? 'bg-green-100 text-green-600' :
-                                            req.status === ReimbursementStatus.APPROVED ? 'bg-blue-100 text-blue-600' :
-                                            req.status === ReimbursementStatus.REJECTED ? 'bg-red-100 text-red-600' :
-                                            'bg-amber-100 text-amber-600'
-                                        }`}>{req.status}</span>
+                                        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${req.status === ReimbursementStatus.PAID ? 'bg-green-100 text-green-600' :
+                                                req.status === ReimbursementStatus.APPROVED ? 'bg-blue-100 text-blue-600' :
+                                                    req.status === ReimbursementStatus.REJECTED ? 'bg-red-100 text-red-600' :
+                                                        'bg-amber-100 text-amber-600'
+                                            }`}>{req.status}</span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right">
                                         <div className="flex justify-end items-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
                                             <button onClick={() => setViewingRequest(req)} className="p-2 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition" title="View/Print Voucher"><i className="fas fa-file-invoice-dollar"></i></button>
-                                            
+
                                             {(req.status === ReimbursementStatus.PENDING || isAdmin) && (
                                                 <>
                                                     <button onClick={() => handleOpenEdit(req)} className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition" title="Edit Claim"><i className="fas fa-edit"></i></button>
@@ -270,9 +291,9 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                                 <div className="grid grid-cols-1 gap-4">
                                     <div>
                                         <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 tracking-widest ml-1">Pre-select Staff (Optional)</label>
-                                        <select 
-                                            value={targetStaffId} 
-                                            onChange={e => handleStaffChange(e.target.value)} 
+                                        <select
+                                            value={targetStaffId}
+                                            onChange={e => handleStaffChange(e.target.value)}
                                             className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-700 font-bold outline-none focus:ring-4 focus:ring-primary/10 transition-all text-sm"
                                         >
                                             <option value="">-- Manual Entry / Guest --</option>
@@ -281,13 +302,13 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                                     </div>
                                     <div>
                                         <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 tracking-widest ml-1">Payee Name (Manual Entry/Editable)</label>
-                                        <input 
-                                            type="text" 
-                                            value={payeeName} 
-                                            onChange={e => setPayeeName(e.target.value)} 
+                                        <input
+                                            type="text"
+                                            value={payeeName}
+                                            onChange={e => setPayeeName(e.target.value)}
                                             required
                                             placeholder="Enter name of person getting paid"
-                                            className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-700 font-black text-sm outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-inner" 
+                                            className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-700 font-black text-sm outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-inner"
                                         />
                                     </div>
                                 </div>
@@ -300,9 +321,9 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                                     </div>
                                     <div>
                                         <label className="block text-[10px] font-black uppercase text-slate-400 mb-1 tracking-widest ml-1">Claim Category</label>
-                                        <select 
-                                            value={isCustomCategory ? 'OTHER' : category} 
-                                            onChange={e => handleCategorySelectChange(e.target.value)} 
+                                        <select
+                                            value={isCustomCategory ? 'OTHER' : category}
+                                            onChange={e => handleCategorySelectChange(e.target.value)}
                                             className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-700 font-bold outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-inner"
                                         >
                                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -314,13 +335,13 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                                 {isCustomCategory && (
                                     <div className="animate-in fade-in slide-in-from-top-2">
                                         <label className="block text-[10px] font-black uppercase text-primary mb-1 tracking-widest ml-1">Specify Custom Category</label>
-                                        <input 
-                                            type="text" 
-                                            value={customCategoryName} 
-                                            onChange={e => setCustomCategoryName(e.target.value)} 
+                                        <input
+                                            type="text"
+                                            value={customCategoryName}
+                                            onChange={e => setCustomCategoryName(e.target.value)}
                                             required
                                             placeholder="e.g. Courier Charges, Software Subscription"
-                                            className="w-full p-4 border-2 border-primary/20 dark:border-primary/20 rounded-2xl bg-primary/5 dark:bg-primary/5 font-black text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all shadow-inner" 
+                                            className="w-full p-4 border-2 border-primary/20 dark:border-primary/20 rounded-2xl bg-primary/5 dark:bg-primary/5 font-black text-sm focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all shadow-inner"
                                         />
                                     </div>
                                 )}
@@ -344,7 +365,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                         <header className="p-6 border-b flex justify-between items-center no-print bg-slate-50/50">
                             <div className="flex gap-3">
                                 <button onClick={handleDownloadPDF} disabled={isGeneratingPDF} className="bg-rose-600 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-rose-700 transition-all flex items-center gap-2">
-                                    <i className={isGeneratingPDF ? "fas fa-spinner fa-spin" : "fas fa-file-pdf"}></i> 
+                                    <i className={isGeneratingPDF ? "fas fa-spinner fa-spin" : "fas fa-file-pdf"}></i>
                                     {isGeneratingPDF ? 'Generating...' : 'Download PDF'}
                                 </button>
                                 <button onClick={() => window.print()} className="bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all flex items-center gap-2">

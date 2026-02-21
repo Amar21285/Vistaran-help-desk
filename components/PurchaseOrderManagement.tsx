@@ -23,9 +23,9 @@ const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purch
     const [editingPO, setEditingPO] = useState<PurchaseOrder | null>(null);
     const [poToDelete, setPoToDelete] = useState<PurchaseOrder | null>(null);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-    
+
     const [statusFilter, setStatusFilter] = useState<PurchaseOrderStatus | 'all'>('all');
-    
+
     const isAdmin = realUser?.role === Role.ADMIN || user?.role === Role.ADMIN;
     const printableRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +34,7 @@ const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purch
     const [selectedStatus, setSelectedStatus] = useState<PurchaseOrderStatus>(PurchaseOrderStatus.SENT);
     const [notes, setNotes] = useState('');
     const [items, setItems] = useState<PurchaseOrderItem[]>([]);
-    
+
     const [newItemDesc, setNewItemDesc] = useState('');
     const [newItemQty, setNewItemQty] = useState<number>(1);
     const [newItemPrice, setNewItemPrice] = useState<number>(0);
@@ -78,8 +78,8 @@ const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purch
     };
 
     const handleOpenCreate = () => {
-        setEditingPO(null); setSelectedVendorId(''); setItems([]); setNotes(''); 
-        setExpectedDate(new Date(Date.now() + 7*86400000).toISOString().split('T')[0]);
+        setEditingPO(null); setSelectedVendorId(''); setItems([]); setNotes('');
+        setExpectedDate(new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]);
         setIsCreateModalOpen(true);
     };
 
@@ -105,13 +105,46 @@ const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purch
         if (!printableRef.current || !viewingPO) return;
         setIsGeneratingPDF(true);
         try {
-            const canvas = await html2canvas(printableRef.current, { scale: 2 });
+            const element = printableRef.current;
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const width = pdf.internal.pageSize.getWidth();
-            const height = (canvas.height * width) / canvas.width;
-            pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, width, height);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+            const ratio = pdfWidth / imgWidth;
+            const totalPdfHeight = imgHeight * ratio;
+
+            let heightLeft = totalPdfHeight;
+            let position = 0;
+
+            // First page
+            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
+            heightLeft -= pdfHeight;
+
+            // Additional pages if needed
+            while (heightLeft > 0) {
+                position = heightLeft - totalPdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
+                heightLeft -= pdfHeight;
+            }
+
             pdf.save(`PO-${viewingPO.id}.pdf`);
-        } finally { setIsGeneratingPDF(false); }
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+        } finally {
+            setIsGeneratingPDF(false);
+        }
     };
 
     return (

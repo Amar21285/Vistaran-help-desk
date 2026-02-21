@@ -29,8 +29,8 @@ if (useSupabase) {
 
 // Check if running on Railway (production) or locally
 const isProduction = process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production';
-const dataDir = isProduction 
-  ? path.join(__dirname, 'dist', 'data') 
+const dataDir = isProduction
+  ? path.join(__dirname, 'dist', 'data')
   : path.join(__dirname, 'data');
 
 // Create data directory if it doesn't exist
@@ -99,13 +99,13 @@ function saveDataToFile(collection, data) {
 // Load data from Supabase
 async function loadDataFromSupabase() {
   const collections = ['users', 'tickets', 'technicians', 'files', 'symptoms', 'templates', 'departments', 'inventory', 'vendors', 'challans', 'outward-invoices', 'purchase-orders'];
-  
+
   for (const collection of collections) {
     try {
       const { data, error } = await supabase
         .from(collection)
         .select('*');
-      
+
       if (error) throw error;
       dataStores.set(collection, data || []);
       console.log(`Loaded ${collection} from Supabase: ${data?.length || 0} records`);
@@ -121,7 +121,7 @@ async function saveDataToSupabase(collection, data) {
   try {
     // Transform data to match database columns
     let transformedData = data;
-    
+
     // Map data to match app's expected format
     if (collection === 'users' && data && data.length > 0) {
       transformedData = data.map(u => ({
@@ -131,15 +131,16 @@ async function saveDataToSupabase(collection, data) {
         password: u.password,
         role: u.role || u.status,
         department: u.department,
-        status: u.isActive ? 'Active' : 'Inactive',
-        joinedDate: u.createdAt || new Date().toISOString(),
+        status: u.status || 'Active',
+        photo: u.photo || '',
+        joinedDate: u.createdAt || u.joinedDate || new Date().toISOString(),
         phone: u.phone || '',
         whatsapp: u.whatsapp || '',
         employeeId: u.employeeId || '',
         designation: u.designation || ''
       }));
     }
-    
+
     if (collection === 'tickets' && data && data.length > 0) {
       transformedData = data.map(t => ({
         id: t.id,
@@ -157,16 +158,16 @@ async function saveDataToSupabase(collection, data) {
         cc: t.cc || ''
       }));
     }
-    
+
     // First delete all existing records
     await supabase.from(collection).delete().neq('id', '00000000-0000-0000-0000-000000000000');
-    
+
     // Then insert new data
     if (transformedData && transformedData.length > 0) {
       const { error } = await supabase.from(collection).insert(transformedData);
       if (error) throw error;
     }
-    
+
     console.log(`Saved ${collection} to Supabase: ${transformedData?.length || 0} records`);
   } catch (err) {
     console.error(`Error saving ${collection} to Supabase:`, err.message);
@@ -196,7 +197,7 @@ io.on('connection', (socket) => {
     const { collection, data: items, type, userId, timestamp } = data;
     if (collection && items !== undefined) {
       dataStores.set(collection, items);
-      
+
       // Save to file and/or Supabase
       if (!useSupabase) {
         saveDataToFile(collection, items);
@@ -204,7 +205,7 @@ io.on('connection', (socket) => {
       if (useSupabase) {
         saveDataToSupabase(collection, items);
       }
-      
+
       // Broadcast the update to all other connected clients
       socket.broadcast.emit('data_update', {
         type: type || 'DATA_UPDATE',
@@ -220,7 +221,7 @@ io.on('connection', (socket) => {
   socket.on('ticket_update', (ticketData) => {
     socket.broadcast.emit('ticket_updated', ticketData);
   });
-  
+
   // Handle heartbeat messages
   socket.on('heartbeat', (data) => {
     socket.emit('heartbeat_response', { type: 'HEARTBEAT_RESPONSE', timestamp: Date.now() });

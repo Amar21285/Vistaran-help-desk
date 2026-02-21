@@ -66,12 +66,12 @@ input, button, select, textarea {
     box-shadow: none !important;
     border: none !important;
     display: block !important;
-    margin: 0 auto !important;
-    padding: 15mm !important;
-    width: auto !important;
-    min-height: 100vh !important;
-    page-break-inside: avoid;
+    margin: 0 !important;
+    padding: 10mm !important;
+    width: 100% !important;
+    min-height: auto !important;
     font-size: 11pt;
+    overflow: visible !important;
   }
   
   /* Goods Receipt specific print styles */
@@ -221,7 +221,21 @@ input, button, select, textarea {
   
   /* Prevent page breaks in critical areas */
   .printable-area > * {
+    page-break-inside: auto;
+    margin-bottom: 5mm;
+  }
+  
+  .printable-area table {
+    page-break-inside: auto;
+  }
+  
+  .printable-area tr {
     page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  
+  .printable-area thead {
+    display: table-header-group;
   }
   
   /* Ensure proper spacing between elements */

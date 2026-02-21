@@ -17,7 +17,11 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2026-02-14T14:26:22.198Z",
+    "phone": "",
+    "whatsapp": "",
+    "employeeId": "",
+    "designation": ""
   },
   {
     "id": "USR003",
