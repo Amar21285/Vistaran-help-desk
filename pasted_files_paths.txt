@@ -1,0 +1,13 @@
+﻿C:\Users\vista\Desktop\vistaran-help-desk (1)\index.css
+C:\Users\vista\Desktop\vistaran-help-desk (1)\just_pasted_files.txt
+C:\Users\vista\Desktop\vistaran-help-desk (1)\pasted_files_paths.txt
+C:\Users\vista\Desktop\vistaran-help-desk (1)\recent_files_utf8.txt
+C:\Users\vista\Desktop\vistaran-help-desk (1)\components\modals\AssetLabelModal.tsx
+C:\Users\vista\Desktop\vistaran-help-desk (1)\components\modals\BatchAssetLabelModal.tsx
+C:\Users\vista\Desktop\vistaran-help-desk (1)\data\challans.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\data\departments.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\data\inventory.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\data\technicians.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\data\tickets.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\data\users.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\data\vendors.json
