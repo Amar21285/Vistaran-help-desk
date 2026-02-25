@@ -238,11 +238,45 @@ input, button, select, textarea {
     display: table-header-group;
   }
   
-  /* Ensure proper spacing between elements */
   .printable-area * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+
+  /* Barcode Label Orientation Reset for Physical Printers */
+  .label-content,
+  #modal-printable-label-content,
+  .batch-label-unit > div {
+    transform: rotate(0deg) !important;
+    transform-origin: center center !important;
+  }
+
+  /* PDF & Multi-page Print Improvements */
+  .printable-area {
+    background: white !important;
+    color: black !important;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  .no-break {
+    page-break-inside: avoid !important;
   }
 }
 

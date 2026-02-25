@@ -146,46 +146,44 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
         if (!voucherRef.current || !viewingRequest) return;
         setIsGeneratingPDF(true);
         try {
-            const element = voucherRef.current;
-            const canvas = await html2canvas(element, {
+            const canvas = await html2canvas(voucherRef.current, {
                 scale: 2,
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight
+                windowWidth: voucherRef.current.scrollWidth,
+                windowHeight: voucherRef.current.scrollHeight
             });
 
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
             const imgWidth = canvas.width;
             const imgHeight = canvas.height;
-            const ratio = pdfWidth / imgWidth;
-            const totalPdfHeight = imgHeight * ratio;
+            const ratio = pageWidth / imgWidth;
+            const canvasPageHeight = pageHeight / ratio;
 
-            let heightLeft = totalPdfHeight;
+            let heightLeft = imgHeight;
             let position = 0;
 
-            // First page
-            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
-            heightLeft -= pdfHeight;
+            // First Page
+            pdf.addImage(imgData, 'JPEG', 0, position, pageWidth, imgHeight * ratio);
+            heightLeft -= canvasPageHeight;
 
-            // Additional pages if needed
+            // Subsequent Pages
             while (heightLeft > 0) {
-                position = heightLeft - totalPdfHeight;
+                position = heightLeft - imgHeight;
                 pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
-                heightLeft -= pdfHeight;
+                pdf.addImage(imgData, 'JPEG', 0, position * ratio, pageWidth, imgHeight * ratio);
+                heightLeft -= canvasPageHeight;
             }
 
             pdf.save(`Voucher-${viewingRequest.id}.pdf`);
         } catch (error) {
-            console.error("Error generating PDF:", error);
-        } finally {
-            setIsGeneratingPDF(false);
-        }
+            console.error('PDF Generation Error:', error);
+        } finally { setIsGeneratingPDF(false); }
     };
 
     return (

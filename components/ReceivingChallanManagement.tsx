@@ -13,8 +13,7 @@ const TRANSACTION_PURPOSES = [
     "Returnable",
     "Non-Returnable",
     "Sample / Demo",
-    "Transfer",
-    "Other / Custom Type..."
+    "Transfer"
 ];
 
 const UNITS = ["Nos", "Kg", "Box", "Pkt", "Mtr", "Set", "Unit", "Reams", "Bundles"];
@@ -41,7 +40,6 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
 
     const [selectedVendorId, setSelectedVendorId] = useState('');
     const [selectedPurpose, setSelectedPurpose] = useState(TRANSACTION_PURPOSES[3]);
-    const [customPurpose, setCustomPurpose] = useState('');
     const [receivedByUserId, setReceivedByUserId] = useState(user?.id || '');
     const [notes, setNotes] = useState('');
     const [items, setItems] = useState<ReceivingChallanItem[]>([]);
@@ -78,13 +76,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
     const handleOpenEdit = (challan: ReceivingChallan) => {
         setEditingChallan(challan);
         setSelectedVendorId(challan.vendorId);
-        if (TRANSACTION_PURPOSES.includes(challan.purpose || '')) {
-            setSelectedPurpose(challan.purpose || TRANSACTION_PURPOSES[3]);
-            setCustomPurpose('');
-        } else {
-            setSelectedPurpose("Other / Custom Type...");
-            setCustomPurpose(challan.purpose || '');
-        }
+        setSelectedPurpose(challan.purpose || TRANSACTION_PURPOSES[3]);
         setReceivedByUserId(challan.receivedByUserId);
         setNotes(challan.notes || '');
         setItems([...challan.items]);
@@ -120,10 +112,8 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
     const handleSaveChallan = () => {
         if (!isAdmin || !selectedVendorId || items.length === 0 || !user) return;
 
-        const finalPurpose = selectedPurpose === "Other / Custom Type..." ? customPurpose : selectedPurpose;
-
         if (editingChallan) {
-            const updated = { ...editingChallan, vendorId: selectedVendorId, purpose: finalPurpose, receivedByUserId, items, notes };
+            const updated = { ...editingChallan, vendorId: selectedVendorId, purpose: selectedPurpose, receivedByUserId, items, notes };
             setChallans(prev => prev.map(c => c.id === editingChallan.id ? updated : c));
             logUserAction(realUser || user, `Updated Receipt ${editingChallan.id}`);
         } else {
@@ -131,7 +121,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
             setChallans(prev => [{
                 id,
                 vendorId: selectedVendorId,
-                purpose: finalPurpose,
+                purpose: selectedPurpose,
                 dateReceived: new Date().toISOString(),
                 receivedByUserId: receivedByUserId,
                 items,
@@ -146,46 +136,44 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
         if (!printableRef.current || !viewingChallan) return;
         setIsGeneratingPDF(true);
         try {
-            const element = printableRef.current;
-            const canvas = await html2canvas(element, {
+            const canvas = await html2canvas(printableRef.current, {
                 scale: 2,
                 useCORS: true,
                 backgroundColor: '#ffffff',
                 logging: false,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight
+                windowWidth: printableRef.current.scrollWidth,
+                windowHeight: printableRef.current.scrollHeight
             });
 
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+
             const imgWidth = canvas.width;
             const imgHeight = canvas.height;
-            const ratio = pdfWidth / imgWidth;
-            const totalPdfHeight = imgHeight * ratio;
+            const ratio = pageWidth / imgWidth;
+            const canvasPageHeight = pageHeight / ratio;
 
-            let heightLeft = totalPdfHeight;
+            let heightLeft = imgHeight;
             let position = 0;
 
-            // First page
-            pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
-            heightLeft -= pdfHeight;
+            // First Page
+            pdf.addImage(imgData, 'JPEG', 0, position, pageWidth, imgHeight * ratio);
+            heightLeft -= canvasPageHeight;
 
-            // Additional pages if needed
+            // Subsequent Pages
             while (heightLeft > 0) {
-                position = heightLeft - totalPdfHeight;
+                position = heightLeft - imgHeight;
                 pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
-                heightLeft -= pdfHeight;
+                pdf.addImage(imgData, 'JPEG', 0, position * ratio, pageWidth, imgHeight * ratio);
+                heightLeft -= canvasPageHeight;
             }
 
             pdf.save(`Receipt-${viewingChallan.id}.pdf`);
         } catch (error) {
-            console.error("Error generating PDF:", error);
-        } finally {
-            setIsGeneratingPDF(false);
-        }
+            console.error('PDF Generation Error:', error);
+        } finally { setIsGeneratingPDF(false); }
     };
 
     return (
@@ -274,19 +262,6 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                                         {TRANSACTION_PURPOSES.map(p => <option key={p} value={p}>{p}</option>)}
                                     </select>
                                 </div>
-                                {selectedPurpose === "Other / Custom Type..." && (
-                                    <div className="md:col-span-1">
-                                        <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Specify Custom Purpose</label>
-                                        <input
-                                            type="text"
-                                            value={customPurpose}
-                                            onChange={e => setCustomPurpose(e.target.value)}
-                                            placeholder="Enter purpose here..."
-                                            className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm focus:ring-4 focus:ring-primary/10 transition-all outline-none"
-                                            autoFocus
-                                        />
-                                    </div>
-                                )}
                                 <div>
                                     <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Received By (Staff)</label>
                                     <select value={receivedByUserId} onChange={e => setReceivedByUserId(e.target.value)} className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm focus:ring-4 focus:ring-primary/10 transition-all outline-none">
