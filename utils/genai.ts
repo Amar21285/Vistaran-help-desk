@@ -2,8 +2,8 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { Ticket, User, Symptom } from '../types';
 
 // Using recommended models for basic and complex tasks
-const BASIC_MODEL = 'gemini-1.5-flash';
-const PRO_MODEL = 'gemini-1.5-pro';
+const BASIC_MODEL = 'gemini-3-flash-preview';
+const PRO_MODEL = 'gemini-3-pro-preview';
 
 /**
  * Generates a concise summary of a help desk ticket.
@@ -202,7 +202,7 @@ export const suggestTicketCategory = async (description: string, symptoms: Sympt
                 },
             },
         });
-
+        
         const result = JSON.parse(response.text || '{}');
         if (result.symptomId && symptoms.some(s => s.id === result.symptomId)) {
             return result.symptomId;

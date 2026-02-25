@@ -6,53 +6,12 @@ import { useAuth } from '../hooks/useAuth';
 import { Ticket } from '../types';
 
 const AUTO_MINIMIZE_TIMEOUT = 60000;
-const PRIMARY_MODEL = 'gemini-2.5-flash-lite';
-const FALLBACK_MODEL = 'gemini-1.5-flash';
-const ALT_MODEL = 'gemini-pro';
-
-// Retry helper: retries the same model up to 3 times with exponential backoff on 503/429
-async function withRetry<T>(fn: (model: string) => Promise<T>): Promise<T> {
-    const models = [PRIMARY_MODEL, FALLBACK_MODEL, ALT_MODEL, 'gemini-flash-lite-latest'];
-    let lastError: any;
-    for (const model of models) {
-        for (let attempt = 0; attempt < 3; attempt++) {
-            try {
-                if (attempt > 0) await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attempt - 1)));
-                console.log(`AI Calling with model: ${model} (Attempt ${attempt + 1})`);
-                return await fn(model);
-            } catch (err: any) {
-                lastError = err;
-                const status = err?.status ?? err?.code;
-                const message = err?.message || "";
-
-                // If quota error, don't retry same model, move to next model
-                if (status === 429 || message.toLowerCase().includes("quota")) {
-                    console.warn(`Quota hit for model ${model}, trying next...`);
-                    break;
-                }
-
-                // If model doesn't support modality, don't retry, move to next
-                if (status === 400 && message.toLowerCase().includes("modality")) {
-                    console.warn(`Model ${model} does not support modality, trying next...`);
-                    break;
-                }
-
-                // For 503 or other transients, retry same model
-                if (status !== 503) {
-                    console.warn(`Non-503 Error for ${model} (Status: ${status}), trying next model...`);
-                    break;
-                }
-            }
-        }
-    }
-    throw lastError;
-}
 
 interface Message {
-    id: string;
-    sender: 'user' | 'ai';
-    text: string;
-    isStreaming?: boolean;
+  id: string;
+  sender: 'user' | 'ai';
+  text: string;
+  isStreaming?: boolean;
 }
 
 interface ChatTurn {
@@ -86,18 +45,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
     const [isTtsEnabled, setIsTtsEnabled] = useState(false);
     const [isListening, setIsListening] = useState(false);
     const [isLiveActive, setIsLiveActive] = useState(false);
-
+    
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const audioContextRef = useRef<AudioContext | null>(null);
     const recognitionRef = useRef<any>(null);
     const liveSessionRef = useRef<any>(null);
     const autoCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    // Voice Mode Resource Refs
-    const streamRef = useRef<MediaStream | null>(null);
-    const inputCtxRef = useRef<AudioContext | null>(null);
-    const processorRef = useRef<ScriptProcessorNode | AudioWorkletNode | null>(null);
-    const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
 
     // --- TTS Sanitization Helper ---
     const sanitizeForTts = (text: string) => {
@@ -147,21 +100,18 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
     const playAudioResponse = async (text: string) => {
         const cleanText = sanitizeForTts(text);
         if (!cleanText || cleanText.length < 2) return;
-
+        
         try {
             initAudioContext();
-            const aiKey = (import.meta as any).env?.VITE_API_KEY || process.env.API_KEY;
-            if (!aiKey) throw new Error('Google AI API Key is missing. Check .env file.');
-            const ai = new GoogleGenAI({ apiKey: aiKey, apiVersion: 'v1beta' });
-            const response = await withRetry(model => ai.models.generateContent({
-                model,
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash-preview-tts",
                 contents: [{ parts: [{ text: cleanText }] }],
                 config: {
                     responseModalities: [Modality.AUDIO],
-                    systemInstruction: `You are Vistaran AI assistant. You help users with ticket management and general support.`,
-                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } }
-                }
-            }));
+                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
+                },
+            });
 
             const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
             if (base64Audio && audioContextRef.current) {
@@ -171,8 +121,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
                 source.connect(audioContextRef.current.destination);
                 source.start();
             }
-        } catch (error) {
-            console.error('TTS Engine Error (sanitized):', error);
+        } catch (error) { 
+            console.error('TTS Engine Error (sanitized):', error); 
         }
     };
 
@@ -181,39 +131,28 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
         initAudioContext();
         setIsLiveMode(true);
         setIsLiveActive(true);
-
+        
         try {
-            const aiKey = (import.meta as any).env?.VITE_API_KEY || process.env.API_KEY;
-            if (!aiKey) throw new Error('Google AI API Key is missing. Check .env file.');
-            const ai = new GoogleGenAI({ apiKey: aiKey, apiVersion: 'v1beta' });
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
-
+            const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({sampleRate: 16000});
+            
             const sessionPromise = ai.live.connect({
-                model: PRIMARY_MODEL,
+                model: 'gemini-2.5-flash-native-audio-preview-12-2025',
                 callbacks: {
-                    onopen: async () => {
+                    onopen: () => {
                         const source = inputCtx.createMediaStreamSource(stream);
-                        await inputCtx.audioWorklet.addModule('/pcm-processor.js');
-                        const pcmWorklet = new AudioWorkletNode(inputCtx, 'pcm-processor');
-
-                        sourceRef.current = source;
-                        processorRef.current = pcmWorklet;
-
-                        pcmWorklet.port.onmessage = (e) => {
-                            if (!liveSessionRef.current || !isLiveActive) return;
-
-                            const inputData = e.data; // Float32Array from worklet
+                        const scriptProcessor = inputCtx.createScriptProcessor(4096, 1, 1);
+                        scriptProcessor.onaudioprocess = (e) => {
+                            const inputData = e.inputBuffer.getChannelData(0);
                             const l = inputData.length;
                             const int16 = new Int16Array(l);
                             for (let i = 0; i < l; i++) int16[i] = inputData[i] * 32768;
                             const pcmBlob = { data: encode(new Uint8Array(int16.buffer)), mimeType: 'audio/pcm;rate=16000' };
-
-                            liveSessionRef.current.sendRealtimeInput({ media: pcmBlob });
+                            sessionPromise.then(s => s.sendRealtimeInput({ media: pcmBlob }));
                         };
-
-                        source.connect(pcmWorklet);
-                        pcmWorklet.connect(inputCtx.destination);
+                        source.connect(scriptProcessor);
+                        scriptProcessor.connect(inputCtx.destination);
                     },
                     onmessage: async (message: LiveServerMessage) => {
                         const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData.data;
@@ -234,54 +173,21 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
                     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } }
                 }
             });
-            const session = await sessionPromise;
-            liveSessionRef.current = session;
-            streamRef.current = stream;
-            inputCtxRef.current = inputCtx;
+            liveSessionRef.current = await sessionPromise;
         } catch (err) {
             console.error(err);
             setIsLiveActive(false);
-            setIsLiveMode(false);
         }
     };
 
-    const stopLiveSession = useCallback(() => {
-        setIsLiveActive(false);
-        setIsLiveMode(false);
-
+    const stopLiveSession = () => {
         if (liveSessionRef.current) {
-            try { liveSessionRef.current.close(); } catch (e) { }
+            liveSessionRef.current.close();
             liveSessionRef.current = null;
         }
-
-        // Cleanup Audio Resources
-        if (processorRef.current) {
-            if (processorRef.current instanceof ScriptProcessorNode) {
-                processorRef.current.onaudioprocess = null;
-            } else if (processorRef.current instanceof AudioWorkletNode) {
-                processorRef.current.port.onmessage = null;
-            }
-            processorRef.current.disconnect();
-            processorRef.current = null;
-        }
-
-        if (sourceRef.current) {
-            sourceRef.current.disconnect();
-            sourceRef.current = null;
-        }
-
-        if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
-            streamRef.current = null;
-        }
-
-        if (inputCtxRef.current) {
-            if (inputCtxRef.current.state !== 'closed') {
-                inputCtxRef.current.close();
-            }
-            inputCtxRef.current = null;
-        }
-    }, []);
+        setIsLiveActive(false);
+        setIsLiveMode(false);
+    };
 
     const handleAction = async (text: string) => {
         if (isLoading || !text.trim()) return;
@@ -294,17 +200,15 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
         setIsLoading(true);
 
         try {
-            const aiKey = (import.meta as any).env?.VITE_API_KEY || process.env.API_KEY;
-            if (!aiKey) throw new Error('Google AI API Key is missing. Check .env file.');
-            const ai = new GoogleGenAI({ apiKey: aiKey, apiVersion: 'v1beta' });
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             const knowledgeBase = FAQ_DATA.map(f => `Q: ${f.question}\nA: ${f.answer}`).join('\n\n');
             const systemInstruction = `Vistaran AI assistant for ${user?.name} (${user?.department}). Knowledge Base: ${knowledgeBase}. Provide simple, actionable support.`;
-
-            const responseStream = await withRetry(model => ai.models.generateContentStream({
-                model,
+            
+            const responseStream = await ai.models.generateContentStream({
+                model: "gemini-3-flash-preview",
                 contents: [...history, { role: 'user', parts: [{ text: userMsg }] }],
                 config: { systemInstruction, temperature: 0.7 }
-            }));
+            });
 
             let fullAiText = "";
             const aiMsgId = 'ai_' + Date.now();
@@ -320,15 +224,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
 
             setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, isStreaming: false } : m));
             setHistory(prev => [...prev, { role: 'user', parts: [{ text: userMsg }] }, { role: 'model', parts: [{ text: fullAiText }] }]);
-
+            
             if (isTtsEnabled) await playAudioResponse(fullAiText);
-        } catch (error: any) {
-            console.error('AI Assistant Error:', error);
-            const is503 = error?.status === 503 || error?.code === 503 || String(error).includes('503');
-            const errMsg = is503
-                ? "All AI models are currently under high demand. Please wait a moment and try again."
-                : `Service unavailable. Error: ${error instanceof Error ? error.message : 'Unknown'}. Please retry.`;
-            setMessages(prev => [...prev, { id: 'err_' + Date.now(), sender: 'ai', text: errMsg }]);
+        } catch (error) {
+            setMessages(prev => [...prev, { id: 'err', sender: 'ai', text: "Service temporary unavailable. Please retry." }]);
         } finally {
             setIsLoading(false);
         }
@@ -346,7 +245,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
             </div>
 
             <div className={`fixed bottom-0 right-0 m-0 sm:m-6 w-full sm:w-[420px] h-full sm:h-[680px] flex flex-col bg-white dark:bg-slate-900 sm:rounded-[40px] shadow-2xl border border-slate-200 dark:border-slate-800 transition-all duration-500 origin-bottom-right z-50 overflow-hidden no-print ${isOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95 pointer-events-none'}`}>
-
+                
                 <div className="flex-shrink-0 flex justify-between items-center p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b dark:border-slate-800">
                     <div className="flex items-center gap-4">
                         <div className="relative">
@@ -361,15 +260,15 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => { initAudioContext(); setIsTtsEnabled(!isTtsEnabled); }}
+                        <button 
+                            onClick={() => { initAudioContext(); setIsTtsEnabled(!isTtsEnabled); }} 
                             className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all ${isTtsEnabled ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}
                             title="Auto Speak"
                         >
                             <i className={`fas ${isTtsEnabled ? 'fa-volume-up' : 'fa-volume-mute'}`}></i>
                         </button>
-                        <button
-                            onClick={() => isLiveMode ? stopLiveSession() : startLiveSession()}
+                        <button 
+                            onClick={() => isLiveMode ? stopLiveSession() : startLiveSession()} 
                             className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all ${isLiveActive ? 'bg-rose-50 text-rose-500 ring-2 ring-rose-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-primary'}`}
                             title={isLiveActive ? "End Call" : "Voice Mode"}
                         >
@@ -403,11 +302,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
                             {messages.map((msg) => (
                                 <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                                     <div className={`max-w-[85%] space-y-1.5`}>
-                                        <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed shadow-sm group relative ${msg.sender === 'user' ? 'bg-primary text-white rounded-br-none' : 'bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-none border border-slate-100 dark:border-slate-700'
-                                            }`}>
+                                        <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed shadow-sm group relative ${
+                                            msg.sender === 'user' ? 'bg-primary text-white rounded-br-none' : 'bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-none border border-slate-100 dark:border-slate-700'
+                                        }`}>
                                             <p className="whitespace-pre-wrap font-medium">{msg.text}</p>
                                             {msg.sender === 'ai' && !msg.isStreaming && (
-                                                <button
+                                                <button 
                                                     onClick={() => playAudioResponse(msg.text)}
                                                     className="absolute -right-8 bottom-0 p-2 text-slate-300 hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
                                                 >
