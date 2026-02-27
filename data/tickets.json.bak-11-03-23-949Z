@@ -1,0 +1,28 @@
+[
+  {
+    "id": "TKT1769244477252",
+    "userId": "USR001",
+    "email": "ITsupport@vistaran.in",
+    "description": "Printer not printing or paper jam.",
+    "department": "IT",
+    "priority": "Urgent",
+    "status": "Resolved",
+    "dateCreated": "2026-02-14",
+    "dateResolved": "2026-02-14T14:26:22.222Z",
+    "assignedTechId": "TECH001",
+    "symptomId": "SYM011"
+  },
+  {
+    "id": "TKT1770982791371",
+    "userId": "USR030",
+    "email": "amarjeet.s@vistaran.in",
+    "description": "[Custom Issue: printer issue]\n\npls chek",
+    "department": "Staff",
+    "priority": "Medium",
+    "status": "Open",
+    "dateCreated": "2026-02-14",
+    "dateResolved": null,
+    "assignedTechId": "TECH001",
+    "symptomId": "CUSTOM_1770982791371"
+  }
+]

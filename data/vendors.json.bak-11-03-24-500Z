@@ -1,0 +1,62 @@
+[
+  {
+    "id": "VEN001",
+    "name": "Perfect Electronics",
+    "contactPerson": "TABREZ",
+    "email": "",
+    "phone": "9372195058",
+    "whatsapp": "",
+    "address": "B/49 Twin house Colony Vikhroli Park Site Vikhroli West Mumbai 400079",
+    "gstin": "27BBMPS6799C1ZW",
+    "state": "MAHARASHTRA",
+    "stateCode": "27"
+  },
+  {
+    "id": "VEN1769175521819",
+    "name": "AVGN Infotech",
+    "contactPerson": "Naveen",
+    "email": "",
+    "phone": "9029044486",
+    "whatsapp": "",
+    "address": "Shop No-25, Prajapati\nCascade, Sector No 1, Road No 18, Opposite\nShiva Complex New Panvel,Navi Mumbai-\n410206",
+    "gstin": "27ARAPD4980B1Z6",
+    "state": "MAHARASHTRA",
+    "stateCode": "27"
+  },
+  {
+    "id": "VEN1769175766111",
+    "name": "A TO Z ENTERPRISE",
+    "contactPerson": "IMRAN",
+    "email": "",
+    "phone": "8779984342",
+    "whatsapp": "",
+    "address": " A-Wing, 101 B, Kailas Industrial Complex, Veer Savarkar Marg, Parksite, Vikhroli West, Mumbai - 400079",
+    "gstin": "27DILPM0118M1Z0",
+    "state": "MAHARASHTRA",
+    "stateCode": "27"
+  },
+  {
+    "id": "VEN1769589743952",
+    "name": "Vistaran Health Care Services Pvt. Ltd",
+    "contactPerson": "Azhar Khan",
+    "email": "",
+    "phone": "9867813355",
+    "whatsapp": "",
+    "address": "Unit No: A-3, Bldg No: 2, Kailas Industrial Complex, Veer Savarkar Marg, Parksite, Vikhroli West, Mumbai - 400079",
+    "gstin": "27AAHCV5462H1Z0",
+    "state": "MAHARASHTRA",
+    "stateCode": "27"
+  },
+  {
+    "id": "VEN1769858553561",
+    "name": "AVI INFOTECH LLP",
+    "contactPerson": "Sheetal",
+    "email": "",
+    "phone": "8879888038",
+    "whatsapp": "",
+    "address": "314, Pioneer Industrial Estate, Subhash, road jogeshwari (E) Mumbai-400060",
+    "gstin": "27ABJFA0479K1Z5",
+    "state": "MAHARASHTRA",
+    "stateCode": "27"
+  }
+]

@@ -1,0 +1,57 @@
+{
+  "files": [
+    {
+      "name": "Vistaran_Auto_Backup.json",
+      "size": 497998
+    },
+    {
+      "name": "Vistaran_Auto_Backup.rar",
+      "size": 22286
+    },
+    {
+      "name": "Vistaran_Master_Sync.json",
+      "size": 1239446
+    }
+  ],
+  "contents": {
+    "Vistaran_Auto_Backup.json": [
+      "vistaran-helpdesk-challans",
+      "vistaran-helpdesk-notifications",
+      "vistaran-helpdesk-vendors",
+      "vistaran-helpdesk-notificationSettings",
+      "vistaran-helpdesk-theme",
+      "vistaran-helpdesk-inventory",
+      "vistaran-helpdesk-attendance",
+      "vistaran-helpdesk-reimbursements",
+      "vistaran-helpdesk-auditlog",
+      "vistaran-helpdesk-color-theme",
+      "vistaran-helpdesk-outward-invoices",
+      "vistaran-helpdesk-userId",
+      "vistaran-helpdesk-tickets",
+      "vistaran-helpdesk-users"
+    ],
+    "Vistaran_Master_Sync.json": [
+      "vistaran-helpdesk-departments",
+      "vistaran-helpdesk-notifications",
+      "vistaran-helpdesk-files",
+      "vistaran-helpdesk-symptoms",
+      "vistaran-helpdesk-notificationSettings",
+      "vistaran-helpdesk-theme",
+      "vistaran-helpdesk-reimbursements",
+      "vistaran-helpdesk-auditlog",
+      "vistaran-helpdesk-templates",
+      "vistaran-helpdesk-tickets",
+      "vistaran-helpdesk-vendors",
+      "vistaran-helpdesk-inventory",
+      "vistaran-helpdesk-attendance",
+      "vistaran-helpdesk-color-theme",
+      "vistaran-helpdesk-outward-invoices",
+      "vistaran-helpdesk-font",
+      "vistaran-helpdesk-userId",
+      "vistaran-helpdesk-users",
+      "vistaran-helpdesk-challans",
+      "vistaran-helpdesk-technicians",
+      "vistaran-helpdesk-branches"
+    ]
+  }
+}

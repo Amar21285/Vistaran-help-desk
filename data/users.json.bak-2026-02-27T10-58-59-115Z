@@ -7,21 +7,20 @@
     "role": "Admin",
     "department": "IT",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-01-15T10:00:00Z",
+    "photo": "https://randomuser.me/api/portraits/men/1.jpg",
+    "phone": "+918828367178",
+    "whatsapp": "+918828367178"
   },
   {
     "id": "USR002",
-    "name": "BHANDUP -001",
+    "name": "BHANDUOP -001",
     "email": "purchasebhandup@vistaran.in",
     "password": "10001",
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z",
-    "phone": "",
-    "whatsapp": "",
-    "employeeId": "",
-    "designation": ""
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR003",
@@ -31,7 +30,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR004",
@@ -41,7 +40,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR005",
@@ -51,7 +50,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR006",
@@ -61,7 +60,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR007",
@@ -71,7 +70,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR008",
@@ -81,7 +80,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR009",
@@ -91,7 +90,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR010",
@@ -101,7 +100,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR011",
@@ -111,7 +110,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR012",
@@ -121,7 +120,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR013",
@@ -131,7 +130,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR014",
@@ -141,7 +140,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR015",
@@ -151,7 +150,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR016",
@@ -161,7 +160,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR017",
@@ -171,7 +170,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR018",
@@ -181,7 +180,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR019",
@@ -191,7 +190,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR020",
@@ -201,7 +200,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR021",
@@ -211,7 +210,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR022",
@@ -221,7 +220,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR023",
@@ -231,7 +230,17 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
+  },
+  {
+    "id": "USR024",
+    "name": "Parksite Branch",
+    "email": "purchaseparksite@vistaran.in",
+    "password": "11111",
+    "role": "User",
+    "department": "Operations",
+    "status": "Active",
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR025",
@@ -241,7 +250,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR026",
@@ -251,7 +260,17 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
+  },
+  {
+    "id": "USR027",
+    "name": "Warehouse 501",
+    "email": "purchasedc@vistaran.in",
+    "password": "50001",
+    "role": "User",
+    "department": "Operations",
+    "status": "Active",
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR028",
@@ -261,7 +280,7 @@
     "role": "User",
     "department": "Operations",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2023-02-20T11:30:00Z"
   },
   {
     "id": "USR029",
@@ -271,7 +290,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-01-10T09:00:00Z"
   },
   {
     "id": "USR030",
@@ -281,7 +300,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-01-10T09:00:00Z"
   },
   {
     "id": "USR031",
@@ -291,7 +310,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-01-10T09:00:00Z"
   },
   {
     "id": "USR032",
@@ -301,7 +320,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-01-10T09:00:00Z"
   },
   {
     "id": "USR033",
@@ -311,7 +330,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-01-10T09:00:00Z"
   },
   {
     "id": "USR034",
@@ -321,7 +340,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-01-10T09:00:00Z"
   },
   {
     "id": "USR035",
@@ -331,7 +350,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-01-10T09:00:00Z"
   },
   {
     "id": "USR036",
@@ -341,7 +360,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR037",
@@ -351,7 +370,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-01-10T09:00:00Z"
   },
   {
     "id": "USR038",
@@ -361,7 +380,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR039",
@@ -371,17 +390,17 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR040",
-    "name": "Aishwarya.D",
-    "email": "Aishwarya@vistaran.in",
+    "name": "Ayesha .Y",
+    "email": "ayesha.y@vistaran.in",
     "password": "10040",
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR041",
@@ -391,7 +410,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR042",
@@ -401,7 +420,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR043",
@@ -411,7 +430,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR044",
@@ -421,7 +440,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR045",
@@ -431,7 +450,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR046",
@@ -441,7 +460,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR047",
@@ -451,7 +470,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR048",
@@ -461,17 +480,17 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR049",
-    "name": "Somesh",
-    "email": "Somesh@vistaran.in",
+    "name": "Manda Tai",
+    "email": "manda.t@vistaran.in",
     "password": "10049",
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR050",
@@ -481,7 +500,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR051",
@@ -491,7 +510,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR052",
@@ -501,7 +520,7 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR054",
@@ -511,7 +530,17 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
+  },
+  {
+    "id": "USR055",
+    "name": "Kajal",
+    "email": "kajal@vistaran.in",
+    "password": "10055",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Active",
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR056",
@@ -521,40 +550,16 @@
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   },
   {
     "id": "USR057",
-    "name": "Supriya .Y",
-    "email": "supriya.y@vistaran.in",
+    "name": "Supriya .k",
+    "email": "supriya.k@vistaran.in",
     "password": "10057",
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z",
-    "phone": "",
-    "whatsapp": "",
-    "employeeId": "",
-    "designation": ""
-  },
-  {
-    "id": "USR1769245099806",
-    "name": "Azhar Sir",
-    "email": "azhar.k@vistaran.in",
-    "password": "123456",
-    "role": "Read-only",
-    "department": "Operations",
-    "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
-  },
-  {
-    "id": "USR1769248072661",
-    "name": "Warehouse(DC-501)",
-    "email": "purchasedc@vistaran.in",
-    "password": "501",
-    "role": "User",
-    "department": "Operations",
-    "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2024-05-20T09:00:00Z"
   }
 ]

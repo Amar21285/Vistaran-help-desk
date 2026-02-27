@@ -1,0 +1,1602 @@
+[
+  {
+    "id": "LOG_1770186792189_5ply38w",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Established Real-time Local Drive Sync.",
+    "timestamp": "2026-02-04T06:33:12.189Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1770186671171_wtkkvnb",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Generated system data backup.",
+    "timestamp": "2026-02-04T06:31:11.171Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868204212_b0o2arn",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Tata play fiber",
+    "timestamp": "2026-01-31T14:03:24.212Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868186583_1rbwx0g",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:03:06.583Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868176402_kidw4z7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:02:56.402Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868167318_4lb3zkq",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:02:47.318Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868155452_gnownav",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:02:35.452Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868144400_j6lohnh",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:02:24.400Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868121069_dz0dlyj",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:02:01.069Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868112086_pf91c2i",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:01:52.086Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868103079_1lmz1b3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Nokia router",
+    "timestamp": "2026-01-31T14:01:43.079Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868091063_rsttdci",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:01:31.063Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868081425_qldj4ga",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:01:21.426Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769868001024_b99bjjr",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T14:00:01.024Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867985934_2ml51hz",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:59:45.934Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867975839_1iye5vi",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:59:35.839Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867965690_6u5mfe1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:59:25.690Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867954202_bbrmvlw",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:59:14.202Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867936501_70o9afk",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:58:56.501Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867927556_jnh4gok",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:58:47.556Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867913003_lhh7vj7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TL-R605",
+    "timestamp": "2026-01-31T13:58:33.003Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867894400_o94p7kh",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:58:14.400Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867885041_d7a7604",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TL-R605",
+    "timestamp": "2026-01-31T13:58:05.041Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867855581_b1cfdrd",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Returned: Tag AST-RT-024 is now Spare.",
+    "timestamp": "2026-01-31T13:57:35.581Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867851797_a9y5el7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Returned: Tag AST-RT-023 is now Spare.",
+    "timestamp": "2026-01-31T13:57:31.797Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867839047_stof8u4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TL-R605",
+    "timestamp": "2026-01-31T13:57:19.047Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867787430_gtg1lg0",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:56:27.430Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867764806_u167005",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-024 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T13:56:04.806Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867731696_2oikkrj",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:55:31.696Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867611806_bq4zrry",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-023 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T13:53:31.806Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769867587868_qgi9163",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TL-R605",
+    "timestamp": "2026-01-31T13:53:07.868Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769865170847_s2njqns",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-022 issued to Vartaknagar Branch 22",
+    "timestamp": "2026-01-31T13:12:50.847Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769865127511_oakhusd",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Tata play fiber",
+    "timestamp": "2026-01-31T13:12:07.511Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769864798166_1rp9igy",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-021 issued to Talaopali Branch 21",
+    "timestamp": "2026-01-31T13:06:38.166Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769864785140_rf81jk3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:06:25.140Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769864739136_pdm2uh6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-020 issued to Civilhospital Branch 20",
+    "timestamp": "2026-01-31T13:05:39.136Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769864722234_bztk6j9",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:05:22.234Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769864665993_qt1sfx1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-019 issued to Sai Dham Branch 019",
+    "timestamp": "2026-01-31T13:04:25.993Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769864646565_0ywwlz0",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:04:06.565Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769864553940_9vjh3n2",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-018 issued to Lok kedar branch 018",
+    "timestamp": "2026-01-31T13:02:33.940Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769864492377_de0yknq",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T13:01:32.377Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769864010382_43hisbp",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-017 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T12:53:30.382Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769863996428_u8eqivl",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:53:16.428Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769863960531_zh2vqz9",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-016 issued to Hanuman Chowk 016",
+    "timestamp": "2026-01-31T12:52:40.531Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769863933808_abogfkr",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:52:13.808Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769863899035_dwtf4w6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-015 issued to Veena Two 015",
+    "timestamp": "2026-01-31T12:51:39.035Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769863505960_ngjot04",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:45:05.960Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769863402459_4cxk43p",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-014 issued to Tagore Nagar014",
+    "timestamp": "2026-01-31T12:43:22.459Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769863387704_6k7nkn8",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:43:07.704Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769863252477_qd75js1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-013 issued to Godrej 013",
+    "timestamp": "2026-01-31T12:40:52.477Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769863240790_0rxy5xp",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Nokia router",
+    "timestamp": "2026-01-31T12:40:40.790Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862948065_vqwys3q",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-012 issued to Sakinaka 012",
+    "timestamp": "2026-01-31T12:35:48.065Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862932889_iwjst5u",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:35:32.889Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862887460_vtvv67r",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-011 issued to Dhokali Naka 023",
+    "timestamp": "2026-01-31T12:34:47.460Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862855176_pi88pv5",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:34:15.176Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862815976_tnd4yv4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-010 issued to Romell vasant 010",
+    "timestamp": "2026-01-31T12:33:35.976Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862796319_p8jjz36",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:33:16.319Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862538714_s0x5u2v",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-009 issued to Tambe Nagar 009",
+    "timestamp": "2026-01-31T12:28:58.714Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862527225_ux6bhi1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:28:47.225Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862482370_fj8ze88",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-008 issued to Hindustan Chowk 008",
+    "timestamp": "2026-01-31T12:28:02.370Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862461516_ds9n0z0",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:27:41.516Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862394759_k9wzi25",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-007 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T12:26:34.759Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862376241_yjd83ia",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:26:16.241Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862309128_kz8a9g7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-006 issued to Mulund -006",
+    "timestamp": "2026-01-31T12:25:09.128Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862293992_eeyonr6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:24:53.992Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862245999_enq8msq",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-005 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T12:24:05.999Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862219127_diw2dhy",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:23:39.127Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862123506_aaok3sx",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-004 issued to POWAI -004",
+    "timestamp": "2026-01-31T12:22:03.506Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862091441_jzu9g9o",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:21:31.441Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769862074106_zlox4mz",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:21:14.106Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769861684227_e0w7s9r",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769861673658 issued to HIRANANDANI -003",
+    "timestamp": "2026-01-31T12:14:44.227Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769861673662_hnqpbg0",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TP-Link LS1008 with distributed logistics.",
+    "timestamp": "2026-01-31T12:14:33.662Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769861427541_b4yysu5",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-003 issued to HIRANANDANI -003",
+    "timestamp": "2026-01-31T12:10:27.541Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769861407380_06yphdo",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:10:07.380Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769861337274_96s939e",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TL-R605",
+    "timestamp": "2026-01-31T12:08:57.274Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769861320029_qfqcwjy",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-002 issued to VIKHROLI -002",
+    "timestamp": "2026-01-31T12:08:40.029Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769861296986_2z1059j",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TP-Link Archer C6 AC1200",
+    "timestamp": "2026-01-31T12:08:16.986Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769860968600_wmotcj3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769860936799 issued to BHANDUOP -001",
+    "timestamp": "2026-01-31T12:02:48.600Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769860936802_bjs6y7g",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TP-Link LS1008 with distributed logistics.",
+    "timestamp": "2026-01-31T12:02:16.802Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769860663768_72l92u1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-RT-001 issued to BHANDUOP -001",
+    "timestamp": "2026-01-31T11:57:43.768Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769860633663_snlkh15",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TL-R605",
+    "timestamp": "2026-01-31T11:57:13.663Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769860083637_ae36bva",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted asset ID: AST-BIO-024",
+    "timestamp": "2026-01-31T11:48:03.637Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769860035270_nhplyni",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-023 issued to Vistaran office Ho",
+    "timestamp": "2026-01-31T11:47:15.270Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859980621_i3uslbq",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:46:20.621Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859888244_1c93baw",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-022 issued to Vartaknagar Branch 22",
+    "timestamp": "2026-01-31T11:44:48.244Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859869232_9ae2h07",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:44:29.232Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859839920_4guocte",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-021 issued to Talaopali Branch 21",
+    "timestamp": "2026-01-31T11:43:59.920Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859816919_7590uf4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:43:36.919Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859780495_5w4eqrk",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-020 issued to Civilhospital Branch 20",
+    "timestamp": "2026-01-31T11:43:00.495Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859759537_1769qv6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:42:39.537Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859717849_jh3aurf",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-019 issued to Sai Dham Branch 019",
+    "timestamp": "2026-01-31T11:41:57.849Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859694869_g1za3x4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:41:34.869Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859655040_1uq0b2q",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-018 issued to Lok kedar branch 018",
+    "timestamp": "2026-01-31T11:40:55.040Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859636116_c1f79oh",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:40:36.116Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859593667_5urrnet",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-017 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T11:39:53.667Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859572184_nvgqd5m",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:39:32.184Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859500847_iy65bcu",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-016 issued to Hanuman Chowk 016",
+    "timestamp": "2026-01-31T11:38:20.847Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859486369_63ucw5j",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:38:06.369Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859415972_om685s0",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-015 issued to Veena Two 015",
+    "timestamp": "2026-01-31T11:36:55.972Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859401008_6g7tbbg",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:36:41.008Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859225998_vi962b9",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-014 issued to Tagore Nagar014",
+    "timestamp": "2026-01-31T11:33:45.998Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859213104_839k268",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:33:33.104Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859163757_t2i2zb7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-013 issued to Godrej 013",
+    "timestamp": "2026-01-31T11:32:43.757Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859149012_5w5i8ya",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:32:29.012Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859054606_qs9ub43",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-012 issued to Sakinaka 012",
+    "timestamp": "2026-01-31T11:30:54.606Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769859041706_d83hwse",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:30:41.706Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858990955_lwsze8p",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-011 issued to Dhokali Naka 023",
+    "timestamp": "2026-01-31T11:29:50.955Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858971985_ldekmox",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:29:31.985Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858894714_cmzee2o",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-010 issued to Romell vasant 010",
+    "timestamp": "2026-01-31T11:28:14.714Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858867136_ljiessw",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:27:47.136Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858823781_w3svcz0",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-009 issued to Tambe Nagar 009",
+    "timestamp": "2026-01-31T11:27:03.781Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858813404_8970lsl",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:26:53.404Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858785604_som2bv7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-008 issued to Hindustan Chowk 008",
+    "timestamp": "2026-01-31T11:26:25.604Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858768062_i8nzfwa",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:26:08.062Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858710881_cx4d6zp",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-007 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T11:25:10.881Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858692722_pabnbtd",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:24:52.722Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858661107_wqwyl5a",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:24:21.107Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858643303_m0in19a",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:24:03.303Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858624882_cq83muv",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:23:44.882Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858606374_out1f1w",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:23:26.374Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858592050_jg0b1c6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:23:12.050Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858576728_mntfw1p",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:22:56.728Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858553561_09fa0ex",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Onboarded Entity: AVI INFOTECH LLP",
+    "timestamp": "2026-01-31T11:22:33.561Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858037318_l3k6q5l",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-006 issued to Mulund -006",
+    "timestamp": "2026-01-31T11:13:57.318Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769858020217_tu66ee9",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:13:40.217Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857986133_yteoxe0",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:13:06.133Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857973250_xvfvlsv",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-005 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T11:12:53.250Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857957545_wxonexa",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:12:37.545Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857924720_o1ovlrn",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-004 issued to POWAI -004",
+    "timestamp": "2026-01-31T11:12:04.720Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857912393_pfs3jjm",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:11:52.393Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857859607_17h5b7c",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-003 issued to HIRANANDANI -003",
+    "timestamp": "2026-01-31T11:10:59.607Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857847800_xgxfqtk",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:10:47.800Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857817845_516u3wm",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-002 issued to VIKHROLI -002",
+    "timestamp": "2026-01-31T11:10:17.845Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857805276_mvrdo4l",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:10:05.276Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857771830_z3f5dtv",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BIO-001 issued to BHANDUOP -001",
+    "timestamp": "2026-01-31T11:09:31.830Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769857757271_4cxe1eg",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Biomax N-BM60",
+    "timestamp": "2026-01-31T11:09:17.271Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769856754391_5pyyqmt",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Material Issue TXI-2026-0001",
+    "timestamp": "2026-01-31T10:52:34.391Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854920299_qmfixfl",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769854896933 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T10:22:00.299Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854896938_iizks3j",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T10:21:36.938Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854818315_35jejx1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769854802027 issued to Vartaknagar Branch 22",
+    "timestamp": "2026-01-31T10:20:18.315Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854802030_ncjpwvf",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T10:20:02.030Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854721699_i1ivm4i",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769854669921 issued to Vartaknagar Branch 22",
+    "timestamp": "2026-01-31T10:18:41.699Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854669925_jnba0z7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of HF680 with distributed logistics.",
+    "timestamp": "2026-01-31T10:17:49.925Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854548329_42kwonj",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769854529014 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T10:15:48.329Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854529018_ybs54e2",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T10:15:29.018Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854251537_02gdb2p",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769854233656 issued to Talaopali Branch 21",
+    "timestamp": "2026-01-31T10:10:51.537Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854233658_c3xv2lk",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T10:10:33.658Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854178862_kq91ptl",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769854143747 issued to Talaopali Branch 21",
+    "timestamp": "2026-01-31T10:09:38.862Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854143750_jjbgkvp",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of HF680 with distributed logistics.",
+    "timestamp": "2026-01-31T10:09:03.750Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854033622_dljxrg4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted asset ID: AST-SCN-027",
+    "timestamp": "2026-01-31T10:07:13.622Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854028543_hb1f54t",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted asset ID: AST-SCN-026",
+    "timestamp": "2026-01-31T10:07:08.543Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854025250_c0peb8t",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted asset ID: AST-SCN-025",
+    "timestamp": "2026-01-31T10:07:05.250Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854021089_8rvlwfu",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted asset ID: AST-SCN-024",
+    "timestamp": "2026-01-31T10:07:01.089Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854015578_zcv0v5u",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted asset ID: AST-SCN-023",
+    "timestamp": "2026-01-31T10:06:55.578Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854012294_medeux4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted asset ID: AST-SCN-022",
+    "timestamp": "2026-01-31T10:06:52.294Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769854008314_78hh01w",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted asset ID: AST-SCN-021",
+    "timestamp": "2026-01-31T10:06:48.314Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769853972843_rf4cd2o",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769853953797 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T10:06:12.843Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769853953799_rza2ts3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T10:05:53.799Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769853583011_9ukw5kn",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769853514628 issued to Civilhospital Branch 20",
+    "timestamp": "2026-01-31T09:59:43.011Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769853561385_s80ptkb",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TVS Electronics BS-L100",
+    "timestamp": "2026-01-31T09:59:21.385Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769853514633_srsxxus",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T09:58:34.633Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769852399055_n8ll6gl",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-SCN-020 issued to Civilhospital Branch 20",
+    "timestamp": "2026-01-31T09:39:59.055Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769852369720_8s13pd3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: ‎HF680",
+    "timestamp": "2026-01-31T09:39:29.720Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769852291040_36r8n0s",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769852258174 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T09:38:11.040Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769852258176_nbkd6s3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T09:37:38.176Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769852187565_2r84wl4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769852167076 issued to Sai Dham Branch 019",
+    "timestamp": "2026-01-31T09:36:27.565Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769852167079_j9rg0q9",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T09:36:07.079Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769852096539_9izw6rn",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-SCN-019 issued to Sai Dham Branch 019",
+    "timestamp": "2026-01-31T09:34:56.539Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769852003774_mbhm3he",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: ‎HF680",
+    "timestamp": "2026-01-31T09:33:23.774Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769851856118_0ku8drv",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: TVS Electronics BS-L100",
+    "timestamp": "2026-01-31T09:30:56.118Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769851744845_a99nmrz",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769851729876 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T09:29:04.845Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769851729879_yft53ep",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T09:28:49.879Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769851676255_zhsai3k",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769851660045 issued to Lok kedar branch 018",
+    "timestamp": "2026-01-31T09:27:56.255Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769851660046_5vlo4ph",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of TVS Electronics BS-L100 with distributed logistics.",
+    "timestamp": "2026-01-31T09:27:40.046Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769850815701_t91wzm8",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-SCN-018 issued to Lok kedar branch 018",
+    "timestamp": "2026-01-31T09:13:35.701Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769850798167_rngrm0p",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: ‎HF680",
+    "timestamp": "2026-01-31T09:13:18.167Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769849441188_hnnkhpa",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-SCN-017 issued to KailashBranch 017",
+    "timestamp": "2026-01-31T08:50:41.188Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769849419848_6jvoenn",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: ‎HF680",
+    "timestamp": "2026-01-31T08:50:19.848Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769849344967_dqckpwf",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769849325568 issued to Hanuman Chowk 016",
+    "timestamp": "2026-01-31T08:49:04.967Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769849325572_uw0sbr2",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of RETSOL LS 450 with distributed logistics.",
+    "timestamp": "2026-01-31T08:48:45.572Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769849197954_k0816ew",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-SCN-016 issued to Hanuman Chowk 016",
+    "timestamp": "2026-01-31T08:46:37.954Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769849175960_hx566ww",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: ‎HF680",
+    "timestamp": "2026-01-31T08:46:15.960Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769847843921_ho03pn3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Receipt CHN-2026-0001",
+    "timestamp": "2026-01-31T08:24:03.921Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769847220558_hbxrbzd",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Receipt CHN-2026-0001",
+    "timestamp": "2026-01-31T08:13:40.558Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769846706004_n4jzcjd",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Receipt CHN-2026-0001",
+    "timestamp": "2026-01-31T08:05:06.004Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769845649466_b6s15d2",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769845360121 issued to Warehouse(DC-501)",
+    "timestamp": "2026-01-31T07:47:29.466Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769845360124_6i2n9z1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of RETSOL LS 450 with distributed logistics.",
+    "timestamp": "2026-01-31T07:42:40.124Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769845298078_uvcxrti",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769845278754 issued to Veena Two 015",
+    "timestamp": "2026-01-31T07:41:38.078Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769845278759_aueqxme",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of RETSOL LS 450 with distributed logistics.",
+    "timestamp": "2026-01-31T07:41:18.759Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769845204261_hxy0miz",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-SCN-015 issued to Veena Two 015",
+    "timestamp": "2026-01-31T07:40:04.261Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769845183332_w066hj7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: ‎HF680",
+    "timestamp": "2026-01-31T07:39:43.332Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769844953187_7kwufsp",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-SCN-014 issued to Tagore Nagar014",
+    "timestamp": "2026-01-31T07:35:53.187Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769844924733_y2ptcq9",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: RETSOL LS 450",
+    "timestamp": "2026-01-31T07:35:24.733Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769844477285_arzzjf2",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1769844460104 issued to Godrej 013",
+    "timestamp": "2026-01-31T07:27:57.285Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769844460108_7e9421o",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of RETSOL LS 450 with distributed logistics.",
+    "timestamp": "2026-01-31T07:27:40.108Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769844347949_y3qr3bn",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-SCN-013 issued to Godrej 013",
+    "timestamp": "2026-01-31T07:25:47.949Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769844328463_r12kv48",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: ‎HF680",
+    "timestamp": "2026-01-31T07:25:28.463Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769843439395_dv9h3z4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Supriya .k as Present.",
+    "timestamp": "2026-01-31T07:10:39.395Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769843438139_0f0nknu",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Anjali as Present.",
+    "timestamp": "2026-01-31T07:10:38.139Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1769843436896_q8tqfs1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Aishwarya  as Present.",
+    "timestamp": "2026-01-31T07:10:36.896Z",
+    "ip": "127.0.0.1"
+  }
+]
