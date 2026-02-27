@@ -6,13 +6,14 @@ import { logUserAction } from '../utils/auditLogger';
 import Logo from './icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { generateMultiPagePDF } from '../utils/pdfGenerator';
 
 const TRANSACTION_PURPOSES = [
-    "Repair ke liye",
-    "Job Work",
-    "Returnable",
-    "Non-Returnable",
-    "Sample / Demo",
+    "Repair ke liye", 
+    "Job Work", 
+    "Returnable", 
+    "Non-Returnable", 
+    "Sample / Demo", 
     "Transfer"
 ];
 
@@ -39,11 +40,11 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
     const printableRef = useRef<HTMLDivElement>(null);
 
     const [selectedVendorId, setSelectedVendorId] = useState('');
-    const [selectedPurpose, setSelectedPurpose] = useState(TRANSACTION_PURPOSES[3]);
+    const [selectedPurpose, setSelectedPurpose] = useState(TRANSACTION_PURPOSES[3]); 
     const [receivedByUserId, setReceivedByUserId] = useState(user?.id || '');
     const [notes, setNotes] = useState('');
     const [items, setItems] = useState<ReceivingChallanItem[]>([]);
-
+    
     const [newItemDesc, setNewItemDesc] = useState('');
     const [newItemQty, setNewItemQty] = useState<number>(1);
     const [newItemUnit, setNewItemUnit] = useState('Nos');
@@ -61,14 +62,14 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
 
     const handleAddItem = () => {
         if (!newItemDesc.trim()) return;
-        setItems(prev => [...prev, {
-            id: `ITEM-${Date.now()}`,
-            description: newItemDesc,
-            quantity: newItemQty,
+        setItems(prev => [...prev, { 
+            id: `ITEM-${Date.now()}`, 
+            description: newItemDesc, 
+            quantity: newItemQty, 
             unit: newItemUnit,
-            remarks: newItemRemarks
+            remarks: newItemRemarks 
         }]);
-        setNewItemDesc('');
+        setNewItemDesc(''); 
         setNewItemQty(1);
         setNewItemRemarks('');
     };
@@ -118,14 +119,14 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
             logUserAction(realUser || user, `Updated Receipt ${editingChallan.id}`);
         } else {
             const id = `CHN-${new Date().getFullYear()}-${(challans.length + 1).toString().padStart(4, '0')}`;
-            setChallans(prev => [{
-                id,
-                vendorId: selectedVendorId,
-                purpose: selectedPurpose,
-                dateReceived: new Date().toISOString(),
-                receivedByUserId: receivedByUserId,
-                items,
-                notes
+            setChallans(prev => [{ 
+                id, 
+                vendorId: selectedVendorId, 
+                purpose: selectedPurpose, 
+                dateReceived: new Date().toISOString(), 
+                receivedByUserId: receivedByUserId, 
+                items, 
+                notes 
             }, ...prev]);
             logUserAction(realUser || user, `Created Receipt ${id}`);
         }
@@ -136,43 +137,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
         if (!printableRef.current || !viewingChallan) return;
         setIsGeneratingPDF(true);
         try {
-            const canvas = await html2canvas(printableRef.current, {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: false,
-                windowWidth: printableRef.current.scrollWidth,
-                windowHeight: printableRef.current.scrollHeight
-            });
-
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const ratio = pageWidth / imgWidth;
-            const canvasPageHeight = pageHeight / ratio;
-
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            // First Page
-            pdf.addImage(imgData, 'JPEG', 0, position, pageWidth, imgHeight * ratio);
-            heightLeft -= canvasPageHeight;
-
-            // Subsequent Pages
-            while (heightLeft > 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position * ratio, pageWidth, imgHeight * ratio);
-                heightLeft -= canvasPageHeight;
-            }
-
-            pdf.save(`Receipt-${viewingChallan.id}.pdf`);
-        } catch (error) {
-            console.error('PDF Generation Error:', error);
+            await generateMultiPagePDF(printableRef.current, `Receipt-${viewingChallan.id}.pdf`);
         } finally { setIsGeneratingPDF(false); }
     };
 
@@ -246,7 +211,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                             </div>
                             <button onClick={() => setIsCreateModalOpen(false)} className="text-slate-400 hover:text-red-500 text-3xl transition-all">&times;</button>
                         </header>
-
+                        
                         <div className="p-8 overflow-y-auto space-y-8 flex-1 custom-scrollbar">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div className="md:col-span-1">
@@ -320,7 +285,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                                     )}
                                 </div>
                             </div>
-
+                            
                             <div>
                                 <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Master Remarks</label>
                                 <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="General consignment notes, driver info, or gate entry reference..." className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm focus:ring-4 focus:ring-primary/10 transition-all outline-none resize-none h-24 shadow-inner"></textarea>
@@ -338,7 +303,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
             {viewingChallan && (
                 <div className="fixed inset-0 bg-black/90 backdrop-blur-xl flex justify-center items-center z-[150] p-4 overflow-y-auto">
                     <div className="bg-white rounded-[50px] w-full max-w-4xl min-h-[500px] flex flex-col my-auto shadow-2xl overflow-hidden border-[10px] border-white">
-                        <header className="p-6 border-b flex justify-between items-center no-print bg-slate-50/50">
+                         <header className="p-6 border-b flex justify-between items-center no-print bg-slate-50/50">
                             <div className="flex gap-4 items-center">
                                 <div className="flex bg-slate-200 dark:bg-slate-700 p-1 rounded-xl">
                                     <button onClick={() => setSelectedTemplate('classic')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${selectedTemplate === 'classic' ? 'bg-white text-primary shadow-sm' : 'text-slate-500'}`}>Classic</button>
@@ -417,30 +382,30 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                                 </div>
                             )}
 
-                            <table className="w-full mb-10 border-collapse mt-10">
-                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : 'border-b-2 border-slate-900 text-slate-900'}`}>
-                                    <tr>
-                                        <th className="p-4 text-left w-12 rounded-l-xl">#</th>
-                                        <th className="p-4 text-left">Description of Goods</th>
-                                        <th className="p-4 text-center">Unit</th>
-                                        <th className="p-4 text-right rounded-r-xl">Quantity</th>
+                            <table className="w-full mb-10 border-collapse mt-10 print-table-container print-avoid-break">
+                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : 'border-b-2 border-slate-900 text-slate-900'} print-table-header-group print-avoid-break`}>
+                                    <tr className="print-avoid-break">
+                                        <th className="p-4 text-left w-12 rounded-l-xl print-avoid-break">#</th>
+                                        <th className="p-4 text-left print-avoid-break">Description of Goods</th>
+                                        <th className="p-4 text-center print-avoid-break">Unit</th>
+                                        <th className="p-4 text-right rounded-r-xl print-avoid-break">Quantity</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="print-table-row-group">
                                     {viewingChallan.items.map((i, idx) => (
-                                        <tr key={i.id} className="border-b border-slate-100 group">
-                                            <td className="p-4 text-xs font-bold text-slate-400">{idx + 1}</td>
-                                            <td className="p-4">
-                                                <p className="font-black uppercase text-sm text-slate-800">{i.description}</p>
-                                                {i.remarks && <p className="text-[9px] font-bold text-primary italic mt-1 uppercase">Remark: {i.remarks}</p>}
+                                        <tr key={i.id} className="border-b border-slate-100 group print-table-row-group print-avoid-break">
+                                            <td className="p-4 text-xs font-bold text-slate-400 print-avoid-break">{idx + 1}</td>
+                                            <td className="p-4 print-avoid-break">
+                                                <p className="font-black uppercase text-sm text-slate-800 print-avoid-break">{i.description}</p>
+                                                {i.remarks && <p className="text-[9px] font-bold text-primary italic mt-1 uppercase print-avoid-break">Remark: {i.remarks}</p>}
                                             </td>
-                                            <td className="p-4 text-center text-xs font-bold text-slate-600 uppercase">{i.unit}</td>
-                                            <td className="p-4 text-right font-black text-sm text-slate-900">{i.quantity}</td>
+                                            <td className="p-4 text-center text-xs font-bold text-slate-600 uppercase print-avoid-break">{i.unit}</td>
+                                            <td className="p-4 text-right font-black text-sm text-slate-900 print-avoid-break">{i.quantity}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-
+                            
                             <div className={`p-8 rounded-[35px] mb-12 ${selectedTemplate === 'executive' ? 'bg-primary/5 border-2 border-primary/10' : 'bg-slate-50 border'}`}>
                                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Acknowledgement Notes</p>
                                 <p className="text-xs font-bold text-slate-700 leading-relaxed italic">{viewingChallan.notes || 'The above listed goods have been received in satisfactory condition unless noted in individual item remarks.'}</p>

@@ -6,6 +6,7 @@ import { logUserAction } from '../utils/auditLogger';
 import Logo from './icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { generateMultiPagePDF } from '../utils/pdfGenerator';
 import { numberToWords } from '../utils/formatters';
 
 const SELLER_DETAILS = {
@@ -19,11 +20,11 @@ const SELLER_DETAILS = {
 const BANK_DETAILS = { name: "HDFC Bank Ltd", accountNo: "50200012345678", ifsc: "HDFC0000123" };
 
 const TRANSACTION_PURPOSES = [
-    "Repair ke liye",
-    "Job Work",
-    "Returnable",
-    "Non-Returnable",
-    "Sample / Demo",
+    "Repair ke liye", 
+    "Job Work", 
+    "Returnable", 
+    "Non-Returnable", 
+    "Sample / Demo", 
     "Transfer",
     "Sales"
 ];
@@ -50,7 +51,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
     const printableRef = useRef<HTMLDivElement>(null);
 
     const [selectedVendorId, setSelectedVendorId] = useState('');
-    const [selectedPurpose, setSelectedPurpose] = useState(TRANSACTION_PURPOSES[3]);
+    const [selectedPurpose, setSelectedPurpose] = useState(TRANSACTION_PURPOSES[3]); 
     const [paymentMode, setPaymentMode] = useState<'Cash' | 'UPI' | 'Bank Transfer'>('UPI');
     const [items, setItems] = useState<InvoiceItem[]>([]);
     const [dueDate, setDueDate] = useState('');
@@ -145,32 +146,32 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
 
     const handleAddItem = () => {
         if (!newItemDesc.trim()) return;
-        setItems(prev => [...prev, {
-            id: `ITEM-${Date.now()}`,
-            description: newItemDesc,
-            hsn: newItemHsn,
-            quantity: newItemQty,
-            unit: newItemUnit,
-            rate: newItemRate,
+        setItems(prev => [...prev, { 
+            id: `ITEM-${Date.now()}`, 
+            description: newItemDesc, 
+            hsn: newItemHsn, 
+            quantity: newItemQty, 
+            unit: newItemUnit, 
+            rate: newItemRate, 
             gstRate: newItemGst,
             remarks: newItemRemarks
         }]);
-        setNewItemDesc('');
-        setNewItemHsn('');
+        setNewItemDesc(''); 
+        setNewItemHsn(''); 
         setNewItemRate(0);
         setNewItemRemarks('');
     };
 
     const handleSaveInvoice = () => {
         if (!isAdmin || !selectedVendorId || items.length === 0 || !user) return;
-
-        const invoiceData: any = {
-            vendorId: selectedVendorId,
-            items,
-            dueDate,
-            paymentMode,
-            departmentName: deptName,
-            ticketId,
+        
+        const invoiceData: any = { 
+            vendorId: selectedVendorId, 
+            items, 
+            dueDate, 
+            paymentMode, 
+            departmentName: deptName, 
+            ticketId, 
             engineerName,
             purpose: selectedPurpose,
             notes
@@ -182,11 +183,11 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
             logUserAction(realUser || user, `Updated Material Issue ${editingInvoice.id}`);
         } else {
             const id = `TXI-${new Date().getFullYear()}-${(invoices.length + 1).toString().padStart(4, '0')}`;
-            setInvoices(prev => [{
-                id,
-                dateIssued: new Date().toISOString(),
-                issuedByUserId: user.id,
-                ...invoiceData
+            setInvoices(prev => [{ 
+                id, 
+                dateIssued: new Date().toISOString(), 
+                issuedByUserId: user.id, 
+                ...invoiceData 
             }, ...prev]);
             logUserAction(realUser || user, `Created Material Issue ${id}`);
         }
@@ -197,43 +198,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
         if (!printableRef.current || !viewingInvoice) return;
         setIsGeneratingPDF(true);
         try {
-            const canvas = await html2canvas(printableRef.current, {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                logging: false,
-                windowWidth: printableRef.current.scrollWidth,
-                windowHeight: printableRef.current.scrollHeight
-            });
-
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const ratio = pageWidth / imgWidth;
-            const canvasPageHeight = pageHeight / ratio;
-
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            // First Page
-            pdf.addImage(imgData, 'JPEG', 0, position, pageWidth, imgHeight * ratio);
-            heightLeft -= canvasPageHeight;
-
-            // Subsequent Pages
-            while (heightLeft > 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position * ratio, pageWidth, imgHeight * ratio);
-                heightLeft -= canvasPageHeight;
-            }
-
-            pdf.save(`Invoice-${viewingInvoice.id}.pdf`);
-        } catch (error) {
-            console.error('PDF Generation Error:', error);
+            await generateMultiPagePDF(printableRef.current, `Invoice-${viewingInvoice.id}.pdf`);
         } finally { setIsGeneratingPDF(false); }
     };
 
@@ -300,7 +265,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                             </div>
                             <button onClick={() => setIsCreateModalOpen(false)} className="text-slate-400 hover:text-red-500 text-3xl transition-all">&times;</button>
                         </header>
-
+                        
                         <div className="p-8 overflow-y-auto space-y-8 flex-1 custom-scrollbar">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
@@ -373,7 +338,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                     ))}
                                 </div>
                             </div>
-
+                            
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase text-slate-400 block tracking-widest">Internal Logistics Refs</label>
@@ -400,7 +365,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
             {viewingInvoice && (
                 <div className="fixed inset-0 bg-black/90 backdrop-blur-xl flex justify-center items-center z-[150] p-4 overflow-y-auto">
                     <div className="bg-white rounded-[50px] w-full max-w-4xl min-h-[500px] flex flex-col my-auto shadow-2xl overflow-hidden border-[10px] border-white">
-                        <header className="p-6 border-b flex justify-between items-center no-print bg-slate-50/50">
+                         <header className="p-6 border-b flex justify-between items-center no-print bg-slate-50/50">
                             <div className="flex gap-4 items-center">
                                 <div className="flex bg-slate-200 dark:bg-slate-700 p-1 rounded-xl">
                                     <button onClick={() => setSelectedTemplate('classic')} className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all ${selectedTemplate === 'classic' ? 'bg-white text-primary shadow-sm' : 'text-slate-500'}`}>Classic</button>
@@ -484,29 +449,29 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                 </div>
                             )}
 
-                            <table className="w-full mb-10 border-collapse mt-10">
-                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : 'border-b-2 border-slate-900 text-slate-900'}`}>
-                                    <tr>
-                                        <th className="p-4 text-left w-12 rounded-l-xl">#</th>
-                                        <th className="p-4 text-left">Description of Goods</th>
-                                        <th className="p-4 text-center">Qty</th>
-                                        <th className="p-4 text-right">Rate</th>
-                                        <th className="p-4 text-right rounded-r-xl">Total</th>
+                            <table className="w-full mb-10 border-collapse mt-10 print-table-container print-avoid-break">
+                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : 'border-b-2 border-slate-900 text-slate-900'} print-table-header-group print-avoid-break`}>
+                                    <tr className="print-avoid-break">
+                                        <th className="p-4 text-left w-12 rounded-l-xl print-avoid-break">#</th>
+                                        <th className="p-4 text-left print-avoid-break">Description of Goods</th>
+                                        <th className="p-4 text-center print-avoid-break">Qty</th>
+                                        <th className="p-4 text-right print-avoid-break">Rate</th>
+                                        <th className="p-4 text-right rounded-r-xl print-avoid-break">Total</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="print-table-row-group">
                                     {viewingInvoice.items.map((i, idx) => (
-                                        <tr key={i.id} className="border-b border-slate-100">
-                                            <td className="p-4 text-xs font-bold text-slate-400">{idx + 1}</td>
-                                            <td className="p-4 font-black uppercase text-sm text-slate-800">{i.description}</td>
-                                            <td className="p-4 text-center text-xs font-bold text-slate-600">{i.quantity}</td>
-                                            <td className="p-4 text-right text-xs font-bold text-slate-600">₹{i.rate.toLocaleString()}</td>
-                                            <td className="p-4 text-right font-black text-sm text-slate-900">₹{(i.rate * i.quantity).toLocaleString()}</td>
+                                        <tr key={i.id} className="border-b border-slate-100 print-table-row-group print-avoid-break">
+                                            <td className="p-4 text-xs font-bold text-slate-400 print-avoid-break">{idx + 1}</td>
+                                            <td className="p-4 font-black uppercase text-sm text-slate-800 print-avoid-break">{i.description}</td>
+                                            <td className="p-4 text-center text-xs font-bold text-slate-600 print-avoid-break">{i.quantity}</td>
+                                            <td className="p-4 text-right text-xs font-bold text-slate-600 print-avoid-break">₹{i.rate.toLocaleString()}</td>
+                                            <td className="p-4 text-right font-black text-sm text-slate-900 print-avoid-break">₹{(i.rate * i.quantity).toLocaleString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-
+                            
                             <div className="flex justify-end mb-10">
                                 <div className={`p-8 rounded-[35px] w-80 space-y-3 ${selectedTemplate === 'executive' ? 'bg-primary text-white shadow-2xl shadow-primary/30' : 'bg-slate-900 text-white shadow-xl'}`}>
                                     <div className="flex justify-between opacity-60 text-[9px] font-black uppercase tracking-widest">
@@ -536,7 +501,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                 </div>
                                 <div className="space-y-4">
                                     <div className="h-20 border-b-2 border-slate-200 flex items-end justify-center pb-2">
-                                        <p className="text-[9px] font-black text-primary uppercase">E-Verified by Admin Hub</p>
+                                         <p className="text-[9px] font-black text-primary uppercase">E-Verified by Admin Hub</p>
                                     </div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">For {SELLER_DETAILS.name}</p>
                                 </div>

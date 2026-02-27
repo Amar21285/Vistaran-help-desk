@@ -227,21 +227,50 @@ input, button, select, textarea {
   
   .printable-area table {
     page-break-inside: auto;
+    break-inside: auto;
   }
   
   .printable-area tr {
     page-break-inside: avoid;
     page-break-after: auto;
+    break-inside: avoid;
   }
   
   .printable-area thead {
     display: table-header-group;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  
+  .printable-area tfoot {
+    display: table-footer-group;
+    page-break-before: avoid;
+    break-before: avoid;
   }
   
   .printable-area * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+  
+  /* Enhanced multi-page content handling */
+  .printable-area {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    overflow: visible;
+  }
+  
+  .printable-area > div, 
+  .printable-area > section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Table row grouping for better multi-page handling */
+  .printable-area tbody tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   /* Barcode Label Orientation Reset for Physical Printers */
@@ -256,27 +285,116 @@ input, button, select, textarea {
   .printable-area {
     background: white !important;
     color: black !important;
+    width: 210mm !important; /* Fixed A4 width */
+    min-height: 297mm !important; /* Min A4 height */
+    padding: 15mm !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Enhanced multi-page table handling */
+  .printable-area table {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+  
+  .printable-area thead {
+    display: table-header-group !important;
+    page-break-after: avoid !important;
+  }
+  
+  .printable-area tfoot {
+    display: table-footer-group !important;
+    page-break-before: avoid !important;
+  }
+  
+  .printable-area tbody tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Section break handling */
+  .print-section-break {
+    page-break-before: always !important;
+    break-before: always !important;
+  }
+  
+  .print-avoid-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Additional print utility classes */
+  .print-keep-with-next {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  
+  .print-keep-with-previous {
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+  }
+  
+  .print-page-break-before {
+    page-break-before: always !important;
+    break-before: always !important;
+  }
+  
+  .print-page-break-after {
+    page-break-after: always !important;
+    break-after: always !important;
+  }
+  
+  /* Table-specific print handling */
+  .print-table-container {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+  
+  .print-table-header-group {
+    display: table-header-group !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  
+  .print-table-footer-group {
+    display: table-footer-group !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+  }
+  
+  .print-table-row-group {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   table {
+    width: 100% !important;
+    border-collapse: collapse !important;
     page-break-inside: auto;
   }
 
   tr {
-    page-break-inside: avoid;
+    page-break-inside: avoid !important;
     page-break-after: auto;
   }
 
   thead {
-    display: table-header-group;
+    display: table-header-group !important;
   }
 
   tfoot {
-    display: table-footer-group;
+    display: table-footer-group !important;
   }
 
   .no-break {
     page-break-inside: avoid !important;
+  }
+  
+  .page-break {
+    page-break-before: always !important;
   }
 }
 
