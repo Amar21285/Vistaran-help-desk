@@ -23,4 +23,4 @@ RUN node -e "const fs = require('fs'); if (fs.existsSync('data')) fs.cpSync('dat
 EXPOSE 3000
 
 # Start the application using the server
-CMD ["node", "server.cjs"]
+CMD ["node", "server.mjs"]

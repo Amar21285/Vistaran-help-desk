@@ -1,9 +1,9 @@
-const express = require('express');
-const path = require('path');
-const fs = require('fs');
-const { createServer } = require('http');
-const { Server } = require('socket.io');
-const { createClient } = require('@supabase/supabase-js');
+import express from 'express';
+import path from 'path';
+import fs from 'fs';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import { createClient } from '@supabase/supabase-js';
 
 const app = express();
 const server = createServer(app);
