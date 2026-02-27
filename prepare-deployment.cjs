@@ -4,25 +4,25 @@ const path = require('path');
 async function prepareDeployment() {
   try {
     console.log('Preparing deployment package...');
-    
+
     // Source directories
     const distDir = path.join(__dirname, 'dist');
     const dataDir = path.join(__dirname, 'data');
-    const serverFile = path.join(__dirname, 'server.cjs');
+    const serverFile = path.join(__dirname, 'server.mjs');
     const packageJson = path.join(__dirname, 'package.json');
     const ecosystemFile = path.join(__dirname, 'ecosystem.config.cjs');
-    
+
     // Destination directory for deployment
     const deployDir = path.join(__dirname, 'deployment-package');
-    
+
     // Clean deployment directory if it exists
     if (await fs.pathExists(deployDir)) {
       await fs.remove(deployDir);
     }
-    
+
     // Create deployment directory
     await fs.ensureDir(deployDir);
-    
+
     // Copy built frontend files
     if (await fs.pathExists(distDir)) {
       await fs.copy(distDir, path.join(deployDir, 'dist'));
@@ -30,7 +30,7 @@ async function prepareDeployment() {
     } else {
       console.log('⚠ Frontend build directory not found. Run "npm run build" first.');
     }
-    
+
     // Copy data directory
     if (await fs.pathExists(dataDir)) {
       await fs.copy(dataDir, path.join(deployDir, 'data'));
@@ -39,25 +39,25 @@ async function prepareDeployment() {
       console.log('⚠ Data directory not found. Creating empty data directory...');
       await fs.ensureDir(path.join(deployDir, 'data'));
     }
-    
+
     // Copy server file
     if (await fs.pathExists(serverFile)) {
-      await fs.copy(serverFile, path.join(deployDir, 'server.cjs'));
+      await fs.copy(serverFile, path.join(deployDir, 'server.mjs'));
       console.log('✓ Copied server file');
     }
-    
+
     // Copy package.json
     if (await fs.pathExists(packageJson)) {
       await fs.copy(packageJson, path.join(deployDir, 'package.json'));
       console.log('✓ Copied package.json');
     }
-    
+
     // Copy PM2 ecosystem file
     if (await fs.pathExists(ecosystemFile)) {
       await fs.copy(ecosystemFile, path.join(deployDir, 'ecosystem.config.cjs'));
       console.log('✓ Copied PM2 ecosystem file');
     }
-    
+
     // Create deployment instructions
     const instructions = `VISTARAN HELP DESK DEPLOYMENT INSTRUCTIONS
 =========================================
@@ -79,7 +79,7 @@ SERVER CONFIGURATION:
 FILE STRUCTURE:
 - dist/: Frontend build files
 - data/: Application data (JSON files)
-- server.cjs: Main server file
+- server.mjs: Main server file
 - package.json: Dependencies and scripts
 - ecosystem.config.cjs: PM2 configuration (optional)
 
@@ -88,17 +88,17 @@ TROUBLESHOOTING:
 - Ensure port 3000 is available
 - Check file permissions on your server
 `;
-    
+
     await fs.writeFile(path.join(deployDir, 'DEPLOYMENT_INSTRUCTIONS.txt'), instructions);
     console.log('✓ Created deployment instructions');
-    
+
     console.log('\nDeployment package ready!');
     console.log(`Package location: ${deployDir}`);
     console.log('\nTo deploy:');
     console.log('1. Upload all files in the deployment-package folder to your web server via FTP');
     console.log('2. Run "npm install" on your server');
     console.log('3. Start the server with "npm start" or PM2');
-    
+
   } catch (error) {
     console.error('Error preparing deployment:', error);
   }

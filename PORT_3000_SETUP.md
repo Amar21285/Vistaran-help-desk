@@ -14,7 +14,7 @@ The application has been configured to run on port 3000 with real-time synchroni
    - Connects to the server running on port 3000
    - Provides live synchronization between admin and client sides
 
-3. **Production Server** (`server.cjs`):
+3. **Production Server** (`server.mjs`):
    - Express.js server running on port 3000
    - Socket.IO integration for real-time sync
    - Static file serving from the build directory
