@@ -22,5 +22,5 @@ RUN node -e "const fs = require('fs'); if (fs.existsSync('data')) fs.cpSync('dat
 # Expose port 3000
 EXPOSE 3000
 
-# Start the application using vite preview
-CMD ["npm", "start"]
+# Start the application using the server
+CMD ["node", "server.cjs"]
