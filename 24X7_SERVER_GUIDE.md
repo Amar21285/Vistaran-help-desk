@@ -32,7 +32,7 @@ The server is already running on port 3000 via PID 16344. To ensure continuity:
 2. **If server stops, restart manually:**
    ```cmd
    cd "c:\Users\vista\Desktop\vistaran-help-desk (1)"
-   node server.cjs
+   node server.mjs
    ```
 
 ## Automatic Restart Script
@@ -42,7 +42,7 @@ The `start-server-24x7.bat` file contains:
 - Error handling and retry mechanism
 
 ## Server Configuration
-- Port: 3000 (hardcoded in server.cjs)
+- Port: 3000 (hardcoded in server.mjs)
 - Host: 0.0.0.0 (accessible from network)
 - 24/7 mode enabled
 - Graceful shutdown handling
