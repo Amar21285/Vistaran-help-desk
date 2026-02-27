@@ -16,6 +16,13 @@ interface SyncCollectionMap {
   'challans': ReceivingChallan[];
   'outward-invoices': Invoice[];
   'purchase-orders': PurchaseOrder[];
+  'attendance': any[];
+  'reimbursements': any[];
+  'auditlog': any[];
+  'notifications': any[];
+  'notificationSettings': any;
+  'theme': string;
+  'color-theme': string;
 }
 
 interface RealtimeSyncHook {
@@ -30,7 +37,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const socketRef = useRef<any>(null);
   const userIdRef = useRef<string>('');
-  
+
   // Import all the localStorage hooks to monitor for changes
   const [allUsers, setAllUsers] = useLocalStorage<User[]>('vistaran-helpdesk-users', []);
   const [allTickets, setAllTickets] = useLocalStorage<Ticket[]>('vistaran-helpdesk-tickets', []);
@@ -44,6 +51,13 @@ const useRealtimeSync = (): RealtimeSyncHook => {
   const [allChallans, setAllChallans] = useLocalStorage<ReceivingChallan[]>('vistaran-helpdesk-challans', []);
   const [allInvoices, setAllInvoices] = useLocalStorage<Invoice[]>('vistaran-helpdesk-outward-invoices', []);
   const [allPurchaseOrders, setAllPurchaseOrders] = useLocalStorage<PurchaseOrder[]>('vistaran-helpdesk-purchase-orders', []);
+  const [allAttendance, setAllAttendance] = useLocalStorage<any[]>('vistaran-helpdesk-attendance', []);
+  const [allReimbursements, setAllReimbursements] = useLocalStorage<any[]>('vistaran-helpdesk-reimbursements', []);
+  const [allAuditLogs, setAllAuditLogs] = useLocalStorage<any[]>('vistaran-helpdesk-audit-logs', []);
+  const [allNotifications, setAllNotifications] = useLocalStorage<any[]>('vistaran-helpdesk-notifications', []);
+  const [allNotificationSettings, setAllNotificationSettings] = useLocalStorage<any>('vistaran-helpdesk-notification-settings', {});
+  const [currentTheme, setCurrentTheme] = useLocalStorage<string>('vistaran-helpdesk-theme', 'light');
+  const [currentColorTheme, setCurrentColorTheme] = useLocalStorage<string>('vistaran-helpdesk-color-theme', 'blue');
 
   // Store the previous values to detect changes
   const prevValuesRef = useRef({
@@ -59,12 +73,19 @@ const useRealtimeSync = (): RealtimeSyncHook => {
     challans: JSON.stringify(allChallans),
     invoices: JSON.stringify(allInvoices),
     purchaseOrders: JSON.stringify(allPurchaseOrders),
+    attendance: JSON.stringify(allAttendance),
+    reimbursements: JSON.stringify(allReimbursements),
+    auditlog: JSON.stringify(allAuditLogs),
+    notifications: JSON.stringify(allNotifications),
+    notificationSettings: JSON.stringify(allNotificationSettings),
+    theme: JSON.stringify(currentTheme),
+    colorTheme: JSON.stringify(currentColorTheme),
   });
 
   // Function to connect to the sync service
   const connect = useCallback((userId: string, role: string) => {
     userIdRef.current = userId;
-    
+
     // Connect to Socket.IO server
     const socket = io({
       transports: ['websocket'],
@@ -73,29 +94,29 @@ const useRealtimeSync = (): RealtimeSyncHook => {
         role
       }
     });
-    
+
     socketRef.current = socket;
-    
+
     socket.on('connect', () => {
       console.log(`Connected to sync service as ${role} user: ${userId}`);
       setIsConnected(true);
     });
-    
+
     socket.on('disconnect', () => {
       console.log('Disconnected from sync service');
       setIsConnected(false);
     });
-    
+
     socket.on('data_update', (message) => {
       console.log('Received sync message:', message);
       handleIncomingMessage(message);
     });
-    
+
     socket.on('connect_error', (error) => {
       console.error('Connection error:', error);
       setIsConnected(false);
     });
-    
+
     setIsConnected(true);
     console.log(`Connected to sync service as ${role} user: ${userId}`);
   }, []);
@@ -180,19 +201,42 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       case 'purchase-orders':
         setAllPurchaseOrders(data);
         break;
+      case 'attendance':
+        setAllAttendance(data);
+        break;
+      case 'reimbursements':
+        setAllReimbursements(data);
+        break;
+      case 'auditlog':
+        setAllAuditLogs(data);
+        break;
+      case 'notifications':
+        setAllNotifications(data);
+        break;
+      case 'notificationSettings':
+        setAllNotificationSettings(data);
+        break;
+      case 'theme':
+        setCurrentTheme(data);
+        break;
+      case 'color-theme':
+        setCurrentColorTheme(data);
+        break;
       default:
         console.warn('Unknown collection for sync:', collection);
     }
-  }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms, 
-      setAllTemplates, setAllDepartments, setAllInventory, setAllVendors, 
-      setAllChallans, setAllInvoices, setAllPurchaseOrders]);
+  }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms,
+    setAllTemplates, setAllDepartments, setAllInventory, setAllVendors,
+    setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllAttendance,
+    setAllReimbursements, setAllAuditLogs, setAllNotifications,
+    setAllNotificationSettings, setCurrentTheme, setCurrentColorTheme]);
 
   // Handle initial sync message
   const handleInitialSync = useCallback((message: any) => {
     if (!message.data) return;
 
     const syncData = message.data;
-    
+
     // Update all collections with initial sync data
     if (syncData.users !== undefined) setAllUsers(syncData.users);
     if (syncData.tickets !== undefined) setAllTickets(syncData.tickets);
@@ -206,12 +250,44 @@ const useRealtimeSync = (): RealtimeSyncHook => {
     if (syncData.challans !== undefined) setAllChallans(syncData.challans);
     if (syncData.invoices !== undefined) setAllInvoices(syncData.invoices);
     if (syncData.purchaseOrders !== undefined) setAllPurchaseOrders(syncData.purchaseOrders);
-  }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms, 
-      setAllTemplates, setAllDepartments, setAllInventory, setAllVendors, 
-      setAllChallans, setAllInvoices, setAllPurchaseOrders]);
+    if (syncData.attendance !== undefined) setAllAttendance(syncData.attendance);
+    if (syncData.reimbursements !== undefined) setAllReimbursements(syncData.reimbursements);
+    if (syncData.auditlog !== undefined) setAllAuditLogs(syncData.auditlog);
+    if (syncData.notifications !== undefined) setAllNotifications(syncData.notifications);
+    if (syncData.notificationSettings !== undefined) setAllNotificationSettings(syncData.notificationSettings);
+    if (syncData.theme !== undefined) setCurrentTheme(syncData.theme);
+    if (syncData.colorTheme !== undefined) setCurrentColorTheme(syncData.colorTheme);
+  }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms,
+    setAllTemplates, setAllDepartments, setAllInventory, setAllVendors,
+    setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllAttendance,
+    setAllReimbursements, setAllAuditLogs, setAllNotifications, setAllNotificationSettings,
+    setCurrentTheme, setCurrentColorTheme]);
 
   // Handle full sync message
   const handleFullSync = useCallback(handleInitialSync, [handleInitialSync]);
+
+
+  // Helper function to sync a collection change
+  const syncCollectionChange = useCallback((collection: keyof SyncCollectionMap, data: any) => {
+    if (!isConnected || !socketRef.current) {
+      return;
+    }
+
+    const syncMessage = {
+      type: 'SYNC_DATA',
+      collection,
+      data,
+      userId: userIdRef.current,
+      timestamp: Date.now()
+    };
+
+    try {
+      socketRef.current.emit('sync_data', syncMessage);
+      console.log(`Synced ${collection} change to other clients`);
+    } catch (error) {
+      console.error(`Error syncing ${collection} change:`, error);
+    }
+  }, [isConnected]);
 
   // Monitor for changes in localStorage and sync them
   useEffect(() => {
@@ -228,6 +304,13 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       challans: JSON.stringify(allChallans),
       invoices: JSON.stringify(allInvoices),
       purchaseOrders: JSON.stringify(allPurchaseOrders),
+      attendance: JSON.stringify(allAttendance),
+      reimbursements: JSON.stringify(allReimbursements),
+      auditlog: JSON.stringify(allAuditLogs),
+      notifications: JSON.stringify(allNotifications),
+      notificationSettings: JSON.stringify(allNotificationSettings),
+      theme: JSON.stringify(currentTheme),
+      colorTheme: JSON.stringify(currentColorTheme),
     };
 
     // Check for changes in each collection
@@ -279,34 +362,41 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       syncCollectionChange('purchase-orders', allPurchaseOrders);
       prevValuesRef.current.purchaseOrders = currentValues.purchaseOrders;
     }
+    if (currentValues.attendance !== prevValuesRef.current.attendance) {
+      syncCollectionChange('attendance', allAttendance);
+      prevValuesRef.current.attendance = currentValues.attendance;
+    }
+    if (currentValues.reimbursements !== prevValuesRef.current.reimbursements) {
+      syncCollectionChange('reimbursements', allReimbursements);
+      prevValuesRef.current.reimbursements = currentValues.reimbursements;
+    }
+    if (currentValues.auditlog !== prevValuesRef.current.auditlog) {
+      syncCollectionChange('auditlog', allAuditLogs);
+      prevValuesRef.current.auditlog = currentValues.auditlog;
+    }
+    if (currentValues.notifications !== prevValuesRef.current.notifications) {
+      syncCollectionChange('notifications', allNotifications);
+      prevValuesRef.current.notifications = currentValues.notifications;
+    }
+    if (currentValues.notificationSettings !== prevValuesRef.current.notificationSettings) {
+      syncCollectionChange('notificationSettings', allNotificationSettings);
+      prevValuesRef.current.notificationSettings = currentValues.notificationSettings;
+    }
+    if (currentValues.theme !== prevValuesRef.current.theme) {
+      syncCollectionChange('theme', currentTheme);
+      prevValuesRef.current.theme = currentValues.theme;
+    }
+    if (currentValues.colorTheme !== prevValuesRef.current.colorTheme) {
+      syncCollectionChange('color-theme', currentColorTheme);
+      prevValuesRef.current.colorTheme = currentValues.colorTheme;
+    }
 
     // Update the previous values reference
     prevValuesRef.current = currentValues;
-  }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms, 
-      allTemplates, allDepartments, allInventory, allVendors, 
-      allChallans, allInvoices, allPurchaseOrders]);
-
-  // Helper function to sync a collection change
-  const syncCollectionChange = useCallback((collection: keyof SyncCollectionMap, data: any) => {
-    if (!isConnected || !socketRef.current) {
-      return;
-    }
-
-    const syncMessage = {
-      type: 'SYNC_DATA',
-      collection,
-      data,
-      userId: userIdRef.current,
-      timestamp: Date.now()
-    };
-
-    try {
-      socketRef.current.emit('sync_data', syncMessage);
-      console.log(`Synced ${collection} change to other clients`);
-    } catch (error) {
-      console.error(`Error syncing ${collection} change:`, error);
-    }
-  }, [isConnected]);
+  }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms,
+    allTemplates, allDepartments, allInventory, allVendors,
+    allChallans, allInvoices, allPurchaseOrders, allAttendance, allReimbursements,
+    allAuditLogs, allNotifications, allNotificationSettings, currentTheme, currentColorTheme, syncCollectionChange]);
 
   // Periodically send heartbeat to maintain connection
   useEffect(() => {
@@ -365,12 +455,34 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       case 'purchase-orders':
         data = allPurchaseOrders;
         break;
+      case 'attendance':
+        data = allAttendance;
+        break;
+      case 'reimbursements':
+        data = allReimbursements;
+        break;
+      case 'auditlog':
+        data = allAuditLogs;
+        break;
+      case 'notifications':
+        data = allNotifications;
+        break;
+      case 'notificationSettings':
+        data = allNotificationSettings;
+        break;
+      case 'theme':
+        data = currentTheme;
+        break;
+      case 'color-theme':
+        data = currentColorTheme;
+        break;
     }
 
     syncCollectionChange(collection, data);
-  }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms, 
-      allTemplates, allDepartments, allInventory, allVendors, 
-      allChallans, allInvoices, allPurchaseOrders, syncCollectionChange]);
+  }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms,
+    allTemplates, allDepartments, allInventory, allVendors,
+    allChallans, allInvoices, allPurchaseOrders, allAttendance, allReimbursements,
+    allAuditLogs, allNotifications, allNotificationSettings, currentTheme, currentColorTheme, syncCollectionChange]);
 
   // Function to get sync stats
   const getSyncStats = useCallback(() => {

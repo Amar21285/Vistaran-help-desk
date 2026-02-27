@@ -67,7 +67,14 @@ const dataFiles = {
   'vendors': path.join(dataDir, 'vendors.json'),
   'challans': path.join(dataDir, 'challans.json'),
   'outward-invoices': path.join(dataDir, 'outward-invoices.json'),
-  'purchase-orders': path.join(dataDir, 'purchase-orders.json')
+  'purchase-orders': path.join(dataDir, 'purchase-orders.json'),
+  'attendance': path.join(dataDir, 'attendance.json'),
+  'reimbursements': path.join(dataDir, 'reimbursements.json'),
+  'auditlog': path.join(dataDir, 'auditlog.json'),
+  'notifications': path.join(dataDir, 'notifications.json'),
+  'notificationSettings': path.join(dataDir, 'notificationSettings.json'),
+  'theme': path.join(dataDir, 'theme.json'),
+  'color-theme': path.join(dataDir, 'color-theme.json')
 };
 
 // Load existing data from files
@@ -102,7 +109,12 @@ function saveDataToFile(collection, data) {
 
 // Load data from Supabase
 async function loadDataFromSupabase() {
-  const collections = ['users', 'tickets', 'technicians', 'files', 'symptoms', 'templates', 'departments', 'inventory', 'vendors', 'challans', 'outward-invoices', 'purchase-orders'];
+  const collections = [
+    'users', 'tickets', 'technicians', 'files', 'symptoms', 'templates',
+    'departments', 'inventory', 'vendors', 'challans', 'outward-invoices',
+    'purchase-orders', 'attendance', 'reimbursements', 'auditlog',
+    'notifications', 'notificationSettings', 'theme', 'color-theme'
+  ];
 
   for (const collection of collections) {
     try {
