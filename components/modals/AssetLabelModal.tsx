@@ -82,8 +82,9 @@ export const PrintableLabel: React.FC<{
         wordBreak: 'break-word',
     };
 
-    // --- TEMPLATE: OFFICIAL (EXACT MATCH FOR STEP 423 REFERENCE) ---
+    // --- TEMPLATE: OFFICIAL (EXACT MATCH FOR STEP 457 REFERENCE) ---
     if (template === 'official') {
+        const spacedId = (item.id || '').split('').join(' ');
         return (
             <div id={`${idPrefix}printable-label-content`} style={{ ...containerStyle, flexDirection: 'row', gap: 0, padding: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
                 {/* Left Section (35%): Logo, QR, Property */}
@@ -103,11 +104,11 @@ export const PrintableLabel: React.FC<{
 
                 {/* Right Section (65%): Info Rows */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', boxSizing: 'border-box', overflow: 'hidden' }}>
-                    {/* Row 1: ID & Verified (18%) */}
-                    <div style={{ height: '23%', borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', boxSizing: 'border-box' }}>
+                    {/* Row 1: ID & Verified (20%) */}
+                    <div style={{ height: '20%', borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', boxSizing: 'border-box' }}>
                         <div style={{ flex: 1, padding: `0 ${2 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Asset ID</span>
-                            <span style={{ fontSize: `${3.5 * baseScale}mm`, fontWeight: 900, marginTop: `${0.5 * baseScale}mm`, lineHeight: 1, wordBreak: 'break-all' }}>{item.id}</span>
+                            <span style={{ fontSize: `${3.8 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.5 * baseScale}mm`, lineHeight: 1, wordBreak: 'break-all' }}>{item.id}</span>
                         </div>
                         <div style={{ width: '30%', padding: `0 ${3 * baseScale}mm`, borderLeft: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'right' }}>
                             <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Verified</span>
@@ -118,32 +119,32 @@ export const PrintableLabel: React.FC<{
                     {/* Row 2: Designation (20%) */}
                     <div style={{ height: '20%', borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `0 ${2 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box' }}>
                         <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Designation</span>
-                        <p style={{ fontSize: `${4.5 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', margin: `${0.5 * baseScale}mm 0 0 0`, lineHeight: 1, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', color: isDarkMode ? '#fff' : '#000' }}>{item.name}</p>
+                        <p style={{ fontSize: `${4.8 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', margin: `${0.5 * baseScale}mm 0 0 0`, lineHeight: 1, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', color: isDarkMode ? '#fff' : '#000' }}>{item.name}</p>
                     </div>
 
                     {/* Row 3: Category & Bin/Rack Boxes (25%) */}
                     <div style={{ height: '25%', borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', boxSizing: 'border-box' }}>
                         <div style={{ flex: 1, padding: `${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <div style={{ border: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1 * baseScale}mm ${2 * baseScale}mm`, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box' }}>
+                            <div style={{ border: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.2 * baseScale}mm ${2 * baseScale}mm`, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box' }}>
                                 <span style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Category</span>
-                                <span style={{ fontSize: `${3.5 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.category}</span>
+                                <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.category}</span>
                             </div>
                         </div>
                         <div style={{ flex: 1, padding: `${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <div style={{ border: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1 * baseScale}mm ${2 * baseScale}mm`, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box' }}>
+                            <div style={{ border: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.2 * baseScale}mm ${2 * baseScale}mm`, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box' }}>
                                 <span style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Bin / Rack</span>
-                                <span style={{ fontSize: `${3.5 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.location || 'N/A'}</span>
+                                <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.location || 'N/A'}</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Row 4: Barcode (32%) */}
-                    <div style={{ height: '32%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `${1 * baseScale}mm`, boxSizing: 'border-box' }}>
+                    {/* Row 4: Barcode (35%) */}
+                    <div style={{ height: '35%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `${1 * baseScale}mm`, boxSizing: 'border-box' }}>
                         <div style={{ height: '55%', width: '90%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <svg ref={barcodeRef} style={{ width: '100%', height: '100%', filter: isDarkMode ? 'invert(1)' : 'none' }}></svg>
                         </div>
                         <span style={{ fontSize: `${3.5 * baseScale}mm`, fontWeight: 900, fontFamily: 'monospace', letterSpacing: `${2 * baseScale}mm`, marginTop: `${1.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000', lineHeight: 1, textAlign: 'center' }}>
-                            {item.id.split('').join(' ')}
+                            {spacedId}
                         </span>
                     </div>
                 </div>
