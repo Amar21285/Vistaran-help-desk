@@ -82,70 +82,67 @@ export const PrintableLabel: React.FC<{
         wordBreak: 'break-word',
     };
 
-    // --- TEMPLATE: OFFICIAL (EXACT MATCH FOR STEP 457 REFERENCE) ---
+    // --- TEMPLATE: OFFICIAL (MATCHES PDF PROVIDED BY USER) ---
     if (template === 'official') {
-        const spacedId = (item.id || '').split('').join(' ');
         return (
             <div id={`${idPrefix}printable-label-content`} style={{ ...containerStyle, flexDirection: 'row', gap: 0, padding: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
-                {/* Left Section (35%): Logo, QR, Property */}
+                {/* Left Section: Logo, QR, Property Text */}
                 <div style={{ width: '35%', borderRight: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: `${2 * baseScale}mm 0`, boxSizing: 'border-box' }}>
-                    <div style={{ height: '15%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Logo className={isDarkMode ? "brightness-200" : "grayscale brightness-0"} style={{ height: `${6 * baseScale}mm`, width: 'auto' }} />
+                    <div style={{ height: '15%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                        <Logo className={isDarkMode ? "brightness-200" : "grayscale brightness-0"} style={{ height: `${5 * baseScale}mm`, width: 'auto' }} />
                     </div>
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '90%' }}>
-                        <img src={qrCodeUrl} style={{ width: '85%', height: 'auto', imageRendering: 'pixelated', filter: isDarkMode ? 'invert(1)' : 'none' }} alt="QR" />
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: `0 ${2 * baseScale}mm`, overflow: 'hidden' }}>
+                        <img src={qrCodeUrl} style={{ width: '100%', height: 'auto', imageRendering: 'pixelated', filter: isDarkMode ? 'invert(1)' : 'none' }} alt="QR" />
                     </div>
-                    <div style={{ padding: `0 ${1 * baseScale}mm`, textAlign: 'center' }}>
-                        <p style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', margin: 0, lineHeight: 1.2 }}>
-                            PROPERTY OF<br />VISTARAN HEALTH CARE<br />SERVICES
+                    <div style={{ padding: `0 ${1 * baseScale}mm`, textAlign: 'center', overflow: 'hidden' }}>
+                        <p style={{ fontSize: `${1.6 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', margin: 0, lineHeight: 1.1 }}>
+                            Property Of<br />Vistaran Health Care<br />Services
                         </p>
                     </div>
                 </div>
 
-                {/* Right Section (65%): Info Rows */}
+                {/* Right Section: Info Rows */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', boxSizing: 'border-box', overflow: 'hidden' }}>
-                    {/* Row 1: ID & Verified (20%) */}
-                    <div style={{ height: '20%', borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', boxSizing: 'border-box' }}>
-                        <div style={{ flex: 1, padding: `0 ${2 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Asset ID</span>
-                            <span style={{ fontSize: `${3.8 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.5 * baseScale}mm`, lineHeight: 1, wordBreak: 'break-all' }}>{item.id}</span>
+                    {/* Row 1: Asset ID & Verified */}
+                    <div style={{ height: '20%', borderBottom: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', boxSizing: 'border-box', overflow: 'hidden' }}>
+                        <div style={{ flex: 1, padding: `0 ${2 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden' }}>
+                            <span style={{ fontSize: `${1.6 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', lineHeight: 1 }}>Asset ID</span>
+                            <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, marginTop: `${0.2 * baseScale}mm`, lineHeight: 1.3, wordBreak: 'break-all' }}>{item.id}</span>
                         </div>
-                        <div style={{ width: '30%', padding: `0 ${3 * baseScale}mm`, borderLeft: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'right' }}>
-                            <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Verified</span>
-                            <span style={{ fontSize: `${2.8 * baseScale}mm`, fontWeight: 900, marginTop: `${0.5 * baseScale}mm`, lineHeight: 1 }}>{new Date().toLocaleDateString()}</span>
+                        <div style={{ width: '35%', padding: `0 ${2 * baseScale}mm`, borderLeft: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'right', overflow: 'hidden' }}>
+                            <span style={{ fontSize: `${1.6 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', lineHeight: 1 }}>Verified</span>
+                            <span style={{ fontSize: `${2.6 * baseScale}mm`, fontWeight: 900, marginTop: `${0.2 * baseScale}mm`, lineHeight: 1.3 }}>{new Date().toLocaleDateString()}</span>
                         </div>
                     </div>
 
-                    {/* Row 2: Designation (20%) */}
-                    <div style={{ height: '20%', borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `0 ${2 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box' }}>
-                        <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Designation</span>
-                        <p style={{ fontSize: `${4.8 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', margin: `${0.5 * baseScale}mm 0 0 0`, lineHeight: 1, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', color: isDarkMode ? '#fff' : '#000' }}>{item.name}</p>
+                    {/* Row 2: Designation */}
+                    <div style={{ height: '26%', borderBottom: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `0 ${2 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box', overflow: 'hidden' }}>
+                        <span style={{ fontSize: `${1.6 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', lineHeight: 1 }}>Designation</span>
+                        <p style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', margin: `${0.2 * baseScale}mm 0 0 0`, lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', wordBreak: 'break-word' }}>{item.name}</p>
                     </div>
 
-                    {/* Row 3: Category & Bin/Rack Boxes (25%) */}
-                    <div style={{ height: '25%', borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', boxSizing: 'border-box' }}>
-                        <div style={{ flex: 1, padding: `${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <div style={{ border: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.2 * baseScale}mm ${2 * baseScale}mm`, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box' }}>
-                                <span style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Category</span>
-                                <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.category}</span>
+                    {/* Row 3: Category & Bin/Rack */}
+                    <div style={{ height: '30%', borderBottom: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', boxSizing: 'border-box', overflow: 'hidden' }}>
+                        <div style={{ flex: 1, padding: `${1 * baseScale}mm ${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden' }}>
+                            <div style={{ border: `${0.4 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.5 * baseScale}mm ${1.5 * baseScale}mm`, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', boxSizing: 'border-box' }}>
+                                <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', lineHeight: 1 }}>Category</span>
+                                <span style={{ fontSize: `${2.6 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.1 * baseScale}mm`, lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', wordBreak: 'break-word' }}>{item.category}</span>
                             </div>
                         </div>
-                        <div style={{ flex: 1, padding: `${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <div style={{ border: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.2 * baseScale}mm ${2 * baseScale}mm`, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box' }}>
-                                <span style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', color: isDarkMode ? '#aaa' : '#000', lineHeight: 1 }}>Bin / Rack</span>
-                                <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.location || 'N/A'}</span>
+                        <div style={{ flex: 1, padding: `${1 * baseScale}mm ${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden' }}>
+                            <div style={{ border: `${0.4 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.5 * baseScale}mm ${1.5 * baseScale}mm`, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', overflow: 'hidden', boxSizing: 'border-box' }}>
+                                <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', lineHeight: 1 }}>Bin / Rack</span>
+                                <span style={{ fontSize: `${2.6 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${0.1 * baseScale}mm`, lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', wordBreak: 'break-word' }}>{item.location || 'N/A'}</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Row 4: Barcode (35%) */}
-                    <div style={{ height: '35%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `${1 * baseScale}mm`, boxSizing: 'border-box' }}>
-                        <div style={{ height: '55%', width: '90%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <svg ref={barcodeRef} style={{ width: '100%', height: '100%', filter: isDarkMode ? 'invert(1)' : 'none' }}></svg>
+                    {/* Row 4: Barcode */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `${1 * baseScale}mm`, boxSizing: 'border-box', overflow: 'hidden' }}>
+                        <div style={{ height: '70%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                            <svg ref={barcodeRef} style={{ width: '90%', height: '100%', filter: isDarkMode ? 'invert(1)' : 'none' }}></svg>
                         </div>
-                        <span style={{ fontSize: `${3.5 * baseScale}mm`, fontWeight: 900, fontFamily: 'monospace', letterSpacing: `${2 * baseScale}mm`, marginTop: `${1.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000', lineHeight: 1, textAlign: 'center' }}>
-                            {spacedId}
-                        </span>
+                        <span style={{ fontSize: `${2.6 * baseScale}mm`, fontWeight: 900, fontFamily: 'monospace', letterSpacing: `${1 * baseScale}mm`, marginTop: `${0.2 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000', lineHeight: 1 }}>{item.id}</span>
                     </div>
                 </div>
             </div>
