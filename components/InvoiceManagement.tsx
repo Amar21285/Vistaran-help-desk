@@ -6,8 +6,6 @@ import { logUserAction } from '../utils/auditLogger';
 import Logo from './icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { generateMultiPagePDF } from '../utils/pdfGenerator';
-import { numberToWords } from '../utils/formatters';
 
 const SELLER_DETAILS = {
     name: "Vistaran Health Care Services Pvt. Ltd.",
@@ -16,8 +14,6 @@ const SELLER_DETAILS = {
     state: "Maharashtra",
     stateCode: "27"
 };
-
-const BANK_DETAILS = { name: "HDFC Bank Ltd", accountNo: "50200012345678", ifsc: "HDFC0000123" };
 
 const TRANSACTION_PURPOSES = [
     "Repair ke liye", 
@@ -29,18 +25,15 @@ const TRANSACTION_PURPOSES = [
     "Sales"
 ];
 
-const UNITS = ["Nos", "Kg", "Box", "Pkt", "Mtr", "Set", "Unit", "Reams", "Bundles"];
-
 interface InvoiceManagementProps {
     invoices: Invoice[];
     setInvoices: React.Dispatch<React.SetStateAction<Invoice[]>>;
     vendors: Vendor[];
     inventory: InventoryItem[];
-    setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
     globalFilter: string;
 }
 
-const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvoices, vendors, inventory, setInventory, globalFilter }) => {
+const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvoices, vendors, inventory, globalFilter }) => {
     const { user, realUser } = useAuth();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
@@ -165,7 +158,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
     const handleSaveInvoice = () => {
         if (!isAdmin || !selectedVendorId || items.length === 0 || !user) return;
         
-        const invoiceData: any = { 
+        const invoiceData = { 
             vendorId: selectedVendorId, 
             items, 
             dueDate, 
@@ -198,8 +191,42 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
         if (!printableRef.current || !viewingInvoice) return;
         setIsGeneratingPDF(true);
         try {
-            await generateMultiPagePDF(printableRef.current, `Invoice-${viewingInvoice.id}.pdf`);
-        } finally { setIsGeneratingPDF(false); }
+            const element = printableRef.current;
+            const canvas = await html2canvas(element, { 
+                scale: 2, 
+                useCORS: true, 
+                backgroundColor: '#ffffff',
+                logging: false,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight
+            });
+            
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            const imgWidth = 210; 
+            const pageHeight = 297; 
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+            
+            pdf.save(`Invoice-${viewingInvoice.id}.pdf`);
+        } catch (error) {
+            console.error("PDF generation failed:", error);
+            alert("Failed to generate PDF. Please try again.");
+        } finally { 
+            setIsGeneratingPDF(false); 
+        }
     };
 
     return (
@@ -449,24 +476,24 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                 </div>
                             )}
 
-                            <table className="w-full mb-10 border-collapse mt-10 print-table-container print-avoid-break">
-                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : 'border-b-2 border-slate-900 text-slate-900'} print-table-header-group print-avoid-break`}>
-                                    <tr className="print-avoid-break">
-                                        <th className="p-4 text-left w-12 rounded-l-xl print-avoid-break">#</th>
-                                        <th className="p-4 text-left print-avoid-break">Description of Goods</th>
-                                        <th className="p-4 text-center print-avoid-break">Qty</th>
-                                        <th className="p-4 text-right print-avoid-break">Rate</th>
-                                        <th className="p-4 text-right rounded-r-xl print-avoid-break">Total</th>
+                            <table className="w-full mb-10 border-collapse mt-10">
+                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : 'border-b-2 border-slate-900 text-slate-900'}`}>
+                                    <tr>
+                                        <th className="p-4 text-left w-12 rounded-l-xl">#</th>
+                                        <th className="p-4 text-left">Description of Goods</th>
+                                        <th className="p-4 text-center">Qty</th>
+                                        <th className="p-4 text-right">Rate</th>
+                                        <th className="p-4 text-right rounded-r-xl">Total</th>
                                     </tr>
                                 </thead>
-                                <tbody className="print-table-row-group">
+                                <tbody>
                                     {viewingInvoice.items.map((i, idx) => (
-                                        <tr key={i.id} className="border-b border-slate-100 print-table-row-group print-avoid-break">
-                                            <td className="p-4 text-xs font-bold text-slate-400 print-avoid-break">{idx + 1}</td>
-                                            <td className="p-4 font-black uppercase text-sm text-slate-800 print-avoid-break">{i.description}</td>
-                                            <td className="p-4 text-center text-xs font-bold text-slate-600 print-avoid-break">{i.quantity}</td>
-                                            <td className="p-4 text-right text-xs font-bold text-slate-600 print-avoid-break">₹{i.rate.toLocaleString()}</td>
-                                            <td className="p-4 text-right font-black text-sm text-slate-900 print-avoid-break">₹{(i.rate * i.quantity).toLocaleString()}</td>
+                                        <tr key={i.id} className="border-b border-slate-100 break-inside-avoid">
+                                            <td className="p-4 text-xs font-bold text-slate-400">{idx + 1}</td>
+                                            <td className="p-4 font-black uppercase text-sm text-slate-800">{i.description}</td>
+                                            <td className="p-4 text-center text-xs font-bold text-slate-600">{i.quantity}</td>
+                                            <td className="p-4 text-right text-xs font-bold text-slate-600">₹{i.rate.toLocaleString()}</td>
+                                            <td className="p-4 text-right font-black text-sm text-slate-900">₹{(i.rate * i.quantity).toLocaleString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>

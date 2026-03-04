@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { InventoryItem } from '../../types';
-import { PrintableLabel, SIZE_PRESETS, LabelTemplate } from './AssetLabelModal';
+import { PrintableLabel, LabelTemplate } from './AssetLabelModal';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
@@ -29,9 +29,53 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
     const [labelWidth, setLabelWidth] = useState(95); 
     const [labelHeight, setLabelHeight] = useState(65);
     const [rotation, setRotation] = useState(0);
-    const [isHighContrast, setIsHighContrast] = useState(true);
+    const [isHighContrast] = useState(true);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<LabelTemplate>('official');
+
+    // Load saved settings on mount
+    useEffect(() => {
+        const saved = localStorage.getItem('vistaran_batch_print_settings');
+        if (saved) {
+            try {
+                const settings = JSON.parse(saved);
+                if (settings.labelWidth) setLabelWidth(settings.labelWidth);
+                if (settings.labelHeight) setLabelHeight(settings.labelHeight);
+                if (settings.selectedTemplate) setSelectedTemplate(settings.selectedTemplate);
+                if (settings.pageSize) setPageSize(settings.pageSize);
+                if (settings.gridCols) setGridCols(settings.gridCols);
+                if (settings.gridRows) setGridRows(settings.gridRows);
+                if (settings.gridGapX !== undefined) setGridGapX(settings.gridGapX);
+                if (settings.gridGapY !== undefined) setGridGapY(settings.gridGapY);
+                if (settings.pagePadding !== undefined) setPagePadding(settings.pagePadding);
+                if (settings.isDarkMode !== undefined) setIsDarkMode(settings.isDarkMode);
+                if (settings.rotation !== undefined) setRotation(settings.rotation);
+            } catch (e) {
+                console.error("Failed to load saved print settings", e);
+            }
+        }
+    }, []);
+
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'saved'>('idle');
+
+    const handleSaveDefaultSettings = () => {
+        const settings = {
+            labelWidth,
+            labelHeight,
+            selectedTemplate,
+            pageSize,
+            gridCols,
+            gridRows,
+            gridGapX,
+            gridGapY,
+            pagePadding,
+            isDarkMode,
+            rotation
+        };
+        localStorage.setItem('vistaran_batch_print_settings', JSON.stringify(settings));
+        setSaveStatus('saved');
+        setTimeout(() => setSaveStatus('idle'), 2000);
+    };
 
     // Grid Layout State - Default to 2x4 as per PDF
     const [pageSize, setPageSize] = useState('a4');
@@ -69,7 +113,7 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
 
         // Collect HTML from current rendered units
         const labelsHtml = activeItems.map((_, idx) => {
-            const el = document.querySelectorAll('.batch-label-unit > div')[idx] as HTMLElement;
+            const el = document.getElementById(`batch-${idx}-printable-label-content`);
             return el ? `<div class="page-wrapper">${el.outerHTML}</div>` : '';
         }).join('');
 
@@ -127,10 +171,7 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
         setProcessProgress(0);
 
         try {
-            const selectedPage = PAGE_SIZES[pageSize as keyof typeof PAGE_SIZES];
             const pdf = new jsPDF('p', 'mm', pageSize); 
-            const pageWidth = selectedPage.width;
-            const pageHeight = selectedPage.height;
             const labelsPerPage = gridCols * gridRows;
             
             const labelElements = document.querySelectorAll('.batch-label-unit > div');
@@ -144,10 +185,18 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                 if (i > 0 && itemOnPage === 0) pdf.addPage();
 
                 const canvas = await html2canvas(element, {
-                    scale: 6, 
+                    scale: 4, // 4 is usually enough for high quality without crashing memory
                     useCORS: true,
                     logging: false,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    windowWidth: element.scrollWidth,
+                    windowHeight: element.scrollHeight,
+                    onclone: (clonedDoc) => {
+                        const clonedEl = clonedDoc.getElementById(element.id);
+                        if (clonedEl) {
+                            clonedEl.style.transform = 'none';
+                        }
+                    }
                 });
 
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
@@ -214,6 +263,7 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                                 className="bg-transparent text-white text-[10px] font-black outline-none cursor-pointer"
                             >
                                 <option value="95x65" className="text-slate-900">95x65mm (Default)</option>
+                                <option value="50x25" className="text-slate-900">50x25mm (Small)</option>
                                 <option value="50x75" className="text-slate-900">50x75mm (Portrait)</option>
                                 <option value="100x50" className="text-slate-900">100x50mm (Standard)</option>
                                 <option value="50x50" className="text-slate-900">50x50mm (Square)</option>
@@ -222,7 +272,7 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                         <div className="w-px h-6 bg-white/10 mx-1"></div>
                         <div className="flex flex-col px-3">
                             <span className="text-[7px] font-black text-slate-500 uppercase">Template</span>
-                            <select value={selectedTemplate} onChange={e => setSelectedTemplate(e.target.value as any)} className="bg-transparent text-white text-[10px] font-black outline-none cursor-pointer">
+                            <select value={selectedTemplate} onChange={e => setSelectedTemplate(e.target.value as LabelTemplate)} className="bg-transparent text-white text-[10px] font-black outline-none cursor-pointer">
                                 <option value="official" className="text-slate-900 uppercase">Official Vistaran</option>
                                 <option value="industrial" className="text-slate-900 uppercase">Industrial</option>
                                 <option value="compact" className="text-slate-900 uppercase">Compact</option>
@@ -249,6 +299,17 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                                 <option value="180" className="text-slate-900">180°</option>
                                 <option value="270" className="text-slate-900">270°</option>
                             </select>
+                        </div>
+                        <div className="w-px h-6 bg-white/10 mx-1"></div>
+                        <div className="flex flex-col px-3">
+                            <span className="text-[7px] font-black text-slate-500 uppercase">Save</span>
+                            <button 
+                                onClick={handleSaveDefaultSettings}
+                                className={`text-[10px] font-black uppercase transition-all flex items-center gap-1 ${saveStatus === 'saved' ? 'text-emerald-400 scale-110' : 'text-slate-400 hover:text-emerald-400'}`}
+                                title="Save current settings as default"
+                            >
+                                <i className={`fas ${saveStatus === 'saved' ? 'fa-check-circle' : 'fa-save'}`}></i> {saveStatus === 'saved' ? 'Saved' : 'Default'}
+                            </button>
                         </div>
                         <div className="w-px h-6 bg-white/10 mx-1"></div>
                         <div className="flex items-center gap-3 px-3">
@@ -312,7 +373,6 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                                     qrCodeUrl={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(item.id)}&margin=0&ecc=H`} 
                                     barcodeWidthScale={1.1}
                                     barcodeHeightScale={1.1}
-                                    barcodeRotation={0}
                                     idPrefix={`batch-${idx}-`}
                                 />
                             </div>
@@ -349,14 +409,14 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                         disabled={isGenerating || activeItems.length === 0}
                         className="bg-indigo-600 text-white font-black px-10 py-5 rounded-[22px] shadow-2xl hover:bg-indigo-700 active:scale-95 transition-all text-xs uppercase tracking-widest flex items-center gap-3 border border-white/10"
                     >
-                        <i className="fas fa-th"></i> Export Grid PDF
+                        <i className="fas fa-th"></i> Grid Sheet (PDF)
                     </button>
                     <button 
                         onClick={handlePrintAll} 
                         disabled={isGenerating || activeItems.length === 0}
                         className="bg-primary text-white font-black px-12 py-5 rounded-[22px] shadow-2xl hover:bg-primary-hover active:scale-95 transition-all text-xs uppercase tracking-widest flex items-center gap-3 border border-white/10"
                     >
-                        <i className="fas fa-print"></i> Thermal Print All
+                        <i className="fas fa-print"></i> Thermal Roll Print
                     </button>
                 </div>
             </footer>

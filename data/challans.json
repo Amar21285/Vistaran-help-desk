@@ -1,29 +1,5 @@
 [
   {
-    "id": "CHN-2026-0002",
-    "vendorId": "VEN1769175521819",
-    "purpose": "Job Work",
-    "dateReceived": "2026-02-23T07:26:52.279Z",
-    "receivedByUserId": "USR001",
-    "items": [
-      {
-        "id": "ITEM-1771831581690",
-        "description": "Dell USB Keyboard",
-        "quantity": 3,
-        "unit": "Unit",
-        "remarks": "HO + DC Work"
-      },
-      {
-        "id": "ITEM-1771831607535",
-        "description": " HDMI to HDMI Connector",
-        "quantity": 2,
-        "unit": "Unit",
-        "remarks": "DC Work"
-      }
-    ],
-    "notes": ""
-  },
-  {
     "id": "CHN-2026-0001",
     "vendorId": "VEN1769175766111",
     "purpose": "Job Work",
@@ -113,48 +89,6 @@
         "quantity": 1,
         "unit": "Unit",
         "remarks": "DC Work"
-      },
-      {
-        "id": "ITEM-1771830664223",
-        "description": "Capital Tissue ",
-        "quantity": 2,
-        "unit": "Box",
-        "remarks": "DC Work"
-      },
-      {
-        "id": "ITEM-1771830772220",
-        "description": "broom stick",
-        "quantity": 1,
-        "unit": "Unit",
-        "remarks": "Branch -023"
-      },
-      {
-        "id": "ITEM-1771831012124",
-        "description": "Colour Xerox Copy",
-        "quantity": 2,
-        "unit": "Unit",
-        "remarks": "DC Work"
-      },
-      {
-        "id": "ITEM-1771831265632",
-        "description": "Colour Spot A4 Labels Paper",
-        "quantity": 1,
-        "unit": "Pkt",
-        "remarks": "DC Work"
-      },
-      {
-        "id": "ITEM-1772005641136",
-        "description": "Camlin Permanent Marker",
-        "quantity": 1,
-        "unit": "Box",
-        "remarks": "DC Work"
-      },
-      {
-        "id": "ITEM-1772007839917",
-        "description": "Cash memo book",
-        "quantity": 3,
-        "unit": "Unit",
-        "remarks": "Branch Work"
       }
     ],
     "notes": ""

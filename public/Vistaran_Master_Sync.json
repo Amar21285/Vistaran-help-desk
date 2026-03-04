@@ -1,30 +1,565 @@
 {
-  "vistaran-helpdesk-departments": [
-    "IT",
-    "Sales",
-    "Operations",
-    "HR",
-    "Accounts",
-    "Staff"
-  ],
-  "vistaran-helpdesk-notifications": [
+  "vistaran-helpdesk-users": [
     {
-      "id": "NTF1769605404211",
-      "title": "Ticket Assigned",
-      "message": "Ticket #TKT1769244477252 assigned to Amarjeet yadav.",
-      "timestamp": "2026-01-28T13:03:24.211Z",
-      "isRead": true,
-      "type": "ticket"
+      "id": "USR001",
+      "name": "Amarjeet yadav",
+      "email": "ITsupport@vistaran.in",
+      "password": "88283671",
+      "role": "Admin",
+      "department": "IT",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
     },
     {
-      "id": "NTF1769244477252",
-      "title": "New Ticket",
-      "message": "A new ticket #TKT1769244477252 has been created.",
-      "timestamp": "2026-01-24T08:47:57.252Z",
-      "isRead": true,
-      "type": "ticket"
+      "id": "USR002",
+      "name": "BHANDUP -001",
+      "email": "purchasebhandup@vistaran.in",
+      "password": "10001",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z",
+      "phone": "",
+      "whatsapp": "",
+      "employeeId": "",
+      "designation": ""
+    },
+    {
+      "id": "USR003",
+      "name": "VIKHROLI -002",
+      "email": "purchasevikhroli@vistaran.in",
+      "password": "10002",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR004",
+      "name": "HIRANANDANI -003",
+      "email": "purchasepowai@vistaran.in",
+      "password": "10003",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR005",
+      "name": "POWAI -004",
+      "email": "purchasepowai2@vistaran.in",
+      "password": "10004",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR006",
+      "name": "Mulund -005",
+      "email": "purchasemulund@vistaran.in",
+      "password": "10005",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR007",
+      "name": "Mulund -006",
+      "email": "purchaseveenanagar@vistaran.in",
+      "password": "10006",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR008",
+      "name": "Mulund -007",
+      "email": "purchasecyprus@vistaran.in",
+      "password": "10007",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR009",
+      "name": "Hindustan Chowk 008",
+      "email": "purchasecolonymul@vistaran.in",
+      "password": "10008",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR010",
+      "name": "Tambe Nagar 009",
+      "email": "purchasetambenagar@vistaran.in",
+      "password": "10009",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR011",
+      "name": "Romell vasant 010",
+      "email": "purchaseromellmul@vistaran.in",
+      "password": "10010",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR012",
+      "name": "Chandiwali 011",
+      "email": "purchasechandivali@vistaran.in",
+      "password": "10011",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR013",
+      "name": "Sakinaka 012",
+      "email": "purchasesakinaka@vistaran.in",
+      "password": "10012",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR014",
+      "name": "Godrej 013",
+      "email": "purchasegodrej@vistaran.in",
+      "password": "10013",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR015",
+      "name": "Tagore Nagar014",
+      "email": "purchasetagore@vistaran.in",
+      "password": "10014",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR016",
+      "name": "Veena Two 015",
+      "email": "purchaseveena2@vistaran.in",
+      "password": "10015",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR017",
+      "name": "Hanuman Chowk 016",
+      "email": "purchasehanuman@vistaran.in",
+      "password": "10016",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR018",
+      "name": "KailashBranch 017",
+      "email": "purchasekailash@vistaran.in",
+      "password": "10017",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR019",
+      "name": "Lok kedar branch 018",
+      "email": "purchaselokkedar@vistaran.in",
+      "password": "10018",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR020",
+      "name": "Sai Dham Branch 019",
+      "email": "purchasesaidham@vistaran.in",
+      "password": "10019",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR021",
+      "name": "Civilhospital Branch 20",
+      "email": "purchasecivilhospital@vistaran.in",
+      "password": "10020",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR022",
+      "name": "Talaopali Branch 21",
+      "email": "purchasetalaopali@vistaran.in",
+      "password": "10021",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR023",
+      "name": "Vartaknagar Branch 22",
+      "email": "purchasevartaknagar@vistaran.in",
+      "password": "10022",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR025",
+      "name": "Customer Support ID",
+      "email": "pillsandmore@vistaran.in",
+      "password": "77661",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR026",
+      "name": "Vistaran office Ho",
+      "email": "purchase@vistaran.in",
+      "password": "776688",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR028",
+      "name": "Dhokali Naka 023",
+      "email": "purchasedhokali@vistaran.in",
+      "password": "10023",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR029",
+      "name": "Sagar",
+      "email": "sagar@vistaran.in",
+      "password": "10029",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR030",
+      "name": "Amarjeet",
+      "email": "amarjeet.s@vistaran.in",
+      "password": "10030",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR031",
+      "name": "Aditya",
+      "email": "aditya@vistaran.in",
+      "password": "10031",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR032",
+      "name": "Umesh",
+      "email": "umesh@vistaran.in",
+      "password": "10032",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR033",
+      "name": "Adarsh",
+      "email": "adarsh@vistaran.in",
+      "password": "10033",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR034",
+      "name": "Kailash",
+      "email": "kailash.s@vistaran.in",
+      "password": "10034",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR035",
+      "name": "Owais",
+      "email": "owais@vistaran.in",
+      "password": "10035",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR036",
+      "name": "SATYAWAN",
+      "email": "satyawan@vistaran.in",
+      "password": "10036",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR037",
+      "name": "Vimalesh",
+      "email": "vimalesh@vistaran.in",
+      "password": "10037",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR038",
+      "name": "Shalu",
+      "email": "shalu@vistaran.in",
+      "password": "10038",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR039",
+      "name": "Trupti",
+      "email": "trupti@vistaran.in",
+      "password": "10039",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR040",
+      "name": "Aishwarya.D",
+      "email": "Aishwarya@vistaran.in",
+      "password": "10040",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR041",
+      "name": "Ashwini Pawaskar",
+      "email": "ashwini.p@vistaran.in",
+      "password": "10041",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR042",
+      "name": "Rupa",
+      "email": "rupa@vistaran.in",
+      "password": "10042",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR043",
+      "name": "Manasi",
+      "email": "manasi@vistaran.in",
+      "password": "10043",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR044",
+      "name": "Pratibha",
+      "email": "pratibha@vistaran.in",
+      "password": "10044",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR045",
+      "name": "Kareena",
+      "email": "kareena@vistaran.in",
+      "password": "10045",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR046",
+      "name": "Dipali",
+      "email": "dipali@vistaran.in",
+      "password": "10046",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR047",
+      "name": "Sonali",
+      "email": "sonali@vistaran.in",
+      "password": "10047",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR048",
+      "name": "Tejana",
+      "email": "tejana@vistaran.in",
+      "password": "10048",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR049",
+      "name": "Somesh",
+      "email": "Somesh@vistaran.in",
+      "password": "10049",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR050",
+      "name": "Vaishnavi",
+      "email": "vaishnavi@vistaran.in",
+      "password": "10050",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR051",
+      "name": "Megha",
+      "email": "megha@vistaran.in",
+      "password": "10051",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR052",
+      "name": "Supriya Tai",
+      "email": "supriya.t@vistaran.in",
+      "password": "10052",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR054",
+      "name": "Vaishali",
+      "email": "vaishali@vistaran.in",
+      "password": "10054",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR056",
+      "name": "Anjali",
+      "email": "anjali@vistaran.in",
+      "password": "10056",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR057",
+      "name": "Supriya .Y",
+      "email": "supriya.y@vistaran.in",
+      "password": "10057",
+      "role": "Staff",
+      "department": "Staff",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z",
+      "phone": "",
+      "whatsapp": "",
+      "employeeId": "",
+      "designation": ""
+    },
+    {
+      "id": "USR1769245099806",
+      "name": "Azhar Sir",
+      "email": "azhar.k@vistaran.in",
+      "password": "123456",
+      "role": "Read-only",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
+    },
+    {
+      "id": "USR1769248072661",
+      "name": "Warehouse(DC-501)",
+      "email": "purchasedc@vistaran.in",
+      "password": "501",
+      "role": "User",
+      "department": "Operations",
+      "status": "Active",
+      "joinedDate": "2026-02-14T14:26:22.198Z"
     }
   ],
+  "vistaran-helpdesk-notifications": [],
   "vistaran-helpdesk-files": [],
   "vistaran-helpdesk-symptoms": [],
   "vistaran-helpdesk-notificationSettings": {
@@ -37,7 +572,7 @@
     "enableSMSWhatsApp": true,
     "enableInAppNotifications": true
   },
-  "vistaran-helpdesk-theme": "system",
+  "vistaran-helpdesk-theme": [],
   "vistaran-helpdesk-reimbursements": [
     {
       "id": "EXP-1770722205341",
@@ -62,7 +597,7 @@
       "approvedBy": "Amarjeet yadav"
     }
   ],
-  "vistaran-helpdesk-auditlog": [
+  "vistaran-helpdesk-audit-logs": [
     {
       "id": "LOG_1772104019062_x7r4bkt",
       "userId": "USR001",
@@ -1664,6 +2199,1609 @@
       "ip": "127.0.0.1"
     }
   ],
+  "vistaran-helpdesk-auditlog": [
+    {
+      "id": "LOG_1772608013855_81crr3o",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-DC-1772607996116 issued to Warehouse(DC-501)",
+      "timestamp": "2026-03-04T07:06:53.855Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772607996121_278drz8",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+      "timestamp": "2026-03-04T07:06:36.121Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772607869448_v6ss73d",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-DC-1772607849783 issued to Warehouse(DC-501)",
+      "timestamp": "2026-03-04T07:04:29.448Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772607849789_liqc3mt",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+      "timestamp": "2026-03-04T07:04:09.789Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606743328_us6d47p",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-DC-1772606721602 issued to Warehouse(DC-501)",
+      "timestamp": "2026-03-04T06:45:43.328Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606721608_8ic3zqw",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of 30GSS17A00 with distributed logistics.",
+      "timestamp": "2026-03-04T06:45:21.608Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606434954_kpe16zk",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772606359052 issued to Warehouse(DC-501)",
+      "timestamp": "2026-03-04T06:40:34.954Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606414966_eegefsi",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Returned: Tag AST-BR-1772606359052 is now Spare.",
+      "timestamp": "2026-03-04T06:40:14.966Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606407915_vijquhg",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: H410M S2 V3",
+      "timestamp": "2026-03-04T06:40:07.915Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606388935_hsghirt",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772606359052 issued to Warehouse(DC-501)",
+      "timestamp": "2026-03-04T06:39:48.935Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606359056_ev7z41c",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+      "timestamp": "2026-03-04T06:39:19.056Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606249391_4pal24k",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: H410M S2 V3",
+      "timestamp": "2026-03-04T06:37:29.391Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606202616_ns9zmbp",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-DC-1772606165949 issued to Warehouse(DC-501)",
+      "timestamp": "2026-03-04T06:36:42.616Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606165963_hds0hdz",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+      "timestamp": "2026-03-04T06:36:05.963Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606062897_y4f9anj",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-DC-1772606036803 issued to Warehouse(DC-501)",
+      "timestamp": "2026-03-04T06:34:22.897Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772606036817_nzwz3eq",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+      "timestamp": "2026-03-04T06:33:56.817Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772605682192_7tz6iot",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772605667954 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T06:28:02.192Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772605667969_op83uo5",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of Dell Inc. OptiPlex 3050 with distributed logistics.",
+      "timestamp": "2026-03-04T06:27:47.969Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772605402655_8v47dxt",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772605383754 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T06:23:22.655Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772605383766_sg62r7t",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+      "timestamp": "2026-03-04T06:23:03.766Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772605244212_f4z81p4",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772605223937 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T06:20:44.212Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772605223951_3hru161",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 with distributed logistics.",
+      "timestamp": "2026-03-04T06:20:23.951Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772604582014_t911wp2",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772604562484 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T06:09:42.014Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772604562493_nqg60a6",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of SM-LC24F392 with distributed logistics.",
+      "timestamp": "2026-03-04T06:09:22.493Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772604497695_6b1bfd7",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: E2020H",
+      "timestamp": "2026-03-04T06:08:17.695Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772604270832_xyf2dwx",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772604246279 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T06:04:30.832Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772604246292_xyn0r6u",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of Dell-E2020H with distributed logistics.",
+      "timestamp": "2026-03-04T06:04:06.292Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772604138196_7id8zzt",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: E2020H",
+      "timestamp": "2026-03-04T06:02:18.196Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772604084398_btv055f",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: Dell-S2721HN ",
+      "timestamp": "2026-03-04T06:01:24.398Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603983548_0pug344",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772603967799 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T05:59:43.548Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603967815_fze0zux",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of Dell-S2721HN  with distributed logistics.",
+      "timestamp": "2026-03-04T05:59:27.815Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603780504_0sa0fhw",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772603761598 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T05:56:20.504Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603761611_up0eusc",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of Dell-S2721HN-Grey with distributed logistics.",
+      "timestamp": "2026-03-04T05:56:01.611Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603293370_bj7ocj1",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772603278775 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T05:48:13.370Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603278786_meksv72",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of ZEBRONICS-‎A19HD LED with distributed logistics.",
+      "timestamp": "2026-03-04T05:47:58.786Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603149395_7j8ybe6",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: ZEBRONICS-‎A19HD LED",
+      "timestamp": "2026-03-04T05:45:49.395Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603094133_bjiu6fx",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772603071801 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T05:44:54.133Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603071816_urnp0ye",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of LG-19M38AB with distributed logistics.",
+      "timestamp": "2026-03-04T05:44:31.816Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772603001063_ii3ve55",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772602982028 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T05:43:21.063Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772602982038_y1p98el",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of LG-19M38AB with distributed logistics.",
+      "timestamp": "2026-03-04T05:43:02.038Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772602749010_t4vzok4",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772602713001 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T05:39:09.010Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772602725088_tf62uxd",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: Acer-EB192Q",
+      "timestamp": "2026-03-04T05:38:45.088Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772602713012_0qc3auj",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of Acer-EB192Q with distributed logistics.",
+      "timestamp": "2026-03-04T05:38:33.012Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772602586999_4rg7n9e",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772602568051 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T05:36:26.999Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772602568063_50uk7v9",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of ZEBRONICS-‎A19HD LED with distributed logistics.",
+      "timestamp": "2026-03-04T05:36:08.063Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772602439912_5kxu0qg",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772602278380 issued to Vistaran office Ho",
+      "timestamp": "2026-03-04T05:33:59.912Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772602278399_gil2x16",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of E2020H with distributed logistics.",
+      "timestamp": "2026-03-04T05:31:18.399Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601162421_fwuelry",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya .Y as Present.",
+      "timestamp": "2026-03-04T05:12:42.421Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601159749_gyoeec4",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Anjali as Present.",
+      "timestamp": "2026-03-04T05:12:39.749Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601156510_jg19tyd",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishali as Present.",
+      "timestamp": "2026-03-04T05:12:36.510Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601152955_u229y07",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya Tai as Present.",
+      "timestamp": "2026-03-04T05:12:32.955Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601152063_hofq33d",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Megha as Absent.",
+      "timestamp": "2026-03-04T05:12:32.063Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601150764_ca8r059",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Megha as Present.",
+      "timestamp": "2026-03-04T05:12:30.764Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601149621_ry2qrp3",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishnavi as Present.",
+      "timestamp": "2026-03-04T05:12:29.621Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601148418_3ppdaqx",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Somesh as Present.",
+      "timestamp": "2026-03-04T05:12:28.418Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601146688_2869f78",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Tejana as Present.",
+      "timestamp": "2026-03-04T05:12:26.688Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601145468_agqxrvt",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Sonali as Present.",
+      "timestamp": "2026-03-04T05:12:25.468Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601144498_021vql5",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Dipali as Present.",
+      "timestamp": "2026-03-04T05:12:24.498Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601143404_ctwn2ad",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kareena as Present.",
+      "timestamp": "2026-03-04T05:12:23.404Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601140118_phz3wv7",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Pratibha as Present.",
+      "timestamp": "2026-03-04T05:12:20.118Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601139004_p2p5mta",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Manasi as Present.",
+      "timestamp": "2026-03-04T05:12:19.004Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601137867_cb3i51m",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Rupa as Present.",
+      "timestamp": "2026-03-04T05:12:17.867Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601136680_snfl5uo",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Ashwini Pawaskar as Present.",
+      "timestamp": "2026-03-04T05:12:16.680Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601135017_70tvq7l",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aishwarya.D as Present.",
+      "timestamp": "2026-03-04T05:12:15.017Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601133784_u422fgp",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Trupti as Present.",
+      "timestamp": "2026-03-04T05:12:13.784Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601132679_vm4ntco",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Shalu as Absent.",
+      "timestamp": "2026-03-04T05:12:12.679Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601131416_jo294l5",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Shalu as Present.",
+      "timestamp": "2026-03-04T05:12:11.416Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601130388_sxly8yi",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vimalesh as Present.",
+      "timestamp": "2026-03-04T05:12:10.388Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601126531_8197f0k",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked SATYAWAN as Present.",
+      "timestamp": "2026-03-04T05:12:06.531Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601124603_wt6v9f6",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Owais as Present.",
+      "timestamp": "2026-03-04T05:12:04.603Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601122760_phgsun6",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kailash as Present.",
+      "timestamp": "2026-03-04T05:12:02.760Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601100576_gdmbw70",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Adarsh as Present.",
+      "timestamp": "2026-03-04T05:11:40.576Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601096198_sun6jew",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Umesh as Present.",
+      "timestamp": "2026-03-04T05:11:36.198Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601094899_jhgrym5",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aditya as Present.",
+      "timestamp": "2026-03-04T05:11:34.899Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601093829_cwhia9r",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Amarjeet as Present.",
+      "timestamp": "2026-03-04T05:11:33.829Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772601092849_icykkdz",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Sagar as Present.",
+      "timestamp": "2026-03-04T05:11:32.849Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264838934_6mcmwkf",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya .Y as Present.",
+      "timestamp": "2026-02-28T07:47:18.934Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264837688_jil38y5",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Anjali as Present.",
+      "timestamp": "2026-02-28T07:47:17.688Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264836693_vmexjm5",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishali as Present.",
+      "timestamp": "2026-02-28T07:47:16.693Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264833607_sgw31nl",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya Tai as Present.",
+      "timestamp": "2026-02-28T07:47:13.607Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264832498_0ib4zhx",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Megha as Absent.",
+      "timestamp": "2026-02-28T07:47:12.498Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264830824_7xllryf",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishnavi as Present.",
+      "timestamp": "2026-02-28T07:47:10.824Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264829360_ucpxqzk",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Somesh as Present.",
+      "timestamp": "2026-02-28T07:47:09.360Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264827832_5hqq6d3",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Tejana as Present.",
+      "timestamp": "2026-02-28T07:47:07.832Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264826709_v2zx88f",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Sonali as Present.",
+      "timestamp": "2026-02-28T07:47:06.709Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264825557_202gsjk",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Dipali as Present.",
+      "timestamp": "2026-02-28T07:47:05.557Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264824365_9haxil1",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kareena as Present.",
+      "timestamp": "2026-02-28T07:47:04.365Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264821192_g0ityel",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Pratibha as Present.",
+      "timestamp": "2026-02-28T07:47:01.192Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264818576_1yx5boz",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Manasi as Present.",
+      "timestamp": "2026-02-28T07:46:58.576Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264817474_ai3x5kc",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Rupa as Present.",
+      "timestamp": "2026-02-28T07:46:57.474Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264816349_iykgsj0",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Ashwini Pawaskar as Present.",
+      "timestamp": "2026-02-28T07:46:56.349Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264815168_1qmf73b",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aishwarya.D as Present.",
+      "timestamp": "2026-02-28T07:46:55.169Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264813475_bs0h62f",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Trupti as Present.",
+      "timestamp": "2026-02-28T07:46:53.475Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264812411_kncg24u",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Shalu as Present.",
+      "timestamp": "2026-02-28T07:46:52.411Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264811279_mmne8sz",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vimalesh as Present.",
+      "timestamp": "2026-02-28T07:46:51.279Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264808169_v2mmfeh",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked SATYAWAN as Present.",
+      "timestamp": "2026-02-28T07:46:48.169Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264807004_h198p99",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Owais as Present.",
+      "timestamp": "2026-02-28T07:46:47.004Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264806135_4jkkzk7",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kailash as Present.",
+      "timestamp": "2026-02-28T07:46:46.135Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264805126_yxhylyt",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Adarsh as Present.",
+      "timestamp": "2026-02-28T07:46:45.126Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264801374_invga76",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Umesh as Present.",
+      "timestamp": "2026-02-28T07:46:41.374Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264800298_3kat0qc",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aditya as Present.",
+      "timestamp": "2026-02-28T07:46:40.298Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264799126_ea45lcy",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Amarjeet as Present.",
+      "timestamp": "2026-02-28T07:46:39.126Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264797068_xmpu24j",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Sagar as Present.",
+      "timestamp": "2026-02-28T07:46:37.068Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264467245_ucxi4kx",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: Redmi 9i",
+      "timestamp": "2026-02-28T07:41:07.245Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264274159_mnecfhp",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772264222309 issued to Warehouse(DC-501)",
+      "timestamp": "2026-02-28T07:37:54.159Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264253506_xjzm75k",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Asset Allocated: Tag AST-BR-1772264077850 issued to Warehouse(DC-501)",
+      "timestamp": "2026-02-28T07:37:33.506Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264235790_n0z3cej",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: Redmi 9",
+      "timestamp": "2026-02-28T07:37:15.790Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264222313_qqnrraf",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of Redmi 9 with distributed logistics.",
+      "timestamp": "2026-02-28T07:37:02.313Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772264077855_qmkeguq",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of Galaxy A30 with distributed logistics.",
+      "timestamp": "2026-02-28T07:34:37.855Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772201872521_neb47l9",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: 55UT801C0LA",
+      "timestamp": "2026-02-27T14:17:52.521Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200723889_4luw80h",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: 55UT801C0LA",
+      "timestamp": "2026-02-27T13:58:43.889Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200697628_64zbqqc",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of 55UT801C0LA with distributed logistics.",
+      "timestamp": "2026-02-27T13:58:17.628Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200654950_nsj51av",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: 55UT801C0LA",
+      "timestamp": "2026-02-27T13:57:34.950Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200639567_rmcrq5v",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of 55UT801C0LA with distributed logistics.",
+      "timestamp": "2026-02-27T13:57:19.567Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200568904_zja5av6",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of 55UT801C0LA with distributed logistics.",
+      "timestamp": "2026-02-27T13:56:08.904Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200494934_yy8vn0a",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: 55UT801C0LA",
+      "timestamp": "2026-02-27T13:54:54.934Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200450992_ah7f87o",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: 55UT801C0LA",
+      "timestamp": "2026-02-27T13:54:10.992Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200384304_mmp87lj",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: 55UT801C0LA",
+      "timestamp": "2026-02-27T13:53:04.304Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200365174_2922h38",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: 55UT801C0LA",
+      "timestamp": "2026-02-27T13:52:45.174Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772200327832_3yddyb3",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: 55UT801C0LA",
+      "timestamp": "2026-02-27T13:52:07.832Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772197467182_qp8clu5",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated ISP connection: Hathway Cable and Datacom Ltd (Tambe Nagar 009)",
+      "timestamp": "2026-02-27T13:04:27.182Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772197447615_h3jw8yj",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated ISP connection: Rajesh Digital & Datacom Pvt. Ltd. (004lake home) ",
+      "timestamp": "2026-02-27T13:04:07.615Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772197429949_11p0rbi",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated ISP connection: Rajesh Digital & Datacom Pvt. Ltd. (004lake home) ",
+      "timestamp": "2026-02-27T13:03:49.949Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772197384354_iw4jr6v",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated ISP connection: airtel xstream fiber ( Godrej - 013)",
+      "timestamp": "2026-02-27T13:03:04.354Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196407782_clnvkv0",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Receipt CHN-2026-0001",
+      "timestamp": "2026-02-27T12:46:47.782Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196275785_lkgn303",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Established Real-time Local Drive Sync.",
+      "timestamp": "2026-02-27T12:44:35.785Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196128109_gffddq8",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya .Y as Present.",
+      "timestamp": "2026-02-27T12:42:08.109Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196126490_r7sxioc",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Anjali as Absent.",
+      "timestamp": "2026-02-27T12:42:06.490Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196125091_fb9tbxf",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Anjali as Present.",
+      "timestamp": "2026-02-27T12:42:05.091Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196124106_876iifm",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishali as Present.",
+      "timestamp": "2026-02-27T12:42:04.106Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196122547_7tpruyy",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya Tai as Present.",
+      "timestamp": "2026-02-27T12:42:02.547Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196119764_sui9qmh",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Megha as Absent.",
+      "timestamp": "2026-02-27T12:41:59.764Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196117484_f8aknhi",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishnavi as Present.",
+      "timestamp": "2026-02-27T12:41:57.484Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196116517_1upxv9b",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Somesh as Present.",
+      "timestamp": "2026-02-27T12:41:56.517Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196115159_awzpamn",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Tejana as Present.",
+      "timestamp": "2026-02-27T12:41:55.160Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196114284_n7i8q8n",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Sonali as Present.",
+      "timestamp": "2026-02-27T12:41:54.284Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196113241_l24ltta",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Dipali as Present.",
+      "timestamp": "2026-02-27T12:41:53.241Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196112281_76zlr38",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kareena as Present.",
+      "timestamp": "2026-02-27T12:41:52.281Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196109046_t21wcll",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Pratibha as Present.",
+      "timestamp": "2026-02-27T12:41:49.046Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196108004_gatkp5m",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Manasi as Present.",
+      "timestamp": "2026-02-27T12:41:48.004Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196106996_5h4sggg",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Rupa as Present.",
+      "timestamp": "2026-02-27T12:41:46.996Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196105873_bnp1yze",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Ashwini Pawaskar as Present.",
+      "timestamp": "2026-02-27T12:41:45.873Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196102989_mdzbr5a",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aishwarya.D as Present.",
+      "timestamp": "2026-02-27T12:41:42.989Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196101922_u7iymte",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Trupti as Present.",
+      "timestamp": "2026-02-27T12:41:41.922Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196100647_e22ynzk",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Shalu as Absent.",
+      "timestamp": "2026-02-27T12:41:40.647Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196098915_6tkd5ns",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vimalesh as Present.",
+      "timestamp": "2026-02-27T12:41:38.915Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196097048_cx59a1y",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked SATYAWAN as Present.",
+      "timestamp": "2026-02-27T12:41:37.048Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196095146_4wa7909",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Owais as Present.",
+      "timestamp": "2026-02-27T12:41:35.146Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196094183_gnjj4fq",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kailash as Present.",
+      "timestamp": "2026-02-27T12:41:34.183Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196093090_njw4pf3",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Adarsh as Present.",
+      "timestamp": "2026-02-27T12:41:33.090Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196089640_f5sluod",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Umesh as Present.",
+      "timestamp": "2026-02-27T12:41:29.640Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196088599_c4sr498",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aditya as Present.",
+      "timestamp": "2026-02-27T12:41:28.599Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196086799_vj2nin8",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aditya as Absent.",
+      "timestamp": "2026-02-27T12:41:26.799Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196085665_6bsxh0w",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Amarjeet as Present.",
+      "timestamp": "2026-02-27T12:41:25.665Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772196082509_zbgvvdi",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Sagar as Present.",
+      "timestamp": "2026-02-27T12:41:22.509Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772195730295_set2suj",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: GigabyteH410M S2",
+      "timestamp": "2026-02-27T12:35:30.295Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772194777927_fiv5279",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of 30GSS17A00 with distributed logistics.",
+      "timestamp": "2026-02-27T12:19:37.927Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772194221037_iq42ssr",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+      "timestamp": "2026-02-27T12:10:21.037Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772194057754_8oc6ctv",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+      "timestamp": "2026-02-27T12:07:37.754Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772193741407_2k4v6nu",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+      "timestamp": "2026-02-27T12:02:21.407Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772193371708_m43bhof",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of GigabyteH410M S2 with distributed logistics.",
+      "timestamp": "2026-02-27T11:56:11.708Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772104019062_x7r4bkt",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: ZEBRONICS-‎A19HD LED",
+      "timestamp": "2026-02-26T11:06:59.062Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772103991517_y9zkupr",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: ViewSonic-VA1903A",
+      "timestamp": "2026-02-26T11:06:31.517Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772103970350_q15qiir",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: Acer-EB192Q",
+      "timestamp": "2026-02-26T11:06:10.350Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772103952903_a7q0ny7",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: Dell-S2721HN-Grey",
+      "timestamp": "2026-02-26T11:05:52.903Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772103935520_ss2dudl",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: Dell-E2020H",
+      "timestamp": "2026-02-26T11:05:35.520Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772103923140_a8im6yc",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Updated Master Asset: LG-19M38AB",
+      "timestamp": "2026-02-26T11:05:23.140Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772101626102_ei5bwoa",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of vCloudPoint V1 with distributed logistics.",
+      "timestamp": "2026-02-26T10:27:06.102Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772096714276_jugsm8w",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of 19M38AB with distributed logistics.",
+      "timestamp": "2026-02-26T09:05:14.276Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772096288554_byxmo11",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of E2020H with distributed logistics.",
+      "timestamp": "2026-02-26T08:58:08.554Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772095964933_gxmm8v8",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of S2721HN-Grey with distributed logistics.",
+      "timestamp": "2026-02-26T08:52:44.933Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772095400690_9zltbdy",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of EB192Q with distributed logistics.",
+      "timestamp": "2026-02-26T08:43:20.690Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772094324079_i6vu95n",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of VA1903A with distributed logistics.",
+      "timestamp": "2026-02-26T08:25:24.079Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772093706095_uy8psg2",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Registered 1 units of \t‎A19HD LED with distributed logistics.",
+      "timestamp": "2026-02-26T08:15:06.095Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092407717_utqvi8b",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya .Y as Present.",
+      "timestamp": "2026-02-26T07:53:27.717Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092406396_huvz6ul",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Anjali as Present.",
+      "timestamp": "2026-02-26T07:53:26.396Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092405309_u8mqask",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishali as Present.",
+      "timestamp": "2026-02-26T07:53:25.309Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092403558_j6s3col",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Supriya Tai as Present.",
+      "timestamp": "2026-02-26T07:53:23.558Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092394071_c6afx7y",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Megha as Absent.",
+      "timestamp": "2026-02-26T07:53:14.071Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092391686_n9nhw4d",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vaishnavi as Present.",
+      "timestamp": "2026-02-26T07:53:11.686Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092388347_m7p6q14",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Somesh as Present.",
+      "timestamp": "2026-02-26T07:53:08.347Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092381208_d34zcgt",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Tejana as Present.",
+      "timestamp": "2026-02-26T07:53:01.208Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092379982_l152wrf",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Sonali as Present.",
+      "timestamp": "2026-02-26T07:52:59.982Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092378784_lo0iwvm",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Dipali as Present.",
+      "timestamp": "2026-02-26T07:52:58.784Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092377537_w355zig",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kareena as Present.",
+      "timestamp": "2026-02-26T07:52:57.537Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092375904_bk4cy13",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Pratibha as Present.",
+      "timestamp": "2026-02-26T07:52:55.904Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092374722_rz96l1w",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Manasi as Present.",
+      "timestamp": "2026-02-26T07:52:54.722Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092373622_wp4xxcn",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Rupa as Present.",
+      "timestamp": "2026-02-26T07:52:53.622Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092372443_vgrmx9x",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Ashwini Pawaskar as Present.",
+      "timestamp": "2026-02-26T07:52:52.443Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092368203_4bu960q",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aishwarya.D as Present.",
+      "timestamp": "2026-02-26T07:52:48.203Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092366873_v8o9fzk",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Trupti as Present.",
+      "timestamp": "2026-02-26T07:52:46.873Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092365506_npmhf70",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Shalu as Present.",
+      "timestamp": "2026-02-26T07:52:45.506Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092363784_o76lbhn",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Vimalesh as Present.",
+      "timestamp": "2026-02-26T07:52:43.784Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092362421_swu2b9c",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked SATYAWAN as Present.",
+      "timestamp": "2026-02-26T07:52:42.421Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092361211_p93o8cp",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Owais as Present.",
+      "timestamp": "2026-02-26T07:52:41.211Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092358970_fltju98",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Kailash as Present.",
+      "timestamp": "2026-02-26T07:52:38.970Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092357869_wjuoncd",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Adarsh as Present.",
+      "timestamp": "2026-02-26T07:52:37.869Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092353841_ezbn52s",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Umesh as Present.",
+      "timestamp": "2026-02-26T07:52:33.841Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092352451_zcfgwj2",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Aditya as Present.",
+      "timestamp": "2026-02-26T07:52:32.451Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "LOG_1772092351235_srjcchc",
+      "userId": "USR001",
+      "userName": "Amarjeet yadav",
+      "action": "Administrative Override: Marked Amarjeet as Present.",
+      "timestamp": "2026-02-26T07:52:31.235Z",
+      "ip": "127.0.0.1"
+    }
+  ],
+  "vistaran-helpdesk-notification-settings": [],
   "vistaran-helpdesk-templates": [
     {
       "id": "TPL1771921749366",
@@ -1813,6 +3951,1091 @@
     }
   ],
   "vistaran-helpdesk-inventory": [
+    {
+      "id": "AST-DC-1772607996116",
+      "name": "H410M S2 V3",
+      "category": "Laptop",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Fingers Assembled",
+      "serialNumber": "VHCDCCPU",
+      "imei": "",
+      "ram": "8GB",
+      "storage": "SSD 120 GB / HDD 1TB",
+      "processor": "3.60 gigahertz Intel Core i3-10100",
+      "os": "Windows 11 Professional (x64) Version 2009",
+      "screenSize": null,
+      "resolution": null,
+      "refreshRate": null,
+      "ports": null,
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T07:06:53.849Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "DC Warehouse one",
+      "movementHistory": [
+        {
+          "id": "MOV-1772608013849",
+          "toUserId": "USR1769248072661",
+          "toDept": "DC",
+          "toLocation": "Warehouse one",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR1769248072661",
+      "assignedToDept": "DC",
+      "assignedToLocation": "Warehouse one",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-DC-1772607849783",
+      "name": "H410M S2 V3",
+      "category": "Desktop",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Assembled",
+      "serialNumber": "VHCDCCPU",
+      "imei": "",
+      "ram": "8GB",
+      "storage": "SSD 120 GB / HDD 1TB",
+      "processor": "3.60 gigahertz Intel Core i3-10100",
+      "os": "Windows 10 Professional (x64) Version 2009",
+      "screenSize": null,
+      "resolution": null,
+      "refreshRate": null,
+      "ports": null,
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T07:04:29.442Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "DC Warehouse one",
+      "movementHistory": [
+        {
+          "id": "MOV-1772607869442",
+          "toUserId": "USR1769248072661",
+          "toDept": "DC",
+          "toLocation": "Warehouse one",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR1769248072661",
+      "assignedToDept": "DC",
+      "assignedToLocation": "Warehouse one",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-DC-1772606721602",
+      "name": "30GSS17A00",
+      "category": "Desktop",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Lenovo P3 Tower",
+      "serialNumber": "GM0LAA4G",
+      "imei": "",
+      "ram": "80 GB RAM (32GB+32GB+16GB)",
+      "storage": "1TB HDD+ 2 TB SSD",
+      "processor": "Intel® CoreTM i9-13th Gen vPro® Processor",
+      "os": "Windows 11 Pro",
+      "screenSize": null,
+      "resolution": null,
+      "refreshRate": null,
+      "ports": null,
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:45:43.322Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "DC Warehouse",
+      "movementHistory": [
+        {
+          "id": "MOV-1772606743322",
+          "toUserId": "USR1769248072661",
+          "toDept": "DC",
+          "toLocation": "Warehouse Two",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR1769248072661",
+      "assignedToDept": "DC",
+      "assignedToLocation": "Warehouse Two",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772606359052",
+      "name": "H410M S2 V3",
+      "category": "Desktop",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "ZEBRONICS",
+      "serialNumber": "VHCDCCPU",
+      "imei": "",
+      "ram": "32GB",
+      "storage": "1TB HDD+ 1 TB SSD",
+      "processor": "11th Gen Intel(R)Core(TM)-i7-11700",
+      "os": "Windows 11 Professional (x64) Version 2009",
+      "screenSize": null,
+      "resolution": null,
+      "refreshRate": null,
+      "ports": null,
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:40:34.947Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "Warehouse Two",
+      "movementHistory": [
+        {
+          "id": "MOV-1772606388929",
+          "toUserId": "USR1769248072661",
+          "toDept": "DC",
+          "toLocation": "Warehouse one",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        },
+        {
+          "id": "MOV-1772606414959",
+          "fromUserId": "USR1769248072661",
+          "toUserId": "STOCK",
+          "fromDept": "DC",
+          "toDept": "DC",
+          "fromLocation": "Warehouse one",
+          "toLocation": "Warehouse Two",
+          "transferDate": "2026-03-04T06:40:14.959Z",
+          "reason": "Asset Returned to Warehouse/Stock",
+          "approvedBy": "Amarjeet yadav"
+        },
+        {
+          "id": "MOV-1772606434947",
+          "toUserId": "USR1769248072661",
+          "toDept": "DC",
+          "toLocation": "Warehouse Two",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR1769248072661",
+      "assignedToDept": "DC",
+      "assignedToLocation": "Warehouse Two",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-DC-1772606165949",
+      "name": "H410M S2 V3",
+      "category": "Desktop",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Zebronics Assembled",
+      "serialNumber": "VHCDCCPU",
+      "imei": "",
+      "ram": "24GB",
+      "storage": "1TB HDD+ 2 TB SSD",
+      "processor": "11th Gen Intel(R)Core(TM)-i7-11700",
+      "os": "Windows 11 Pro",
+      "screenSize": null,
+      "resolution": null,
+      "refreshRate": null,
+      "ports": null,
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:36:42.610Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "DC Warehouse",
+      "movementHistory": [
+        {
+          "id": "MOV-1772606202610",
+          "toUserId": "USR1769248072661",
+          "toDept": "Branch",
+          "toLocation": "Warehouse one",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR1769248072661",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "Warehouse one",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-DC-1772606036803",
+      "name": "H410M S2 V3",
+      "category": "Desktop",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Zebronics Assembled",
+      "serialNumber": "VHCDCCPU",
+      "imei": "",
+      "ram": "64GB",
+      "storage": "1TB HDD+ 1 TB SSD",
+      "processor": "12th Gen Intel(R)Core(TM)-i7-12700",
+      "os": "Windows 11 Professional (x64) Version 2009",
+      "screenSize": null,
+      "resolution": null,
+      "refreshRate": null,
+      "ports": null,
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:37:29.386Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "DC Warehouse",
+      "movementHistory": [
+        {
+          "id": "MOV-1772606062883",
+          "toUserId": "USR1769248072661",
+          "toDept": "DC",
+          "toLocation": "Warehouse one",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR1769248072661",
+      "assignedToDept": "DC",
+      "assignedToLocation": "Warehouse one",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772605667954",
+      "name": "Dell Inc. OptiPlex 3050",
+      "category": "Desktop",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Dell ",
+      "serialNumber": "VHCCHOCPU",
+      "imei": "",
+      "ram": "8GB",
+      "storage": "SSD 120 GB / HDD 1TB",
+      "processor": "2.90 gigahertz Intel Core i5-10400",
+      "os": "Windows 10 Professional (x64) Version 2009",
+      "screenSize": null,
+      "resolution": null,
+      "refreshRate": null,
+      "ports": null,
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:28:02.182Z",
+      "assetStatus": "In Use",
+      "quantity": 6,
+      "location": "VISTARAN COMMODITIES",
+      "movementHistory": [
+        {
+          "id": "MOV-1772605682182",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "VISTARAN COMMODITIES",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "VISTARAN COMMODITIES",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772605383754",
+      "name": "H410M S2 V3",
+      "category": "Desktop",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Assembled",
+      "serialNumber": "VHCCHOCPU",
+      "imei": "",
+      "ram": "8GB",
+      "storage": "SSD 120 GB / HDD 1TB",
+      "processor": "2.90 gigahertz Intel Core i5-10400",
+      "os": "Windows 10 Professional (x64) Version 2009",
+      "screenSize": null,
+      "resolution": null,
+      "refreshRate": null,
+      "ports": null,
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:23:22.643Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "VISTARAN COMMODITIES",
+      "movementHistory": [
+        {
+          "id": "MOV-1772605402643",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "VISTARAN COMMODITIES",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "VISTARAN COMMODITIES",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772605223937",
+      "name": "H410M S2",
+      "category": "Desktop",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Assembled",
+      "serialNumber": "VHCHOMT",
+      "imei": "",
+      "ram": "8GB",
+      "storage": "SSD 120 GB / HDD 1TB",
+      "processor": "3.60 gigahertz Intel Core i3-10100",
+      "os": "Windows 10 Professional (x64) Version 2009",
+      "screenSize": null,
+      "resolution": null,
+      "refreshRate": null,
+      "ports": null,
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:20:44.202Z",
+      "assetStatus": "In Use",
+      "quantity": 16,
+      "location": "Vistaran-HO",
+      "movementHistory": [
+        {
+          "id": "MOV-1772605244202",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "Vistaran -HO",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "Vistaran -HO",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772604562484",
+      "name": "SM-LC24F392",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Samsung",
+      "serialNumber": "VHCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "‎18.5 Inches",
+      "resolution": "1366 x 768",
+      "refreshRate": "60Hz",
+      "ports": "VGA",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:09:42.001Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "Vistaran-HO",
+      "movementHistory": [
+        {
+          "id": "MOV-1772604582001",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "Vistaran -HO",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "Vistaran -HO",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772604246279",
+      "name": "Dell-E2020H",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Dell ",
+      "serialNumber": "VHCCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "24 Inches",
+      "resolution": "1366 x 768",
+      "refreshRate": "60Hz",
+      "ports": "HDMI,VGA",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:04:30.824Z",
+      "assetStatus": "In Use",
+      "quantity": 3,
+      "location": "VISTARAN COMMODITIES",
+      "movementHistory": [
+        {
+          "id": "MOV-1772604270824",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "VISTARAN COMMODITIES",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "VISTARAN COMMODITIES",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772603967799",
+      "name": "Dell-S2721HN ",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Dell ",
+      "serialNumber": "VHCCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "24 Inches",
+      "resolution": "1366 x 768",
+      "refreshRate": "60Hz",
+      "ports": "HDMI,VGA",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:01:24.387Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "VISTARAN COMMODITIES",
+      "movementHistory": [
+        {
+          "id": "MOV-1772603983539",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "VISTARAN COMMODITIES",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "VISTARAN COMMODITIES",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772603761598",
+      "name": "Dell-S2721HN-Grey",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "",
+      "brand": "Dell ",
+      "serialNumber": "VHCCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "27 Inches",
+      "resolution": "1366 x 768",
+      "refreshRate": "60Hz",
+      "ports": " HDMI, Audio line-out ",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T05:56:20.492Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "VISTARAN COMMODITIES",
+      "movementHistory": [
+        {
+          "id": "MOV-1772603780492",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "VISTARAN COMMODITIES",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "VISTARAN COMMODITIES",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772603278775",
+      "name": "ZEBRONICS-‎A19HD LED",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "ZEBRONICS",
+      "serialNumber": "VHCCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "‎19 Inches",
+      "resolution": "1366 x 768",
+      "refreshRate": "60Hz",
+      "ports": "HDMI,VGA",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T05:48:13.357Z",
+      "assetStatus": "In Use",
+      "quantity": 2,
+      "location": "VISTARAN COMMODITIES",
+      "movementHistory": [
+        {
+          "id": "MOV-1772603293357",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "VISTARAN COMMODITIES",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "VISTARAN COMMODITIES",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772603071801",
+      "name": "LG-19M38AB",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "LG",
+      "serialNumber": "VHCCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "‎19 Inches",
+      "resolution": "1366 x 768",
+      "refreshRate": "60Hz",
+      "ports": "VGA",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T05:44:54.116Z",
+      "assetStatus": "In Use",
+      "quantity": 1,
+      "location": "VISTARAN COMMODITIES",
+      "movementHistory": [
+        {
+          "id": "MOV-1772603094116",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "VISTARAN COMMODITIES",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "VISTARAN COMMODITIES",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772602982028",
+      "name": "LG-19M38AB",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "LG",
+      "serialNumber": "VHCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "‎19 Inches",
+      "resolution": "1366 x 768",
+      "refreshRate": "60Hz",
+      "ports": "VGA",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T05:43:21.054Z",
+      "assetStatus": "In Use",
+      "quantity": 3,
+      "location": "Vistaran-HO",
+      "movementHistory": [
+        {
+          "id": "MOV-1772603001054",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "Vistaran -HO",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "Vistaran -HO",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772602713001",
+      "name": "Acer-EB192Q",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Acer",
+      "serialNumber": "VHCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "‎18.5 Inches",
+      "resolution": "1600x900",
+      "refreshRate": "60Hz",
+      "ports": "VGA",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T05:39:08.993Z",
+      "assetStatus": "In Use",
+      "quantity": 2,
+      "location": "Vistaran-HO",
+      "movementHistory": [
+        {
+          "id": "MOV-1772602748993",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "Vistaran -HO",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "Vistaran -HO",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772602568051",
+      "name": "ZEBRONICS-‎A19HD LED",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "ZEBRONICS",
+      "serialNumber": "VHCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "‎18.5 Inches",
+      "resolution": "1366 x 768",
+      "refreshRate": "60Hz",
+      "ports": "HDMI,VGA",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T05:45:49.385Z",
+      "assetStatus": "In Use",
+      "quantity": 5,
+      "location": "Vistaran-HO",
+      "movementHistory": [
+        {
+          "id": "MOV-1772602586989",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "Vistaran -HO",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "Vistaran -HO",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
+    {
+      "id": "AST-BR-1772602278380",
+      "name": "E2020H",
+      "category": "Monitor",
+      "minStock": 0,
+      "unit": "pcs",
+      "vendorId": "VEN1769175521819",
+      "brand": "Dell ",
+      "serialNumber": "VHCHOMT",
+      "imei": "",
+      "ram": null,
+      "storage": null,
+      "processor": null,
+      "os": null,
+      "screenSize": "‎19 Inches",
+      "resolution": "1366 x 768",
+      "refreshRate": "60Hz",
+      "ports": "HDMI,VGA",
+      "technology": null,
+      "colorType": null,
+      "duplexSupport": null,
+      "capacity": null,
+      "batteryType": null,
+      "backupTime": null,
+      "lensType": null,
+      "portCount": null,
+      "speed": null,
+      "isManaged": null,
+      "purchaseDate": "",
+      "purchaseCost": 0,
+      "warrantyStart": "",
+      "warrantyEnd": "",
+      "amcStatus": false,
+      "invoiceFile": "",
+      "lastUpdated": "2026-03-04T06:08:17.681Z",
+      "assetStatus": "In Use",
+      "quantity": 5,
+      "location": "Vistaran-HO",
+      "movementHistory": [
+        {
+          "id": "MOV-1772602439890",
+          "toUserId": "USR026",
+          "toDept": "Branch",
+          "toLocation": "Vistaran -HO",
+          "transferDate": "2026-03-04",
+          "reason": "Initial Asset Issuance",
+          "approvedBy": "Amarjeet yadav"
+        }
+      ],
+      "assignedToUserId": "USR026",
+      "assignedToDept": "Branch",
+      "assignedToLocation": "Vistaran -HO",
+      "allocationDate": "2026-03-04",
+      "expectedReturnDate": "",
+      "userAcknowledged": false
+    },
     {
       "id": "AST-DC-1772101626097",
       "name": "vCloudPoint V1",
@@ -18681,6 +21904,251 @@
   ],
   "vistaran-helpdesk-attendance": [
     {
+      "id": "ATT-1772601162419",
+      "userId": "USR057",
+      "userName": "Supriya .Y",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:42.419Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601159747",
+      "userId": "USR056",
+      "userName": "Anjali",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:39.747Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601156508",
+      "userId": "USR054",
+      "userName": "Vaishali",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:36.508Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601152954",
+      "userId": "USR052",
+      "userName": "Supriya Tai",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:32.954Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601150763",
+      "userId": "USR051",
+      "userName": "Megha",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:30.763Z",
+      "status": "Absent",
+      "notes": "Admin Override",
+      "lastUpdated": "2026-03-04T05:12:32.060Z"
+    },
+    {
+      "id": "ATT-1772601149618",
+      "userId": "USR050",
+      "userName": "Vaishnavi",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:29.618Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601148415",
+      "userId": "USR049",
+      "userName": "Somesh",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:28.415Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601146686",
+      "userId": "USR048",
+      "userName": "Tejana",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:26.686Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601145467",
+      "userId": "USR047",
+      "userName": "Sonali",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:25.467Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601144494",
+      "userId": "USR046",
+      "userName": "Dipali",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:24.494Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601143402",
+      "userId": "USR045",
+      "userName": "Kareena",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:23.402Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601140115",
+      "userId": "USR044",
+      "userName": "Pratibha",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:20.115Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601139003",
+      "userId": "USR043",
+      "userName": "Manasi",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:19.003Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601137865",
+      "userId": "USR042",
+      "userName": "Rupa",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:17.865Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601136678",
+      "userId": "USR041",
+      "userName": "Ashwini Pawaskar",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:16.678Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601135016",
+      "userId": "USR040",
+      "userName": "Aishwarya.D",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:15.016Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601133782",
+      "userId": "USR039",
+      "userName": "Trupti",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:13.782Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601131414",
+      "userId": "USR038",
+      "userName": "Shalu",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:11.414Z",
+      "status": "Absent",
+      "notes": "Admin Override",
+      "lastUpdated": "2026-03-04T05:12:12.676Z"
+    },
+    {
+      "id": "ATT-1772601130386",
+      "userId": "USR037",
+      "userName": "Vimalesh",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:10.386Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601126529",
+      "userId": "USR036",
+      "userName": "SATYAWAN",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:06.529Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601124601",
+      "userId": "USR035",
+      "userName": "Owais",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:04.601Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601122758",
+      "userId": "USR034",
+      "userName": "Kailash",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:12:02.758Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601100574",
+      "userId": "USR033",
+      "userName": "Adarsh",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:11:40.574Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601096195",
+      "userId": "USR032",
+      "userName": "Umesh",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:11:36.195Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601094897",
+      "userId": "USR031",
+      "userName": "Aditya",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:11:34.897Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601093827",
+      "userId": "USR030",
+      "userName": "Amarjeet",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:11:33.827Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
+      "id": "ATT-1772601092847",
+      "userId": "USR029",
+      "userName": "Sagar",
+      "date": "2026-03-04",
+      "checkIn": "2026-03-04T05:11:32.847Z",
+      "status": "Present",
+      "notes": "Manual Admin Entry"
+    },
+    {
       "id": "ATT-1772092407714",
       "userId": "USR057",
       "userName": "Supriya .Y",
@@ -23727,566 +27195,6 @@
   ],
   "vistaran-helpdesk-font": "sans",
   "vistaran-helpdesk-userId": "USR001",
-  "vistaran-helpdesk-users": [
-    {
-      "id": "USR001",
-      "name": "Amarjeet yadav",
-      "email": "ITsupport@vistaran.in",
-      "password": "88283671",
-      "role": "Admin",
-      "department": "IT",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR002",
-      "name": "BHANDUP -001",
-      "email": "purchasebhandup@vistaran.in",
-      "password": "10001",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z",
-      "phone": "",
-      "whatsapp": "",
-      "employeeId": "",
-      "designation": ""
-    },
-    {
-      "id": "USR003",
-      "name": "VIKHROLI -002",
-      "email": "purchasevikhroli@vistaran.in",
-      "password": "10002",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR004",
-      "name": "HIRANANDANI -003",
-      "email": "purchasepowai@vistaran.in",
-      "password": "10003",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR005",
-      "name": "POWAI -004",
-      "email": "purchasepowai2@vistaran.in",
-      "password": "10004",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR006",
-      "name": "Mulund -005",
-      "email": "purchasemulund@vistaran.in",
-      "password": "10005",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR007",
-      "name": "Mulund -006",
-      "email": "purchaseveenanagar@vistaran.in",
-      "password": "10006",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR008",
-      "name": "Mulund -007",
-      "email": "purchasecyprus@vistaran.in",
-      "password": "10007",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR009",
-      "name": "Hindustan Chowk 008",
-      "email": "purchasecolonymul@vistaran.in",
-      "password": "10008",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR010",
-      "name": "Tambe Nagar 009",
-      "email": "purchasetambenagar@vistaran.in",
-      "password": "10009",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR011",
-      "name": "Romell vasant 010",
-      "email": "purchaseromellmul@vistaran.in",
-      "password": "10010",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR012",
-      "name": "Chandiwali 011",
-      "email": "purchasechandivali@vistaran.in",
-      "password": "10011",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR013",
-      "name": "Sakinaka 012",
-      "email": "purchasesakinaka@vistaran.in",
-      "password": "10012",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR014",
-      "name": "Godrej 013",
-      "email": "purchasegodrej@vistaran.in",
-      "password": "10013",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR015",
-      "name": "Tagore Nagar014",
-      "email": "purchasetagore@vistaran.in",
-      "password": "10014",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR016",
-      "name": "Veena Two 015",
-      "email": "purchaseveena2@vistaran.in",
-      "password": "10015",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR017",
-      "name": "Hanuman Chowk 016",
-      "email": "purchasehanuman@vistaran.in",
-      "password": "10016",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR018",
-      "name": "KailashBranch 017",
-      "email": "purchasekailash@vistaran.in",
-      "password": "10017",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR019",
-      "name": "Lok kedar branch 018",
-      "email": "purchaselokkedar@vistaran.in",
-      "password": "10018",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR020",
-      "name": "Sai Dham Branch 019",
-      "email": "purchasesaidham@vistaran.in",
-      "password": "10019",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR021",
-      "name": "Civilhospital Branch 20",
-      "email": "purchasecivilhospital@vistaran.in",
-      "password": "10020",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR022",
-      "name": "Talaopali Branch 21",
-      "email": "purchasetalaopali@vistaran.in",
-      "password": "10021",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR023",
-      "name": "Vartaknagar Branch 22",
-      "email": "purchasevartaknagar@vistaran.in",
-      "password": "10022",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR025",
-      "name": "Customer Support ID",
-      "email": "pillsandmore@vistaran.in",
-      "password": "77661",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR026",
-      "name": "Vistaran office Ho",
-      "email": "purchase@vistaran.in",
-      "password": "776688",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR028",
-      "name": "Dhokali Naka 023",
-      "email": "purchasedhokali@vistaran.in",
-      "password": "10023",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR029",
-      "name": "Sagar",
-      "email": "sagar@vistaran.in",
-      "password": "10029",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR030",
-      "name": "Amarjeet",
-      "email": "amarjeet.s@vistaran.in",
-      "password": "10030",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR031",
-      "name": "Aditya",
-      "email": "aditya@vistaran.in",
-      "password": "10031",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR032",
-      "name": "Umesh",
-      "email": "umesh@vistaran.in",
-      "password": "10032",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR033",
-      "name": "Adarsh",
-      "email": "adarsh@vistaran.in",
-      "password": "10033",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR034",
-      "name": "Kailash",
-      "email": "kailash.s@vistaran.in",
-      "password": "10034",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR035",
-      "name": "Owais",
-      "email": "owais@vistaran.in",
-      "password": "10035",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR036",
-      "name": "SATYAWAN",
-      "email": "satyawan@vistaran.in",
-      "password": "10036",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR037",
-      "name": "Vimalesh",
-      "email": "vimalesh@vistaran.in",
-      "password": "10037",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR038",
-      "name": "Shalu",
-      "email": "shalu@vistaran.in",
-      "password": "10038",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR039",
-      "name": "Trupti",
-      "email": "trupti@vistaran.in",
-      "password": "10039",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR040",
-      "name": "Aishwarya.D",
-      "email": "Aishwarya@vistaran.in",
-      "password": "10040",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR041",
-      "name": "Ashwini Pawaskar",
-      "email": "ashwini.p@vistaran.in",
-      "password": "10041",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR042",
-      "name": "Rupa",
-      "email": "rupa@vistaran.in",
-      "password": "10042",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR043",
-      "name": "Manasi",
-      "email": "manasi@vistaran.in",
-      "password": "10043",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR044",
-      "name": "Pratibha",
-      "email": "pratibha@vistaran.in",
-      "password": "10044",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR045",
-      "name": "Kareena",
-      "email": "kareena@vistaran.in",
-      "password": "10045",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR046",
-      "name": "Dipali",
-      "email": "dipali@vistaran.in",
-      "password": "10046",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR047",
-      "name": "Sonali",
-      "email": "sonali@vistaran.in",
-      "password": "10047",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR048",
-      "name": "Tejana",
-      "email": "tejana@vistaran.in",
-      "password": "10048",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR049",
-      "name": "Somesh",
-      "email": "Somesh@vistaran.in",
-      "password": "10049",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR050",
-      "name": "Vaishnavi",
-      "email": "vaishnavi@vistaran.in",
-      "password": "10050",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR051",
-      "name": "Megha",
-      "email": "megha@vistaran.in",
-      "password": "10051",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR052",
-      "name": "Supriya Tai",
-      "email": "supriya.t@vistaran.in",
-      "password": "10052",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR054",
-      "name": "Vaishali",
-      "email": "vaishali@vistaran.in",
-      "password": "10054",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR056",
-      "name": "Anjali",
-      "email": "anjali@vistaran.in",
-      "password": "10056",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR057",
-      "name": "Supriya .Y",
-      "email": "supriya.y@vistaran.in",
-      "password": "10057",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z",
-      "phone": "",
-      "whatsapp": "",
-      "employeeId": "",
-      "designation": ""
-    },
-    {
-      "id": "USR1769245099806",
-      "name": "Azhar Sir",
-      "email": "azhar.k@vistaran.in",
-      "password": "123456",
-      "role": "Read-only",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR1769248072661",
-      "name": "Warehouse(DC-501)",
-      "email": "purchasedc@vistaran.in",
-      "password": "501",
-      "role": "User",
-      "department": "Operations",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    }
-  ],
   "vistaran-helpdesk-challans": [
     {
       "id": "CHN-2026-0002",
@@ -24499,5 +27407,13 @@
       "managerName": "Amarjeet Yadav",
       "phone": "8828367178"
     }
+  ],
+  "vistaran-helpdesk-departments": [
+    "IT",
+    "Sales",
+    "Operations",
+    "HR",
+    "Accounts",
+    "Staff"
   ]
 }

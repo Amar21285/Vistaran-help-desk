@@ -1,8 +1,0 @@
-﻿TABLE:vistaran-helpdesk-attendance
-{"id":"ATT-1769149996794","userId":"USR035","userName":"Owais","date":"2026-01-23","checkIn":"2026-01-23T06:33:16.794Z","status":"Present","notes":"Manual Admin Entry"}
-TABLE:vistaran-helpdesk-reimbursements
-{"id":"EXP-1769150699835","userId":"USR001","userName":"Amarjeet yadav","date":"2026-01-23T06:44:59.835Z","category":"House Rent / Light Bill","amount":14478,"purpose":"adds:403, SRA Scheme,Park Site CTS No. 19A PT 110111, OPP Kailash IND, Vikhroli (W) Mumbai 400079","status":"Paid","approvedBy":"Amarjeet yadav"}
-TABLE:vistaran-helpdesk-auditlog
-{"id":"LOG_1769153940936_aif24i8","userId":"USR001","userName":"Amarjeet yadav","action":"Established Real-time Local Drive Sync.","timestamp":"2026-01-23T07:39:00.936Z","ip":"127.0.0.1"}
-TABLE:vistaran-helpdesk-users
-{"id":"USR001","name":"Amarjeet yadav","email":"ITsupport@vistaran.in","password":"88283671","role":"Admin","department":"IT","status":"Active","joinedDate":"2023-01-15T10:00:00Z","photo":"https://randomuser.me/api/portraits/men/1.jpg","phone":"+918828367178","whatsapp":"+918828367178"}

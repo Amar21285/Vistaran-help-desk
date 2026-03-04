@@ -12,10 +12,6 @@
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@google/genai": "^1.21.0",
-    "html2canvas": "^1.4.1",
-    "html5-qrcode": "^2.3.8",
-    "jsbarcode": "^3.12.3",
-    "jspdf": "^4.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "recharts": "^2.12.7"
@@ -23,8 +19,6 @@
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
-    "@typescript-eslint/parser": "^8.56.1",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",

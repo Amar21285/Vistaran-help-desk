@@ -6,7 +6,6 @@ import { logUserAction } from '../utils/auditLogger';
 import Logo from './icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { generateMultiPagePDF } from '../utils/pdfGenerator';
 
 const TRANSACTION_PURPOSES = [
     "Repair ke liye", 
@@ -24,12 +23,11 @@ interface ReceivingChallanManagementProps {
     setChallans: React.Dispatch<React.SetStateAction<ReceivingChallan[]>>;
     vendors: Vendor[];
     inventory: InventoryItem[];
-    setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
     globalFilter: string;
     users: User[];
 }
 
-const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({ challans, setChallans, vendors, inventory, setInventory, globalFilter, users }) => {
+const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({ challans, setChallans, vendors, inventory, globalFilter, users }) => {
     const { user, realUser } = useAuth();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [viewingChallan, setViewingChallan] = useState<ReceivingChallan | null>(null);
@@ -137,8 +135,42 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
         if (!printableRef.current || !viewingChallan) return;
         setIsGeneratingPDF(true);
         try {
-            await generateMultiPagePDF(printableRef.current, `Receipt-${viewingChallan.id}.pdf`);
-        } finally { setIsGeneratingPDF(false); }
+            const element = printableRef.current;
+            const canvas = await html2canvas(element, { 
+                scale: 2, 
+                useCORS: true, 
+                backgroundColor: '#ffffff',
+                logging: false,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight
+            });
+            
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            const imgWidth = 210; 
+            const pageHeight = 297; 
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+            
+            pdf.save(`Receipt-${viewingChallan.id}.pdf`);
+        } catch (error) {
+            console.error("PDF generation failed:", error);
+            alert("Failed to generate PDF. Please try again.");
+        } finally { 
+            setIsGeneratingPDF(false); 
+        }
     };
 
     return (
@@ -382,25 +414,25 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                                 </div>
                             )}
 
-                            <table className="w-full mb-10 border-collapse mt-10 print-table-container print-avoid-break">
-                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : 'border-b-2 border-slate-900 text-slate-900'} print-table-header-group print-avoid-break`}>
-                                    <tr className="print-avoid-break">
-                                        <th className="p-4 text-left w-12 rounded-l-xl print-avoid-break">#</th>
-                                        <th className="p-4 text-left print-avoid-break">Description of Goods</th>
-                                        <th className="p-4 text-center print-avoid-break">Unit</th>
-                                        <th className="p-4 text-right rounded-r-xl print-avoid-break">Quantity</th>
+                            <table className="w-full mb-10 border-collapse mt-10">
+                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : 'border-b-2 border-slate-900 text-slate-900'}`}>
+                                    <tr>
+                                        <th className="p-4 text-left w-12 rounded-l-xl">#</th>
+                                        <th className="p-4 text-left">Description of Goods</th>
+                                        <th className="p-4 text-center">Unit</th>
+                                        <th className="p-4 text-right rounded-r-xl">Quantity</th>
                                     </tr>
                                 </thead>
-                                <tbody className="print-table-row-group">
+                                <tbody>
                                     {viewingChallan.items.map((i, idx) => (
-                                        <tr key={i.id} className="border-b border-slate-100 group print-table-row-group print-avoid-break">
-                                            <td className="p-4 text-xs font-bold text-slate-400 print-avoid-break">{idx + 1}</td>
-                                            <td className="p-4 print-avoid-break">
-                                                <p className="font-black uppercase text-sm text-slate-800 print-avoid-break">{i.description}</p>
-                                                {i.remarks && <p className="text-[9px] font-bold text-primary italic mt-1 uppercase print-avoid-break">Remark: {i.remarks}</p>}
+                                        <tr key={i.id} className="border-b border-slate-100 group break-inside-avoid">
+                                            <td className="p-4 text-xs font-bold text-slate-400">{idx + 1}</td>
+                                            <td className="p-4">
+                                                <p className="font-black uppercase text-sm text-slate-800">{i.description}</p>
+                                                {i.remarks && <p className="text-[9px] font-bold text-primary italic mt-1 uppercase">Remark: {i.remarks}</p>}
                                             </td>
-                                            <td className="p-4 text-center text-xs font-bold text-slate-600 uppercase print-avoid-break">{i.unit}</td>
-                                            <td className="p-4 text-right font-black text-sm text-slate-900 print-avoid-break">{i.quantity}</td>
+                                            <td className="p-4 text-center text-xs font-bold text-slate-600 uppercase">{i.unit}</td>
+                                            <td className="p-4 text-right font-black text-sm text-slate-900">{i.quantity}</td>
                                         </tr>
                                     ))}
                                 </tbody>

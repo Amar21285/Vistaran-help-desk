@@ -15,7 +15,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 echo.
 echo Starting server on port 3000...
-node server.mjs
+node server.cjs
 
 echo Server stopped unexpectedly. Restarting in 5 seconds...
 timeout /t 5

@@ -1,12 +1,11 @@
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { ReimbursementRequest, ReimbursementStatus, Role, User } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { logUserAction } from '../utils/auditLogger';
 import useLocalStorage from '../hooks/useLocalStorage';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { generateMultiPagePDF } from '../utils/pdfGenerator';
 import Logo from './icons/Logo';
 
 interface ReimbursementManagementProps {
@@ -94,7 +93,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                         ...r, 
                         userId: targetStaffId || 'GUEST', 
                         userName: payeeName, 
-                        category: finalCategory as any, 
+                        category: finalCategory as ReimbursementRequest['category'], 
                         amount: parseFloat(amount), 
                         purpose 
                     } 
@@ -108,7 +107,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                 userId: targetStaffId || 'GUEST', 
                 userName: payeeName, 
                 date: new Date().toISOString(),
-                category: finalCategory as any,
+                category: finalCategory as ReimbursementRequest['category'],
                 amount: parseFloat(amount),
                 purpose,
                 status: ReimbursementStatus.PENDING
@@ -147,9 +146,41 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
         if (!voucherRef.current || !viewingRequest) return;
         setIsGeneratingPDF(true);
         try {
-            await generateMultiPagePDF(voucherRef.current, `Voucher-${viewingRequest.id}.pdf`);
-        } finally {
-            setIsGeneratingPDF(false);
+            const element = voucherRef.current;
+            const canvas = await html2canvas(element, { 
+                scale: 2, 
+                useCORS: true, 
+                backgroundColor: '#ffffff',
+                logging: false,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight
+            });
+            
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            
+            const imgWidth = 210; 
+            const pageHeight = 297; 
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+            
+            pdf.save(`Voucher-${viewingRequest.id}.pdf`);
+        } catch (error) {
+            console.error("PDF generation failed:", error);
+            alert("Failed to generate PDF. Please try again.");
+        } finally { 
+            setIsGeneratingPDF(false); 
         }
     };
 
@@ -341,7 +372,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                             <button onClick={() => setViewingRequest(null)} className="w-12 h-12 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all text-3xl">&times;</button>
                         </header>
 
-                        <div ref={voucherRef} className="p-16 text-slate-900 bg-white printable-area print-avoid-break">
+                        <div ref={voucherRef} className="p-16 text-slate-900 bg-white printable-area">
                             <div className="flex justify-between border-b-[5px] border-slate-900 pb-10 mb-10">
                                 <div>
                                     <Logo className="h-14 w-auto grayscale brightness-0 mb-4" />

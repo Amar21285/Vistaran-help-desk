@@ -16,7 +16,7 @@ do {
 
     Write-Host ""
     Write-Host "Starting server on port 3000..." -ForegroundColor Green
-    $process = Start-Process node -ArgumentList "server.mjs" -PassThru
+    $process = Start-Process node -ArgumentList "server.cjs" -PassThru
     
     Write-Host "Server started with Process ID: $($process.Id)" -ForegroundColor Cyan
     

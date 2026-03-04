@@ -34,6 +34,7 @@
     </script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
     
     <style>
       :root {
@@ -68,23 +69,7 @@
 
       @media print {
         .no-print { display: none !important; }
-        body { background-color: white !important; color: black !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        .printable-area { 
-          width: 100% !important; 
-          margin: 0 !important; 
-          padding: 0 !important; 
-          box-shadow: none !important;
-          border: none !important;
-          display: block !important;
-        }
-        .break-inside-avoid {
-          break-inside: avoid !important;
-          page-break-inside: avoid !important;
-        }
-        @page {
-          size: A4;
-          margin: 10mm;
-        }
+        body { background-color: white !important; color: black !important; }
       }
 
       @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -101,6 +86,25 @@
 
       button { -webkit-tap-highlight-color: transparent; user-select: none; }
     </style>
+
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.21.0",
+    "@emailjs/browser": "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/+esm",
+    "html2canvas": "https://esm.sh/html2canvas@1.4.1",
+    "jspdf": "https://esm.sh/jspdf@2.5.1",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "jsbarcode": "https://esm.sh/jsbarcode@3.11.6",
+    "html5-qrcode": "https://esm.sh/html5-qrcode@2.3.8"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
 </head>
   <body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-200">
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -113,5 +117,6 @@
         });
       }
     </script>
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>

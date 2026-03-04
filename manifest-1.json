@@ -1,0 +1,22 @@
+
+{
+  "name": "Vistaran Help Desk",
+  "short_name": "Vistaran",
+  "description": "IT Support Ticket Management System",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192/3b82f6/ffffff?text=V",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512/3b82f6/ffffff?text=Vistaran",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

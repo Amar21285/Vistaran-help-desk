@@ -6,7 +6,6 @@ import { logUserAction } from '../utils/auditLogger';
 import Logo from './icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { generateMultiPagePDF } from '../utils/pdfGenerator';
 
 interface PurchaseOrderManagementProps {
     purchaseOrders: PurchaseOrder[];
@@ -106,7 +105,12 @@ const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purch
         if (!printableRef.current || !viewingPO) return;
         setIsGeneratingPDF(true);
         try {
-            await generateMultiPagePDF(printableRef.current, `PO-${viewingPO.id}.pdf`);
+            const canvas = await html2canvas(printableRef.current, { scale: 2 });
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const width = pdf.internal.pageSize.getWidth();
+            const height = (canvas.height * width) / canvas.width;
+            pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, width, height);
+            pdf.save(`PO-${viewingPO.id}.pdf`);
         } finally { setIsGeneratingPDF(false); }
     };
 
@@ -189,56 +193,23 @@ const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purch
                             </div>
                             <button onClick={() => setViewingPO(null)} className="text-slate-400 text-3xl">&times;</button>
                         </header>
-                        <div ref={printableRef} className="p-16 text-slate-900 bg-white printable-area print-avoid-break">
-                            <div className="flex justify-between border-b-8 border-slate-900 pb-10 mb-10 print-avoid-break">
-                                <div className="print-avoid-break"><Logo className="h-14 w-auto grayscale brightness-0 mb-4" /><h1 className="text-4xl font-black uppercase">Purchase Order</h1></div>
-                                <div className="text-right print-avoid-break">
-                                    <div className="bg-slate-900 text-white p-6 rounded-[30px] shadow-lg print-avoid-break">
-                                        <p className="text-[10px] font-black uppercase tracking-widest mb-1">Order No.</p>
-                                        <p className="text-3xl font-black font-mono leading-none">{viewingPO.id}</p>
-                                    </div>
-                                    <p className="mt-4 text-xs font-black print-avoid-break">Date: {new Date(viewingPO.dateCreated).toLocaleDateString()}</p>
-                                </div>
+                        <div ref={printableRef} className="p-16 text-slate-900 bg-white printable-area">
+                            <div className="flex justify-between border-b-8 border-slate-900 pb-10 mb-10">
+                                <div><Logo className="h-14 w-auto grayscale brightness-0 mb-4" /><h1 className="text-4xl font-black uppercase">Purchase Order</h1></div>
+                                <div className="text-right"><div className="bg-slate-900 text-white p-6 rounded-[30px] shadow-lg"><p className="text-[10px] font-black uppercase tracking-widest mb-1">Order No.</p><p className="text-3xl font-black font-mono leading-none">{viewingPO.id}</p></div><p className="mt-4 text-xs font-black">Date: {new Date(viewingPO.dateCreated).toLocaleDateString()}</p></div>
                             </div>
-                            <div className="grid grid-cols-2 gap-10 mb-10 print-avoid-break">
-                                <div className="p-6 border-2 border-slate-100 rounded-3xl print-avoid-break">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 print-avoid-break">Supplier</p>
-                                    <p className="font-black text-xl uppercase print-avoid-break">{vendors.find(v => v.id === viewingPO.vendorId)?.name}</p>
-                                </div>
-                                <div className="p-6 border-2 border-slate-100 rounded-3xl print-avoid-break">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 print-avoid-break">Ship To</p>
-                                    <p className="font-black text-xl uppercase print-avoid-break">Vistaran Health Care</p>
-                                </div>
+                            <div className="grid grid-cols-2 gap-10 mb-10">
+                                <div className="p-6 border-2 border-slate-100 rounded-3xl"><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Supplier</p><p className="font-black text-xl uppercase">{vendors.find(v => v.id === viewingPO.vendorId)?.name}</p></div>
+                                <div className="p-6 border-2 border-slate-100 rounded-3xl"><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Ship To</p><p className="font-black text-xl uppercase">Vistaran Health Care</p></div>
                             </div>
-                            <table className="w-full mb-10 border-collapse border-2 border-slate-900 print-table-container print-avoid-break">
-                                <thead className="bg-slate-900 text-white text-[10px] font-black uppercase print-table-header-group print-avoid-break">
-                                    <tr className="print-avoid-break">
-                                        <th className="p-4 text-left w-12 print-avoid-break">#</th>
-                                        <th className="p-4 text-left print-avoid-break">Item</th>
-                                        <th className="p-4 text-center print-avoid-break">Qty</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100 border-b-2 border-slate-900 print-table-row-group">
-                                    {viewingPO.items.map((i, idx) => (
-                                        <tr key={i.id} className="print-table-row-group print-avoid-break">
-                                            <td className="p-4 text-xs font-bold text-slate-400 print-avoid-break">{idx + 1}</td>
-                                            <td className="p-4 font-black uppercase text-sm print-avoid-break">{i.description}</td>
-                                            <td className="p-4 text-center font-black text-sm print-avoid-break">{i.quantity}</td>
-                                        </tr>
-                                    ))}
+                            <table className="w-full mb-10 border-collapse border-2 border-slate-900">
+                                <thead className="bg-slate-900 text-white text-[10px] font-black uppercase"><tr><th className="p-4 text-left w-12">#</th><th className="p-4 text-left">Item</th><th className="p-4 text-center">Qty</th></tr></thead>
+                                <tbody className="divide-y divide-slate-100 border-b-2 border-slate-900">
+                                    {viewingPO.items.map((i, idx) => (<tr key={i.id}><td className="p-4 text-xs font-bold text-slate-400">{idx + 1}</td><td className="p-4 font-black uppercase text-sm">{i.description}</td><td className="p-4 text-center font-black text-sm">{i.quantity}</td></tr>))}
                                 </tbody>
                             </table>
-                            <div className="p-6 bg-slate-50 rounded-2xl text-xs font-bold uppercase print-avoid-break">{viewingPO.notes || 'Strict inspection on arrival required.'}</div>
-                            <div className="mt-32 grid grid-cols-2 gap-20 text-center print-avoid-break">
-                                <div className="space-y-4 print-avoid-break">
-                                    <div className="h-20 border-b-2 print-avoid-break"></div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 print-avoid-break">Authorized Official</p>
-                                </div>
-                                <div className="space-y-4 print-avoid-break">
-                                    <div className="h-20 border-b-2 print-avoid-break"></div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 print-avoid-break">Accounts Dept</p>
-                                </div>
-                            </div>
+                            <div className="p-6 bg-slate-50 rounded-2xl text-xs font-bold uppercase">{viewingPO.notes || 'Strict inspection on arrival required.'}</div>
+                            <div className="mt-32 grid grid-cols-2 gap-20 text-center"><div className="space-y-4"><div className="h-20 border-b-2"></div><p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Authorized Official</p></div><div className="space-y-4"><div className="h-20 border-b-2"></div><p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Accounts Dept</p></div></div>
                         </div>
                     </div>
                 </div>

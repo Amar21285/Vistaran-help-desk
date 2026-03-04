@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSettings } from '../../hooks/useSettings';
 import { useTheme } from '../../hooks/useTheme';
 import { logUserAction } from '../../utils/auditLogger';
@@ -84,6 +84,7 @@ const SystemSettings: React.FC = () => {
     const { realUser, user } = useAuth();
     const [modalContent, setModalContent] = useState<{ title: string; body: string; onConfirm: () => void; } | null>(null);
     const [isYearEndModalOpen, setIsYearEndModalOpen] = useState(false);
+    const [hasServerBackup, setHasServerBackup] = useState(false);
 
     // --- Local Drive Sync State ---
     const [syncHandle, setSyncHandle] = useState<any>(null);
@@ -104,6 +105,17 @@ const SystemSettings: React.FC = () => {
             }
         };
         loadPersistedHandle();
+        
+        // Check for server backup file
+        const checkServerBackup = async () => {
+            try {
+                const response = await fetch('/Vistaran_Master_Sync.json', { method: 'HEAD' });
+                if (response.ok) setHasServerBackup(true);
+            } catch (e) {
+                console.log("No server backup found");
+            }
+        };
+        checkServerBackup();
     }, []);
 
     const getAllAppData = () => {
@@ -213,6 +225,7 @@ const SystemSettings: React.FC = () => {
                 alert(`Recovery failed. Error: ${error.message}`);
             }
         };
+
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json,application/json';
@@ -338,6 +351,37 @@ const SystemSettings: React.FC = () => {
                             onClick={handleRestoreBackup}
                             buttonClass="bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20"
                         />
+                        {hasServerBackup && (
+                            <SystemActionCard 
+                                title="Import Server Backup"
+                                description="Found 'Vistaran_Master_Sync.json' on server. Click to import this data."
+                                buttonText="Import Now"
+                                buttonIcon="fas fa-cloud-download-alt"
+                                onClick={async () => {
+                                    try {
+                                        const response = await fetch('/Vistaran_Master_Sync.json');
+                                        if (!response.ok) throw new Error('Could not fetch server backup.');
+                                        const content = await response.text();
+                                        if (confirm("Warning: This will overwrite ALL existing data with the server backup. Proceed?")) {
+                                            // Re-using the logic from handleRestoreBackup
+                                            const backupData = JSON.parse(content);
+                                            Object.keys(localStorage).forEach(key => { if (key.startsWith('vistaran-helpdesk-')) localStorage.removeItem(key); });
+                                            for (const key in backupData) {
+                                                if (key.startsWith('vistaran-helpdesk-')) {
+                                                    const value = backupData[key];
+                                                    localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+                                                }
+                                            }
+                                            alert("Data Recovery Successful! System will now restart.");
+                                            window.location.reload();
+                                        }
+                                    } catch (error: any) {
+                                        alert(`Server recovery failed: ${error.message}`);
+                                    }
+                                }}
+                                buttonClass="bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20"
+                            />
+                        )}
                     </div>
                 </div>
 

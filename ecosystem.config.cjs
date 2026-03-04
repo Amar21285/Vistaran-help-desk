@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
     name: 'vistaran-help-desk',
-    script: './server.mjs',
+    script: './server.cjs',
     instances: 1,
     exec_mode: 'fork',
     autorestart: true,
