@@ -525,13 +525,17 @@
   },
   {
     "id": "USR057",
-    "name": "Supriya .k",
-    "email": "supriya.k@vistaran.in",
+    "name": "Supriya .Y",
+    "email": "supriya.y@vistaran.in",
     "password": "10057",
     "role": "Staff",
     "department": "Staff",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
+    "joinedDate": "2026-02-14T14:26:22.198Z",
+    "phone": "",
+    "whatsapp": "",
+    "employeeId": "",
+    "designation": ""
   },
   {
     "id": "USR1769245099806",
