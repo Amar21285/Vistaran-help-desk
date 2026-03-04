@@ -1,0 +1,8 @@
+﻿
+> vistaran-help-desk@1.0.0 build
+> tsc && vite build
+
+components/InventoryManagement.tsx(808,161): error TS2322: Type '{ challans: ReceivingChallan[]; setChallans: Dispatch<SetStateAction<ReceivingChallan[]>>; vendors: Vendor[]; inventory: InventoryItem[]; setInventory: Dispatch<...>; globalFilter: string; users: User[]; }' is not assignable to type 'IntrinsicAttributes & ReceivingChallanManagementProps'.
+  Property 'setInventory' does not exist on type 'IntrinsicAttributes & ReceivingChallanManagementProps'. Did you mean 'inventory'?
+components/InventoryManagement.tsx(809,150): error TS2322: Type '{ invoices: Invoice[]; setInvoices: Dispatch<SetStateAction<Invoice[]>>; vendors: Vendor[]; inventory: InventoryItem[]; setInventory: Dispatch<...>; globalFilter: string; }' is not assignable to type 'IntrinsicAttributes & InvoiceManagementProps'.
+  Property 'setInventory' does not exist on type 'IntrinsicAttributes & InvoiceManagementProps'. Did you mean 'inventory'?

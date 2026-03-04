@@ -1,14 +1,8 @@
 [
-  {
-    "id": "DEPT001",
-    "name": "Information Technology",
-    "head": "USR001",
-    "description": "Handles all IT related issues"
-  },
-  {
-    "id": "DEPT002",
-    "name": "Sales",
-    "head": "USR002",
-    "description": "Handles sales related activities"
-  }
+  "IT",
+  "Sales",
+  "Operations",
+  "HR",
+  "Accounts",
+  "Staff"
 ]

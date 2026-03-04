@@ -256,27 +256,38 @@ input, button, select, textarea {
   .printable-area {
     background: white !important;
     color: black !important;
+    width: 210mm !important; /* Fixed A4 width */
+    min-height: 297mm !important; /* Min A4 height */
+    padding: 15mm !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
   }
 
   table {
+    width: 100% !important;
+    border-collapse: collapse !important;
     page-break-inside: auto;
   }
 
   tr {
-    page-break-inside: avoid;
+    page-break-inside: avoid !important;
     page-break-after: auto;
   }
 
   thead {
-    display: table-header-group;
+    display: table-header-group !important;
   }
 
   tfoot {
-    display: table-footer-group;
+    display: table-footer-group !important;
   }
 
   .no-break {
     page-break-inside: avoid !important;
+  }
+  
+  .page-break {
+    page-break-before: always !important;
   }
 }
 
