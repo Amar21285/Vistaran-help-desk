@@ -8,12 +8,6 @@ interface TicketsTrendChartProps {
 }
 
 const TicketsTrendChart: React.FC<TicketsTrendChartProps> = ({ tickets, startDate, endDate }) => {
-    const Recharts = (window as any).Recharts;
-    if (!Recharts) {
-        return <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-400">Loading chart...</div>;
-    }
-    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } = Recharts;
-
     const trendData = useMemo(() => {
         const dataMap = new Map<string, number>();
         const start = new Date(startDate);
@@ -47,6 +41,12 @@ const TicketsTrendChart: React.FC<TicketsTrendChartProps> = ({ tickets, startDat
             .sort((a, b) => a.date.localeCompare(b.date));
 
     }, [tickets, startDate, endDate]);
+
+    const Recharts = (window as any).Recharts;
+    if (!Recharts) {
+        return <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-400">Loading chart...</div>;
+    }
+    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } = Recharts;
 
     if (!trendData || trendData.length === 0) {
         return <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-400 italic">No trend data for this period.</div>;

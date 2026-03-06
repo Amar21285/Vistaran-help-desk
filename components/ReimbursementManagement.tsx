@@ -93,7 +93,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                         ...r, 
                         userId: targetStaffId || 'GUEST', 
                         userName: payeeName, 
-                        category: finalCategory as ReimbursementRequest['category'], 
+                        category: finalCategory, 
                         amount: parseFloat(amount), 
                         purpose 
                     } 
@@ -107,7 +107,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                 userId: targetStaffId || 'GUEST', 
                 userName: payeeName, 
                 date: new Date().toISOString(),
-                category: finalCategory as ReimbursementRequest['category'],
+                category: finalCategory,
                 amount: parseFloat(amount),
                 purpose,
                 status: ReimbursementStatus.PENDING
@@ -146,38 +146,38 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
         if (!voucherRef.current || !viewingRequest) return;
         setIsGeneratingPDF(true);
         try {
-            const element = voucherRef.current;
-            const canvas = await html2canvas(element, { 
+            const canvas = await html2canvas(voucherRef.current, { 
                 scale: 2, 
                 useCORS: true, 
                 backgroundColor: '#ffffff',
-                logging: false,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight
+                logging: false
             });
-            
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
             const pdf = new jsPDF('p', 'mm', 'a4');
-            
-            const imgWidth = 210; 
-            const pageHeight = 297; 
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 10;
+            const imgWidth = pageWidth - (margin * 2);
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
             let heightLeft = imgHeight;
-            let position = 0;
+            let position = margin;
 
-            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            // First page
+            pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+            heightLeft -= (pageHeight - margin * 2);
 
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
+            // Subsequent pages
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight + margin;
                 pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+                heightLeft -= (pageHeight - margin * 2);
             }
             
             pdf.save(`Voucher-${viewingRequest.id}.pdf`);
         } catch (error) {
-            console.error("PDF generation failed:", error);
+            console.error("PDF Generation Error:", error);
             alert("Failed to generate PDF. Please try again.");
         } finally { 
             setIsGeneratingPDF(false); 
@@ -376,7 +376,7 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
                             <div className="flex justify-between border-b-[5px] border-slate-900 pb-10 mb-10">
                                 <div>
                                     <Logo className="h-14 w-auto grayscale brightness-0 mb-4" />
-                                    <h1 className="text-4xl font-black uppercase tracking-tighter">Cash Voucher</h1>
+                                    <h1 className="text-4xl font-black uppercase tracking-tighter">Payment Voucher</h1>
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-1">Vistaran Health Care Services Pvt. Ltd.</p>
                                 </div>
                                 <div className="text-right">

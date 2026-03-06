@@ -1,9 +1,8 @@
 
 import React, { useState, useMemo } from 'react';
-import { Ticket, TicketStatus, User, InventoryItem, ReceivingChallan, Invoice, Role, Vendor, AttendanceRecord, AttendanceStatus, PurchaseOrder, PurchaseOrderStatus, ReimbursementRequest, InternetVendor, Technician } from '../types';
+import { User, Role, Technician, AttendanceStatus, Ticket, TicketStatus, InventoryItem, ReceivingChallan, Invoice, Vendor, PurchaseOrder, PurchaseOrderStatus, InternetVendor, AttendanceRecord, ReimbursementRequest } from '../types';
 import { jsPDF } from 'jspdf';
 import useLocalStorage from '../hooks/useLocalStorage';
-import { useAuth } from '../hooks/useAuth';
 
 interface ReportsProps {
     tickets: Ticket[];
@@ -31,17 +30,16 @@ const MetricCard: React.FC<{ title: string; value: string | number; iconClass: s
     </div>
 );
 
-const Reports: React.FC<ReportsProps> = ({
-    tickets: allTickets = [], users = [], departments = [],
-    inventory = [], vendors = [], challans = [],
-    invoices = [], purchaseOrders = []
+const Reports: React.FC<ReportsProps> = ({ 
+    tickets: allTickets = [], users = [], departments = [], 
+    inventory = [], vendors = [], challans = [], 
+    invoices = [], purchaseOrders = [] 
 }) => {
-    useAuth();
-
+    // Component logic here
+    
     const [activeTab, setActiveTab] = useState<ReportTab>('inventory');
     const [deptFilter, setDeptFilter] = useState('all');
-    const [previewLimit, setPreviewLimit] = useState(100);
-
+    
     const [startDate, setStartDate] = useState(() => {
         const d = new Date();
         d.setDate(d.getDate() - 30);
@@ -87,8 +85,8 @@ const Reports: React.FC<ReportsProps> = ({
 
     const filteredInventory = useMemo(() => {
         if (deptFilter === 'all') return inventory;
-        return inventory.filter(i =>
-            i.location?.toLowerCase().includes(deptFilter.toLowerCase()) ||
+        return inventory.filter(i => 
+            i.location?.toLowerCase().includes(deptFilter.toLowerCase()) || 
             i.category.toLowerCase() === deptFilter.toLowerCase() ||
             i.assignedToDept === deptFilter
         );
@@ -120,7 +118,7 @@ const Reports: React.FC<ReportsProps> = ({
     }, [activeTab, challans, invoices, purchaseOrders, startDate, endDate]);
 
     const currentMetrics = useMemo(() => {
-        switch (activeTab) {
+        switch(activeTab) {
             case 'tickets': return { total: filteredTickets.length, label: 'Tickets', secondary: filteredTickets.filter(t => t.status === TicketStatus.RESOLVED).length, sLabel: 'Resolved' };
             case 'inventory': return { total: filteredInventory.length, label: 'Assets', secondary: filteredInventory.reduce((acc, i) => acc + i.quantity, 0), sLabel: 'Total Units' };
             case 'lowStock': return { total: inventory.filter(i => i.quantity <= i.minStock).length, label: 'Critical', secondary: inventory.length, sLabel: 'SKU Count' };
@@ -137,109 +135,59 @@ const Reports: React.FC<ReportsProps> = ({
 
     const handleExport = async (format: 'pdf' | 'csv') => {
         if (format === 'csv') {
-            let headers: string[] = [];
-            let rows: any[][] = [];
-
-            switch (activeTab) {
+            const headers: string[] = ['S/N', 'Reference / ID', 'Core Content', 'QTY / Units', 'Date Stamp', 'Status'];
+            let rows: (string | number)[][] = [];
+            
+            switch(activeTab) {
                 case 'inventory':
-                    headers = ['S/N', 'Asset Tag', 'Brand', 'Model', 'Category', 'Quantity', 'Unit', 'Serial Number', 'IMEI/ID', 'RAM', 'Storage', 'Processor', 'OS', 'Location', 'Status', 'Purchase Date', 'Cost', 'Warranty End', 'Assigned To', 'Dept'];
+                    headers.push('Category', 'Brand', 'Serial Number', 'IMEI', 'RAM', 'Storage', 'Processor', 'OS', 'Purchase Date', 'Purchase Cost', 'Warranty End', 'Location');
                     rows = filteredInventory.map((i, idx) => [
-                        idx + 1,
-                        i.id,
-                        i.brand || 'N/A',
-                        i.name,
+                        idx + 1, 
+                        i.id, 
+                        i.name, 
+                        `${i.quantity} ${i.unit || 'Nos'}`, 
+                        i.lastUpdated.split('T')[0], 
+                        i.assetStatus,
                         i.category,
-                        i.quantity,
-                        i.unit || 'Units',
+                        i.brand || 'N/A',
                         i.serialNumber || 'N/A',
                         i.imei || 'N/A',
                         i.ram || 'N/A',
                         i.storage || 'N/A',
                         i.processor || 'N/A',
                         i.os || 'N/A',
-                        i.location || 'DC',
-                        i.assetStatus || 'Spare',
                         i.purchaseDate || 'N/A',
                         i.purchaseCost || 0,
                         i.warrantyEnd || 'N/A',
-                        users.find(u => u.id === i.assignedToUserId)?.name || 'N/A',
-                        i.assignedToDept || 'N/A'
+                        i.location || 'N/A'
                     ]);
                     break;
                 case 'lowStock':
-                    headers = ['S/N', 'Asset Tag', 'Name', 'Current Qty', 'Min Buffer', 'Unit', 'Storage', 'Last Updated'];
-                    rows = inventory.filter(i => i.quantity <= i.minStock).map((i, idx) => [idx + 1, i.id, i.name, i.quantity, i.minStock, i.unit, i.location || 'DC', i.lastUpdated]);
+                    rows = inventory.filter(i => i.quantity <= i.minStock).map((i, idx) => [idx + 1, i.id, i.name, `${i.quantity} ${i.unit}`, i.lastUpdated.split('T')[0], 'Critical']);
                     break;
                 case 'vendors':
-                    headers = ['S/N', 'Entity ID', 'Legal Name', 'Contact Person', 'Email', 'Phone', 'GSTIN', 'Address', 'State'];
-                    rows = vendors.map((v, idx) => [idx + 1, v.id, v.name, v.contactPerson, v.email, v.phone, v.gstin || 'N/A', v.address || 'N/A', v.state || 'N/A']);
+                    rows = vendors.map((v, idx) => [idx + 1, v.id, v.name, 'N/A', 'N/A', 'Active']);
                     break;
                 case 'tickets':
-                    headers = ['S/N', 'Ticket ID', 'Description', 'Requestor', 'Dept', 'Status', 'Priority', 'Logged Date', 'Resolved Date', 'Assigned Tech', 'Notes'];
-                    rows = filteredTickets.map((t, idx) => [
-                        idx + 1,
-                        t.id,
-                        t.description.replace(/\n/g, ' '),
-                        t.email,
-                        t.department,
-                        t.status,
-                        t.priority,
-                        t.dateCreated.split('T')[0],
-                        t.dateResolved ? t.dateResolved.split('T')[0] : 'N/A',
-                        t.assignedTechId || 'Unassigned',
-                        (t.notes || '').replace(/\n/g, ' ')
-                    ]);
+                    rows = filteredTickets.map((t, idx) => [idx + 1, t.id, t.description.replace(/\n/g, ' '), '1 Unit', t.dateCreated.split('T')[0], t.status]);
                     break;
                 case 'petty-cash':
-                    headers = ['S/N', 'Claim ID', 'Date', 'Payee Name', 'Purpose', 'Category', 'Amount (INR)', 'Status', 'Approved By'];
-                    rows = filteredPettyCash.map((r, idx) => [idx + 1, r.id, r.date.split('T')[0], r.userName, r.purpose, r.category, r.amount, r.status, r.approvedBy || 'N/A']);
+                    rows = filteredPettyCash.map((r, idx) => [idx + 1, r.id, r.purpose, `₹${r.amount}`, r.date.split('T')[0], r.status]);
                     break;
                 case 'attendance':
-                    headers = ['S/N', 'Staff Member', 'Date', 'In Time', 'Out Time', 'Status', 'GPS Geotag', 'Notes'];
-                    rows = filteredAttendance.map((r, idx) => [idx + 1, r.userName, r.date, new Date(r.checkIn).toLocaleTimeString(), r.checkOut ? new Date(r.checkOut).toLocaleTimeString() : 'N/A', r.status, r.location ? `${r.location.lat},${r.location.lng}` : 'N/A', r.notes || 'N/A']);
+                    rows = filteredAttendance.map((r, idx) => [idx + 1, r.userName, r.status, '1 Day', r.date, r.status]);
                     break;
                 case 'internet':
-                    headers = ['S/N', 'Provider', 'Account/CID', 'Plan Detail', 'Billing', 'Cost', 'Start Date', 'Expiry'];
-                    rows = filteredInternet.map((v, idx) => [idx + 1, v.name, v.customerID || 'N/A', v.planName, v.billingCycle, v.amount, v.startDate, v.expiryDate]);
+                    rows = filteredInternet.map((v, idx) => [idx + 1, v.customerID || 'N/A', `${v.name} - ${v.planName}`, `₹${v.amount}`, v.expiryDate, 'Active']);
                     break;
                 case 'receiving':
-                    headers = ['S/N', 'CHN ID', 'Date Received', 'Supplier', 'Items Qty', 'Purpose', 'Items Detail', 'Notes'];
-                    rows = (filteredLogistics as ReceivingChallan[]).map((c, idx) => [
-                        idx + 1,
-                        c.id,
-                        c.dateReceived.split('T')[0],
-                        vendors.find(v => v.id === c.vendorId)?.name || 'N/A',
-                        c.items.length,
-                        c.purpose || 'Stock In',
-                        c.items.map(item => `${item.description} (${item.quantity} ${item.unit})`).join(' | '),
-                        c.notes || 'N/A'
-                    ]);
+                    rows = (filteredLogistics as ReceivingChallan[]).map((c, idx) => [idx + 1, c.id, vendors.find(v => v.id === c.vendorId)?.name || 'N/A', `${c.items.length} Items`, c.dateReceived.split('T')[0], 'Received']);
                     break;
                 case 'outward':
-                    headers = ['S/N', 'TXI ID', 'Date Issued', 'Recipient Branch', 'Items Qty', 'Purpose', 'Items Detail', 'Notes'];
-                    rows = (filteredLogistics as Invoice[]).map((i, idx) => [
-                        idx + 1,
-                        i.id,
-                        i.dateIssued.split('T')[0],
-                        vendors.find(v => v.id === i.vendorId)?.name || 'N/A',
-                        i.items.length,
-                        i.purpose || 'Stock Out',
-                        i.items.map(item => `${item.description} (${item.quantity} ${item.unit})`).join(' | '),
-                        i.notes || 'N/A'
-                    ]);
+                    rows = (filteredLogistics as Invoice[]).map((i, idx) => [idx + 1, i.id, vendors.find(v => v.id === i.vendorId)?.name || 'N/A', `${i.items.length} Items`, i.dateIssued.split('T')[0], 'Issued']);
                     break;
                 case 'purchase-orders':
-                    headers = ['S/N', 'PO Number', 'Release Date', 'Vendor Name', 'Current Status', 'ETA', 'Items Detail', 'Notes'];
-                    rows = (filteredLogistics as PurchaseOrder[]).map((p, idx) => [
-                        idx + 1,
-                        p.id,
-                        p.dateCreated.split('T')[0],
-                        vendors.find(v => v.id === p.vendorId)?.name || 'N/A',
-                        p.status,
-                        p.expectedDeliveryDate.split('T')[0],
-                        p.items.map(item => `${item.description} (${item.quantity} ${item.unit})`).join(' | '),
-                        p.notes || 'N/A'
-                    ]);
+                    rows = (filteredLogistics as PurchaseOrder[]).map((p, idx) => [idx + 1, p.id, vendors.find(v => v.id === p.vendorId)?.name || 'N/A', `${p.items.length} Items`, p.dateCreated.split('T')[0], p.status]);
                     break;
                 default:
                     return;
@@ -277,7 +225,7 @@ const Reports: React.FC<ReportsProps> = ({
                 pdf.text("OFFICIAL ADMINISTRATIVE DOCUMENT", margin, 40);
             };
 
-            const drawTableHeader = (cols: { label: string, width: number }[]) => {
+            const drawTableHeader = (cols: {label: string, width: number}[]) => {
                 pdf.setFillColor(241, 245, 249);
                 pdf.rect(margin, currentY, pageWidth - (margin * 2), 10, 'F');
                 pdf.setTextColor(30, 41, 59);
@@ -307,14 +255,28 @@ const Reports: React.FC<ReportsProps> = ({
             let pageNum = 1;
             drawHeader(pageNum);
 
-            let columns: { label: string, width: number }[] = [];
-            let reportRows: any[][] = [];
+            let columns: {label: string, width: number}[] = [];
+            let reportRows: (string | number)[][] = [];
 
             // Define specific column structures
-            if (activeTab === 'attendance') {
-                columns = [{ label: 'S/N', width: 10 }, { label: 'STAFF', width: 45 }, { label: 'DATE', width: 30 }, { label: 'IN-PUNCH', width: 50 }, { label: 'OUT-PUNCH', width: 50 }];
-                drawTableHeader(columns);
+            if (activeTab === 'inventory') {
+                pdf.setProperties({ title: 'Vistaran Asset Master Registry' });
+                columns = [
+                    {label: 'S/N', width: 8}, 
+                    {label: 'TAG ID', width: 22}, 
+                    {label: 'MODEL / BRAND', width: 45}, 
+                    {label: 'SERIAL / IMEI', width: 35}, 
+                    {label: 'SPECS (RAM/HDD/CPU)', width: 45}, 
+                    {label: 'PURCHASE', width: 25}
+                ];
+            } else {
+                columns = [{label: 'S/N', width: 10}, {label: 'REF / ID', width: 30}, {label: 'CORE CONTENT', width: 65}, {label: 'QTY / UNITS', width: 30}, {label: 'DATE', width: 25}, {label: 'STATUS', width: 20}];
+            }
 
+            if (activeTab === 'attendance') {
+                columns = [{label: 'S/N', width: 10}, {label: 'STAFF', width: 45}, {label: 'DATE', width: 30}, {label: 'IN-PUNCH', width: 50}, {label: 'OUT-PUNCH', width: 50}];
+                drawTableHeader(columns);
+                
                 for (let i = 0; i < filteredAttendance.length; i++) {
                     const r = filteredAttendance[i];
                     if (currentY + 30 > pageHeight - 20) {
@@ -324,7 +286,7 @@ const Reports: React.FC<ReportsProps> = ({
                         currentY = 55;
                         drawTableHeader(columns);
                     }
-
+                    
                     if (i % 2 !== 0) {
                         pdf.setFillColor(252, 252, 252);
                         pdf.rect(margin, currentY, pageWidth - (margin * 2), 25, 'F');
@@ -342,22 +304,18 @@ const Reports: React.FC<ReportsProps> = ({
                         try {
                             pdf.addImage(r.photo, 'JPEG', margin + 90, currentY + 2, 20, 20);
                             pdf.setFontSize(6);
-                            pdf.text(new Date(r.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), margin + 90, currentY + 24);
-                        } catch {
-                            // Ignore image errors
-                        }
+                            pdf.text(new Date(r.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), margin + 90, currentY + 24);
+                        } catch { /* ignore */ }
                     }
                     if (r.checkOutPhoto) {
                         try {
                             pdf.addImage(r.checkOutPhoto, 'JPEG', margin + 140, currentY + 2, 20, 20);
                             pdf.setFontSize(6);
-                            pdf.text(new Date(r.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), margin + 140, currentY + 24);
-                        } catch {
-                            // Ignore image errors
-                        }
+                            pdf.text(new Date(r.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), margin + 140, currentY + 24);
+                        } catch { /* ignore */ }
                     } else if (r.checkOut) {
-                        pdf.setFontSize(7);
-                        pdf.text(new Date(r.checkOut).toLocaleTimeString(), margin + 140, currentY + 12);
+                         pdf.setFontSize(7);
+                         pdf.text(new Date(r.checkOut).toLocaleTimeString(), margin + 140, currentY + 12);
                     } else {
                         pdf.setFontSize(7);
                         pdf.text("ON DUTY", margin + 140, currentY + 12);
@@ -367,57 +325,38 @@ const Reports: React.FC<ReportsProps> = ({
                 }
             } else {
                 // Default table handling for other report types
-                switch (activeTab) {
+                switch(activeTab) {
                     case 'inventory':
-                        columns = [
-                            { label: 'S/N', width: 8 },
-                            { label: 'TAG ID', width: 22 },
-                            { label: 'BRAND', width: 20 },
-                            { label: 'MODEL', width: 35 },
-                            { label: 'QTY', width: 12 },
-                            { label: 'S/N', width: 30 },
-                            { label: 'LOCATION', width: 25 },
-                            { label: 'STATUS', width: 28 }
-                        ];
                         reportRows = filteredInventory.map((i, idx) => [
-                            idx + 1,
-                            i.id,
-                            i.brand || 'N/A',
-                            i.name,
-                            `${i.quantity} ${i.unit || ''}`,
-                            i.serialNumber || 'N/A',
-                            i.location || 'DC',
-                            i.assetStatus || 'Spare'
+                            idx + 1, 
+                            i.id, 
+                            `${i.brand || ''} ${i.name}`, 
+                            `${i.serialNumber || i.imei || 'N/A'}`, 
+                            `${i.ram || '-'}/${i.storage || '-'}/${i.processor || '-'}`, 
+                            i.purchaseDate || 'N/A'
                         ]);
                         break;
                     case 'lowStock':
-                        columns = [{ label: 'S/N', width: 10 }, { label: 'ID', width: 25 }, { label: 'NAME', width: 75 }, { label: 'STOCK', width: 25 }, { label: 'UNIT', width: 20 }, { label: 'BIN', width: 25 }];
-                        reportRows = inventory.filter(i => i.quantity <= i.minStock).map((i, idx) => [idx + 1, i.id, i.name, i.quantity, i.unit, i.location || 'DC']);
+                        reportRows = inventory.filter(i => i.quantity <= i.minStock).map((i, idx) => [idx + 1, i.id, i.name, `${i.quantity} ${i.unit}`, i.lastUpdated.split('T')[0], 'Critical']);
                         break;
                     case 'petty-cash':
-                        columns = [{ label: 'S/N', width: 10 }, { label: 'ID', width: 25 }, { label: 'PAYEE', width: 45 }, { label: 'PURPOSE', width: 45 }, { label: 'AMOUNT', width: 25 }, { label: 'STATUS', width: 30 }];
-                        reportRows = filteredPettyCash.map((r, idx) => [idx + 1, r.id, r.userName, r.purpose, `₹${r.amount}`, r.status]);
+                        reportRows = filteredPettyCash.map((r, idx) => [idx + 1, r.id, r.userName, `₹${r.amount}`, r.date.split('T')[0], r.status]);
                         break;
                     case 'tickets':
-                        columns = [{ label: 'S/N', width: 10 }, { label: 'ID', width: 25 }, { label: 'DESCRIPTION', width: 65 }, { label: 'DEPT', width: 25 }, { label: 'PRIO', width: 20 }, { label: 'TECH', width: 35 }];
-                        reportRows = filteredTickets.map((t, idx) => [idx + 1, t.id, t.description, t.department, t.priority, t.assignedTechId || 'Unassigned']);
+                        reportRows = filteredTickets.map((t, idx) => [idx + 1, t.id, t.description, '1 Unit', t.dateCreated.split('T')[0], t.status]);
                         break;
                     case 'internet':
-                        columns = [{ label: 'S/N', width: 10 }, { label: 'ISP', width: 60 }, { label: 'PLAN', width: 45 }, { label: 'CYCLE', width: 25 }, { label: 'COST', width: 20 }, { label: 'EXPIRY', width: 20 }];
-                        reportRows = filteredInternet.map((v, idx) => [idx + 1, v.name, v.planName, v.billingCycle, `₹${v.amount}`, v.expiryDate]);
+                        reportRows = filteredInternet.map((v, idx) => [idx + 1, v.customerID || 'N/A', v.name, `₹${v.amount}`, v.expiryDate, 'Active']);
                         break;
                     case 'receiving':
                     case 'outward':
-                        columns = [{ label: 'S/N', width: 10 }, { label: 'REF ID', width: 35 }, { label: 'ENTITY', width: 60 }, { label: 'DATE', width: 25 }, { label: 'ITEMS', width: 15 }, { label: 'PURPOSE', width: 35 }];
-                        reportRows = (filteredLogistics as any[]).map((l, idx) => [idx + 1, l.id, vendors.find(v => v.id === l.vendorId)?.name || 'N/A', (l.dateReceived || l.dateIssued).split('T')[0], l.items.length, l.purpose || 'N/A']);
+                        reportRows = (filteredLogistics as (ReceivingChallan | Invoice)[]).map((l, idx) => [idx + 1, l.id, vendors.find(v => v.id === l.vendorId)?.name || 'N/A', `${l.items.length} Items`, ('dateReceived' in l ? l.dateReceived : l.dateIssued).split('T')[0], 'purpose' in l ? (l.purpose || 'N/A') : 'N/A']);
                         break;
                     case 'purchase-orders':
-                        columns = [{ label: 'S/N', width: 10 }, { label: 'PO ID', width: 35 }, { label: 'SUPPLIER', width: 70 }, { label: 'STATUS', width: 35 }, { label: 'ETA', width: 30 }];
-                        reportRows = (filteredLogistics as PurchaseOrder[]).map((p, idx) => [idx + 1, p.id, vendors.find(v => v.id === p.vendorId)?.name || 'N/A', p.status, p.expectedDeliveryDate.split('T')[0]]);
+                        reportRows = (filteredLogistics as PurchaseOrder[]).map((p, idx) => [idx + 1, p.id, vendors.find(v => v.id === p.vendorId)?.name || 'N/A', `${p.items.length} Items`, p.dateCreated.split('T')[0], p.status]);
                         break;
                     case 'vendors':
-                        columns = [{ label: 'S/N', width: 10 }, { label: 'ID', width: 25 }, { label: 'ENTITY', width: 60 }, { label: 'CONTACT', width: 35 }, { label: 'PHONE', width: 30 }, { label: 'GSTIN', width: 20 }];
-                        reportRows = vendors.map((v, idx) => [idx + 1, v.id, v.name, v.contactPerson, v.phone, v.gstin || 'N/A']);
+                        reportRows = vendors.map((v, idx) => [idx + 1, v.id, v.name, 'N/A', 'N/A', 'Active']);
                         break;
                 }
 
@@ -431,7 +370,7 @@ const Reports: React.FC<ReportsProps> = ({
                         currentY = 55;
                         drawTableHeader(columns);
                     }
-
+                    
                     if (i % 2 !== 0) {
                         pdf.setFillColor(252, 252, 252);
                         pdf.rect(margin, currentY, pageWidth - (margin * 2), 10, 'F');
@@ -479,9 +418,9 @@ const Reports: React.FC<ReportsProps> = ({
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-4">
                         <label className="text-[10px] font-black uppercase text-slate-400 block mb-3 tracking-widest px-1">Analytical Domain</label>
-                        <select
-                            value={activeTab}
-                            onChange={e => setActiveTab(e.target.value as any)}
+                        <select 
+                            value={activeTab} 
+                            onChange={e => setActiveTab(e.target.value as ReportTab)}
                             className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-bold text-sm focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-inner"
                         >
                             <option value="inventory">Asset Master Registry</option>
@@ -507,9 +446,9 @@ const Reports: React.FC<ReportsProps> = ({
                                 { l: '90D', d: 90 },
                                 { l: 'YTD', d: 'ytd' }
                             ].map(btn => (
-                                <button
-                                    key={btn.l}
-                                    onClick={() => setQuickRange(btn.d as any)}
+                                <button 
+                                    key={btn.l} 
+                                    onClick={() => setQuickRange(btn.d as (number | 'ytd'))}
                                     className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border dark:border-slate-700 ${btn.l === 'Today' && startDate === new Date().toISOString().split('T')[0] ? 'bg-primary text-white shadow-lg' : 'bg-slate-50 dark:bg-slate-900 text-slate-400 hover:text-slate-700'}`}
                                 >
                                     {btn.l}
@@ -524,8 +463,8 @@ const Reports: React.FC<ReportsProps> = ({
 
                     <div className="lg:col-span-3">
                         <label className="text-[10px] font-black uppercase text-slate-400 block mb-3 tracking-widest px-1">Scope Filter</label>
-                        <select
-                            value={deptFilter}
+                        <select 
+                            value={deptFilter} 
                             onChange={e => setDeptFilter(e.target.value)}
                             className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-bold text-sm focus:ring-4 focus:ring-primary/10 outline-none transition-all shadow-inner"
                         >
@@ -548,20 +487,7 @@ const Reports: React.FC<ReportsProps> = ({
                     <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter flex items-center gap-2">
                         <i className="fas fa-eye text-primary"></i> Live Stream Preview
                     </h3>
-                    <div className="flex items-center gap-4">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Show:</label>
-                        <select
-                            value={previewLimit}
-                            onChange={e => setPreviewLimit(Number(e.target.value))}
-                            className="bg-slate-100 dark:bg-slate-800 border-none rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-primary/20"
-                        >
-                            <option value={100}>100 Records</option>
-                            <option value={200}>200 Records</option>
-                            <option value={500}>500 Records</option>
-                            <option value={1000}>1000 Records</option>
-                        </select>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:block">Displaying first {previewLimit} period records</p>
-                    </div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Displaying first 100 period records</p>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
@@ -577,7 +503,7 @@ const Reports: React.FC<ReportsProps> = ({
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                             {(() => {
-                                let source: any[] = [];
+                                let source: (Ticket | AttendanceRecord | InventoryItem | Vendor | ReceivingChallan | Invoice | PurchaseOrder | ReimbursementRequest | InternetVendor)[] = [];
                                 if (activeTab === 'inventory') source = filteredInventory;
                                 else if (activeTab === 'lowStock') source = inventory.filter(i => i.quantity <= i.minStock);
                                 else if (activeTab === 'vendors') source = vendors;
@@ -585,38 +511,52 @@ const Reports: React.FC<ReportsProps> = ({
                                 else if (activeTab === 'attendance') source = filteredAttendance;
                                 else if (activeTab === 'petty-cash') source = filteredPettyCash;
                                 else if (activeTab === 'internet') source = filteredInternet;
-                                else source = filteredLogistics;
+                                else source = filteredLogistics as (ReceivingChallan | Invoice | PurchaseOrder)[];
 
-                                const limitedSource = source.slice(0, previewLimit);
+                                return source.slice(0, 100).map((r: Ticket | AttendanceRecord | InventoryItem | Vendor | ReceivingChallan | Invoice | PurchaseOrder | ReimbursementRequest | InternetVendor, idx: number) => {
+                                    const qty = 'quantity' in r ? `${r.quantity} ${r.unit || 'Nos'}` : 
+                                                'items' in r ? `${r.items.length} Items` : 
+                                                'amount' in r ? `₹${r.amount}` : 'N/A';
+                                    
+                                    const dateStamp = 'dateCreated' in r ? r.dateCreated.split('T')[0] :
+                                                      'date' in r ? r.date :
+                                                      'dateReceived' in r ? r.dateReceived.split('T')[0] :
+                                                      'dateIssued' in r ? r.dateIssued.split('T')[0] : 'Historical';
 
-                                return limitedSource.map((r: any, idx: number) => (
-                                    <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors group">
-                                        <td className="px-6 py-4 whitespace-nowrap font-black text-slate-400 text-xs">{idx + 1}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap font-black text-primary text-xs uppercase tracking-tighter">
-                                            {r.id || r.userName.slice(0, 8)}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm font-bold text-slate-700 dark:text-slate-300 truncate max-w-xs uppercase">
-                                            {r.name || r.description || r.purpose || (r.planName ? `${r.name} - ${r.planName}` : r.date)}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap font-black text-slate-900 dark:text-white text-xs">
-                                            {(() => {
-                                                if (r.quantity !== undefined) return `${r.quantity} ${r.unit || 'Units'}`;
-                                                if (r.items) return `${r.items.length} Items`;
-                                                if (r.amount) return `₹${r.amount.toLocaleString()}`;
-                                                return '---';
-                                            })()}
-                                        </td>
-                                        <td className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                            {r.dateCreated?.split('T')[0] || r.date || r.dateReceived?.split('T')[0] || r.dateIssued?.split('T')[0] || 'Historical'}
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${['Resolved', 'Paid', 'Present', 'Fulfilled', 'Active', 'In Use'].includes(r.status || r.assetStatus) ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'
+                                    const status = 'status' in r ? r.status :
+                                                   'assetStatus' in r ? r.assetStatus : 'Logged';
+                                    
+                                    let displayName = 'N/A';
+                                    if ('name' in r) displayName = 'planName' in r ? `${r.name} - ${r.planName}` : r.name;
+                                    else if ('description' in r) displayName = r.description;
+                                    else if ('purpose' in r) displayName = r.purpose;
+                                    else if ('date' in r) displayName = r.date;
+
+                                    return (
+                                        <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors group">
+                                            <td className="px-6 py-4 whitespace-nowrap font-black text-slate-400 text-xs">{idx + 1}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap font-black text-primary text-xs uppercase tracking-tighter">
+                                                {r.id || ('userName' in r ? r.userName.slice(0,8) : 'N/A')}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm font-bold text-slate-700 dark:text-slate-300 truncate max-w-xs uppercase">
+                                                {displayName}
+                                            </td>
+                                            <td className="px-6 py-4 text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase">
+                                                {qty}
+                                            </td>
+                                            <td className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                {dateStamp}
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
+                                                    ['Resolved', 'Paid', 'Present', 'Fulfilled', 'Active', 'In Use'].includes(status) ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'
                                                 }`}>
-                                                {r.status || r.assetStatus || 'Logged'}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ));
+                                                    {status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    );
+                                });
                             })()}
                         </tbody>
                     </table>

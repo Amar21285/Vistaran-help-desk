@@ -614,7 +614,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             <div className="space-y-4">
                 {activeTab === 'assets' && (
                     <div className="bg-white dark:bg-slate-800 rounded-[32px] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                        <div className="overflow-x-auto">
+                        <div className="responsive-table-container">
                             <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                                 <thead className="bg-slate-50 dark:bg-slate-900/50">
                                     <tr>
@@ -671,7 +671,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                                                 <td className="px-6 py-4 text-center">
                                                     <div className="flex flex-col gap-1 items-center">
                                                         <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${i.assetStatus === AssetStatus.IN_USE ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                                                            'bg-emerald-50 text-emerald-600 border-emerald-200'
+                                                                'bg-emerald-50 text-emerald-600 border-emerald-200'
                                                             }`}>
                                                             {i.assetStatus || AssetStatus.SPARE}
                                                         </span>
@@ -706,7 +706,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
 
                 {activeTab === 'stock' && (
                     <div className="bg-white dark:bg-slate-800 rounded-[32px] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                        <div className="overflow-x-auto">
+                        <div className="responsive-table-container">
                             <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                                 <thead className="bg-slate-50 dark:bg-slate-900/50">
                                     <tr>
@@ -776,7 +776,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
 
                 {activeTab === 'vendors' && (
                     <div className="bg-white dark:bg-slate-800 rounded-[32px] shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-                        <div className="overflow-x-auto">
+                        <div className="responsive-table-container">
                             <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                                 <thead className="bg-slate-50 dark:bg-slate-900/50">
                                     <tr>
@@ -805,7 +805,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                 )}
 
                 {activeTab === 'receiving' && <ReceivingChallanManagement challans={challans} setChallans={setChallans} vendors={vendors} inventory={inventory} globalFilter={globalFilter} users={users} />}
-                {activeTab === 'outward' && <InvoiceManagement invoices={invoices} setInvoices={setInvoices} vendors={vendors} inventory={inventory} globalFilter={globalFilter} />}
+                {activeTab === 'outward' && <InvoiceManagement invoices={invoices} setInvoices={setInvoices} vendors={vendors} inventory={inventory} setInventory={setInventory} globalFilter={globalFilter} />}
                 {activeTab === 'petty-cash' && <ReimbursementManagement users={users} />}
                 {activeTab === 'internet' && <InternetVendorManagement inventory={inventory} />}
                 {activeTab === 'purchase-orders' && <PurchaseOrderManagement purchaseOrders={purchaseOrders} setPurchaseOrders={setPurchaseOrders} vendors={vendors} inventory={inventory} globalFilter={globalFilter} users={users} />}

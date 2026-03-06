@@ -30,6 +30,7 @@ interface InvoiceManagementProps {
     setInvoices: React.Dispatch<React.SetStateAction<Invoice[]>>;
     vendors: Vendor[];
     inventory: InventoryItem[];
+    setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
     globalFilter: string;
 }
 
@@ -56,7 +57,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
     const [newItemDesc, setNewItemDesc] = useState('');
     const [newItemHsn, setNewItemHsn] = useState('');
     const [newItemQty, setNewItemQty] = useState<number>(1);
-    const [newItemUnit, setNewItemUnit] = useState('Nos');
+    const [newItemUnit] = useState('Nos');
     const [newItemRate, setNewItemRate] = useState<number>(0);
     const [newItemGst, setNewItemGst] = useState<number>(18);
     const [newItemRemarks, setNewItemRemarks] = useState('');
@@ -171,17 +172,18 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
         };
 
         if (editingInvoice) {
-            const updated = { ...editingInvoice, ...invoiceData };
+            const updated: Invoice = { ...editingInvoice, ...invoiceData };
             setInvoices(prev => prev.map(i => i.id === editingInvoice.id ? updated : i));
             logUserAction(realUser || user, `Updated Material Issue ${editingInvoice.id}`);
         } else {
             const id = `TXI-${new Date().getFullYear()}-${(invoices.length + 1).toString().padStart(4, '0')}`;
-            setInvoices(prev => [{ 
+            const newInvoice: Invoice = { 
                 id, 
                 dateIssued: new Date().toISOString(), 
                 issuedByUserId: user.id, 
                 ...invoiceData 
-            }, ...prev]);
+            };
+            setInvoices(prev => [newInvoice, ...prev]);
             logUserAction(realUser || user, `Created Material Issue ${id}`);
         }
         setIsCreateModalOpen(false);
@@ -191,30 +193,29 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
         if (!printableRef.current || !viewingInvoice) return;
         setIsGeneratingPDF(true);
         try {
-            const element = printableRef.current;
-            const canvas = await html2canvas(element, { 
+            const canvas = await html2canvas(printableRef.current, { 
                 scale: 2, 
                 useCORS: true, 
                 backgroundColor: '#ffffff',
-                logging: false,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight
+                logging: false
             });
-            
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
             const pdf = new jsPDF('p', 'mm', 'a4');
-            
-            const imgWidth = 210; 
-            const pageHeight = 297; 
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = pageWidth;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
             let heightLeft = imgHeight;
             let position = 0;
 
+            // First page
             pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
 
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
+            // Subsequent pages
+            while (heightLeft > 0) {
+                position -= pageHeight;
                 pdf.addPage();
                 pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
@@ -222,7 +223,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
             
             pdf.save(`Invoice-${viewingInvoice.id}.pdf`);
         } catch (error) {
-            console.error("PDF generation failed:", error);
+            console.error("PDF Generation Error:", error);
             alert("Failed to generate PDF. Please try again.");
         } finally { 
             setIsGeneratingPDF(false); 
@@ -488,7 +489,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                 </thead>
                                 <tbody>
                                     {viewingInvoice.items.map((i, idx) => (
-                                        <tr key={i.id} className="border-b border-slate-100 break-inside-avoid">
+                                        <tr key={i.id} className="border-b border-slate-100">
                                             <td className="p-4 text-xs font-bold text-slate-400">{idx + 1}</td>
                                             <td className="p-4 font-black uppercase text-sm text-slate-800">{i.description}</td>
                                             <td className="p-4 text-center text-xs font-bold text-slate-600">{i.quantity}</td>

@@ -5,11 +5,16 @@
 /* Custom font family configuration */
 :root {
   --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
 }
 
 html, body {
   font-family: var(--font-family) !important;
   overscroll-behavior-y: contain;
+  padding: var(--safe-area-inset-top) var(--safe-area-inset-right) var(--safe-area-inset-bottom) var(--safe-area-inset-left);
 }
 
 .font-sans { font-family: var(--font-family), ui-sans-serif, system-ui, sans-serif; }
@@ -376,3 +381,47 @@ input, button, select, textarea {
 .dark .dark\:bg-primary-light-dark { background-color: rgba(var(--color-primary-light-bg-dark), 0.5); }
 .text-primary-light-text { color: var(--color-primary-light-text); }
 .dark .dark\:text-primary-light-text-dark { color: var(--color-primary-light-text-dark); }
+/* Responsive Layout Locks */
+.app-is-logged-in {
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .app-is-logged-in {
+    position: fixed;
+    inset: 0;
+  }
+}
+
+.custom-scrollbar {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* PWA Animations & Transitions */
+@keyframes slideUp { 
+  from { transform: translateY(100%); } 
+  to { transform: translateY(0); } 
+}
+.mobile-modal { 
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+}
+
+/* Safe Area Utilities */
+.safe-top { padding-top: var(--safe-area-inset-top); }
+.safe-bottom { padding-bottom: var(--safe-area-inset-bottom); }
+.safe-left { padding-left: var(--safe-area-inset-left); }
+.safe-right { padding-right: var(--safe-area-inset-right); }
+
+.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 1rem); }
+.pt-safe { padding-top: calc(env(safe-area-inset-top) + 1rem); }
+
+/* Responsive Table Wrapper */
+.responsive-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+}

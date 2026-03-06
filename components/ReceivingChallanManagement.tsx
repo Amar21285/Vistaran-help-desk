@@ -135,30 +135,29 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
         if (!printableRef.current || !viewingChallan) return;
         setIsGeneratingPDF(true);
         try {
-            const element = printableRef.current;
-            const canvas = await html2canvas(element, { 
+            const canvas = await html2canvas(printableRef.current, { 
                 scale: 2, 
                 useCORS: true, 
                 backgroundColor: '#ffffff',
-                logging: false,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight
+                logging: false
             });
-            
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
             const pdf = new jsPDF('p', 'mm', 'a4');
-            
-            const imgWidth = 210; 
-            const pageHeight = 297; 
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = pageWidth;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
             let heightLeft = imgHeight;
             let position = 0;
 
+            // First page
             pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
 
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
+            // Subsequent pages
+            while (heightLeft > 0) {
+                position -= pageHeight;
                 pdf.addPage();
                 pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
@@ -166,7 +165,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
             
             pdf.save(`Receipt-${viewingChallan.id}.pdf`);
         } catch (error) {
-            console.error("PDF generation failed:", error);
+            console.error("PDF Generation Error:", error);
             alert("Failed to generate PDF. Please try again.");
         } finally { 
             setIsGeneratingPDF(false); 
@@ -425,7 +424,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                                 </thead>
                                 <tbody>
                                     {viewingChallan.items.map((i, idx) => (
-                                        <tr key={i.id} className="border-b border-slate-100 group break-inside-avoid">
+                                        <tr key={i.id} className="border-b border-slate-100 group">
                                             <td className="p-4 text-xs font-bold text-slate-400">{idx + 1}</td>
                                             <td className="p-4">
                                                 <p className="font-black uppercase text-sm text-slate-800">{i.description}</p>

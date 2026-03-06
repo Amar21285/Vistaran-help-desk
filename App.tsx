@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth, AuthProvider } from './hooks/useAuth';
 import { SettingsProvider, useSettings } from './hooks/useSettings';
 import { ThemeProvider, useTheme } from './hooks/useTheme';
@@ -24,7 +24,7 @@ import AttendanceManagement from './components/AttendanceManagement';
 import ScannerModal from './components/modals/ScannerModal';
 import QuickTicketModal from './components/modals/QuickTicketModal';
 import { USERS, TICKETS, TECHNICIANS, SYMPTOMS, FILES, TICKET_TEMPLATES, INVENTORY, VENDORS } from './constants';
-import { User, Ticket, ManagedFile, Technician, Symptom, Role, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder, AppNotification, Permission } from './types';
+import { User, Ticket, ManagedFile, Technician, Symptom, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder, AppNotification, Permission } from './types';
 import { logUserAction } from './utils/auditLogger';
 
 interface ModalAction {
@@ -210,7 +210,7 @@ const AppContent: React.FC = () => {
     const appBgStyle: React.CSSProperties = wallpaper ? { backgroundImage: `url(${wallpaper})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' } : {};
 
     return (
-        <div className="relative flex h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans transition-all duration-500 overflow-hidden" style={appBgStyle}>
+        <div className="relative flex h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans transition-all duration-500 overflow-hidden app-is-logged-in" style={appBgStyle}>
             {wallpaper && <div className="absolute inset-0 bg-white/40 dark:bg-slate-900/60 backdrop-blur-[2px] pointer-events-none z-0" />}
             <div className="relative flex w-full h-full z-10">
                 <Sidebar currentView={currentView} setCurrentView={setCurrentView} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />

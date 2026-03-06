@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { InventoryItem } from '../../types';
 import { PrintableLabel, LabelTemplate } from './AssetLabelModal';
 import html2canvas from 'html2canvas';
@@ -24,58 +24,15 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
 
     // Selection State
     const [selectedIds, setSelectedIds] = useState<string[]>(items.map(i => i.id));
-    
+
     // Tag Dimensions - Adjusted for "Official" aspect ratio
-    const [labelWidth, setLabelWidth] = useState(95); 
+    const [labelWidth, setLabelWidth] = useState(95);
     const [labelHeight, setLabelHeight] = useState(65);
     const [rotation, setRotation] = useState(0);
-    const [isHighContrast] = useState(true);
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isHighContrast, setIsHighContrast] = useState(true);
+    const [fontScale, setFontScale] = useState(1.0);
     const [selectedTemplate, setSelectedTemplate] = useState<LabelTemplate>('official');
-
-    // Load saved settings on mount
-    useEffect(() => {
-        const saved = localStorage.getItem('vistaran_batch_print_settings');
-        if (saved) {
-            try {
-                const settings = JSON.parse(saved);
-                if (settings.labelWidth) setLabelWidth(settings.labelWidth);
-                if (settings.labelHeight) setLabelHeight(settings.labelHeight);
-                if (settings.selectedTemplate) setSelectedTemplate(settings.selectedTemplate);
-                if (settings.pageSize) setPageSize(settings.pageSize);
-                if (settings.gridCols) setGridCols(settings.gridCols);
-                if (settings.gridRows) setGridRows(settings.gridRows);
-                if (settings.gridGapX !== undefined) setGridGapX(settings.gridGapX);
-                if (settings.gridGapY !== undefined) setGridGapY(settings.gridGapY);
-                if (settings.pagePadding !== undefined) setPagePadding(settings.pagePadding);
-                if (settings.isDarkMode !== undefined) setIsDarkMode(settings.isDarkMode);
-                if (settings.rotation !== undefined) setRotation(settings.rotation);
-            } catch (e) {
-                console.error("Failed to load saved print settings", e);
-            }
-        }
-    }, []);
-
-    const [saveStatus, setSaveStatus] = useState<'idle' | 'saved'>('idle');
-
-    const handleSaveDefaultSettings = () => {
-        const settings = {
-            labelWidth,
-            labelHeight,
-            selectedTemplate,
-            pageSize,
-            gridCols,
-            gridRows,
-            gridGapX,
-            gridGapY,
-            pagePadding,
-            isDarkMode,
-            rotation
-        };
-        localStorage.setItem('vistaran_batch_print_settings', JSON.stringify(settings));
-        setSaveStatus('saved');
-        setTimeout(() => setSaveStatus('idle'), 2000);
-    };
 
     // Grid Layout State - Default to 2x4 as per PDF
     const [pageSize, setPageSize] = useState('a4');
@@ -97,7 +54,7 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
     const handlePrintAll = () => {
         if (activeItems.length === 0) return;
         setIsGenerating(true);
-        
+
         const iframe = document.createElement('iframe');
         iframe.style.position = 'fixed';
         iframe.style.width = '0';
@@ -113,7 +70,7 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
 
         // Collect HTML from current rendered units
         const labelsHtml = activeItems.map((_, idx) => {
-            const el = document.getElementById(`batch-${idx}-printable-label-content`);
+            const el = document.querySelectorAll('.batch-label-unit > div')[idx] as HTMLElement;
             return el ? `<div class="page-wrapper">${el.outerHTML}</div>` : '';
         }).join('');
 
@@ -125,27 +82,18 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                     <style>
                         @page { size: ${finalPageWidth}mm ${finalPageHeight}mm; margin: 0 !important; }
                         * { box-sizing: border-box !important; -webkit-print-color-adjust: exact !important; }
-                        body { 
-                            margin: 0 !important; 
-                            padding: 0 !important; 
-                            background: white !important; 
-                            -webkit-font-smoothing: none !important;
-                            -moz-osx-font-smoothing: grayscale !important;
-                            text-rendering: optimizeSpeed !important;
-                        }
+                        body { margin: 0 !important; padding: 0 !important; background: white !important; }
                         .page-wrapper {
                             width: ${finalPageWidth}mm; height: ${finalPageHeight}mm;
                             display: flex; align-items: center; justify-content: center;
                             page-break-after: always; overflow: hidden;
-                            image-rendering: crisp-edges !important;
-                            image-rendering: pixelated !important;
                         }
                         .page-wrapper > div { 
                             width: ${labelWidth}mm !important; height: ${labelHeight}mm !important; 
                             transform: rotate(${rotation}deg) !important;
                             transform-origin: center center !important;
                         }
-                        .high-contrast-mode { filter: contrast(200%) grayscale(100%) !important; }
+                        .high-contrast-mode { filter: contrast(100) grayscale(1) !important; }
                         svg, img { image-rendering: pixelated; }
                     </style>
                 </head>
@@ -171,11 +119,11 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
         setProcessProgress(0);
 
         try {
-            const pdf = new jsPDF('p', 'mm', pageSize); 
+            const pdf = new jsPDF('p', 'mm', pageSize);
             const labelsPerPage = gridCols * gridRows;
-            
+
             const labelElements = document.querySelectorAll('.batch-label-unit > div');
-            
+
             for (let i = 0; i < labelElements.length; i++) {
                 const element = labelElements[i] as HTMLElement;
                 const itemOnPage = i % labelsPerPage;
@@ -185,24 +133,16 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                 if (i > 0 && itemOnPage === 0) pdf.addPage();
 
                 const canvas = await html2canvas(element, {
-                    scale: 4, // 4 is usually enough for high quality without crashing memory
+                    scale: 5,
                     useCORS: true,
                     logging: false,
-                    backgroundColor: '#ffffff',
-                    windowWidth: element.scrollWidth,
-                    windowHeight: element.scrollHeight,
-                    onclone: (clonedDoc) => {
-                        const clonedEl = clonedDoc.getElementById(element.id);
-                        if (clonedEl) {
-                            clonedEl.style.transform = 'none';
-                        }
-                    }
+                    backgroundColor: '#ffffff'
                 });
 
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
                 const x = pagePadding + (colIndex * (labelWidth + gridGapX));
                 const y = pagePadding + (rowIndex * (labelHeight + gridGapY));
-                
+
                 pdf.addImage(imgData, 'JPEG', x, y, labelWidth, labelHeight);
                 setProcessProgress(i + 1);
             }
@@ -243,9 +183,9 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                         <div className="flex flex-col px-3">
                             <span className="text-[7px] font-black text-slate-500 uppercase">Layout</span>
                             <div className="flex items-center gap-2">
-                                <input type="number" value={gridCols} onChange={e => setGridCols(parseInt(e.target.value)||1)} className="w-6 bg-transparent text-white text-[10px] font-black outline-none" />
+                                <input type="number" value={gridCols} onChange={e => setGridCols(parseInt(e.target.value) || 1)} className="w-6 bg-transparent text-white text-[10px] font-black outline-none" />
                                 <span className="text-slate-600 text-[8px]">×</span>
-                                <input type="number" value={gridRows} onChange={e => setGridRows(parseInt(e.target.value)||1)} className="w-6 bg-transparent text-white text-[10px] font-black outline-none" />
+                                <input type="number" value={gridRows} onChange={e => setGridRows(parseInt(e.target.value) || 1)} className="w-6 bg-transparent text-white text-[10px] font-black outline-none" />
                             </div>
                         </div>
                     </div>
@@ -254,19 +194,19 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                     <div className="flex items-center gap-2 bg-white/5 p-2 rounded-2xl border border-white/10">
                         <div className="flex flex-col px-3">
                             <span className="text-[7px] font-black text-slate-500 uppercase">Presets</span>
-                            <select 
+                            <select
                                 onChange={e => {
                                     const [w, h] = e.target.value.split('x').map(Number);
                                     setLabelWidth(w);
                                     setLabelHeight(h);
-                                }} 
+                                }}
                                 className="bg-transparent text-white text-[10px] font-black outline-none cursor-pointer"
                             >
                                 <option value="95x65" className="text-slate-900">95x65mm (Default)</option>
-                                <option value="50x25" className="text-slate-900">50x25mm (Small)</option>
                                 <option value="50x75" className="text-slate-900">50x75mm (Portrait)</option>
                                 <option value="100x50" className="text-slate-900">100x50mm (Standard)</option>
                                 <option value="50x50" className="text-slate-900">50x50mm (Square)</option>
+                                <option value="50x25" className="text-slate-900">50x25mm (Small)</option>
                             </select>
                         </div>
                         <div className="w-px h-6 bg-white/10 mx-1"></div>
@@ -274,6 +214,7 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                             <span className="text-[7px] font-black text-slate-500 uppercase">Template</span>
                             <select value={selectedTemplate} onChange={e => setSelectedTemplate(e.target.value as LabelTemplate)} className="bg-transparent text-white text-[10px] font-black outline-none cursor-pointer">
                                 <option value="official" className="text-slate-900 uppercase">Official Vistaran</option>
+                                <option value="thermal" className="text-slate-900 uppercase">Thermal Vistaran (50x25)</option>
                                 <option value="industrial" className="text-slate-900 uppercase">Industrial</option>
                                 <option value="compact" className="text-slate-900 uppercase">Compact</option>
                                 <option value="modern" className="text-slate-900 uppercase">Modern</option>
@@ -283,11 +224,21 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                         <div className="w-px h-6 bg-white/10 mx-1"></div>
                         <div className="flex flex-col px-3">
                             <span className="text-[7px] font-black text-slate-500 uppercase">Mode</span>
-                            <button 
+                            <button
                                 onClick={() => setIsDarkMode(!isDarkMode)}
                                 className={`text-[10px] font-black uppercase transition-all ${isDarkMode ? 'text-indigo-400' : 'text-slate-400'}`}
                             >
                                 {isDarkMode ? 'Dark' : 'Light'}
+                            </button>
+                        </div>
+                        <div className="w-px h-6 bg-white/10 mx-1"></div>
+                        <div className="flex flex-col px-3">
+                            <span className="text-[7px] font-black text-slate-500 uppercase">Contrast</span>
+                            <button
+                                onClick={() => setIsHighContrast(!isHighContrast)}
+                                className={`text-[10px] font-black uppercase transition-all ${isHighContrast ? 'text-emerald-400' : 'text-slate-400'}`}
+                            >
+                                {isHighContrast ? 'High' : 'Normal'}
                             </button>
                         </div>
                         <div className="w-px h-6 bg-white/10 mx-1"></div>
@@ -301,26 +252,15 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                             </select>
                         </div>
                         <div className="w-px h-6 bg-white/10 mx-1"></div>
-                        <div className="flex flex-col px-3">
-                            <span className="text-[7px] font-black text-slate-500 uppercase">Save</span>
-                            <button 
-                                onClick={handleSaveDefaultSettings}
-                                className={`text-[10px] font-black uppercase transition-all flex items-center gap-1 ${saveStatus === 'saved' ? 'text-emerald-400 scale-110' : 'text-slate-400 hover:text-emerald-400'}`}
-                                title="Save current settings as default"
-                            >
-                                <i className={`fas ${saveStatus === 'saved' ? 'fa-check-circle' : 'fa-save'}`}></i> {saveStatus === 'saved' ? 'Saved' : 'Default'}
-                            </button>
-                        </div>
-                        <div className="w-px h-6 bg-white/10 mx-1"></div>
                         <div className="flex items-center gap-3 px-3">
-                             <div className="flex flex-col">
+                            <div className="flex flex-col">
                                 <span className="text-[7px] font-black text-slate-500 uppercase">W (mm)</span>
-                                <input type="number" value={labelWidth} onChange={e => setLabelWidth(parseInt(e.target.value)||1)} className="w-8 bg-transparent text-white text-[10px] font-black outline-none" />
-                             </div>
-                             <div className="flex flex-col">
+                                <input type="number" value={labelWidth} onChange={e => setLabelWidth(parseInt(e.target.value) || 1)} className="w-8 bg-transparent text-white text-[10px] font-black outline-none" />
+                            </div>
+                            <div className="flex flex-col">
                                 <span className="text-[7px] font-black text-slate-500 uppercase">H (mm)</span>
-                                <input type="number" value={labelHeight} onChange={e => setLabelHeight(parseInt(e.target.value)||1)} className="w-8 bg-transparent text-white text-[10px] font-black outline-none" />
-                             </div>
+                                <input type="number" value={labelHeight} onChange={e => setLabelHeight(parseInt(e.target.value) || 1)} className="w-8 bg-transparent text-white text-[10px] font-black outline-none" />
+                            </div>
                         </div>
                     </div>
 
@@ -340,8 +280,8 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                     </div>
                     <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
                         {items.map(i => (
-                            <div 
-                                key={i.id} 
+                            <div
+                                key={i.id}
                                 onClick={() => handleToggleAsset(i.id)}
                                 className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center gap-3 ${selectedIds.includes(i.id) ? 'bg-primary/10 border-primary shadow-lg' : 'bg-white/5 border-white/5 opacity-50 hover:opacity-100'}`}
                             >
@@ -349,8 +289,8 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                                     {selectedIds.includes(i.id) && <i className="fas fa-check text-[10px]"></i>}
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[10px] font-black text-white uppercase truncate">{i.name}</p>
-                                    <p className="text-[8px] font-bold text-slate-500 uppercase font-mono tracking-tighter mt-1">{i.id}</p>
+                                    <p className="text-[12px] font-black text-slate-900 dark:text-white uppercase truncate">{i.name}</p>
+                                    <p className="text-[10px] font-bold text-slate-700 dark:text-slate-400 uppercase font-mono tracking-tighter mt-1">{i.id}</p>
                                 </div>
                             </div>
                         ))}
@@ -362,17 +302,18 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                     <div className="flex flex-wrap justify-center gap-10">
                         {activeItems.length > 0 ? activeItems.map((item, idx) => (
                             <div key={`${item.id}-${idx}`} className="batch-label-unit shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] animate-in zoom-in-95 duration-500 bg-white">
-                                <PrintableLabel 
-                                    item={item} 
-                                    labelWidth={labelWidth} 
-                                    labelHeight={labelHeight} 
+                                <PrintableLabel
+                                    item={item}
+                                    labelWidth={labelWidth}
+                                    labelHeight={labelHeight}
                                     rotation={rotation}
                                     template={selectedTemplate}
-                                    isHighContrast={isHighContrast} 
+                                    isHighContrast={isHighContrast}
                                     isDarkMode={isDarkMode}
-                                    qrCodeUrl={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(item.id)}&margin=0&ecc=H`} 
+                                    qrCodeUrl={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(item.id)}&margin=0&ecc=H`}
                                     barcodeWidthScale={1.1}
                                     barcodeHeightScale={1.1}
+                                    fontScale={fontScale}
                                     idPrefix={`batch-${idx}-`}
                                 />
                             </div>
@@ -393,30 +334,42 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                     <div className="flex flex-col gap-2">
                         <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Calibration: Grid Gap (mm)</span>
                         <div className="flex gap-2">
-                             <input type="number" value={gridGapX} onChange={e => setGridGapX(parseInt(e.target.value)||0)} className="w-12 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-[10px] font-black text-center" placeholder="X" />
-                             <input type="number" value={gridGapY} onChange={e => setGridGapY(parseInt(e.target.value)||0)} className="w-12 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-[10px] font-black text-center" placeholder="Y" />
+                            <input type="number" value={gridGapX} onChange={e => setGridGapX(parseInt(e.target.value) || 0)} className="w-12 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-[10px] font-black text-center" placeholder="X" />
+                            <input type="number" value={gridGapY} onChange={e => setGridGapY(parseInt(e.target.value) || 0)} className="w-12 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-[10px] font-black text-center" placeholder="Y" />
                         </div>
                     </div>
                     <div className="flex flex-col gap-2">
                         <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Page Margin (mm)</span>
-                        <input type="number" value={pagePadding} onChange={e => setPagePadding(parseInt(e.target.value)||0)} className="w-20 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-[10px] font-black text-center" />
+                        <input type="number" value={pagePadding} onChange={e => setPagePadding(parseInt(e.target.value) || 0)} className="w-20 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-[10px] font-black text-center" />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Font Scale</span>
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="0.5"
+                            max="3.0"
+                            value={fontScale}
+                            onChange={e => setFontScale(parseFloat(e.target.value) || 1.0)}
+                            className="w-20 p-2 bg-white/5 border border-white/10 rounded-lg text-white text-[10px] font-black text-center"
+                        />
                     </div>
                 </div>
 
                 <div className="flex gap-4">
-                    <button 
-                        onClick={handleDownloadGridPDF} 
+                    <button
+                        onClick={handleDownloadGridPDF}
                         disabled={isGenerating || activeItems.length === 0}
                         className="bg-indigo-600 text-white font-black px-10 py-5 rounded-[22px] shadow-2xl hover:bg-indigo-700 active:scale-95 transition-all text-xs uppercase tracking-widest flex items-center gap-3 border border-white/10"
                     >
-                        <i className="fas fa-th"></i> Grid Sheet (PDF)
+                        <i className="fas fa-th"></i> Export Grid PDF
                     </button>
-                    <button 
-                        onClick={handlePrintAll} 
+                    <button
+                        onClick={handlePrintAll}
                         disabled={isGenerating || activeItems.length === 0}
                         className="bg-primary text-white font-black px-12 py-5 rounded-[22px] shadow-2xl hover:bg-primary-hover active:scale-95 transition-all text-xs uppercase tracking-widest flex items-center gap-3 border border-white/10"
                     >
-                        <i className="fas fa-print"></i> Thermal Roll Print
+                        <i className="fas fa-print"></i> Thermal Print All
                     </button>
                 </div>
             </footer>
@@ -427,9 +380,9 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                     <div className="bg-white p-16 rounded-[60px] text-center space-y-8 shadow-2xl max-w-sm border border-white/10">
                         <div className="relative w-24 h-24 mx-auto">
                             <div className="absolute inset-0 border-8 border-slate-100 rounded-full"></div>
-                            <div 
+                            <div
                                 className="absolute inset-0 border-8 border-primary rounded-full transition-all duration-300"
-                                style={{ 
+                                style={{
                                     clipPath: `inset(0 0 0 0)`,
                                     borderTopColor: 'transparent',
                                     borderLeftColor: 'transparent',
@@ -452,6 +405,9 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+                .high-contrast-mode { filter: contrast(200%) grayscale(100%) !important; }
+                .high-contrast-mode * { font-weight: 900 !important; border-color: #000 !important; color: #000 !important; }
+                .high-contrast-mode svg, .high-contrast-mode img { filter: contrast(300%) !important; image-rendering: pixelated; }
             `}</style>
         </div>
     );
