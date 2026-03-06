@@ -33,7 +33,7 @@ interface InventoryManagementProps {
 type TabType = 'stock' | 'assets' | 'vendors' | 'receiving' | 'outward' | 'purchase-orders' | 'attendance' | 'petty-cash' | 'internet';
 
 const ASSET_TYPES = [
-    "Laptop", "Desktop", "Monitor", "Printer", "Scanner",
+    "Laptop", "Desktop", "Monitor", "Printer", "Scanner", 
     "Server", "Switch", "Router", "CCTV", "Biometric", "UPS"
 ];
 
@@ -43,7 +43,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
     const [activeTab, setActiveTab] = useState<TabType>('assets');
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
     const isAdmin = user?.role === Role.ADMIN || realUser?.role === Role.ADMIN;
-
+    
     const [isItemModalOpen, setIsItemModalOpen] = useState(false);
     const [isVendorModalOpen, setIsVendorModalOpen] = useState(false);
     const [isLabelModalOpen, setIsLabelModalOpen] = useState(false);
@@ -52,7 +52,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
     const [isAllocationModalOpen, setIsAllocationModalOpen] = useState(false);
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-
+    
     const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
     const [itemToDelete, setItemToDelete] = useState<InventoryItem | null>(null);
     const [vendorToDelete, setVendorToDelete] = useState<Vendor | null>(null);
@@ -86,12 +86,12 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
 
     // aggregated Stock View for the 'General Stock' tab
     const groupedStock = useMemo(() => {
-        const groups: Record<string, {
-            name: string,
-            category: string,
-            brand?: string,
-            unit: string,
-            minStock: number,
+        const groups: Record<string, { 
+            name: string, 
+            category: string, 
+            brand?: string, 
+            unit: string, 
+            minStock: number, 
             totalQty: number,
             inDC: number,
             inBranch: number,
@@ -101,9 +101,9 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
 
         inventory.forEach(item => {
             const key = `${item.brand || 'NoBrand'}-${item.name}-${item.category}`.toLowerCase();
-            const isDC = (item.location?.toUpperCase().includes('DC') || item.location?.toUpperCase().includes('WAREHOUSE')) &&
-                (item.assetStatus === AssetStatus.SPARE || !item.assignedToUserId);
-
+            const isDC = (item.location?.toUpperCase().includes('DC') || item.location?.toUpperCase().includes('WAREHOUSE')) && 
+                         (item.assetStatus === AssetStatus.SPARE || !item.assignedToUserId);
+            
             if (!groups[key]) {
                 groups[key] = {
                     name: item.name,
@@ -118,11 +118,11 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                     representativeId: item.id
                 };
             }
-
+            
             groups[key].totalQty += item.quantity;
             if (isDC) groups[key].inDC += item.quantity;
             else groups[key].inBranch += item.quantity;
-
+            
             if (new Date(item.lastUpdated) > new Date(groups[key].lastUpdated)) {
                 groups[key].lastUpdated = item.lastUpdated;
             }
@@ -130,9 +130,9 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
 
         const lower = globalFilter.toLowerCase();
         return Object.values(groups).filter(g => {
-            const matchesText = g.name.toLowerCase().includes(lower) ||
-                g.category.toLowerCase().includes(lower) ||
-                (g.brand && g.brand.toLowerCase().includes(lower));
+            const matchesText = g.name.toLowerCase().includes(lower) || 
+                               g.category.toLowerCase().includes(lower) ||
+                               (g.brand && g.brand.toLowerCase().includes(lower));
             const matchesCategory = selectedCategoryFilter === 'all' || g.category === selectedCategoryFilter;
             return matchesText && matchesCategory;
         });
@@ -141,20 +141,20 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
     // Enhanced filter logic
     const filteredInventory = useMemo(() => {
         const lower = globalFilter.toLowerCase();
-
+        
         return inventory.filter(i => {
             const vendor = vendors.find(v => v.id === i.vendorId);
-            const matchesText = !lower ||
-                i.name.toLowerCase().includes(lower) ||
-                i.id.toLowerCase().includes(lower) ||
-                (i.serialNumber && i.serialNumber.toLowerCase().includes(lower)) ||
-                (i.category && i.category.toLowerCase().includes(lower)) ||
-                (i.brand && i.brand.toLowerCase().includes(lower)) ||
-                (i.location && i.location.toLowerCase().includes(lower)) ||
-                (vendor && vendor.name.toLowerCase().includes(lower));
-
+            const matchesText = !lower || 
+                               i.name.toLowerCase().includes(lower) || 
+                               i.id.toLowerCase().includes(lower) ||
+                               (i.serialNumber && i.serialNumber.toLowerCase().includes(lower)) ||
+                               (i.category && i.category.toLowerCase().includes(lower)) ||
+                               (i.brand && i.brand.toLowerCase().includes(lower)) ||
+                               (i.location && i.location.toLowerCase().includes(lower)) ||
+                               (vendor && vendor.name.toLowerCase().includes(lower));
+            
             const matchesCategory = selectedCategoryFilter === 'all' || i.category === selectedCategoryFilter;
-
+            
             return matchesText && matchesCategory;
         });
     }, [inventory, globalFilter, vendors, selectedCategoryFilter]);
@@ -214,10 +214,10 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             headers = ["Brand", "Model", "Category", "Total Quantity", "Unit", "In DC", "In Branch", "Min Stock"];
             rows = groupedStock.map(g => [
                 g.brand || 'N/A',
-                g.name,
-                g.category,
-                g.totalQty.toString(),
-                g.unit,
+                g.name, 
+                g.category, 
+                g.totalQty.toString(), 
+                g.unit, 
                 g.inDC.toString(),
                 g.inBranch.toString(),
                 g.minStock.toString()
@@ -264,7 +264,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             brand: fd.get('brand') as string,
             serialNumber: fd.get('serialNumber') as string,
             imei: fd.get('imei') as string,
-
+            
             // Core IT fields
             ram: fd.get('ram') as string,
             storage: fd.get('storage') as string,
@@ -298,8 +298,8 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
         };
 
         if (editingItem) {
-            const updated: InventoryItem = {
-                ...editingItem,
+            const updated: InventoryItem = { 
+                ...editingItem, 
                 ...baseData,
                 quantity: qDC > 0 ? qDC : (qBR > 0 ? qBR : editingItem.quantity),
                 location: qDC > 0 ? locDC : (qBR > 0 ? locBR : editingItem.location)
@@ -308,7 +308,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             logUserAction(realUser || user, `Updated Master Asset: ${baseData.name}`);
         } else {
             const newRecords: InventoryItem[] = [];
-
+            
             if (qDC > 0) {
                 newRecords.push({
                     id: `AST-DC-${Date.now()}`,
@@ -318,7 +318,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                     movementHistory: []
                 });
             }
-
+            
             if (qBR > 0) {
                 newRecords.push({
                     id: `AST-BR-${Date.now() + 1}`,
@@ -402,8 +402,8 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             approvedBy: realUser?.name || user?.name || 'Admin'
         };
 
-        setInventory(prev => prev.map(i => i.id === allocatingItem.id ? {
-            ...i,
+        setInventory(prev => prev.map(i => i.id === allocatingItem.id ? { 
+            ...i, 
             ...updates,
             movementHistory: [...(i.movementHistory || []), movement]
         } : i));
@@ -437,12 +437,12 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             approvedBy: realUser?.name || user?.name || 'Admin'
         };
 
-        setInventory(prev => prev.map(i => i.id === transferringItem.id ? {
-            ...i,
+        setInventory(prev => prev.map(i => i.id === transferringItem.id ? { 
+            ...i, 
             ...updates,
             movementHistory: [...(i.movementHistory || []), movement]
         } : i));
-
+        
         logUserAction(realUser || user, `Asset Transferred: Tag ${transferringItem.id} moved from ${users.find(u => u.id === transferringItem.assignedToUserId)?.name} to ${users.find(u => u.id === updates.assignedToUserId)?.name}`);
         setIsTransferModalOpen(false);
         setTransferringItem(null);
@@ -451,7 +451,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
     const openAssetForm = (item: InventoryItem | null) => {
         setEditingItem(item);
         setAttachedInvoice(item?.invoiceFile || '');
-
+        
         if (item) {
             const isStandard = ASSET_TYPES.includes(item.category) || item.category === 'Consumable';
             if (isStandard) {
@@ -468,7 +468,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             setIsCustomCategory(false);
             setCustomCategory('');
         }
-
+        
         setIsItemModalOpen(true);
     };
 
@@ -476,7 +476,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
         const inputStyle = "w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-800 font-bold text-sm outline-none";
         const labelStyle = "block text-[9px] font-black uppercase text-slate-400 mb-1 ml-1";
 
-        switch (selectedCategory) {
+        switch(selectedCategory) {
             case 'Laptop':
             case 'Desktop':
             case 'Server':
@@ -556,7 +556,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                         </button>
                     )}
                     <button onClick={() => setIsScannerOpen(true)} className="bg-slate-900 text-white px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest active:scale-95 shadow-lg"><i className="fas fa-camera mr-2"></i> Scan Tag</button>
-
+                    
                     {isAdmin && (activeTab === 'stock' || activeTab === 'assets') && (
                         <>
                             <button onClick={() => setIsBatchLabelModalOpen(true)} className="bg-indigo-600 text-white px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest active:scale-95 shadow-lg shadow-indigo-500/20"><i className="fas fa-layer-group mr-2"></i> Print All Tags</button>
@@ -593,14 +593,14 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             {/* CATEGORY FILTER BAR */}
             {(activeTab === 'assets' || activeTab === 'stock') && (
                 <div className="no-print bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl border dark:border-slate-800 overflow-x-auto scrollbar-hide flex gap-2">
-                    <button
+                    <button 
                         onClick={() => setSelectedCategoryFilter('all')}
                         className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shrink-0 ${selectedCategoryFilter === 'all' ? 'bg-primary text-white shadow-lg' : 'bg-white dark:bg-slate-800 text-slate-400 hover:text-slate-600'}`}
                     >
                         All Assets ({inventory.length})
                     </button>
                     {availableCategories.map(cat => (
-                        <button
+                        <button 
                             key={cat}
                             onClick={() => setSelectedCategoryFilter(cat)}
                             className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shrink-0 ${selectedCategoryFilter === cat ? 'bg-primary text-white shadow-lg' : 'bg-white dark:bg-slate-800 text-slate-400 hover:text-slate-600'}`}
@@ -613,170 +613,283 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
 
             <div className="space-y-4">
                 {activeTab === 'assets' && (
-                    <div className="bg-white dark:bg-slate-800 rounded-[32px] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                        <div className="responsive-table-container">
-                            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                                <thead className="bg-slate-50 dark:bg-slate-900/50">
-                                    <tr>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Asset Identity</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Specifications</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Custodian Hub</th>
-                                        <th className="px-6 py-4 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest">Distribution</th>
-                                        <th className="px-6 py-4 text-right text-[10px] font-black uppercase text-slate-400 tracking-widest">Registry</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                                    {filteredInventory.map(i => {
-                                        const custodian = users.find(u => u.id === i.assignedToUserId);
-                                        // Use row-specific distribution instead of model-wide aggregate for Asset Master
-                                        const isDC = (i.location?.toUpperCase().includes('DC') || i.location?.toUpperCase().includes('WAREHOUSE')) &&
-                                            (i.assetStatus === AssetStatus.SPARE || !i.assignedToUserId);
-                                        const rowInDC = isDC ? i.quantity : 0;
-                                        const rowInBR = !isDC ? i.quantity : 0;
-
-                                        return (
-                                            <tr key={i.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors group">
-                                                <td className="px-6 py-4">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[10px] font-black text-primary uppercase tracking-tighter">{i.brand}</span>
-                                                        <p className="font-black text-slate-800 dark:text-white uppercase text-sm leading-tight">{i.name}</p>
-                                                        <div className="flex gap-2 mt-1.5">
-                                                            <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[8px] font-black uppercase text-slate-500 tracking-widest">{i.category}</span>
-                                                            <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[8px] font-mono font-bold tracking-tighter">TAG: {i.id}</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex flex-wrap gap-1 max-w-xs">
-                                                        {i.ram && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700">{i.ram}</span>}
-                                                        {i.storage && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700">{i.storage}</span>}
-                                                        {i.processor && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700 truncate max-w-[80px]">{i.processor}</span>}
-                                                        {i.screenSize && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700">{i.screenSize}</span>}
-                                                        {i.capacity && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700">{i.capacity}</span>}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    {custodian ? (
-                                                        <div className="flex items-center gap-3">
-                                                            <img src={custodian.photo || `https://ui-avatars.com/api/?name=${custodian.name}`} className="w-8 h-8 rounded-full border shadow-sm shrink-0" alt="" />
-                                                            <div className="min-w-0">
-                                                                <p className="text-xs font-black uppercase text-slate-800 dark:text-slate-100 truncate">{custodian.name}</p>
-                                                                <p className="text-[9px] font-bold text-slate-400 uppercase truncate">{i.assignedToLocation || 'BRANCH'}</p>
+                    <div className="space-y-4">
+                        {/* Desktop Table */}
+                        <div className="hidden md:block bg-white dark:bg-slate-800 rounded-[32px] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                                    <thead className="bg-slate-50 dark:bg-slate-900/50">
+                                        <tr>
+                                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Asset Identity</th>
+                                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Specifications</th>
+                                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Custodian Hub</th>
+                                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest">Distribution</th>
+                                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase text-slate-400 tracking-widest">Registry</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                                        {filteredInventory.map(i => {
+                                            const custodian = users.find(u => u.id === i.assignedToUserId);
+                                            const isDC = (i.location?.toUpperCase().includes('DC') || i.location?.toUpperCase().includes('WAREHOUSE')) && 
+                                                         (i.assetStatus === AssetStatus.SPARE || !i.assignedToUserId);
+                                            const rowInDC = isDC ? i.quantity : 0;
+                                            const rowInBR = !isDC ? i.quantity : 0;
+                                            
+                                            return (
+                                                <tr key={i.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors group">
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-[10px] font-black text-primary uppercase tracking-tighter">{i.brand}</span>
+                                                            <p className="font-black text-slate-800 dark:text-white uppercase text-sm leading-tight">{i.name}</p>
+                                                            <div className="flex gap-2 mt-1.5">
+                                                                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[8px] font-black uppercase text-slate-500 tracking-widest">{i.category}</span>
+                                                                <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[8px] font-mono font-bold tracking-tighter">TAG: {i.id}</span>
                                                             </div>
                                                         </div>
-                                                    ) : (
-                                                        <span className="text-[10px] font-black text-slate-300 uppercase italic flex items-center gap-2"><i className="fas fa-warehouse text-[8px]"></i> DC Warehouse</span>
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 text-center">
-                                                    <div className="flex flex-col gap-1 items-center">
-                                                        <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${i.assetStatus === AssetStatus.IN_USE ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex flex-wrap gap-1 max-w-xs">
+                                                            {i.ram && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700">{i.ram}</span>}
+                                                            {i.storage && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700">{i.storage}</span>}
+                                                            {i.processor && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700 truncate max-w-[80px]">{i.processor}</span>}
+                                                            {i.screenSize && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700">{i.screenSize}</span>}
+                                                            {i.capacity && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 rounded-lg border dark:border-slate-700">{i.capacity}</span>}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {custodian ? (
+                                                            <div className="flex items-center gap-3">
+                                                                <img src={custodian.photo || `https://ui-avatars.com/api/?name=${custodian.name}`} className="w-8 h-8 rounded-full border shadow-sm shrink-0" alt="" />
+                                                                <div className="min-w-0">
+                                                                    <p className="text-xs font-black uppercase text-slate-800 dark:text-slate-100 truncate">{custodian.name}</p>
+                                                                    <p className="text-[9px] font-bold text-slate-400 uppercase truncate">{i.assignedToLocation || 'BRANCH'}</p>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-[10px] font-black text-slate-300 uppercase italic flex items-center gap-2"><i className="fas fa-warehouse text-[8px]"></i> DC Warehouse</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center">
+                                                        <div className="flex flex-col gap-1 items-center">
+                                                            <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${
+                                                                i.assetStatus === AssetStatus.IN_USE ? 'bg-blue-50 text-blue-600 border-blue-200' :
                                                                 'bg-emerald-50 text-emerald-600 border-emerald-200'
                                                             }`}>
-                                                            {i.assetStatus || AssetStatus.SPARE}
-                                                        </span>
-                                                        <div className="flex gap-1">
-                                                            <span title="Quantity in DC" className="text-[7px] font-bold bg-slate-100 dark:bg-slate-700 px-1 rounded text-slate-500">{rowInDC} DC</span>
-                                                            <span title="Quantity in Branches" className="text-[7px] font-bold bg-indigo-50 text-indigo-500 px-1 rounded">{rowInBR} BR</span>
+                                                                {i.assetStatus || AssetStatus.SPARE}
+                                                            </span>
+                                                            <div className="flex gap-1">
+                                                                <span title="Quantity in DC" className="text-[7px] font-bold bg-slate-100 dark:bg-slate-700 px-1 rounded text-slate-500">{rowInDC} DC</span>
+                                                                <span title="Quantity in Branches" className="text-[7px] font-bold bg-indigo-50 text-indigo-500 px-1 rounded">{rowInBR} BR</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 text-right flex justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                                                    {custodian ? (
-                                                        <>
-                                                            <button onClick={() => { setTransferringItem(i); setIsTransferModalOpen(true); }} className="p-2 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-xl transition" title="Asset Transfer"><i className="fas fa-right-left"></i></button>
-                                                            <button onClick={() => handleReturnAsset(i.id)} className="p-2 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition" title="De-allocate / Return"><i className="fas fa-rotate-left"></i></button>
-                                                        </>
-                                                    ) : (
-                                                        <button onClick={() => { setAllocatingItem(i); setIsAllocationModalOpen(true); }} className="p-2 text-primary hover:bg-primary/5 rounded-xl transition" title="Stock Out / Issue"><i className="fas fa-hand-holding"></i></button>
-                                                    )}
-                                                    <button onClick={() => { setHistoryItem(i); setIsHistoryModalOpen(true); }} className="p-2 text-slate-400 hover:bg-slate-100 rounded-xl transition" title="Movement History"><i className="fas fa-history"></i></button>
-                                                    <button onClick={() => { setViewingLabelItem(i); setIsLabelModalOpen(true); }} className="p-2 text-primary hover:bg-primary/10 rounded-xl transition scale-110" title="Print Asset Tag"><i className="fas fa-barcode"></i></button>
-                                                    <button onClick={() => { openAssetForm(i); }} className="p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition" title="Edit Master"><i className="fas fa-edit"></i></button>
-                                                    <button onClick={() => setItemToDelete(i)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition" title="Delete Asset"><i className="fas fa-trash-alt"></i></button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right flex justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                                                        {custodian ? (
+                                                            <>
+                                                                <button onClick={() => { setTransferringItem(i); setIsTransferModalOpen(true); }} className="p-2 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-xl transition" title="Asset Transfer"><i className="fas fa-right-left"></i></button>
+                                                                <button onClick={() => handleReturnAsset(i.id)} className="p-2 text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition" title="De-allocate / Return"><i className="fas fa-rotate-left"></i></button>
+                                                            </>
+                                                        ) : (
+                                                            <button onClick={() => { setAllocatingItem(i); setIsAllocationModalOpen(true); }} className="p-2 text-primary hover:bg-primary/5 rounded-xl transition" title="Stock Out / Issue"><i className="fas fa-hand-holding"></i></button>
+                                                        )}
+                                                        <button onClick={() => { setHistoryItem(i); setIsHistoryModalOpen(true); }} className="p-2 text-slate-400 hover:bg-slate-100 rounded-xl transition" title="Movement History"><i className="fas fa-history"></i></button>
+                                                        <button onClick={() => {setViewingLabelItem(i); setIsLabelModalOpen(true);}} className="p-2 text-primary hover:bg-primary/10 rounded-xl transition scale-110" title="Print Asset Tag"><i className="fas fa-barcode"></i></button>
+                                                        <button onClick={() => { openAssetForm(i); }} className="p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition" title="Edit Master"><i className="fas fa-edit"></i></button>
+                                                        <button onClick={() => setItemToDelete(i)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition" title="Delete Asset"><i className="fas fa-trash-alt"></i></button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {/* Mobile Cards */}
+                        <div className="md:hidden space-y-4">
+                            {filteredInventory.map(i => {
+                                const custodian = users.find(u => u.id === i.assignedToUserId);
+                                return (
+                                    <div key={i.id} className="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <span className="text-[10px] font-black text-primary uppercase tracking-tighter">{i.brand}</span>
+                                                <h4 className="font-black text-slate-800 dark:text-white uppercase text-base leading-tight">{i.name}</h4>
+                                                <div className="flex gap-2 mt-1">
+                                                    <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[8px] font-black uppercase text-slate-500 tracking-widest">{i.category}</span>
+                                                    <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[8px] font-mono font-bold tracking-tighter">TAG: {i.id}</span>
+                                                </div>
+                                            </div>
+                                            <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${
+                                                i.assetStatus === AssetStatus.IN_USE ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                                                'bg-emerald-50 text-emerald-600 border-emerald-200'
+                                            }`}>
+                                                {i.assetStatus || AssetStatus.SPARE}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-1">
+                                            {i.ram && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 py-1 rounded-lg border dark:border-slate-700">{i.ram}</span>}
+                                            {i.storage && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 py-1 rounded-lg border dark:border-slate-700">{i.storage}</span>}
+                                            {i.processor && <span className="text-[9px] font-bold bg-slate-50 dark:bg-slate-900 px-2 py-1 rounded-lg border dark:border-slate-700">{i.processor}</span>}
+                                        </div>
+
+                                        <div className="pt-4 border-t dark:border-slate-700 flex justify-between items-center">
+                                            <div className="flex items-center gap-2">
+                                                {custodian ? (
+                                                    <>
+                                                        <img src={custodian.photo || `https://ui-avatars.com/api/?name=${custodian.name}`} className="w-6 h-6 rounded-full border shadow-sm" alt="" />
+                                                        <div className="min-w-0">
+                                                            <p className="text-[10px] font-black uppercase text-slate-800 dark:text-slate-100 truncate">{custodian.name}</p>
+                                                            <p className="text-[8px] font-bold text-slate-400 uppercase truncate">{i.assignedToLocation || 'BRANCH'}</p>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-[9px] font-black text-slate-300 uppercase italic flex items-center gap-1"><i className="fas fa-warehouse text-[7px]"></i> DC Warehouse</span>
+                                                )}
+                                            </div>
+                                            <div className="flex gap-1">
+                                                {custodian ? (
+                                                    <>
+                                                        <button onClick={() => { setTransferringItem(i); setIsTransferModalOpen(true); }} className="p-2 text-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl transition"><i className="fas fa-right-left"></i></button>
+                                                        <button onClick={() => handleReturnAsset(i.id)} className="p-2 text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl transition"><i className="fas fa-rotate-left"></i></button>
+                                                    </>
+                                                ) : (
+                                                    <button onClick={() => { setAllocatingItem(i); setIsAllocationModalOpen(true); }} className="p-2 text-primary bg-primary/5 rounded-xl transition"><i className="fas fa-hand-holding"></i></button>
+                                                )}
+                                                <button onClick={() => { openAssetForm(i); }} className="p-2 text-slate-500 bg-slate-50 dark:bg-slate-700 rounded-xl transition"><i className="fas fa-edit"></i></button>
+                                                <button onClick={() => setItemToDelete(i)} className="p-2 text-red-500 bg-red-50 dark:bg-red-900/30 rounded-xl transition"><i className="fas fa-trash-alt"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 )}
 
                 {activeTab === 'stock' && (
-                    <div className="bg-white dark:bg-slate-800 rounded-[32px] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                        <div className="responsive-table-container">
-                            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                                <thead className="bg-slate-50 dark:bg-slate-900/50">
-                                    <tr>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Model Identity</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Aggregate Inventory</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Logistics Hub Distribution</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</th>
-                                        <th className="px-6 py-4 text-right text-[10px] font-black uppercase text-slate-400 tracking-widest">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                                    {groupedStock.map((g, idx) => (
-                                        <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors">
-                                            <td className="px-6 py-4">
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{g.brand}</span>
-                                                    <p className="font-bold text-slate-800 dark:text-white uppercase text-sm">{g.name}</p>
-                                                    <p className="text-[9px] font-black text-primary/70 mt-1 uppercase tracking-widest">{g.category}</p>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4 font-black">
-                                                <div className="flex flex-col">
-                                                    <span className={`px-3 py-1 rounded-lg w-fit text-sm ${g.totalQty <= g.minStock ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>
-                                                        {g.totalQty} {g.unit}
-                                                    </span>
-                                                    {g.totalQty <= g.minStock && <span className="text-[8px] text-red-500 font-black uppercase mt-1">Below Safety Buffer</span>}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex gap-2">
-                                                    <div className="flex flex-col items-center">
-                                                        <span className="text-[7px] font-black text-slate-400 uppercase tracking-tighter mb-0.5">DC (Warehouse)</span>
-                                                        <span className="bg-blue-600 text-white px-3 py-1 rounded-xl text-[10px] font-black shadow-lg shadow-blue-600/20">
-                                                            {g.inDC} {g.unit}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex flex-col items-center">
-                                                        <span className="text-[7px] font-black text-slate-400 uppercase tracking-tighter mb-0.5">Fleet (Branches)</span>
-                                                        <span className="bg-indigo-500 text-white px-3 py-1 rounded-xl text-[10px] font-black shadow-lg shadow-indigo-500/20">
-                                                            {g.inBranch} {g.unit}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Last Update</p>
-                                                <p className="text-xs font-bold text-slate-500">{new Date(g.lastUpdated).toLocaleDateString()}</p>
-                                            </td>
-                                            <td className="px-6 py-4 text-right flex justify-end gap-1">
-                                                <button
-                                                    onClick={() => {
-                                                        setGlobalFilter(g.name);
-                                                        setActiveTab('assets');
-                                                    }}
-                                                    className="bg-primary/5 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all"
-                                                >
-                                                    View Details
-                                                </button>
-                                            </td>
+                    <div className="space-y-4">
+                        {/* Desktop Table */}
+                        <div className="hidden md:block bg-white dark:bg-slate-800 rounded-[32px] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                                    <thead className="bg-slate-50 dark:bg-slate-900/50">
+                                        <tr>
+                                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Model Identity</th>
+                                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Aggregate Inventory</th>
+                                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Logistics Hub Distribution</th>
+                                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</th>
+                                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase text-slate-400 tracking-widest">Actions</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                                        {groupedStock.map((g, idx) => (
+                                            <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{g.brand}</span>
+                                                        <p className="font-bold text-slate-800 dark:text-white uppercase text-sm">{g.name}</p>
+                                                        <p className="text-[9px] font-black text-primary/70 mt-1 uppercase tracking-widest">{g.category}</p>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 font-black">
+                                                    <div className="flex flex-col">
+                                                        <span className={`px-3 py-1 rounded-lg w-fit text-sm ${g.totalQty <= g.minStock ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>
+                                                            {g.totalQty} {g.unit}
+                                                        </span>
+                                                        {g.totalQty <= g.minStock && <span className="text-[8px] text-red-500 font-black uppercase mt-1">Below Safety Buffer</span>}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <div className="flex gap-2">
+                                                        <div className="flex flex-col items-center">
+                                                            <span className="text-[7px] font-black text-slate-400 uppercase tracking-tighter mb-0.5">DC (Warehouse)</span>
+                                                            <span className="bg-blue-600 text-white px-3 py-1 rounded-xl text-[10px] font-black shadow-lg shadow-blue-600/20">
+                                                                {g.inDC} {g.unit}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex flex-col items-center">
+                                                            <span className="text-[7px] font-black text-slate-400 uppercase tracking-tighter mb-0.5">Fleet (Branches)</span>
+                                                            <span className="bg-indigo-500 text-white px-3 py-1 rounded-xl text-[10px] font-black shadow-lg shadow-indigo-500/20">
+                                                                {g.inBranch} {g.unit}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Last Update</p>
+                                                    <p className="text-xs font-bold text-slate-500">{new Date(g.lastUpdated).toLocaleDateString()}</p>
+                                                </td>
+                                                <td className="px-6 py-4 text-right flex justify-end gap-1">
+                                                    <button 
+                                                        onClick={() => {
+                                                            setGlobalFilter(g.name);
+                                                            setActiveTab('assets');
+                                                        }} 
+                                                        className="bg-primary/5 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all"
+                                                    >
+                                                        View Details
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {/* Mobile Cards */}
+                        <div className="md:hidden space-y-4">
+                            {groupedStock.map((g, idx) => (
+                                <div key={idx} className="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{g.brand}</span>
+                                            <h4 className="font-bold text-slate-800 dark:text-white uppercase text-base">{g.name}</h4>
+                                            <p className="text-[9px] font-black text-primary/70 mt-1 uppercase tracking-widest">{g.category}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className={`px-3 py-1 rounded-lg text-sm font-black ${g.totalQty <= g.minStock ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>
+                                                {g.totalQty} {g.unit}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl border dark:border-slate-700">
+                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">DC Warehouse</p>
+                                            <p className="text-sm font-black text-blue-600">{g.inDC} {g.unit}</p>
+                                        </div>
+                                        <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl border dark:border-slate-700">
+                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Fleet Branches</p>
+                                            <p className="text-sm font-black text-indigo-500">{g.inBranch} {g.unit}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4 border-t dark:border-slate-700 flex justify-between items-center">
+                                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                            Updated: {new Date(g.lastUpdated).toLocaleDateString()}
+                                        </div>
+                                        <button 
+                                            onClick={() => {
+                                                setGlobalFilter(g.name);
+                                                setActiveTab('assets');
+                                            }} 
+                                            className="bg-primary text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase shadow-lg shadow-primary/20"
+                                        >
+                                            View Assets
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )}
 
                 {activeTab === 'vendors' && (
                     <div className="bg-white dark:bg-slate-800 rounded-[32px] shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-                        <div className="responsive-table-container">
+                        <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                                 <thead className="bg-slate-50 dark:bg-slate-900/50">
                                     <tr>
@@ -964,7 +1077,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                             </div>
                             <button onClick={() => setIsItemModalOpen(false)} className="text-slate-400 hover:text-red-500 text-3xl transition">&times;</button>
                         </header>
-
+                        
                         <div className="p-8 space-y-8 overflow-y-auto max-h-[80vh] custom-scrollbar">
                             <form onSubmit={handleSaveItem} className="space-y-8">
                                 {/* SECTION 1: Identity */}
@@ -973,15 +1086,15 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <div className="col-span-1">
                                             <label className="block text-[9px] font-black uppercase text-slate-400 mb-1 ml-1">Asset Type *</label>
-                                            <select
-                                                name="category"
-                                                value={selectedCategory}
+                                            <select 
+                                                name="category" 
+                                                value={selectedCategory} 
                                                 onChange={(e) => {
                                                     const val = e.target.value;
                                                     setSelectedCategory(val);
                                                     setIsCustomCategory(val === 'OTHER');
-                                                }}
-                                                required
+                                                }} 
+                                                required 
                                                 className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-800 font-bold text-sm outline-none"
                                             >
                                                 {ASSET_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -993,12 +1106,12 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                                         {isCustomCategory && (
                                             <div className="col-span-1 animate-in fade-in slide-in-from-left-2">
                                                 <label className="block text-[9px] font-black uppercase text-primary mb-1 ml-1">Define Asset Category *</label>
-                                                <input
-                                                    value={customCategory}
-                                                    onChange={e => setCustomCategory(e.target.value)}
-                                                    placeholder="e.g. Graphic Tablet"
-                                                    required={isCustomCategory}
-                                                    className="w-full p-4 border-2 border-primary/20 rounded-2xl bg-primary/5 font-black text-sm outline-none"
+                                                <input 
+                                                    value={customCategory} 
+                                                    onChange={e => setCustomCategory(e.target.value)} 
+                                                    placeholder="e.g. Graphic Tablet" 
+                                                    required={isCustomCategory} 
+                                                    className="w-full p-4 border-2 border-primary/20 rounded-2xl bg-primary/5 font-black text-sm outline-none" 
                                                 />
                                             </div>
                                         )}
@@ -1104,7 +1217,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
 
                                 <div className="pt-6 border-t dark:border-slate-800">
                                     <label className="block text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest px-1">Evidence Capture (Invoice Upload)</label>
-                                    <div
+                                    <div 
                                         onClick={() => invoiceFileRef.current?.click()}
                                         className={`relative border-4 border-dashed rounded-[32px] p-8 transition-all flex flex-col items-center justify-center cursor-pointer ${attachedInvoice ? 'bg-emerald-50/20 border-emerald-500/30' : 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 hover:border-primary'}`}
                                     >
@@ -1200,11 +1313,11 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
 
             {/* VENDOR MODAL */}
             {isVendorModalOpen && <VendorModal vendorToEdit={editingVendor} onClose={() => setIsVendorModalOpen(false)} onSave={handleSaveVendor} />}
-
+            
             {/* LABEL MODALS */}
             {isLabelModalOpen && viewingLabelItem && <AssetLabelModal item={viewingLabelItem} onClose={() => setIsLabelModalOpen(false)} />}
             {isBatchLabelModalOpen && <BatchAssetLabelModal items={filteredInventory} onClose={() => setIsBatchLabelModalOpen(false)} />}
-
+            
             {/* SCANNER MODAL */}
             {isScannerOpen && <ScannerModal onClose={() => setIsScannerOpen(false)} onResult={(res) => setGlobalFilter(res)} />}
 

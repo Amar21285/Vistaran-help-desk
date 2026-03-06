@@ -140,27 +140,58 @@ const Reports: React.FC<ReportsProps> = ({
             
             switch(activeTab) {
                 case 'inventory':
-                    headers.push('Category', 'Brand', 'Serial Number', 'IMEI', 'RAM', 'Storage', 'Processor', 'OS', 'Purchase Date', 'Purchase Cost', 'Warranty End', 'Location');
-                    rows = filteredInventory.map((i, idx) => [
-                        idx + 1, 
-                        i.id, 
-                        i.name, 
-                        `${i.quantity} ${i.unit || 'Nos'}`, 
-                        i.lastUpdated.split('T')[0], 
-                        i.assetStatus,
-                        i.category,
-                        i.brand || 'N/A',
-                        i.serialNumber || 'N/A',
-                        i.imei || 'N/A',
-                        i.ram || 'N/A',
-                        i.storage || 'N/A',
-                        i.processor || 'N/A',
-                        i.os || 'N/A',
-                        i.purchaseDate || 'N/A',
-                        i.purchaseCost || 0,
-                        i.warrantyEnd || 'N/A',
-                        i.location || 'N/A'
-                    ]);
+                    headers.push(
+                        'Category', 'Brand', 'Serial Number', 'IMEI', 'RAM', 'Storage', 'Processor', 'OS', 
+                        'Screen Size', 'Resolution', 'Refresh Rate', 'Ports', 'Technology', 'Color Type', 
+                        'Duplex', 'Capacity', 'Battery', 'Backup Time', 'Lens Type', 'Port Count', 'Speed', 'Managed',
+                        'Purchase Date', 'Purchase Cost', 'Warranty Start', 'Warranty End', 'AMC Active', 
+                        'Location', 'Min Stock', 'Unit', 'Asset Status', 'Assigned To', 'Assigned Dept', 'Allocation Date'
+                    );
+                    rows = filteredInventory.map((i, idx) => {
+                        const custodian = users.find(u => u.id === i.assignedToUserId);
+                        return [
+                            idx + 1, 
+                            i.id, 
+                            i.name, 
+                            `${i.quantity} ${i.unit || 'Nos'}`, 
+                            i.lastUpdated.split('T')[0], 
+                            i.assetStatus,
+                            i.category,
+                            i.brand || 'N/A',
+                            i.serialNumber || 'N/A',
+                            i.imei || 'N/A',
+                            i.ram || 'N/A',
+                            i.storage || 'N/A',
+                            i.processor || 'N/A',
+                            i.os || 'N/A',
+                            i.screenSize || 'N/A',
+                            i.resolution || 'N/A',
+                            i.refreshRate || 'N/A',
+                            i.ports || 'N/A',
+                            i.technology || 'N/A',
+                            i.colorType || 'N/A',
+                            i.duplexSupport || 'N/A',
+                            i.capacity || 'N/A',
+                            i.batteryType || 'N/A',
+                            i.backupTime || 'N/A',
+                            i.lensType || 'N/A',
+                            i.portCount || 'N/A',
+                            i.speed || 'N/A',
+                            i.isManaged || 'N/A',
+                            i.purchaseDate || 'N/A',
+                            i.purchaseCost || 0,
+                            i.warrantyStart || 'N/A',
+                            i.warrantyEnd || 'N/A',
+                            i.amcStatus ? 'YES' : 'NO',
+                            i.location || 'N/A',
+                            i.minStock || 0,
+                            i.unit || 'pcs',
+                            i.assetStatus || 'Spare',
+                            custodian?.name || 'N/A',
+                            i.assignedToDept || 'N/A',
+                            i.allocationDate || 'N/A'
+                        ];
+                    });
                     break;
                 case 'lowStock':
                     rows = inventory.filter(i => i.quantity <= i.minStock).map((i, idx) => [idx + 1, i.id, i.name, `${i.quantity} ${i.unit}`, i.lastUpdated.split('T')[0], 'Critical']);

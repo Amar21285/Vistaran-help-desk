@@ -12,23 +12,9 @@
     <meta name="apple-mobile-web-app-title" content="Vistaran">
     <meta name="theme-color" content="#3b82f6">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="HandheldFriendly" content="true">
-    <meta name="apple-touch-fullscreen" content="yes">
     
     <link rel="manifest" href="./manifest.json">
     <link rel="apple-touch-icon" href="https://via.placeholder.com/192/3b82f6/ffffff?text=V">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://via.placeholder.com/152/3b82f6/ffffff?text=V">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://via.placeholder.com/180/3b82f6/ffffff?text=V">
-    <link rel="apple-touch-icon" sizes="167x167" href="https://via.placeholder.com/167/3b82f6/ffffff?text=V">
-    
-    <!-- Splash Screens for iOS -->
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/2048x2732/3b82f6/ffffff?text=Vistaran" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1668x2224/3b82f6/ffffff?text=Vistaran" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1536x2048/3b82f6/ffffff?text=Vistaran" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1125x2436/3b82f6/ffffff?text=Vistaran" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1242x2208/3b82f6/ffffff?text=Vistaran" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/750x1334/3b82f6/ffffff?text=Vistaran" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
 
     <!-- Tailwind Config -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -83,53 +69,7 @@
 
       @media print {
         .no-print { display: none !important; }
-        body { 
-          background-color: white !important; 
-          color: black !important; 
-          overflow: visible !important; 
-          position: static !important; 
-          width: 100% !important;
-          height: auto !important;
-        }
-        #root { 
-          position: static !important; 
-          height: auto !important; 
-          overflow: visible !important; 
-        }
-        .printable-area { 
-          display: block !important; 
-          width: 100% !important; 
-          margin: 0 !important; 
-          padding: 20px !important; 
-          border: none !important;
-          box-shadow: none !important;
-        }
-        /* Hide everything except the printable area when printing */
-        body > *:not(#root), #root > *:not(.fixed) { display: none !important; }
-        .fixed.inset-0 { 
-          position: static !important; 
-          display: block !important; 
-          background: none !important; 
-          backdrop-filter: none !important; 
-          padding: 0 !important; 
-          overflow: visible !important;
-        }
-        .bg-white.rounded-\[50px\], .bg-white.rounded-\[40px\] { 
-          border: none !important; 
-          border-radius: 0 !important; 
-          box-shadow: none !important; 
-          width: 100% !important; 
-          max-width: none !important; 
-          margin: 0 !important; 
-          position: static !important;
-        }
-        header.no-print, footer.no-print { display: none !important; }
-        
-        /* Table page break handling */
-        table { page-break-inside: auto; }
-        tr { page-break-inside: avoid; page-break-after: auto; }
-        thead { display: table-header-group; }
-        tfoot { display: table-footer-group; }
+        body { background-color: white !important; color: black !important; }
       }
 
       @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }

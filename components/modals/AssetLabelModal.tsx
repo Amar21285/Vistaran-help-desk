@@ -38,23 +38,23 @@ export const PrintableLabel: React.FC<{
     idPrefix?: string;
 }> = ({ item, labelWidth, labelHeight, rotation, template, isHighContrast, isDarkMode = false, qrCodeUrl, barcodeWidthScale, barcodeHeightScale, fontScale, idPrefix = "" }) => {
     const barcodeRef = useRef<SVGSVGElement>(null);
-
+    
     // Base scaling relative to 100x50 standard
     const scaleX = labelWidth / 100;
     const scaleY = labelHeight / 50;
-
+    
     // For very small labels (like 50x25), we need to scale up the content slightly more than linear
     // to maintain readability on thermal printers.
     const isSmallLabel = labelWidth <= 55 && labelHeight <= 30;
     const baseScale = (isSmallLabel ? Math.min(scaleX, scaleY) * 1.3 : Math.min(scaleX, scaleY)) * fontScale;
-
+    
     useEffect(() => {
         if (barcodeRef.current) {
             try {
                 barcodeRef.current.innerHTML = "";
                 JsBarcode(barcodeRef.current, item.id, {
                     format: "CODE128",
-                    width: Math.max(1, 2.2 * scaleX * barcodeWidthScale),
+                    width: Math.max(1, 2.2 * scaleX * barcodeWidthScale), 
                     height: Math.max(8, 15 * scaleY * barcodeHeightScale),
                     displayValue: false,
                     margin: 0,
@@ -85,7 +85,7 @@ export const PrintableLabel: React.FC<{
     // --- TEMPLATE: OFFICIAL (MATCHES PDF PROVIDED BY USER) ---
     if (template === 'official') {
         return (
-            <div id={`${idPrefix}printable-label-content`} style={{ ...containerStyle, flexDirection: 'column', gap: 0, padding: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
+            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column', gap: 0, padding: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
                 {/* Header Row: Logo | Asset ID | Verified */}
                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
                     <div style={{ width: '25%' }}>
@@ -113,7 +113,7 @@ export const PrintableLabel: React.FC<{
                     <div style={{ width: '35%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRight: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1 * baseScale}mm` }}>
                         <img src={qrCodeUrl} style={{ width: '75%', height: 'auto', imageRendering: 'pixelated', filter: isDarkMode ? 'invert(1)' : 'none' }} alt="QR" />
                         <p style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${1 * baseScale}mm`, textAlign: 'center', lineHeight: 1.2, width: '90%', color: isDarkMode ? '#fff' : '#000' }}>
-                            Property Of<br />Vistaran Health Care<br />Services
+                            Property Of<br/>Vistaran Health Care<br/>Services
                         </p>
                     </div>
 
@@ -144,7 +144,7 @@ export const PrintableLabel: React.FC<{
     // --- TEMPLATE: THERMAL (OPTIMIZED FOR 50x25) ---
     if (template === 'thermal') {
         return (
-            <div id={`${idPrefix}printable-label-content`} style={{ ...containerStyle, flexDirection: 'column', padding: 0, gap: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
+            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column', padding: 0, gap: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
                 {/* Top Row: Logo | System ID */}
                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.8 * baseScale}mm` }}>
                     <div style={{ width: '30%' }}>
@@ -193,7 +193,7 @@ export const PrintableLabel: React.FC<{
     // --- TEMPLATE: INDUSTRIAL (LEGACY) ---
     if (template === 'industrial') {
         return (
-            <div id={`${idPrefix}printable-label-content`} style={{ ...containerStyle, flexDirection: 'column' }} className={isHighContrast ? 'high-contrast-mode' : ''}>
+            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column'}} className={isHighContrast ? 'high-contrast-mode' : ''}>
                 <div style={{ height: '25%', borderBottom: `${0.5 * baseScale}mm solid #000`, display: 'flex', alignItems: 'center', padding: `0 ${3 * baseScale}mm` }}>
                     <Logo className="grayscale brightness-0" style={{ height: '70%', width: 'auto' }} />
                     <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: `${6 * baseScale}mm` }}>
@@ -236,7 +236,7 @@ export const PrintableLabel: React.FC<{
     // --- TEMPLATE: COMPACT ---
     if (template === 'compact') {
         return (
-            <div id={`${idPrefix}printable-label-content`} style={{ ...containerStyle, flexDirection: 'column', padding: `${2 * baseScale}mm` }} className={isHighContrast ? 'high-contrast-mode' : ''}>
+            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column', padding: `${2 * baseScale}mm` }} className={isHighContrast ? 'high-contrast-mode' : ''}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <Logo className={isDarkMode ? "brightness-200" : "grayscale brightness-0"} style={{ height: `${5 * baseScale}mm`, width: 'auto' }} />
                     <span style={{ fontSize: `${4 * baseScale}mm`, fontWeight: 900, fontFamily: 'monospace' }}>{item.id.slice(-6)}</span>
@@ -255,11 +255,11 @@ export const PrintableLabel: React.FC<{
     // --- TEMPLATE: MODERN ---
     if (template === 'modern') {
         return (
-            <div id={`${idPrefix}printable-label-content`} style={{ ...containerStyle, flexDirection: 'row' }} className={isHighContrast ? 'high-contrast-mode' : ''}>
+            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'row'}} className={isHighContrast ? 'high-contrast-mode' : ''}>
                 <div style={{ width: '40%', height: '100%', borderRight: `0.5mm solid ${isDarkMode ? '#fff' : '#000'}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `${4 * baseScale}mm` }}>
                     <img src={qrCodeUrl} style={{ width: '100%', height: 'auto', filter: isDarkMode ? 'invert(1)' : 'none' }} alt="QR" />
                     <div style={{ marginTop: `${4 * baseScale}mm`, textAlign: 'center' }}>
-                        <span style={{ fontSize: `${5 * baseScale}mm`, fontWeight: 900, letterSpacing: '1px' }}>{item.id}</span>
+                         <span style={{ fontSize: `${5 * baseScale}mm`, fontWeight: 900, letterSpacing: '1px' }}>{item.id}</span>
                     </div>
                 </div>
                 <div style={{ flex: 1, padding: `${6 * baseScale}mm`, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -276,7 +276,7 @@ export const PrintableLabel: React.FC<{
     // --- TEMPLATE: STRIP ---
     if (template === 'strip') {
         return (
-            <div id={`${idPrefix}printable-label-content`} style={{ ...containerStyle, flexDirection: 'row', alignItems: 'center', padding: `0 ${3 * baseScale}mm` }} className={isHighContrast ? 'high-contrast-mode' : ''}>
+            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'row', alignItems: 'center', padding: `0 ${3 * baseScale}mm` }} className={isHighContrast ? 'high-contrast-mode' : ''}>
                 <img src={qrCodeUrl} style={{ height: '80%', width: 'auto', marginRight: `${4 * baseScale}mm` }} alt="QR" />
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                     <p style={{ fontSize: `${3.5 * baseScale}mm`, fontWeight: 900, margin: 0, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{item.brand} {item.name}</p>
@@ -347,7 +347,7 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
 
     const assetDeepLink = `${window.location.origin}${window.location.pathname}?q=${encodeURIComponent(item.id)}`;
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(assetDeepLink)}&margin=0&ecc=H`;
-
+    
     return (
         <div className="fixed inset-0 z-[150] overflow-y-auto no-print">
             <div className="min-h-screen bg-slate-900/98 backdrop-blur-3xl flex justify-center items-center p-4">
@@ -363,8 +363,8 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                         <div className="flex gap-4">
                             <div className="flex flex-col gap-1">
                                 <span className="text-[8px] font-black text-slate-400 uppercase">Template</span>
-                                <select
-                                    value={selectedTemplate}
+                                <select 
+                                    value={selectedTemplate} 
                                     onChange={e => {
                                         const val = e.target.value as LabelTemplate;
                                         setSelectedTemplate(val);
@@ -372,7 +372,7 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                                             setLabelWidth(50);
                                             setLabelHeight(25);
                                         }
-                                    }}
+                                    }} 
                                     className="p-2 text-xs font-bold border rounded-lg dark:bg-slate-700"
                                 >
                                     <option value="official">Official Vistaran</option>
@@ -385,15 +385,15 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-[8px] font-black text-slate-400 uppercase">Presets</span>
-                                <select
+                                <select 
                                     onChange={e => {
                                         const [w, h] = e.target.value.split('x').map(Number);
                                         setLabelWidth(w);
                                         setLabelHeight(h);
-                                    }}
+                                    }} 
                                     className="p-2 text-xs font-bold border rounded-lg dark:bg-slate-700"
                                 >
-                                    <option value="100x70">100x70mm (Default)</option>
+                                <option value="100x70">100x70mm (Default)</option>
                                     <option value="50x75">50x75mm (Portrait)</option>
                                     <option value="100x50">100x50mm (Standard)</option>
                                     <option value="50x50">50x50mm (Square)</option>
@@ -411,19 +411,19 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-[8px] font-black text-slate-400 uppercase">Font Scale</span>
-                                <input
-                                    type="number"
-                                    step="0.1"
-                                    min="0.5"
-                                    max="3.0"
-                                    value={fontScale}
-                                    onChange={e => setFontScale(parseFloat(e.target.value) || 1.0)}
+                                <input 
+                                    type="number" 
+                                    step="0.1" 
+                                    min="0.5" 
+                                    max="3.0" 
+                                    value={fontScale} 
+                                    onChange={e => setFontScale(parseFloat(e.target.value) || 1.0)} 
                                     className="p-2 text-xs font-bold border rounded-lg dark:bg-slate-700 w-16"
                                 />
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-[8px] font-black text-slate-400 uppercase">Mode</span>
-                                <button
+                                <button 
                                     onClick={() => setIsDarkMode(!isDarkMode)}
                                     className={`p-2 text-xs font-bold border rounded-lg dark:bg-slate-700 transition-all ${isDarkMode ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-white dark:bg-slate-800 text-slate-600 border-slate-200'}`}
                                 >
@@ -432,7 +432,7 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-[8px] font-black text-slate-400 uppercase">Contrast</span>
-                                <button
+                                <button 
                                     onClick={() => setIsHighContrast(!isHighContrast)}
                                     className={`p-2 text-xs font-bold border rounded-lg dark:bg-slate-700 transition-all ${isHighContrast ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-white dark:bg-slate-800 text-slate-600 border-slate-200'}`}
                                 >
@@ -441,15 +441,15 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-[8px] font-black text-slate-400 uppercase">W (mm)</span>
-                                <input type="number" value={labelWidth} onChange={e => setLabelWidth(parseInt(e.target.value) || 1)} className="w-16 p-2 text-xs font-bold border rounded-lg dark:bg-slate-700 text-center" />
+                                <input type="number" value={labelWidth} onChange={e => setLabelWidth(parseInt(e.target.value)||1)} className="w-16 p-2 text-xs font-bold border rounded-lg dark:bg-slate-700 text-center" />
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-[8px] font-black text-slate-400 uppercase">H (mm)</span>
-                                <input type="number" value={labelHeight} onChange={e => setLabelHeight(parseInt(e.target.value) || 1)} className="w-16 p-2 text-xs font-bold border rounded-lg dark:bg-slate-700 text-center" />
+                                <input type="number" value={labelHeight} onChange={e => setLabelHeight(parseInt(e.target.value)||1)} className="w-16 p-2 text-xs font-bold border rounded-lg dark:bg-slate-700 text-center" />
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-[8px] font-black text-slate-400 uppercase">Print Qty</span>
-                                <input type="number" min="1" value={printQty} onChange={e => setPrintQty(parseInt(e.target.value) || 1)} className="w-16 p-2 text-xs font-bold border rounded-lg dark:bg-slate-700 text-center" />
+                                <input type="number" min="1" value={printQty} onChange={e => setPrintQty(parseInt(e.target.value)||1)} className="w-16 p-2 text-xs font-bold border rounded-lg dark:bg-slate-700 text-center" />
                             </div>
                             <button onClick={onClose} className="text-slate-400 hover:text-red-500 text-3xl transition-all ml-2">&times;</button>
                         </div>
@@ -457,20 +457,20 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
 
                     <div className="flex-1 p-8 bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center overflow-auto">
                         <div style={{ transform: `scale(${labelScale})`, transition: 'transform 0.3s ease' }} className="bg-white shadow-2xl">
-                            <PrintableLabel
-                                item={item}
-                                labelWidth={labelWidth}
-                                labelHeight={labelHeight}
-                                rotation={rotation}
-                                template={selectedTemplate}
-                                isHighContrast={isHighContrast}
-                                isDarkMode={isDarkMode}
-                                qrCodeUrl={qrCodeUrl}
-                                barcodeWidthScale={1.0}
-                                barcodeHeightScale={1.0}
-                                fontScale={fontScale}
-                                idPrefix="modal-"
-                            />
+                                <PrintableLabel 
+                                    item={item} 
+                                    labelWidth={labelWidth} 
+                                    labelHeight={labelHeight} 
+                                    rotation={rotation}
+                                    template={selectedTemplate}
+                                    isHighContrast={isHighContrast} 
+                                    isDarkMode={isDarkMode}
+                                    qrCodeUrl={qrCodeUrl} 
+                                    barcodeWidthScale={1.0}
+                                    barcodeHeightScale={1.0}
+                                    fontScale={fontScale}
+                                    idPrefix="modal-" 
+                                />
                         </div>
                     </div>
 
@@ -483,9 +483,7 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                         </div>
                     </footer>
                     <style>{`
-                        .high-contrast-mode { filter: contrast(200%) grayscale(100%) !important; }
-                        .high-contrast-mode * { font-weight: 900 !important; border-color: #000 !important; color: #000 !important; }
-                        .high-contrast-mode svg, .high-contrast-mode img { filter: contrast(300%) !important; image-rendering: pixelated; }
+                        .high-contrast-mode { filter: contrast(100) grayscale(1) !important; }
                     `}</style>
                 </div>
             </div>

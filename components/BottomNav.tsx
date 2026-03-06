@@ -8,9 +8,9 @@ interface BottomNavProps {
 
 const BottomNav: React.FC<BottomNavProps> = ({ currentView, setCurrentView, onQuickTicket }) => {
     return (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-40 pb-[env(safe-area-inset-bottom)]">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-40 pb-safe">
             <div className="flex justify-around items-center h-16 relative">
-                <button
+                <button 
                     onClick={() => setCurrentView('dashboard')}
                     className={`flex flex-col items-center gap-1 transition-all ${currentView === 'dashboard' ? 'text-primary' : 'text-slate-400'}`}
                 >
@@ -18,7 +18,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentView, setCurrentView, onQu
                     <span className="text-[10px] font-black uppercase tracking-widest">Home</span>
                 </button>
 
-                <button
+                <button 
                     onClick={() => setCurrentView('tickets')}
                     className={`flex flex-col items-center gap-1 transition-all ${currentView === 'tickets' ? 'text-primary' : 'text-slate-400'}`}
                 >
@@ -28,7 +28,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentView, setCurrentView, onQu
 
                 {/* Central Floating Quick Action */}
                 <div className="relative -top-6">
-                    <button
+                    <button 
                         onClick={onQuickTicket}
                         className="bg-primary text-white w-14 h-14 rounded-full shadow-2xl shadow-primary/40 flex items-center justify-center transform active:scale-90 transition-all border-4 border-slate-100 dark:border-slate-900"
                     >
@@ -37,7 +37,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentView, setCurrentView, onQu
                     <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] font-black uppercase text-primary whitespace-nowrap tracking-widest">Quick Raise</span>
                 </div>
 
-                <button
+                <button 
                     onClick={() => setCurrentView('inventory')}
                     className={`flex flex-col items-center gap-1 transition-all ${currentView === 'inventory' ? 'text-primary' : 'text-slate-400'}`}
                 >
@@ -45,7 +45,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentView, setCurrentView, onQu
                     <span className="text-[10px] font-black uppercase tracking-widest">Assets</span>
                 </button>
 
-                <button
+                <button 
                     onClick={() => setCurrentView('my-profile')}
                     className={`flex flex-col items-center gap-1 transition-all ${currentView === 'my-profile' ? 'text-primary' : 'text-slate-400'}`}
                 >
@@ -53,6 +53,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentView, setCurrentView, onQu
                     <span className="text-[10px] font-black uppercase tracking-widest">Profile</span>
                 </button>
             </div>
+            <div className="h-[env(safe-area-inset-bottom)] bg-transparent"></div>
         </div>
     );
 };
