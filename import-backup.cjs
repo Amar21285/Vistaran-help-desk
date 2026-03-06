@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const backupFilePath = path.join(__dirname, 'Vistaran_Master_Sync-1.json');
+const backupFilePath = path.join(__dirname, 'Vistaran_Auto_Backup.json');
 const dataDir = path.join(__dirname, 'data');
 
 // Map the keys in the backup file to the filenames used by the server
@@ -20,7 +20,7 @@ const keyToFileMap = {
     'vistaran-helpdesk-purchase-orders': 'purchase-orders.json',
     'vistaran-helpdesk-attendance': 'attendance.json',
     'vistaran-helpdesk-reimbursements': 'reimbursements.json',
-    'vistaran-helpdesk-audit-logs': 'audit-logs.json'
+    'vistaran-helpdesk-auditlog': 'audit-logs.json'
 };
 
 if (!fs.existsSync(backupFilePath)) {
