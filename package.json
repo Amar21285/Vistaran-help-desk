@@ -12,13 +12,18 @@
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@google/genai": "^1.21.0",
+    "@supabase/supabase-js": "^2.98.0",
+    "cors": "^2.8.6",
+    "express": "^4.22.1",
+    "fs-extra": "^11.3.4",
     "html2canvas": "^1.4.1",
     "html5-qrcode": "^2.3.8",
     "jsbarcode": "^3.12.3",
     "jspdf": "^4.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "recharts": "^2.12.7"
+    "recharts": "^2.12.7",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
