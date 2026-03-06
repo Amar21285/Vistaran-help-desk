@@ -1,290 +1,1602 @@
 [
   {
-    "id": "LOG_1769153940936_aif24i8",
+    "id": "LOG_1772720098088_l4hd47j",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Established Real-time Local Drive Sync.",
-    "timestamp": "2026-01-23T07:39:00.936Z",
+    "action": "Updated ISP connection: Rajesh Digital & Datacom Pvt. Ltd. (004lake home) ",
+    "timestamp": "2026-03-05T14:14:58.088Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769153875698_sic21h8",
+    "id": "LOG_1772719958013_fsearnd",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Established Real-time Local Drive Sync.",
-    "timestamp": "2026-01-23T07:37:55.698Z",
+    "action": "Updated ISP connection: airtel xstream fiber ( Godrej - 013)",
+    "timestamp": "2026-03-05T14:12:38.013Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769152809884_6vgaj79",
+    "id": "LOG_1772719936539_uv7pei8",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Updated reimbursement EXP-1769150699835 status to Paid",
-    "timestamp": "2026-01-23T07:20:09.884Z",
+    "action": "Deleted ISP record: IV-3",
+    "timestamp": "2026-03-05T14:12:16.539Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769152808780_8mqt81b",
+    "id": "LOG_1772713706741_vc2fmad",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Updated reimbursement EXP-1769150699835 status to Approved",
-    "timestamp": "2026-01-23T07:20:08.780Z",
+    "action": "Updated Master Asset: OPPO A3s",
+    "timestamp": "2026-03-05T12:28:26.741Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769152776907_zf0wgy9",
+    "id": "LOG_1772709444138_sfpejw2",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Established Real-time Local Drive Sync.",
-    "timestamp": "2026-01-23T07:19:36.907Z",
+    "action": "Updated profile for user 'Amarjeet yadav'.",
+    "timestamp": "2026-03-05T11:17:24.138Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769150699835_fe8zohc",
+    "id": "LOG_1772709261423_gipwa13",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Created new reimbursement claim EXP-1769150699835 for Amarjeet yadav",
-    "timestamp": "2026-01-23T06:44:59.835Z",
+    "action": "Updated Receipt CHN-2026-0002",
+    "timestamp": "2026-03-05T11:14:21.423Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149996794_juy5gda",
+    "id": "LOG_1772708955610_hpynyw9",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Owais as Present.",
-    "timestamp": "2026-01-23T06:33:16.794Z",
+    "action": "Deleted Purchase Order: PO-2026-0001",
+    "timestamp": "2026-03-05T11:09:15.610Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149774247_dji84vz",
+    "id": "LOG_1772708328963_ri4zkh4",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Sagar as Present.",
-    "timestamp": "2026-01-23T06:29:34.247Z",
+    "action": "Updated reimbursement claim EXP-1769175389973 for Amarjeet yadav",
+    "timestamp": "2026-03-05T10:58:48.963Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149768303_ieghb3l",
+    "id": "LOG_1772708155534_op3x67t",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Tejana as Absent.",
-    "timestamp": "2026-01-23T06:29:28.303Z",
+    "action": "Administrative Override: Marked Supriya .Y as Present.",
+    "timestamp": "2026-03-05T10:55:55.534Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149751728_fcb8jsy",
+    "id": "LOG_1772708151470_7k08q25",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Deleted user: Ankita (ID: USR053)",
-    "timestamp": "2026-01-23T06:29:11.728Z",
+    "action": "Administrative Override: Marked Anjali as Absent.",
+    "timestamp": "2026-03-05T10:55:51.470Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149670563_lkd03j9",
-    "userId": "USR001",
-    "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Supriya .k as Present.",
-    "timestamp": "2026-01-23T06:27:50.563Z",
-    "ip": "127.0.0.1"
-  },
-  {
-    "id": "LOG_1769149666227_dl8md3x",
-    "userId": "USR001",
-    "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Anjali as Present.",
-    "timestamp": "2026-01-23T06:27:46.227Z",
-    "ip": "127.0.0.1"
-  },
-  {
-    "id": "LOG_1769149663790_mg0gb7i",
-    "userId": "USR001",
-    "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Kajal as Present.",
-    "timestamp": "2026-01-23T06:27:43.790Z",
-    "ip": "127.0.0.1"
-  },
-  {
-    "id": "LOG_1769149658195_und0m1e",
+    "id": "LOG_1772708149712_75cq8xt",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Vaishali as Present.",
-    "timestamp": "2026-01-23T06:27:38.195Z",
+    "timestamp": "2026-03-05T10:55:49.712Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149649071_ir2qakw",
+    "id": "LOG_1772708145695_vhuje3t",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Supriya Tai as Present.",
-    "timestamp": "2026-01-23T06:27:29.071Z",
+    "timestamp": "2026-03-05T10:55:45.696Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149647854_s2xd4pj",
-    "userId": "USR001",
-    "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Megha as Present.",
-    "timestamp": "2026-01-23T06:27:27.854Z",
-    "ip": "127.0.0.1"
-  },
-  {
-    "id": "LOG_1769149646731_oedog89",
+    "id": "LOG_1772708142303_39jqikh",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Vaishnavi as Present.",
-    "timestamp": "2026-01-23T06:27:26.731Z",
+    "timestamp": "2026-03-05T10:55:42.303Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149645201_0eliq40",
+    "id": "LOG_1772708136227_154b6xd",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Manda Tai as Absent.",
-    "timestamp": "2026-01-23T06:27:25.201Z",
+    "action": "Administrative Override: Marked Somesh as Present.",
+    "timestamp": "2026-03-05T10:55:36.227Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149639200_223xsz1",
+    "id": "LOG_1772708135039_jkabl98",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Dipali as Present.",
-    "timestamp": "2026-01-23T06:27:19.200Z",
+    "action": "Administrative Override: Marked Tejana as Present.",
+    "timestamp": "2026-03-05T10:55:35.039Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149638063_8ftdksk",
+    "id": "LOG_1772708133703_34np1bg",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Sonali as Present.",
-    "timestamp": "2026-01-23T06:27:18.063Z",
+    "timestamp": "2026-03-05T10:55:33.703Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149614934_kn5x21m",
+    "id": "LOG_1772708132476_uxpg9gf",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Dipali as Present.",
+    "timestamp": "2026-03-05T10:55:32.476Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772708131148_pun0rep",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Kareena as Present.",
-    "timestamp": "2026-01-23T06:26:54.934Z",
+    "timestamp": "2026-03-05T10:55:31.148Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149613584_1u8rgho",
+    "id": "LOG_1772708130128_o4g3etv",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Pratibha as Present.",
-    "timestamp": "2026-01-23T06:26:53.584Z",
+    "timestamp": "2026-03-05T10:55:30.128Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149612470_qvl6mhv",
+    "id": "LOG_1772708128389_2u4hnt3",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Manasi as Present.",
-    "timestamp": "2026-01-23T06:26:52.470Z",
+    "timestamp": "2026-03-05T10:55:28.389Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149611238_1ykxybg",
+    "id": "LOG_1772708127180_hhbdmyy",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Rupa as Present.",
-    "timestamp": "2026-01-23T06:26:51.238Z",
+    "timestamp": "2026-03-05T10:55:27.180Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149609600_ovw458f",
+    "id": "LOG_1772708123719_ibjkbpz",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Ashwini Pawaskar as Present.",
-    "timestamp": "2026-01-23T06:26:49.600Z",
+    "action": "Administrative Override: Marked Shalu as Absent.",
+    "timestamp": "2026-03-05T10:55:23.719Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149603540_jfn74cx",
-    "userId": "USR001",
-    "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Ayesha .Y as Present.",
-    "timestamp": "2026-01-23T06:26:43.540Z",
-    "ip": "127.0.0.1"
-  },
-  {
-    "id": "LOG_1769149599306_v8rb9rk",
+    "id": "LOG_1772708122289_rn4s8tm",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Trupti as Present.",
-    "timestamp": "2026-01-23T06:26:39.306Z",
+    "timestamp": "2026-03-05T10:55:22.289Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149598194_x5p7dbb",
+    "id": "LOG_1772708120734_in696m7",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Shalu as Present.",
-    "timestamp": "2026-01-23T06:26:38.194Z",
+    "action": "Administrative Override: Marked Aishwarya.D as Present.",
+    "timestamp": "2026-03-05T10:55:20.734Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149596910_yd3kyto",
+    "id": "LOG_1772708119496_wir2dul",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Vimalesh as Absent.",
-    "timestamp": "2026-01-23T06:26:36.910Z",
+    "action": "Administrative Override: Marked Ashwini Pawaskar as Present.",
+    "timestamp": "2026-03-05T10:55:19.496Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149590764_iz0zeun",
+    "id": "LOG_1772708117434_n91sayd",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Vimalesh as Present.",
+    "timestamp": "2026-03-05T10:55:17.434Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772708116472_st10ui4",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked SATYAWAN as Present.",
-    "timestamp": "2026-01-23T06:26:30.764Z",
+    "timestamp": "2026-03-05T10:55:16.472Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149588044_6v1ngpm",
+    "id": "LOG_1772708115415_g0bjtcd",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Administrative Override: Marked Kailash as Present.",
-    "timestamp": "2026-01-23T06:26:28.044Z",
+    "action": "Administrative Override: Marked Owais as Present.",
+    "timestamp": "2026-03-05T10:55:15.415Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149586701_82hktpc",
+    "id": "LOG_1772708064035_ju33rvz",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Bulk updated status to \"Active\" for 2 users.",
+    "timestamp": "2026-03-05T10:54:24.035Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772707996090_24slz2w",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted user: Kailash (ID: USR034)",
+    "timestamp": "2026-03-05T10:53:16.090Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772707964876_vl1m0xn",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Deleted user: Megha (ID: USR051)",
+    "timestamp": "2026-03-05T10:52:44.876Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772707930588_f7z9fog",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Kailash as Absent.",
+    "timestamp": "2026-03-05T10:52:10.588Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772707928528_sd7ybh5",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Adarsh as Present.",
-    "timestamp": "2026-01-23T06:26:26.701Z",
+    "timestamp": "2026-03-05T10:52:08.528Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149582310_s8erq1a",
+    "id": "LOG_1772707926412_c8u6o0l",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Umesh as Absent.",
+    "timestamp": "2026-03-05T10:52:06.412Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772707922909_vwdiin5",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Umesh as Present.",
-    "timestamp": "2026-01-23T06:26:22.310Z",
+    "timestamp": "2026-03-05T10:52:02.909Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149581310_mtxqrz2",
+    "id": "LOG_1772707921796_g7sjp27",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Aditya as Present.",
-    "timestamp": "2026-01-23T06:26:21.310Z",
+    "timestamp": "2026-03-05T10:52:01.796Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769149580218_7eq94ug",
+    "id": "LOG_1772707920594_2n5eheo",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
     "action": "Administrative Override: Marked Amarjeet as Present.",
-    "timestamp": "2026-01-23T06:26:20.218Z",
+    "timestamp": "2026-03-05T10:52:00.594Z",
     "ip": "127.0.0.1"
   },
   {
-    "id": "LOG_1769094558372_1bveibz",
+    "id": "LOG_1772707919459_xg0uq7v",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
-    "action": "Logged in.",
-    "timestamp": "2026-01-22T15:09:18.372Z",
+    "action": "Administrative Override: Marked Sagar as Present.",
+    "timestamp": "2026-03-05T10:51:59.459Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772707683465_3jvqmiu",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Created new reimbursement claim EXP-1772707683464 for Amarjeet yadav",
+    "timestamp": "2026-03-05T10:48:03.465Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772700974986_2mkucap",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated ISP connection: Blue Sky Net Service (DC03)",
+    "timestamp": "2026-03-05T08:56:14.986Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772700968679_wexga6c",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated reimbursement claim EXP-1769175389973 for Amarjeet yadav",
+    "timestamp": "2026-03-05T08:56:08.679Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772700965136_019076l",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated reimbursement claim EXP-1770722205341 for Amarjeet yadav",
+    "timestamp": "2026-03-05T08:56:05.136Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697849451_i7wuaja",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772697833922 issued to Vistaran office Ho",
+    "timestamp": "2026-03-05T08:04:09.451Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697833938_iwjbrtw",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of HP Laserjet Pro P1108 with distributed logistics.",
+    "timestamp": "2026-03-05T08:03:53.938Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697780576_capxfm1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772697758650 issued to Vistaran office Ho",
+    "timestamp": "2026-03-05T08:03:00.576Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697758668_077lqi0",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of LaserJetProfessional M1213nf MFP with distributed logistics.",
+    "timestamp": "2026-03-05T08:02:38.668Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697626959_5chujgj",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772697611371 issued to Vistaran office Ho",
+    "timestamp": "2026-03-05T08:00:26.959Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697611383_368s0ed",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of HP Laserjet Pro MFP M233sdw  with distributed logistics.",
+    "timestamp": "2026-03-05T08:00:11.383Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697542170_cq93e6u",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772697526697 issued to Vistaran office Ho",
+    "timestamp": "2026-03-05T07:59:02.170Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697526710_eyf4b1z",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of HP Laserjet Pro MFP M429fdw  with distributed logistics.",
+    "timestamp": "2026-03-05T07:58:46.710Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697470803_llw6j0r",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772697448207 issued to Vistaran office Ho",
+    "timestamp": "2026-03-05T07:57:50.803Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772697448216_vvp50ef",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of HP LaserJet Pro MFP M426f-M427f with distributed logistics.",
+    "timestamp": "2026-03-05T07:57:28.216Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696369194_hpqwini",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772696349098 issued to Dhokali Naka 023",
+    "timestamp": "2026-03-05T07:39:29.194Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696349102_okhud0t",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of REDMI 10A  with distributed logistics.",
+    "timestamp": "2026-03-05T07:39:09.102Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696252909_s00x8zn",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1771836368159 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-05T07:37:32.909Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696232164_6p9dkzw",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Returned: Tag AST-BR-1771836368159 is now Spare.",
+    "timestamp": "2026-03-05T07:37:12.164Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696218072_2zo2uoj",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1771834209730 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-05T07:36:58.072Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696201970_j8rxcut",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Returned: Tag AST-BR-1771834209730 is now Spare.",
+    "timestamp": "2026-03-05T07:36:41.970Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696197175_182wtoo",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1771834318508 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-05T07:36:37.175Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696180500_0y6cocm",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Returned: Tag AST-BR-1771834318508 is now Spare.",
+    "timestamp": "2026-03-05T07:36:20.500Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696112681_zcv8ghi",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1771670613313 issued to Sai Dham Branch 019",
+    "timestamp": "2026-03-05T07:35:12.682Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696088279_b0z89k2",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Redmi 9",
+    "timestamp": "2026-03-05T07:34:48.279Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772696064275_7ykp4cs",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Returned: Tag AST-BR-1771670613313 is now Spare.",
+    "timestamp": "2026-03-05T07:34:24.275Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772695981766_wdnfaud",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1771834996819 issued to Hanuman Chowk 016",
+    "timestamp": "2026-03-05T07:33:01.766Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772695967816_r043yxy",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: REDMI 10A ",
+    "timestamp": "2026-03-05T07:32:47.816Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772695755155_61y2y8w",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Returned: Tag AST-BR-1771834996819 is now Spare.",
+    "timestamp": "2026-03-05T07:29:15.155Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772695670421_kn4470d",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1771827903429 issued to Dhokali Naka 023",
+    "timestamp": "2026-03-05T07:27:50.421Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772695654538_qxr6snp",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Returned: Tag AST-BR-1771827903429 is now Spare.",
+    "timestamp": "2026-03-05T07:27:34.538Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772691546042_lt064qe",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-DC-1772691507845 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-05T06:19:06.042Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772691529072_dogvkvd",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: HF680",
+    "timestamp": "2026-03-05T06:18:49.072Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772691507860_horpobc",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of HF680 with distributed logistics.",
+    "timestamp": "2026-03-05T06:18:27.861Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772686901268_o0tj70p",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772686886414 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-05T05:01:41.268Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772686886424_j912n3w",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of Galaxy A30 with distributed logistics.",
+    "timestamp": "2026-03-05T05:01:26.424Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772686839095_jzcpnww",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772686807080 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-05T05:00:39.095Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772686807092_q79e1xf",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of Redmi 9i with distributed logistics.",
+    "timestamp": "2026-03-05T05:00:07.092Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772686704567_5anoekv",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: H410M S2 V3",
+    "timestamp": "2026-03-05T04:58:24.567Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772608013855_81crr3o",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-DC-1772607996116 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-04T07:06:53.855Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772607996121_278drz8",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+    "timestamp": "2026-03-04T07:06:36.121Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772607869448_v6ss73d",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-DC-1772607849783 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-04T07:04:29.448Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772607849789_liqc3mt",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+    "timestamp": "2026-03-04T07:04:09.789Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606743328_us6d47p",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-DC-1772606721602 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-04T06:45:43.328Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606721608_8ic3zqw",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of 30GSS17A00 with distributed logistics.",
+    "timestamp": "2026-03-04T06:45:21.608Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606434954_kpe16zk",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772606359052 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-04T06:40:34.954Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606414966_eegefsi",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Returned: Tag AST-BR-1772606359052 is now Spare.",
+    "timestamp": "2026-03-04T06:40:14.966Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606407915_vijquhg",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: H410M S2 V3",
+    "timestamp": "2026-03-04T06:40:07.915Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606388935_hsghirt",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772606359052 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-04T06:39:48.935Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606359056_ev7z41c",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+    "timestamp": "2026-03-04T06:39:19.056Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606249391_4pal24k",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: H410M S2 V3",
+    "timestamp": "2026-03-04T06:37:29.391Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606202616_ns9zmbp",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-DC-1772606165949 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-04T06:36:42.616Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606165963_hds0hdz",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+    "timestamp": "2026-03-04T06:36:05.963Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606062897_y4f9anj",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-DC-1772606036803 issued to Warehouse(DC-501)",
+    "timestamp": "2026-03-04T06:34:22.897Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772606036817_nzwz3eq",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+    "timestamp": "2026-03-04T06:33:56.817Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772605682192_7tz6iot",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772605667954 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T06:28:02.192Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772605667969_op83uo5",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of Dell Inc. OptiPlex 3050 with distributed logistics.",
+    "timestamp": "2026-03-04T06:27:47.969Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772605402655_8v47dxt",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772605383754 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T06:23:22.655Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772605383766_sg62r7t",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of H410M S2 V3 with distributed logistics.",
+    "timestamp": "2026-03-04T06:23:03.766Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772605244212_f4z81p4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772605223937 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T06:20:44.212Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772605223951_3hru161",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of H410M S2 with distributed logistics.",
+    "timestamp": "2026-03-04T06:20:23.951Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772604582014_t911wp2",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772604562484 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T06:09:42.014Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772604562493_nqg60a6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of SM-LC24F392 with distributed logistics.",
+    "timestamp": "2026-03-04T06:09:22.493Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772604497695_6b1bfd7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: E2020H",
+    "timestamp": "2026-03-04T06:08:17.695Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772604270832_xyf2dwx",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772604246279 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T06:04:30.832Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772604246292_xyn0r6u",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of Dell-E2020H with distributed logistics.",
+    "timestamp": "2026-03-04T06:04:06.292Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772604138196_7id8zzt",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: E2020H",
+    "timestamp": "2026-03-04T06:02:18.196Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772604084398_btv055f",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Dell-S2721HN ",
+    "timestamp": "2026-03-04T06:01:24.398Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603983548_0pug344",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772603967799 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T05:59:43.548Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603967815_fze0zux",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of Dell-S2721HN  with distributed logistics.",
+    "timestamp": "2026-03-04T05:59:27.815Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603780504_0sa0fhw",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772603761598 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T05:56:20.504Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603761611_up0eusc",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of Dell-S2721HN-Grey with distributed logistics.",
+    "timestamp": "2026-03-04T05:56:01.611Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603293370_bj7ocj1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772603278775 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T05:48:13.370Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603278786_meksv72",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of ZEBRONICS-‎A19HD LED with distributed logistics.",
+    "timestamp": "2026-03-04T05:47:58.786Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603149395_7j8ybe6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: ZEBRONICS-‎A19HD LED",
+    "timestamp": "2026-03-04T05:45:49.395Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603094133_bjiu6fx",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772603071801 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T05:44:54.133Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603071816_urnp0ye",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of LG-19M38AB with distributed logistics.",
+    "timestamp": "2026-03-04T05:44:31.816Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772603001063_ii3ve55",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772602982028 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T05:43:21.063Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772602982038_y1p98el",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of LG-19M38AB with distributed logistics.",
+    "timestamp": "2026-03-04T05:43:02.038Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772602749010_t4vzok4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772602713001 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T05:39:09.010Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772602725088_tf62uxd",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Acer-EB192Q",
+    "timestamp": "2026-03-04T05:38:45.088Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772602713012_0qc3auj",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of Acer-EB192Q with distributed logistics.",
+    "timestamp": "2026-03-04T05:38:33.012Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772602586999_4rg7n9e",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772602568051 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T05:36:26.999Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772602568063_50uk7v9",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of ZEBRONICS-‎A19HD LED with distributed logistics.",
+    "timestamp": "2026-03-04T05:36:08.063Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772602439912_5kxu0qg",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772602278380 issued to Vistaran office Ho",
+    "timestamp": "2026-03-04T05:33:59.912Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772602278399_gil2x16",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of E2020H with distributed logistics.",
+    "timestamp": "2026-03-04T05:31:18.399Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601162421_fwuelry",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Supriya .Y as Present.",
+    "timestamp": "2026-03-04T05:12:42.421Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601159749_gyoeec4",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Anjali as Present.",
+    "timestamp": "2026-03-04T05:12:39.749Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601156510_jg19tyd",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Vaishali as Present.",
+    "timestamp": "2026-03-04T05:12:36.510Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601152955_u229y07",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Supriya Tai as Present.",
+    "timestamp": "2026-03-04T05:12:32.955Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601152063_hofq33d",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Megha as Absent.",
+    "timestamp": "2026-03-04T05:12:32.063Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601150764_ca8r059",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Megha as Present.",
+    "timestamp": "2026-03-04T05:12:30.764Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601149621_ry2qrp3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Vaishnavi as Present.",
+    "timestamp": "2026-03-04T05:12:29.621Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601148418_3ppdaqx",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Somesh as Present.",
+    "timestamp": "2026-03-04T05:12:28.418Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601146688_2869f78",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Tejana as Present.",
+    "timestamp": "2026-03-04T05:12:26.688Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601145468_agqxrvt",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Sonali as Present.",
+    "timestamp": "2026-03-04T05:12:25.468Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601144498_021vql5",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Dipali as Present.",
+    "timestamp": "2026-03-04T05:12:24.498Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601143404_ctwn2ad",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Kareena as Present.",
+    "timestamp": "2026-03-04T05:12:23.404Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601140118_phz3wv7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Pratibha as Present.",
+    "timestamp": "2026-03-04T05:12:20.118Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601139004_p2p5mta",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Manasi as Present.",
+    "timestamp": "2026-03-04T05:12:19.004Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601137867_cb3i51m",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Rupa as Present.",
+    "timestamp": "2026-03-04T05:12:17.867Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601136680_snfl5uo",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Ashwini Pawaskar as Present.",
+    "timestamp": "2026-03-04T05:12:16.680Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601135017_70tvq7l",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Aishwarya.D as Present.",
+    "timestamp": "2026-03-04T05:12:15.017Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601133784_u422fgp",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Trupti as Present.",
+    "timestamp": "2026-03-04T05:12:13.784Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601132679_vm4ntco",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Shalu as Absent.",
+    "timestamp": "2026-03-04T05:12:12.679Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601131416_jo294l5",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Shalu as Present.",
+    "timestamp": "2026-03-04T05:12:11.416Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601130388_sxly8yi",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Vimalesh as Present.",
+    "timestamp": "2026-03-04T05:12:10.388Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601126531_8197f0k",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked SATYAWAN as Present.",
+    "timestamp": "2026-03-04T05:12:06.531Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601124603_wt6v9f6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Owais as Present.",
+    "timestamp": "2026-03-04T05:12:04.603Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601122760_phgsun6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Kailash as Present.",
+    "timestamp": "2026-03-04T05:12:02.760Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601100576_gdmbw70",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Adarsh as Present.",
+    "timestamp": "2026-03-04T05:11:40.576Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601096198_sun6jew",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Umesh as Present.",
+    "timestamp": "2026-03-04T05:11:36.198Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601094899_jhgrym5",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Aditya as Present.",
+    "timestamp": "2026-03-04T05:11:34.899Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601093829_cwhia9r",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Amarjeet as Present.",
+    "timestamp": "2026-03-04T05:11:33.829Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772601092849_icykkdz",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Sagar as Present.",
+    "timestamp": "2026-03-04T05:11:32.849Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264838934_6mcmwkf",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Supriya .Y as Present.",
+    "timestamp": "2026-02-28T07:47:18.934Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264837688_jil38y5",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Anjali as Present.",
+    "timestamp": "2026-02-28T07:47:17.688Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264836693_vmexjm5",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Vaishali as Present.",
+    "timestamp": "2026-02-28T07:47:16.693Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264833607_sgw31nl",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Supriya Tai as Present.",
+    "timestamp": "2026-02-28T07:47:13.607Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264832498_0ib4zhx",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Megha as Absent.",
+    "timestamp": "2026-02-28T07:47:12.498Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264830824_7xllryf",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Vaishnavi as Present.",
+    "timestamp": "2026-02-28T07:47:10.824Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264829360_ucpxqzk",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Somesh as Present.",
+    "timestamp": "2026-02-28T07:47:09.360Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264827832_5hqq6d3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Tejana as Present.",
+    "timestamp": "2026-02-28T07:47:07.832Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264826709_v2zx88f",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Sonali as Present.",
+    "timestamp": "2026-02-28T07:47:06.709Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264825557_202gsjk",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Dipali as Present.",
+    "timestamp": "2026-02-28T07:47:05.557Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264824365_9haxil1",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Kareena as Present.",
+    "timestamp": "2026-02-28T07:47:04.365Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264821192_g0ityel",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Pratibha as Present.",
+    "timestamp": "2026-02-28T07:47:01.192Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264818576_1yx5boz",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Manasi as Present.",
+    "timestamp": "2026-02-28T07:46:58.576Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264817474_ai3x5kc",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Rupa as Present.",
+    "timestamp": "2026-02-28T07:46:57.474Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264816349_iykgsj0",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Ashwini Pawaskar as Present.",
+    "timestamp": "2026-02-28T07:46:56.349Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264815168_1qmf73b",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Aishwarya.D as Present.",
+    "timestamp": "2026-02-28T07:46:55.169Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264813475_bs0h62f",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Trupti as Present.",
+    "timestamp": "2026-02-28T07:46:53.475Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264812411_kncg24u",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Shalu as Present.",
+    "timestamp": "2026-02-28T07:46:52.411Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264811279_mmne8sz",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Vimalesh as Present.",
+    "timestamp": "2026-02-28T07:46:51.279Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264808169_v2mmfeh",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked SATYAWAN as Present.",
+    "timestamp": "2026-02-28T07:46:48.169Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264807004_h198p99",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Owais as Present.",
+    "timestamp": "2026-02-28T07:46:47.004Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264806135_4jkkzk7",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Kailash as Present.",
+    "timestamp": "2026-02-28T07:46:46.135Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264805126_yxhylyt",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Adarsh as Present.",
+    "timestamp": "2026-02-28T07:46:45.126Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264801374_invga76",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Umesh as Present.",
+    "timestamp": "2026-02-28T07:46:41.374Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264800298_3kat0qc",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Aditya as Present.",
+    "timestamp": "2026-02-28T07:46:40.298Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264799126_ea45lcy",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Amarjeet as Present.",
+    "timestamp": "2026-02-28T07:46:39.126Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264797068_xmpu24j",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Administrative Override: Marked Sagar as Present.",
+    "timestamp": "2026-02-28T07:46:37.068Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264467245_ucxi4kx",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Redmi 9i",
+    "timestamp": "2026-02-28T07:41:07.245Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264274159_mnecfhp",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772264222309 issued to Warehouse(DC-501)",
+    "timestamp": "2026-02-28T07:37:54.159Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264253506_xjzm75k",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Asset Allocated: Tag AST-BR-1772264077850 issued to Warehouse(DC-501)",
+    "timestamp": "2026-02-28T07:37:33.506Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264235790_n0z3cej",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: Redmi 9",
+    "timestamp": "2026-02-28T07:37:15.790Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264222313_qqnrraf",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of Redmi 9 with distributed logistics.",
+    "timestamp": "2026-02-28T07:37:02.313Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772264077855_qmkeguq",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of Galaxy A30 with distributed logistics.",
+    "timestamp": "2026-02-28T07:34:37.855Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772201872521_neb47l9",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: 55UT801C0LA",
+    "timestamp": "2026-02-27T14:17:52.521Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200723889_4luw80h",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: 55UT801C0LA",
+    "timestamp": "2026-02-27T13:58:43.889Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200697628_64zbqqc",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of 55UT801C0LA with distributed logistics.",
+    "timestamp": "2026-02-27T13:58:17.628Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200654950_nsj51av",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: 55UT801C0LA",
+    "timestamp": "2026-02-27T13:57:34.950Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200639567_rmcrq5v",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of 55UT801C0LA with distributed logistics.",
+    "timestamp": "2026-02-27T13:57:19.567Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200568904_zja5av6",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Registered 1 units of 55UT801C0LA with distributed logistics.",
+    "timestamp": "2026-02-27T13:56:08.904Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200494934_yy8vn0a",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: 55UT801C0LA",
+    "timestamp": "2026-02-27T13:54:54.934Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200450992_ah7f87o",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: 55UT801C0LA",
+    "timestamp": "2026-02-27T13:54:10.992Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200384304_mmp87lj",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: 55UT801C0LA",
+    "timestamp": "2026-02-27T13:53:04.304Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200365174_2922h38",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: 55UT801C0LA",
+    "timestamp": "2026-02-27T13:52:45.174Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772200327832_3yddyb3",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated Master Asset: 55UT801C0LA",
+    "timestamp": "2026-02-27T13:52:07.832Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772197467182_qp8clu5",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated ISP connection: Hathway Cable and Datacom Ltd (Tambe Nagar 009)",
+    "timestamp": "2026-02-27T13:04:27.182Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772197447615_h3jw8yj",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated ISP connection: Rajesh Digital & Datacom Pvt. Ltd. (004lake home) ",
+    "timestamp": "2026-02-27T13:04:07.615Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772197429949_11p0rbi",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated ISP connection: Rajesh Digital & Datacom Pvt. Ltd. (004lake home) ",
+    "timestamp": "2026-02-27T13:03:49.949Z",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "LOG_1772197384354_iw4jr6v",
+    "userId": "USR001",
+    "userName": "Amarjeet yadav",
+    "action": "Updated ISP connection: airtel xstream fiber ( Godrej - 013)",
+    "timestamp": "2026-02-27T13:03:04.354Z",
     "ip": "127.0.0.1"
   }
 ]

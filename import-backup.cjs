@@ -30,7 +30,12 @@ if (!fs.existsSync(backupFilePath)) {
 
 try {
     console.log('📖 Reading backup file...');
-    const backupData = JSON.parse(fs.readFileSync(backupFilePath, 'utf8'));
+    const rawContent = fs.readFileSync(backupFilePath, 'utf8');
+    const lastBraceIndex = rawContent.lastIndexOf('}');
+    if (lastBraceIndex === -1) {
+        throw new Error('No closing brace found in backup file.');
+    }
+    const backupData = JSON.parse(rawContent.slice(0, lastBraceIndex + 1));
 
     if (!fs.existsSync(dataDir)) {
         fs.mkdirSync(dataDir, { recursive: true });
