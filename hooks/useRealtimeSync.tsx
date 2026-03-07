@@ -191,7 +191,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
     }
   }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms,
     setAllTemplates, setAllDepartments, setAllInventory, setAllVendors,
-    setAllChallans, setAllInvoices, setAllPurchaseOrders]);
+    setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllAttendance]);
 
   // Handle initial sync message
   const handleInitialSync = useCallback((message: any) => {
@@ -297,7 +297,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
     prevValuesRef.current = currentValues;
   }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms,
     allTemplates, allDepartments, allInventory, allVendors,
-    allChallans, allInvoices, allPurchaseOrders]);
+    allChallans, allInvoices, allPurchaseOrders, allAttendance]);
 
   // Helper function to sync a collection change
   const syncCollectionChange = useCallback((collection: keyof SyncCollectionMap, data: any) => {
@@ -386,7 +386,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
     syncCollectionChange(collection, data);
   }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms,
     allTemplates, allDepartments, allInventory, allVendors,
-    allChallans, allInvoices, allPurchaseOrders, syncCollectionChange]);
+    allChallans, allInvoices, allPurchaseOrders, allAttendance, syncCollectionChange]);
 
   // Function to get sync stats
   const getSyncStats = useCallback(() => {

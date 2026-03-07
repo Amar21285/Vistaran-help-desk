@@ -4,6 +4,7 @@ import { useAuth, AuthProvider } from './hooks/useAuth';
 import { SettingsProvider, useSettings } from './hooks/useSettings';
 import { ThemeProvider, useTheme } from './hooks/useTheme';
 import useLocalStorage from './hooks/useLocalStorage';
+import useRealtimeSync from './hooks/useRealtimeSync';
 import Login from './components/Login';
 import TopNav from './components/TopNav';
 import BottomNav from './components/BottomNav';
@@ -51,7 +52,7 @@ const InfoModal: React.FC<{
                     {message}
                 </div>
                 <div className="flex justify-center flex-wrap gap-4 mt-8">
-                     {actions?.map((action, index) => (
+                    {actions?.map((action, index) => (
                         <button
                             key={index}
                             onClick={action.onClick}
@@ -75,7 +76,7 @@ const InfoModal: React.FC<{
 const AppContent: React.FC = () => {
     const { user, realUser, logout, updateUser, startImpersonation, stopImpersonation, can } = useAuth();
     const { wallpaper } = useTheme();
-    
+
     const [allUsers, setAllUsers] = useLocalStorage<User[]>('vistaran-helpdesk-users', USERS);
     const [allTickets, setAllTickets] = useLocalStorage<Ticket[]>('vistaran-helpdesk-tickets', TICKETS);
     const [allFiles, setAllFiles] = useLocalStorage<ManagedFile[]>('vistaran-helpdesk-files', FILES);
@@ -88,8 +89,21 @@ const AppContent: React.FC = () => {
     const [allInvoices, setAllInvoices] = useLocalStorage<Invoice[]>('vistaran-helpdesk-outward-invoices', []);
     const [allPurchaseOrders, setAllPurchaseOrders] = useLocalStorage<PurchaseOrder[]>('vistaran-helpdesk-purchase-orders', []);
     const [notifications, setNotifications] = useLocalStorage<AppNotification[]>('vistaran-helpdesk-notifications', []);
-    
+
     const [allDepartments, setAllDepartments] = useLocalStorage<string[]>('vistaran-helpdesk-departments', ['IT', 'Operations', 'HR', 'Accounts', 'Staff']);
+
+    // Initialize Real-time Sync
+    const { connect, disconnect } = useRealtimeSync();
+
+    // Connect to sync service when user logs in
+    useEffect(() => {
+        if (user) {
+            console.log('User logged in, connecting to sync service:', user.id);
+            connect(user.id, user.role);
+        } else {
+            disconnect();
+        }
+    }, [user, connect, disconnect]);
 
     const [currentView, setCurrentView] = useState('dashboard');
     const [globalFilter, setGlobalFilter] = useState('');
@@ -162,7 +176,7 @@ const AppContent: React.FC = () => {
             return next;
         });
     }, []);
-    
+
     if (!user) return <Login />;
 
     const currentUserTechnician = allTechnicians.find(tech => tech.email === user.email);
@@ -171,7 +185,7 @@ const AppContent: React.FC = () => {
     const renderView = () => {
         switch (currentView) {
             case 'dashboard':
-                return can(Permission.MANAGE_SETTINGS) 
+                return can(Permission.MANAGE_SETTINGS)
                     ? <AdminDashboard tickets={allTickets} users={allUsers} setUsers={setAllUsers} onEditUser={setEditingUser} setCurrentView={setCurrentView} departments={allDepartments} />
                     : <Dashboard tickets={allTickets} users={allUsers} globalFilter={globalFilter} />;
             case 'tickets':
@@ -185,11 +199,11 @@ const AppContent: React.FC = () => {
             case 'attendance':
                 return <AttendanceManagement users={allUsers} />;
             case 'users':
-                return <UserManagement users={allUsers} setUsers={setAllUsers} globalFilter={globalFilter} onImpersonate={startImpersonation} onEditUser={setEditingUser} onPhotoUpdate={(uid, p) => setAllUsers(prev => prev.map(u => u.id === uid ? {...u, photo: p} : u))} departments={allDepartments} />;
+                return <UserManagement users={allUsers} setUsers={setAllUsers} globalFilter={globalFilter} onImpersonate={startImpersonation} onEditUser={setEditingUser} onPhotoUpdate={(uid, p) => setAllUsers(prev => prev.map(u => u.id === uid ? { ...u, photo: p } : u))} departments={allDepartments} />;
             case 'app-settings':
                 return <Settings templates={allTemplates} setTemplates={setAllTemplates} symptoms={allSymptoms} setSymptoms={setAllSymptoms} departments={allDepartments} setDepartments={setAllDepartments} users={allUsers} tickets={allTickets} />;
             case 'my-profile':
-                 return <Profile tickets={allTickets} onEditUser={setEditingUser} />;
+                return <Profile tickets={allTickets} onEditUser={setEditingUser} />;
             case 'reports':
                 return <Reports tickets={allTickets} users={allUsers} departments={allDepartments} inventory={allInventory} vendors={allVendors} challans={allChallans} invoices={allInvoices} technicians={allTechnicians} purchaseOrders={allPurchaseOrders} />;
             case 'file-manager':
@@ -210,9 +224,9 @@ const AppContent: React.FC = () => {
                 <Sidebar currentView={currentView} setCurrentView={setCurrentView} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
                 {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden" />}
                 <div className="flex-1 flex flex-col overflow-hidden relative">
-                    <TopNav 
-                        user={user} 
-                        onLogout={logout} 
+                    <TopNav
+                        user={user}
+                        onLogout={logout}
                         globalFilter={globalFilter}
                         setGlobalFilter={setGlobalFilter}
                         onScanClick={() => setIsScannerOpen(true)}
@@ -226,38 +240,38 @@ const AppContent: React.FC = () => {
                     <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative custom-scrollbar">
                         <div className="app-container">
                             {apiKeyWarning && (
-                            <div className="mb-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
-                                <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-800 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
-                                    <i className="fas fa-key"></i>
-                                </div>
-                                <div className="flex-1">
-                                    <p className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-widest leading-none mb-1">AI Features Limited</p>
-                                    <p className="text-xs font-bold text-amber-800 dark:text-amber-200">Gemini API Key is not configured. AI suggestions and diagnostics will be disabled.</p>
-                                </div>
-                                <button onClick={() => setApiKeyWarning(false)} className="text-amber-400 hover:text-amber-600 transition">
-                                    <i className="fas fa-times"></i>
-                                </button>
-                            </div>
-                        )}
-                        {scanToast && (
-                            <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-10 duration-500">
-                                <div className="bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">
-                                        <i className="fas fa-check"></i>
+                                <div className="mb-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+                                    <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-800 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                                        <i className="fas fa-key"></i>
                                     </div>
-                                    <div className="text-left">
-                                        <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Optical Hub Success</p>
-                                        <p className="text-xs font-bold font-mono">ID Identified: {scanToast}</p>
+                                    <div className="flex-1">
+                                        <p className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-widest leading-none mb-1">AI Features Limited</p>
+                                        <p className="text-xs font-bold text-amber-800 dark:text-amber-200">Gemini API Key is not configured. AI suggestions and diagnostics will be disabled.</p>
+                                    </div>
+                                    <button onClick={() => setApiKeyWarning(false)} className="text-amber-400 hover:text-amber-600 transition">
+                                        <i className="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            )}
+                            {scanToast && (
+                                <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-10 duration-500">
+                                    <div className="bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">
+                                            <i className="fas fa-check"></i>
+                                        </div>
+                                        <div className="text-left">
+                                            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Optical Hub Success</p>
+                                            <p className="text-xs font-bold font-mono">ID Identified: {scanToast}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-                        {renderView()}
+                            )}
+                            {renderView()}
                         </div>
                     </main>
-                    <BottomNav 
-                        currentView={currentView} 
-                        setCurrentView={setCurrentView} 
+                    <BottomNav
+                        currentView={currentView}
+                        setCurrentView={setCurrentView}
                         onQuickTicket={() => setIsQuickTicketOpen(true)}
                     />
                 </div>
@@ -266,8 +280,8 @@ const AppContent: React.FC = () => {
             {infoModalContent && <InfoModal title={infoModalContent.title} message={infoModalContent.message} onClose={() => setInfoModalContent(null)} actions={infoModalContent.actions} />}
             {isScannerOpen && <ScannerModal onClose={() => setIsScannerOpen(false)} onResult={handleScanResult} />}
             {isQuickTicketOpen && (
-                <QuickTicketModal 
-                    onClose={() => setIsQuickTicketOpen(false)} 
+                <QuickTicketModal
+                    onClose={() => setIsQuickTicketOpen(false)}
                     setTickets={handleTicketsUpdate}
                     symptoms={allSymptoms}
                     departments={allDepartments}
