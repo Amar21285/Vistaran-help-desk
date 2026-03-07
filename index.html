@@ -233,13 +233,12 @@
   }
 }
 </script>
-  <link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="./index.css">
 </head>
 
 <body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-200">
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root" class="min-h-screen w-full"></div>
-  <script type="module" src="./index.tsx"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -263,7 +262,8 @@
           'vendors': 'vistaran-helpdesk-vendors',
           'challans': 'vistaran-helpdesk-challans',
           'outward-invoices': 'vistaran-helpdesk-outward-invoices',
-          'purchase-orders': 'vistaran-helpdesk-purchase-orders'
+          'purchase-orders': 'vistaran-helpdesk-purchase-orders',
+          'attendance': 'vistaran-helpdesk-attendance'
         };
 
         const usersRaw = localStorage.getItem(storageKeys.users);

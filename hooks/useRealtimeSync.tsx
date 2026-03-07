@@ -16,6 +16,7 @@ interface SyncCollectionMap {
   'challans': ReceivingChallan[];
   'outward-invoices': Invoice[];
   'purchase-orders': PurchaseOrder[];
+  'attendance': any[];
 }
 
 interface RealtimeSyncHook {
@@ -30,7 +31,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const socketRef = useRef<any>(null);
   const userIdRef = useRef<string>('');
-  
+
   // Import all the localStorage hooks to monitor for changes
   const [allUsers, setAllUsers] = useLocalStorage<User[]>('vistaran-helpdesk-users', []);
   const [allTickets, setAllTickets] = useLocalStorage<Ticket[]>('vistaran-helpdesk-tickets', []);
@@ -44,6 +45,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
   const [allChallans, setAllChallans] = useLocalStorage<ReceivingChallan[]>('vistaran-helpdesk-challans', []);
   const [allInvoices, setAllInvoices] = useLocalStorage<Invoice[]>('vistaran-helpdesk-outward-invoices', []);
   const [allPurchaseOrders, setAllPurchaseOrders] = useLocalStorage<PurchaseOrder[]>('vistaran-helpdesk-purchase-orders', []);
+  const [allAttendance, setAllAttendance] = useLocalStorage<any[]>('vistaran-helpdesk-attendance', []);
 
   // Store the previous values to detect changes
   const prevValuesRef = useRef({
@@ -59,12 +61,13 @@ const useRealtimeSync = (): RealtimeSyncHook => {
     challans: JSON.stringify(allChallans),
     invoices: JSON.stringify(allInvoices),
     purchaseOrders: JSON.stringify(allPurchaseOrders),
+    attendance: JSON.stringify(allAttendance),
   });
 
   // Function to connect to the sync service
   const connect = useCallback((userId: string, role: string) => {
     userIdRef.current = userId;
-    
+
     // Connect to Socket.IO server
     const socket = io({
       transports: ['websocket'],
@@ -73,29 +76,29 @@ const useRealtimeSync = (): RealtimeSyncHook => {
         role
       }
     });
-    
+
     socketRef.current = socket;
-    
+
     socket.on('connect', () => {
       console.log(`Connected to sync service as ${role} user: ${userId}`);
       setIsConnected(true);
     });
-    
+
     socket.on('disconnect', () => {
       console.log('Disconnected from sync service');
       setIsConnected(false);
     });
-    
+
     socket.on('data_update', (message) => {
       console.log('Received sync message:', message);
       handleIncomingMessage(message);
     });
-    
+
     socket.on('connect_error', (error) => {
       console.error('Connection error:', error);
       setIsConnected(false);
     });
-    
+
     setIsConnected(true);
     console.log(`Connected to sync service as ${role} user: ${userId}`);
   }, []);
@@ -180,19 +183,22 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       case 'purchase-orders':
         setAllPurchaseOrders(data);
         break;
+      case 'attendance':
+        setAllAttendance(data);
+        break;
       default:
         console.warn('Unknown collection for sync:', collection);
     }
-  }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms, 
-      setAllTemplates, setAllDepartments, setAllInventory, setAllVendors, 
-      setAllChallans, setAllInvoices, setAllPurchaseOrders]);
+  }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms,
+    setAllTemplates, setAllDepartments, setAllInventory, setAllVendors,
+    setAllChallans, setAllInvoices, setAllPurchaseOrders]);
 
   // Handle initial sync message
   const handleInitialSync = useCallback((message: any) => {
     if (!message.data) return;
 
     const syncData = message.data;
-    
+
     // Update all collections with initial sync data
     if (syncData.users !== undefined) setAllUsers(syncData.users);
     if (syncData.tickets !== undefined) setAllTickets(syncData.tickets);
@@ -206,9 +212,10 @@ const useRealtimeSync = (): RealtimeSyncHook => {
     if (syncData.challans !== undefined) setAllChallans(syncData.challans);
     if (syncData.invoices !== undefined) setAllInvoices(syncData.invoices);
     if (syncData.purchaseOrders !== undefined) setAllPurchaseOrders(syncData.purchaseOrders);
-  }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms, 
-      setAllTemplates, setAllDepartments, setAllInventory, setAllVendors, 
-      setAllChallans, setAllInvoices, setAllPurchaseOrders]);
+    if (syncData.attendance !== undefined) setAllAttendance(syncData.attendance);
+  }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms,
+    setAllTemplates, setAllDepartments, setAllInventory, setAllVendors,
+    setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllAttendance]);
 
   // Handle full sync message
   const handleFullSync = useCallback(handleInitialSync, [handleInitialSync]);
@@ -228,6 +235,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       challans: JSON.stringify(allChallans),
       invoices: JSON.stringify(allInvoices),
       purchaseOrders: JSON.stringify(allPurchaseOrders),
+      attendance: JSON.stringify(allAttendance),
     };
 
     // Check for changes in each collection
@@ -280,11 +288,16 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       prevValuesRef.current.purchaseOrders = currentValues.purchaseOrders;
     }
 
+    if (currentValues.attendance !== prevValuesRef.current.attendance) {
+      syncCollectionChange('attendance', allAttendance);
+      prevValuesRef.current.attendance = currentValues.attendance;
+    }
+
     // Update the previous values reference
     prevValuesRef.current = currentValues;
-  }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms, 
-      allTemplates, allDepartments, allInventory, allVendors, 
-      allChallans, allInvoices, allPurchaseOrders]);
+  }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms,
+    allTemplates, allDepartments, allInventory, allVendors,
+    allChallans, allInvoices, allPurchaseOrders]);
 
   // Helper function to sync a collection change
   const syncCollectionChange = useCallback((collection: keyof SyncCollectionMap, data: any) => {
@@ -365,12 +378,15 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       case 'purchase-orders':
         data = allPurchaseOrders;
         break;
+      case 'attendance':
+        data = allAttendance;
+        break;
     }
 
     syncCollectionChange(collection, data);
-  }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms, 
-      allTemplates, allDepartments, allInventory, allVendors, 
-      allChallans, allInvoices, allPurchaseOrders, syncCollectionChange]);
+  }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms,
+    allTemplates, allDepartments, allInventory, allVendors,
+    allChallans, allInvoices, allPurchaseOrders, syncCollectionChange]);
 
   // Function to get sync stats
   const getSyncStats = useCallback(() => {
