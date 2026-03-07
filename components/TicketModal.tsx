@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Ticket, TicketStatus, Priority, Technician, User, TicketHistory, Role, ChatMessage, Symptom } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { generateTicketSummary, getTicketDiagnostic, suggestTicketReply } from '../utils/genai';
@@ -54,9 +54,23 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
     const chatInputRef = useRef<HTMLTextAreaElement>(null);
 
     const symptomName = useMemo(() => symptoms.find(s => s.id === ticket.symptomId)?.name || 'General Issue', [symptoms, ticket.symptomId]);
-    const isOpen = status === TicketStatus.OPEN || status === TicketStatus.IN_PROGRESS;
 
-    useEffect(() => { handleRefreshSummary(); }, [ticket.id]);
+    const handleRefreshSummary = useCallback(async () => {
+        setIsGeneratingSummary(true);
+        try {
+            const s = await generateTicketSummary(ticket, users);
+            setSummary(s);
+        } catch (error) {
+            console.error("Summary Generation Error:", error);
+            setSummary("AI Summary currently unavailable. Please check back later.");
+        } finally {
+            setIsGeneratingSummary(false);
+        }
+    }, [ticket, users]);
+
+    useEffect(() => { 
+        handleRefreshSummary(); 
+    }, [ticket.id, handleRefreshSummary]);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -64,22 +78,18 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
         }
     }, [ticket.chatHistory]);
 
-    const handleRefreshSummary = async () => {
-        setIsGeneratingSummary(true);
-        try {
-            const s = await generateTicketSummary(ticket, users);
-            setSummary(s);
-        } finally {
-            setIsGeneratingSummary(false);
-        }
-    };
-
     const handleGetReplySuggestion = async () => {
         setIsSuggestingReply(true);
         setSuggestedReply(null);
         try {
             const suggestion = await suggestTicketReply(ticket, symptomName);
             setSuggestedReply(suggestion);
+        } catch (error) {
+            console.error("Reply Suggestion Error:", error);
+            setInfoModalContent({
+                title: "AI Suggestion Failed",
+                message: "We couldn't generate a reply suggestion at this time. Please try again or draft your own response."
+            });
         } finally {
             setIsSuggestingReply(false);
         }
@@ -185,6 +195,7 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
         };
 
         // --- EMAIL DISPATCH ---
+        let emailError = false;
         try {
             const originalUser = users.find(u => u.id === ticket.userId);
             
@@ -192,24 +203,27 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
             if (isResolving && originalUser) {
                 if (notificationSettings.userOnTicketResolved) {
                     const uMail = generateResolvedTicketUserEmail(finalTicket, originalUser, user, emailTemplates);
-                    await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                    const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                         subject: uMail.subject, message: uMail.body, to_email: uMail.to_email, to_name: uMail.to_name
                     });
+                    if (!res.success) emailError = true;
                 }
                 if (notificationSettings.adminOnTicketResolved) {
                     const adminUser = USERS.find(u => u.role === Role.ADMIN) || USERS[0];
                     const aMail = generateResolvedTicketAdminEmail(finalTicket, originalUser, adminUser, user, emailTemplates);
-                    await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                    const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                         subject: aMail.subject, message: aMail.body, to_email: aMail.to_email, to_name: aMail.to_name
                     });
+                    if (!res.success) emailError = true;
                 }
             } 
             // 2. Status Update Mails
             else if (isStatusChanged && originalUser && notificationSettings.userOnTicketStatusChanged) {
                 const uMail = generateStatusUpdateUserEmail(finalTicket, originalUser, user, emailTemplates);
-                await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                     subject: uMail.subject, message: uMail.body, to_email: uMail.to_email, to_name: uMail.to_name
                 });
+                if (!res.success) emailError = true;
             }
 
             // 3. Assignment Mails
@@ -217,17 +231,27 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
                 const tech = technicians.find(t => t.id === assignedTechId);
                 if (tech) {
                     const tMail = generateAssignedTicketTechEmail(finalTicket, tech, originalUser, user, emailTemplates);
-                    await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                    const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                         subject: tMail.subject, message: tMail.body, to_email: tMail.to_email, to_name: tMail.to_name
                     });
+                    if (!res.success) emailError = true;
                 }
             }
         } catch (emailErr) {
             console.error("Workflow notification failed:", emailErr);
+            emailError = true;
         }
 
         onSave(finalTicket, true);
         if (changes.length > 0) logUserAction(realUser, `Updated Ticket #${ticket.id}: ${changes.join(' ')}`);
+        
+        if (emailError) {
+            setInfoModalContent({
+                title: "Update Successful with Warnings",
+                message: "The ticket record has been updated, but some email notifications could not be delivered. Please inform relevant parties manually if necessary."
+            });
+        }
+        
         setIsUpdating(false);
     };
 

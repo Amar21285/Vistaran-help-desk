@@ -47,6 +47,7 @@ export const PrintableLabel: React.FC<{
     // to maintain readability on thermal printers.
     const isSmallLabel = labelWidth <= 55 && labelHeight <= 30;
     const baseScale = (isSmallLabel ? Math.min(scaleX, scaleY) * 1.3 : Math.min(scaleX, scaleY)) * fontScale;
+    const strokeScale = isHighContrast ? 1.25 : 1.0;
     
     useEffect(() => {
         if (barcodeRef.current) {
@@ -77,7 +78,7 @@ export const PrintableLabel: React.FC<{
         overflow: 'hidden',
         position: 'relative',
         color: isDarkMode ? '#ffffff' : 'black',
-        border: `${0.8 * baseScale}mm solid ${isDarkMode ? '#ffffff' : '#000'}`,
+        border: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#ffffff' : '#000'}`,
         transform: `rotate(${rotation}deg)`,
         transformOrigin: 'center center',
     };
@@ -87,11 +88,11 @@ export const PrintableLabel: React.FC<{
         return (
             <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column', gap: 0, padding: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
                 {/* Header Row: Logo | Asset ID | Verified */}
-                <div style={{ display: 'flex', alignItems: 'center', borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
+                <div style={{ display: 'flex', alignItems: 'center', borderBottom: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
                     <div style={{ width: '25%' }}>
                         <Logo className={isDarkMode ? "brightness-200" : "grayscale brightness-0"} style={{ height: `${5 * baseScale}mm`, width: 'auto' }} />
                     </div>
-                    <div style={{ flex: 1, borderLeft: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, paddingLeft: `${3 * baseScale}mm` }}>
+                    <div style={{ flex: 1, borderLeft: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, paddingLeft: `${3 * baseScale}mm` }}>
                         <span style={{ fontSize: `${1.8 * baseScale}mm`, fontWeight: 800, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Asset ID</span>
                         <span style={{ fontSize: `${4 * baseScale}mm`, fontWeight: 900, display: 'block', marginTop: '-0.5mm', color: isDarkMode ? '#fff' : '#000' }}>{item.id}</span>
                     </div>
@@ -102,7 +103,7 @@ export const PrintableLabel: React.FC<{
                 </div>
 
                 {/* Designation Row */}
-                <div style={{ borderBottom: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
+                <div style={{ borderBottom: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
                     <span style={{ fontSize: `${1.8 * baseScale}mm`, fontWeight: 800, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Designation</span>
                     <p style={{ fontSize: `${4.5 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', margin: 0, lineHeight: 1.1, color: isDarkMode ? '#fff' : '#000' }}>{item.name}</p>
                 </div>
@@ -110,7 +111,7 @@ export const PrintableLabel: React.FC<{
                 {/* Middle Section: QR (Left) | Category & Bin (Right) */}
                 <div style={{ flex: 1, display: 'flex' }}>
                     {/* QR Section */}
-                    <div style={{ width: '35%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRight: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1 * baseScale}mm` }}>
+                    <div style={{ width: '35%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRight: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1 * baseScale}mm` }}>
                         <img src={qrCodeUrl} style={{ width: '75%', height: 'auto', imageRendering: 'pixelated', filter: isDarkMode ? 'invert(1)' : 'none' }} alt="QR" />
                         <p style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${1 * baseScale}mm`, textAlign: 'center', lineHeight: 1.2, width: '90%', color: isDarkMode ? '#fff' : '#000' }}>
                             Property Of<br/>Vistaran Health Care<br/>Services
@@ -120,11 +121,11 @@ export const PrintableLabel: React.FC<{
                     {/* Category & Bin Section */}
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: `${2 * baseScale}mm`, gap: `${2 * baseScale}mm`, justifyContent: 'center' }}>
                         <div style={{ display: 'flex', gap: `${2 * baseScale}mm` }}>
-                            <div style={{ flex: 1, border: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
+                            <div style={{ flex: 1, border: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
                                 <span style={{ fontSize: `${1.8 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Category</span>
                                 <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000' }}>{item.category}</span>
                             </div>
-                            <div style={{ flex: 1, border: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
+                            <div style={{ flex: 1, border: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
                                 <span style={{ fontSize: `${1.8 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Bin / Rack</span>
                                 <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000' }}>{item.location || 'N/A'}</span>
                             </div>
@@ -133,7 +134,7 @@ export const PrintableLabel: React.FC<{
                 </div>
 
                 {/* Footer Barcode Section */}
-                <div style={{ borderTop: `${0.8 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ borderTop: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <svg ref={barcodeRef} style={{ width: '95%', height: `${9 * baseScale}mm`, filter: isDarkMode ? 'invert(1)' : 'none' }}></svg>
                     <span style={{ fontSize: `${4 * baseScale}mm`, fontWeight: 900, fontFamily: 'monospace', letterSpacing: `${1 * baseScale}mm`, marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000' }}>{item.id}</span>
                 </div>
@@ -146,7 +147,7 @@ export const PrintableLabel: React.FC<{
         return (
             <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column', padding: 0, gap: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
                 {/* Top Row: Logo | System ID */}
-                <div style={{ display: 'flex', alignItems: 'center', borderBottom: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.8 * baseScale}mm` }}>
+                <div style={{ display: 'flex', alignItems: 'center', borderBottom: `${0.6 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.8 * baseScale}mm` }}>
                     <div style={{ width: '30%' }}>
                         <Logo className={isDarkMode ? "brightness-200" : "grayscale brightness-0"} style={{ height: `${3.5 * baseScale}mm`, width: 'auto' }} />
                     </div>
@@ -159,7 +160,7 @@ export const PrintableLabel: React.FC<{
                 {/* Middle Section: QR (Left) | Description & Boxes (Right) */}
                 <div style={{ flex: 1, display: 'flex' }}>
                     {/* QR Section */}
-                    <div style={{ width: '30%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.5 * baseScale}mm` }}>
+                    <div style={{ width: '30%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: `${0.6 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.5 * baseScale}mm` }}>
                         <img src={qrCodeUrl} style={{ width: '100%', height: 'auto', imageRendering: 'pixelated', filter: isDarkMode ? 'invert(1)' : 'none' }} alt="QR" />
                     </div>
 
@@ -183,7 +184,7 @@ export const PrintableLabel: React.FC<{
                 </div>
 
                 {/* Bottom Barcode Section */}
-                <div style={{ borderTop: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.5 * baseScale}mm`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ borderTop: `${0.6 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.5 * baseScale}mm`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <svg ref={barcodeRef} style={{ width: '90%', height: `${6 * baseScale}mm`, filter: isDarkMode ? 'invert(1)' : 'none' }}></svg>
                 </div>
             </div>
@@ -331,7 +332,7 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                         * { box-sizing: border-box !important; -webkit-print-color-adjust: exact !important; }
                         body { margin: 0 !important; padding: 0 !important; background: white !important; width: ${finalPageWidth}mm; height: ${finalPageHeight}mm; display: flex; align-items: center; justify-content: center; overflow: hidden; }
                         #modal-printable-label-content { width: ${labelWidth}mm !important; height: ${labelHeight}mm !important; transform: rotate(${rotation}deg) !important; transform-origin: center center !important; }
-                        .high-contrast-mode { filter: contrast(100) grayscale(1) !important; }
+                        .high-contrast-mode { filter: contrast(1000) grayscale(1) brightness(0.8) !important; }
                     </style>
                 </head>
                 <body>
@@ -483,7 +484,7 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                         </div>
                     </footer>
                     <style>{`
-                        .high-contrast-mode { filter: contrast(100) grayscale(1) !important; }
+                        .high-contrast-mode { filter: contrast(1000) grayscale(1) brightness(0.8) !important; }
                     `}</style>
                 </div>
             </div>

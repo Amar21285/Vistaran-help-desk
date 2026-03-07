@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useAuth, AuthProvider } from './hooks/useAuth';
 import { SettingsProvider, useSettings } from './hooks/useSettings';
 import { ThemeProvider, useTheme } from './hooks/useTheme';
@@ -74,12 +75,11 @@ const InfoModal: React.FC<{
 const AppContent: React.FC = () => {
     const { user, realUser, logout, updateUser, startImpersonation, stopImpersonation, can } = useAuth();
     const { wallpaper } = useTheme();
-    const { appName, notificationSettings } = useSettings();
     
     const [allUsers, setAllUsers] = useLocalStorage<User[]>('vistaran-helpdesk-users', USERS);
     const [allTickets, setAllTickets] = useLocalStorage<Ticket[]>('vistaran-helpdesk-tickets', TICKETS);
     const [allFiles, setAllFiles] = useLocalStorage<ManagedFile[]>('vistaran-helpdesk-files', FILES);
-    const [allTechnicians, setAllTechnicians] = useLocalStorage<Technician[]>('vistaran-helpdesk-technicians', TECHNICIANS);
+    const [allTechnicians] = useLocalStorage<Technician[]>('vistaran-helpdesk-technicians', TECHNICIANS);
     const [allSymptoms, setAllSymptoms] = useLocalStorage<Symptom[]>('vistaran-helpdesk-symptoms', SYMPTOMS);
     const [allTemplates, setAllTemplates] = useLocalStorage<TicketTemplate[]>('vistaran-helpdesk-templates', TICKET_TEMPLATES);
     const [allInventory, setAllInventory] = useLocalStorage<InventoryItem[]>('vistaran-helpdesk-inventory', INVENTORY);
@@ -101,19 +101,13 @@ const AppContent: React.FC = () => {
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
     const [infoModalContent, setInfoModalContent] = useState<{ title: string; message: React.ReactNode; actions?: ModalAction[] } | null>(null);
+    const [apiKeyWarning, setApiKeyWarning] = useState(false);
 
-    const addNotification = useCallback((title: string, message: string, type: 'ticket' | 'system' | 'alert' = 'system') => {
-        if (!notificationSettings.enableInAppNotifications) return;
-        const newNotif: AppNotification = {
-            id: `NTF${Date.now()}`,
-            title,
-            message,
-            timestamp: new Date().toISOString(),
-            isRead: false,
-            type
-        };
-        setNotifications(prev => [newNotif, ...prev].slice(0, 20));
-    }, [notificationSettings.enableInAppNotifications, setNotifications]);
+    useEffect(() => {
+        if (!process.env.GEMINI_API_KEY) {
+            setApiKeyWarning(true);
+        }
+    }, []);
 
     useEffect(() => {
         const viewPermissions: Record<string, Permission> = {
@@ -230,6 +224,21 @@ const AppContent: React.FC = () => {
                         setNotifications={setNotifications}
                     />
                     <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative custom-scrollbar">
+                        <div className="app-container">
+                            {apiKeyWarning && (
+                            <div className="mb-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+                                <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-800 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                                    <i className="fas fa-key"></i>
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-widest leading-none mb-1">AI Features Limited</p>
+                                    <p className="text-xs font-bold text-amber-800 dark:text-amber-200">Gemini API Key is not configured. AI suggestions and diagnostics will be disabled.</p>
+                                </div>
+                                <button onClick={() => setApiKeyWarning(false)} className="text-amber-400 hover:text-amber-600 transition">
+                                    <i className="fas fa-times"></i>
+                                </button>
+                            </div>
+                        )}
                         {scanToast && (
                             <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-10 duration-500">
                                 <div className="bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3">
@@ -244,6 +253,7 @@ const AppContent: React.FC = () => {
                             </div>
                         )}
                         {renderView()}
+                        </div>
                     </main>
                     <BottomNav 
                         currentView={currentView} 
@@ -269,13 +279,15 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => (
-    <ThemeProvider>
-        <SettingsProvider>
-            <AuthProvider>
-                <AppContent />
-            </AuthProvider>
-        </SettingsProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+        <ThemeProvider>
+            <SettingsProvider>
+                <AuthProvider>
+                    <AppContent />
+                </AuthProvider>
+            </SettingsProvider>
+        </ThemeProvider>
+    </ErrorBoundary>
 );
 
 export default App;

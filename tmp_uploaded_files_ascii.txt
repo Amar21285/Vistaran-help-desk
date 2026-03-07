@@ -1,0 +1,15 @@
+C:\Users\vista\Desktop\vistaran-help-desk (1)\-1.gitignore
+C:\Users\vista\Desktop\vistaran-help-desk (1)\Code-1.gs
+C:\Users\vista\Desktop\vistaran-help-desk (1)\email_setup-1.js
+C:\Users\vista\Desktop\vistaran-help-desk (1)\index-1.html
+C:\Users\vista\Desktop\vistaran-help-desk (1)\index-1.tsx
+C:\Users\vista\Desktop\vistaran-help-desk (1)\manifest-1.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\metadata-1.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\package-1.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\README-1.md
+C:\Users\vista\Desktop\vistaran-help-desk (1)\sw-1.js
+C:\Users\vista\Desktop\vistaran-help-desk (1)\tsconfig-1.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\types-1.ts
+C:\Users\vista\Desktop\vistaran-help-desk (1)\vercel-1.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\Vistaran_Master_Sync-1.json
+C:\Users\vista\Desktop\vistaran-help-desk (1)\vite,config-1.ts

@@ -169,7 +169,17 @@ const CreateTicket: React.FC<CreateTicketProps> = ({ symptoms, setTickets, setCu
                        message: `We've automatically selected the "${suggestedSymptom.department}" department and "${suggestedSymptom.name}" issue based on your description.`
                     });
                 }
+            } else {
+                // If no suggestion found, don't show error, just a subtle log or toast
+                console.log("AI could not find a matching category.");
             }
+        } catch (error) {
+            console.error("AI Suggestion Error:", error);
+            // Show a non-blocking error message
+            setInfoModalContent({
+                title: "AI Assistant Unavailable",
+                message: "We couldn't automatically categorize your ticket right now. Please select the department and issue type manually."
+            });
         } finally {
             setIsSuggesting(false);
         }
@@ -210,34 +220,54 @@ const CreateTicket: React.FC<CreateTicketProps> = ({ symptoms, setTickets, setCu
         logUserAction(user, `Created new ticket #${newTicket.id}.`);
 
         // --- DISPATCH EMAILS ---
+        let emailError = false;
         try {
             if (notificationSettings.userOnNewTicket) {
                 const userMailData = generateNewTicketUserEmail(newTicket, user, emailTemplates);
-                await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                     subject: userMailData.subject,
                     message: userMailData.body,
                     to_email: userMailData.to_email,
                     to_name: userMailData.to_name
                 });
+                if (!res.success) emailError = true;
             }
 
             if (notificationSettings.adminOnNewTicket) {
                 const adminUser = USERS.find(u => u.role === Role.ADMIN) || USERS[0];
                 const adminMailData = generateNewTicketAdminEmail(newTicket, user, adminUser, emailTemplates);
-                await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                     subject: adminMailData.subject,
                     message: adminMailData.body,
                     to_email: adminMailData.to_email,
                     to_name: adminMailData.to_name
                 });
+                if (!res.success) emailError = true;
             }
         } catch (error) {
             console.error("Email dispatch failed during ticket creation:", error);
+            emailError = true;
         }
 
         setIsSubmitting(false);
         resetForm();
-        setInfoModalContent({ title: 'Ticket Submitted!', message: `Your ticket #${newTicket.id} has been created and notifications dispatched.` });
+        
+        if (emailError) {
+            setInfoModalContent({ 
+                title: 'Ticket Created with Warnings', 
+                message: (
+                    <div className="space-y-3">
+                        <p>Your ticket <b>#{newTicket.id}</b> has been recorded in our database.</p>
+                        <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl text-amber-800 text-xs font-bold uppercase">
+                            <i className="fas fa-exclamation-triangle mr-2"></i>
+                            Notification Error: We couldn't send the confirmation emails. Please save your ticket ID for reference.
+                        </div>
+                    </div>
+                )
+            });
+        } else {
+            setInfoModalContent({ title: 'Ticket Submitted!', message: `Your ticket #${newTicket.id} has been created and notifications dispatched.` });
+        }
         setCurrentView('tickets');
     };
 

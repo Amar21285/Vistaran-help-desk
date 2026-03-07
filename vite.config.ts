@@ -7,6 +7,6 @@ export default defineConfig({
   // Use relative base path to ensure assets load correctly on GitHub Pages or cPanel
   base: './',
   define: {
-    'process.env.API_KEY': JSON.stringify(process.env.VITE_API_KEY || process.env.API_KEY)
+    'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.API_KEY || process.env.VITE_API_KEY)
   }
 });

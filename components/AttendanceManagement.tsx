@@ -28,7 +28,8 @@ const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: 
                         setIsStreamReady(true);
                     };
                 }
-            } catch (err) {
+            } catch {
+                // Camera access denied
                 alert("Camera access denied. Please enable permissions in your browser settings.");
                 onCancel();
             }
@@ -340,7 +341,9 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                         pdf.setDrawColor(0);
                         pdf.setLineWidth(0.1);
                         pdf.rect(margin + 90, currentY + 2, 21, 21);
-                    } catch (e) {}
+                    } catch {
+                        // Ignore image errors
+                    }
                 } else {
                     pdf.setFontSize(6);
                     pdf.setTextColor(150);
@@ -354,7 +357,9 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                         pdf.setDrawColor(0);
                         pdf.setLineWidth(0.1);
                         pdf.rect(margin + 135, currentY + 2, 21, 21);
-                    } catch (e) {}
+                    } catch {
+                        // Ignore image errors
+                    }
                 } else {
                     pdf.setFontSize(6);
                     pdf.setTextColor(150);

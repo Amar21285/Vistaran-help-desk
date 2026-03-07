@@ -93,7 +93,7 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                             transform: rotate(${rotation}deg) !important;
                             transform-origin: center center !important;
                         }
-                        .high-contrast-mode { filter: contrast(100) grayscale(1) !important; }
+                        .high-contrast-mode { filter: contrast(1000) grayscale(1) brightness(0.8) !important; }
                         svg, img { image-rendering: pixelated; }
                     </style>
                 </head>
@@ -405,7 +405,7 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-                .high-contrast-mode { filter: contrast(100) grayscale(1) !important; }
+                .high-contrast-mode { filter: contrast(1000) grayscale(1) brightness(0.8) !important; }
             `}</style>
         </div>
     );

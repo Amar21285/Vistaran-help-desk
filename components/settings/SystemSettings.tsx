@@ -271,10 +271,60 @@ const SystemSettings: React.FC = () => {
         });
     };
 
+    const handleSyncFromMaster = async () => {
+        try {
+            const response = await fetch('/Vistaran_Master_Sync.json');
+            if (!response.ok) throw new Error('Master file not found on server.');
+            const masterData = await response.json();
+            
+            if (typeof masterData !== 'object') throw new Error('Invalid master file format.');
+            
+            if (confirm("Warning: This will sync data from the master file and may overwrite your local changes. Proceed?")) {
+                Object.keys(masterData).forEach(key => {
+                    if (key.startsWith('vistaran-helpdesk-')) {
+                        const value = masterData[key];
+                        localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+                    }
+                });
+                alert("Master Data Sync Successful! System will now restart.");
+                window.location.reload();
+            }
+        } catch (error: any) {
+            alert(`Sync failed. Error: ${error.message}`);
+        }
+    };
+
     return (
         <>
             <div className="space-y-6">
-                {/* 1. REAL-TIME DATA SAFETY (HINDI INSTRUCTIONS ADDED) */}
+                {/* 1. MASTER DATA SYNC (NEW) */}
+                <div className="bg-gradient-to-br from-indigo-800 to-indigo-900 text-white p-10 rounded-[50px] shadow-2xl relative overflow-hidden border border-white/10">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -translate-y-20 translate-x-20"></div>
+                    <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
+                        <div className="space-y-4 max-w-2xl">
+                            <div className="flex items-center gap-4">
+                                <div className="w-14 h-14 rounded-2xl bg-indigo-500 flex items-center justify-center text-2xl shadow-lg">
+                                    <i className="fas fa-sync-alt"></i>
+                                </div>
+                                <div>
+                                    <h3 className="text-3xl font-black uppercase tracking-tighter">Master Data Sync</h3>
+                                    <p className="text-[10px] font-bold text-indigo-300 uppercase tracking-widest mt-1">Update Local Database from Server</p>
+                                </div>
+                            </div>
+                            <p className="text-slate-300 text-sm leading-relaxed">
+                                Use this to update your local database (Users, Inventory, Branches) with the latest data from the master file uploaded to the server.
+                            </p>
+                        </div>
+                        <button 
+                            onClick={handleSyncFromMaster}
+                            className="bg-white text-indigo-900 font-black px-12 py-6 rounded-[30px] shadow-2xl hover:bg-indigo-50 active:scale-95 transition-all text-xs uppercase tracking-[0.2em] flex items-center gap-3 shadow-indigo-500/20"
+                        >
+                            <i className="fas fa-cloud-download-alt"></i> Sync Now
+                        </button>
+                    </div>
+                </div>
+
+                {/* 2. REAL-TIME DATA SAFETY (HINDI INSTRUCTIONS ADDED) */}
                 <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-10 rounded-[50px] shadow-2xl relative overflow-hidden border border-white/10">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -translate-y-20 translate-x-20"></div>
                     <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">

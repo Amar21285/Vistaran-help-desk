@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, FormEvent, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { GoogleGenAI, Modality, LiveServerMessage } from "@google/genai";
 import { decode, decodeAudioData, encode } from '../utils/audio';
-import { FAQ_DATA, SYMPTOMS } from '../constants';
+import { FAQ_DATA } from '../constants';
 import { useAuth } from '../hooks/useAuth';
 import { Ticket } from '../types';
 
@@ -43,12 +43,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isTtsEnabled, setIsTtsEnabled] = useState(false);
-    const [isListening, setIsListening] = useState(false);
     const [isLiveActive, setIsLiveActive] = useState(false);
     
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const audioContextRef = useRef<AudioContext | null>(null);
-    const recognitionRef = useRef<any>(null);
     const liveSessionRef = useRef<any>(null);
     const autoCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -59,7 +57,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
             .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove Markdown links but keep text
             .replace(/[*#_~`>|]/g, ' ')               // Remove common Markdown characters
             .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '') // Remove Emojis
-            .replace(/[^\x00-\x7F]/g, "")           // Remove non-ASCII
+            .replace(/[^\x20-\x7F]/g, "")           // Remove non-ASCII
             .replace(/\s+/g, ' ')                    // Normalize whitespace
             .trim()
             .substring(0, 1000);                     // Limit length to avoid backend issues
@@ -72,7 +70,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
 
     const initAudioContext = () => {
         if (!audioContextRef.current) {
-            audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+            const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext;
+            audioContextRef.current = new AudioContextClass({ sampleRate: 24000 });
         }
         if (audioContextRef.current.state === 'suspended') audioContextRef.current.resume();
     };
@@ -103,7 +102,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
         
         try {
             initAudioContext();
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
             const response = await ai.models.generateContent({
                 model: "gemini-2.5-flash-preview-tts",
                 contents: [{ parts: [{ text: cleanText }] }],
@@ -133,9 +132,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
         setIsLiveActive(true);
         
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({sampleRate: 16000});
+            const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext;
+            const inputCtx = new AudioContextClass({sampleRate: 16000});
             
             const sessionPromise = ai.live.connect({
                 model: 'gemini-2.5-flash-native-audio-preview-12-2025',
@@ -200,7 +200,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
         setIsLoading(true);
 
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
             const knowledgeBase = FAQ_DATA.map(f => `Q: ${f.question}\nA: ${f.answer}`).join('\n\n');
             const systemInstruction = `Vistaran AI assistant for ${user?.name} (${user?.department}). Knowledge Base: ${knowledgeBase}. Provide simple, actionable support.`;
             
@@ -226,7 +226,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
             setHistory(prev => [...prev, { role: 'user', parts: [{ text: userMsg }] }, { role: 'model', parts: [{ text: fullAiText }] }]);
             
             if (isTtsEnabled) await playAudioResponse(fullAiText);
-        } catch (error) {
+        } catch (err) {
+            console.error('Chat error:', err);
             setMessages(prev => [...prev, { id: 'err', sender: 'ai', text: "Service temporary unavailable. Please retry." }]);
         } finally {
             setIsLoading(false);
