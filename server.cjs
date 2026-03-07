@@ -8,6 +8,9 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const server = createServer(app);
 
+// Trust proxy for production environments (Railway/Heroku/etc)
+app.set('trust proxy', 1);
+
 // Supabase configuration
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_ANON_KEY || '';
