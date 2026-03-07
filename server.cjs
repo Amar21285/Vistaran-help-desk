@@ -87,19 +87,56 @@ const dataFiles = {
   'invoices': path.join(dataDir, 'invoices.json')
 };
 
-// Load existing data from files
+// Load existing data from files with master backup fallback
 function loadDataFromFile() {
+  const masterPath = path.join(__dirname, 'Vistaran_Master_Sync_Update.json');
+  let masterData = null;
+
+  if (fs.existsSync(masterPath)) {
+    try {
+      masterData = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
+      console.log('Master backup found for fallback');
+    } catch (e) {
+      console.error('Failed to parse master backup:', e);
+    }
+  }
+
+  const storageKeyMap = {
+    'users': 'vistaran-helpdesk-users',
+    'tickets': 'vistaran-helpdesk-tickets',
+    'technicians': 'vistaran-helpdesk-technicians',
+    'files': 'vistaran-helpdesk-files',
+    'symptoms': 'vistaran-helpdesk-symptoms',
+    'templates': 'vistaran-helpdesk-templates',
+    'departments': 'vistaran-helpdesk-departments',
+    'inventory': 'vistaran-helpdesk-inventory',
+    'vendors': 'vistaran-helpdesk-vendors',
+    'challans': 'vistaran-helpdesk-challans',
+    'outward-invoices': 'vistaran-helpdesk-outward-invoices',
+    'purchase-orders': 'vistaran-helpdesk-purchase-orders'
+  };
+
   for (const [collection, filePath] of Object.entries(dataFiles)) {
     try {
+      let data = [];
       if (fs.existsSync(filePath)) {
         const rawData = fs.readFileSync(filePath, 'utf8');
-        const data = JSON.parse(rawData);
-        dataStores.set(collection, data);
-      } else {
-        // Initialize with empty array if file doesn't exist
-        dataStores.set(collection, []);
-        saveDataToFile(collection, []);
+        data = JSON.parse(rawData);
       }
+
+      // Fallback to master data if individual file is empty or missing
+      if ((!data || data.length === 0) && masterData) {
+        const masterKey = storageKeyMap[collection] || `vistaran-helpdesk-${collection}`;
+        if (masterData[masterKey]) {
+          data = masterData[masterKey];
+          console.log(`Fallback: Loaded ${collection} from master backup (${data.length} records)`);
+          // Save back to individual file
+          fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+        }
+      }
+
+      dataStores.set(collection, data || []);
+      console.log(`Loaded ${collection}: ${dataStores.get(collection).length} records`);
     } catch (err) {
       console.error(`Error loading ${collection} data:`, err);
       dataStores.set(collection, []);
