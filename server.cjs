@@ -38,6 +38,20 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
+// API endpoints for data access (Must be before static serving)
+app.get('/api/:collection', (req, res) => {
+  const { collection } = req.params;
+  if (dataStores.has(collection)) {
+    res.json(dataStores.get(collection));
+  } else {
+    res.status(404).json({ error: 'Collection not found' });
+  }
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: Date.now() });
+});
+
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
@@ -63,7 +77,14 @@ const dataFiles = {
   'vendors': path.join(dataDir, 'vendors.json'),
   'challans': path.join(dataDir, 'challans.json'),
   'outward-invoices': path.join(dataDir, 'outward-invoices.json'),
-  'purchase-orders': path.join(dataDir, 'purchase-orders.json')
+  'purchase-orders': path.join(dataDir, 'purchase-orders.json'),
+  'attendance': path.join(dataDir, 'attendance.json'),
+  'reimbursements': path.join(dataDir, 'reimbursements.json'),
+  'audit-logs': path.join(dataDir, 'audit-logs.json'),
+  'notifications': path.join(dataDir, 'notifications.json'),
+  'notification-settings': path.join(dataDir, 'notification-settings.json'),
+  'theme': path.join(dataDir, 'theme.json'),
+  'invoices': path.join(dataDir, 'invoices.json')
 };
 
 // Load existing data from files
@@ -91,8 +112,55 @@ function saveDataToFile(collection, data) {
   try {
     const filePath = dataFiles[collection];
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+    // Also update the master backup file in real-time
+    consolidateToMaster();
   } catch (err) {
     console.error(`Error saving ${collection} data:`, err);
+  }
+}
+
+// Consolidate all individual data files into a single master backup
+function consolidateToMaster() {
+  try {
+    const masterData = {};
+    const keyMap = {
+      'users': 'vistaran-helpdesk-users',
+      'tickets': 'vistaran-helpdesk-tickets',
+      'technicians': 'vistaran-helpdesk-technicians',
+      'files': 'vistaran-helpdesk-files',
+      'symptoms': 'vistaran-helpdesk-symptoms',
+      'templates': 'vistaran-helpdesk-templates',
+      'departments': 'vistaran-helpdesk-departments',
+      'inventory': 'vistaran-helpdesk-inventory',
+      'vendors': 'vistaran-helpdesk-vendors',
+      'challans': 'vistaran-helpdesk-challans',
+      'outward-invoices': 'vistaran-helpdesk-outward-invoices',
+      'purchase-orders': 'vistaran-helpdesk-purchase-orders',
+      'attendance': 'vistaran-helpdesk-attendance',
+      'reimbursements': 'vistaran-helpdesk-reimbursements',
+      'audit-logs': 'vistaran-helpdesk-audit-logs',
+      'notifications': 'vistaran-helpdesk-notifications',
+      'notification-settings': 'vistaran-helpdesk-notification-settings',
+      'theme': 'vistaran-helpdesk-theme',
+      'invoices': 'vistaran-helpdesk-invoices'
+    };
+
+    for (const [collection, file] of Object.entries(dataFiles)) {
+      if (fs.existsSync(file)) {
+        const content = fs.readFileSync(file, 'utf8');
+        try {
+          masterData[keyMap[collection] || `vistaran-helpdesk-${collection}`] = JSON.parse(content);
+        } catch (e) {
+          masterData[keyMap[collection] || `vistaran-helpdesk-${collection}`] = content;
+        }
+      }
+    }
+
+    const masterPath = path.join(__dirname, 'Vistaran_Master_Sync_Update.json');
+    fs.writeFileSync(masterPath, JSON.stringify(masterData, null, 2));
+  } catch (err) {
+    console.error('Error consolidating to master:', err);
   }
 }
 
@@ -187,6 +255,10 @@ io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
   // Send initial data to the newly connected client
+  console.log(`Sending INITIAL_SYNC to ${socket.id} with:`, {
+    users: dataStores.get('users')?.length || 0,
+    inventory: dataStores.get('inventory')?.length || 0
+  });
   socket.emit('data_update', {
     type: 'INITIAL_SYNC',
     data: Object.fromEntries(dataStores)
@@ -231,9 +303,15 @@ io.on('connection', (socket) => {
     console.log('User disconnected:', socket.id);
   });
 });
+// API endpoints for data access
+// (Removed from here, moved to top)
 
 // Serve the index.html file for all routes (SPA support)
-app.get(/^(?!\/api|\/data).*$/, (req, res) => {
+app.get('*', (req, res, next) => {
+  // If it's an API request that wasn't handled, return 404 JSON, not HTML
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 

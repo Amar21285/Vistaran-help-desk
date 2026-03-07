@@ -1,0 +1,10 @@
+{
+  "adminOnNewTicket": true,
+  "userOnNewTicket": false,
+  "userOnTicketResolved": true,
+  "adminOnTicketResolved": true,
+  "techOnTicketAssigned": true,
+  "userOnTicketStatusChanged": true,
+  "enableSMSWhatsApp": true,
+  "enableInAppNotifications": true
+}
