@@ -5,6 +5,8 @@ import { Ticket, User, Symptom } from '../types';
 const BASIC_MODEL = 'gemini-3-flash-preview';
 const PRO_MODEL = 'gemini-3-pro-preview';
 
+// Project Info: projects/384478807208 (384478807208)
+
 /**
  * Generates a concise summary of a help desk ticket.
  */
@@ -37,7 +39,8 @@ export const generateTicketSummary = async (ticket: Ticket, users: User[]): Prom
 
     try {
         // Create a new instance right before each call to ensure the latest API key is used
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAIKey = process.env.GEMINI_API_KEY || process.env.VITE_API_KEY;
+        const ai = new GoogleGenAI({ apiKey: genAIKey });
         const response = await ai.models.generateContent({
             model: BASIC_MODEL,
             contents: prompt,
@@ -80,7 +83,8 @@ export const suggestTicketReply = async (ticket: Ticket, symptomName?: string): 
 
     try {
         // Create a new instance right before each call to ensure the latest API key is used
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAIKey = process.env.GEMINI_API_KEY || process.env.VITE_API_KEY;
+        const ai = new GoogleGenAI({ apiKey: genAIKey });
         const response = await ai.models.generateContent({
             model: BASIC_MODEL,
             contents: prompt,
@@ -115,7 +119,8 @@ export const getTicketDiagnostic = async (ticket: Ticket, symptomName: string, q
 
     try {
         // Create a new instance right before each call to ensure the latest API key is used
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAIKey = process.env.GEMINI_API_KEY || process.env.VITE_API_KEY;
+        const ai = new GoogleGenAI({ apiKey: genAIKey });
         const response = await ai.models.generateContent({
             model: BASIC_MODEL,
             contents: prompt,
@@ -145,7 +150,8 @@ export const researchTicketIssue = async (ticket: Ticket): Promise<{ summary: st
 
     try {
         // Create a new instance right before each call to ensure the latest API key is used
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAIKey = process.env.GEMINI_API_KEY || process.env.VITE_API_KEY;
+        const ai = new GoogleGenAI({ apiKey: genAIKey });
         const response = await ai.models.generateContent({
             model: PRO_MODEL,
             contents: prompt,
@@ -187,7 +193,8 @@ export const suggestTicketCategory = async (description: string, symptoms: Sympt
 
     try {
         // Create a new instance right before each call to ensure the latest API key is used
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAIKey = process.env.GEMINI_API_KEY || process.env.VITE_API_KEY;
+        const ai = new GoogleGenAI({ apiKey: genAIKey });
         const response = await ai.models.generateContent({
             model: BASIC_MODEL,
             contents: prompt,
@@ -202,7 +209,7 @@ export const suggestTicketCategory = async (description: string, symptoms: Sympt
                 },
             },
         });
-        
+
         const result = JSON.parse(response.text || '{}');
         if (result.symptomId && symptoms.some(s => s.id === result.symptomId)) {
             return result.symptomId;
