@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { User, Ticket, TicketStatus } from '../types';
+import { User, Ticket, TicketStatus, Role } from '../types';
 import { useAuth } from '../hooks/useAuth';
 
 interface ProfileProps {
@@ -20,11 +20,11 @@ const StatItem: React.FC<{ iconClass: string; value: string | number; label: str
 
 const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser }) => {
     const { user } = useAuth();
-    
+
     const userStats = useMemo(() => {
         if (!user) return { total: 0, pending: 0, resolved: 0, lastActivity: 'Never' };
         const userTickets = tickets.filter(t => t.userId === user.id);
-        const lastTicket = userTickets.sort((a,b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime())[0];
+        const lastTicket = userTickets.sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime())[0];
         return {
             total: userTickets.length,
             pending: userTickets.filter(t => t.status !== TicketStatus.RESOLVED).length,
@@ -37,25 +37,27 @@ const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser }) => {
 
     return (
         <div className="space-y-8">
-             <header className="flex justify-between items-center">
+            <header className="flex justify-between items-center">
                 <div>
                     <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">My Profile</h2>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">Manage your personal account settings and information</p>
                 </div>
-                <button 
-                    onClick={() => onEditUser(user)} 
-                    className="bg-primary text-white font-semibold px-4 py-2 rounded-lg hover:bg-primary-hover transition flex items-center gap-2"
-                >
-                    <i className="fas fa-edit"></i> Edit Profile
-                </button>
+                {(user.role === Role.ADMIN || (user.role as string) === 'Admin') && (
+                    <button
+                        onClick={() => onEditUser(user)}
+                        className="bg-primary text-white font-semibold px-4 py-2 rounded-lg hover:bg-primary-hover transition flex items-center gap-2"
+                    >
+                        <i className="fas fa-edit"></i> Edit Profile
+                    </button>
+                )}
             </header>
 
             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
-                 <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4">Personal Information</h3>
-                 <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                    <img 
-                        src={user.photo || `https://ui-avatars.com/api/?name=${user.name}&background=random`} 
-                        alt="My Profile" 
+                <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4">Personal Information</h3>
+                <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <img
+                        src={user.photo || `https://ui-avatars.com/api/?name=${user.name}&background=random`}
+                        alt="My Profile"
                         className="w-32 h-32 rounded-full object-cover border-4 border-primary shadow-md"
                     />
                     <div className="flex-1 w-full sm:w-auto">
@@ -70,7 +72,7 @@ const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser }) => {
                             <p><strong>Member Since:</strong> {new Date(user.joinedDate).toLocaleDateString()}</p>
                         </div>
                     </div>
-                 </div>
+                </div>
             </div>
 
             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
@@ -103,9 +105,9 @@ const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser }) => {
                 </div>
             </div>
 
-             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
                 <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4">My Activity</h3>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatItem iconClass="fas fa-ticket-alt" value={userStats.total} label="Total Tickets" />
                     <StatItem iconClass="fas fa-clock" value={userStats.pending} label="Pending Tickets" />
                     <StatItem iconClass="fas fa-check-circle" value={userStats.resolved} label="Resolved Tickets" />

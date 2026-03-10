@@ -21,7 +21,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
     const [userToImpersonate, setUserToImpersonate] = useState<User | null>(null);
     const [isConfirmingBulkDelete, setIsConfirmingBulkDelete] = useState(false);
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-    
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [editingPhotoForUserId, setEditingPhotoForUserId] = useState<string | null>(null);
     const [photoMenuForUserId, setPhotoMenuForUserId] = useState<string | null>(null);
@@ -40,7 +40,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
     const filteredUsers = useMemo(() => {
         if (!globalFilter) return users;
         const lowercasedFilter = globalFilter.toLowerCase();
-        return users.filter(user => 
+        return users.filter(user =>
             user.name.toLowerCase().includes(lowercasedFilter) ||
             user.email.toLowerCase().includes(lowercasedFilter)
         );
@@ -107,6 +107,10 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
     };
 
     const handleDeleteUser = (user: User) => {
+        if (realUser?.role !== Role.ADMIN && (realUser?.role as string) !== 'Admin') {
+            alert("Only admins can delete users.");
+            return;
+        }
         if (realUser?.id === user.id) {
             alert("You cannot delete your own account.");
             return;
@@ -126,7 +130,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
         onImpersonate(userToImpersonate.id);
         setUserToImpersonate(null);
     };
-    
+
     const handleBulkStatusChange = (status: UserStatus) => {
         setUsers(prev => prev.map(u => selectedUserIds.includes(u.id) ? { ...u, status } : u));
         logUserAction(realUser, `Bulk updated status to "${status}" for ${selectedUserIds.length} users.`);
@@ -134,6 +138,10 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
     };
 
     const handleConfirmBulkDelete = () => {
+        if (realUser?.role !== Role.ADMIN && (realUser?.role as string) !== 'Admin') {
+            alert("Only admins can delete users.");
+            return;
+        }
         setUsers(prev => prev.filter(u => !selectedUserIds.includes(u.id)));
         logUserAction(realUser, `Bulk deleted ${selectedUserIds.length} users.`);
         setSelectedUserIds([]);
@@ -154,7 +162,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                     </button>
                 </div>
             </header>
-            
+
             {isCreateFormVisible && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 modal-backdrop">
                     <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-2xl modal-content overflow-hidden flex flex-col">
@@ -165,7 +173,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                             </button>
                         </header>
                         <form onSubmit={handleCreateUser} className="p-6 space-y-4 overflow-y-auto">
-                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Full Name *</label>
                                     <input type="text" name="name" required className="mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700" placeholder="John Doe" />
@@ -186,7 +194,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                                     <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Password *</label>
                                     <input type="password" name="password" required className="mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700" placeholder="••••••••" />
                                 </div>
-                                 <div>
+                                <div>
                                     <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Role *</label>
                                     <select name="role" required className="mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700">
                                         <option value={Role.USER}>User (Branch/Entity)</option>
@@ -199,7 +207,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                                 <div>
                                     <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Department *</label>
                                     <select name="department" defaultValue={departments[0] || ''} required className="mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700">
-                                         {departments.map(d => <option key={d} value={d}>{d}</option>)}
+                                        {departments.map(d => <option key={d} value={d}>{d}</option>)}
                                     </select>
                                 </div>
                                 <div>
@@ -218,8 +226,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                     </div>
                 </div>
             )}
-            
-            {selectedUserIds.length > 0 && (
+
+            {selectedUserIds.length > 0 && (realUser?.role === Role.ADMIN || (realUser?.role as string) === 'Admin') && (
                 <div className="bg-slate-100 dark:bg-slate-900/50 p-4 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-4 border dark:border-slate-700">
                     <span className="font-semibold text-slate-700 dark:text-slate-200">{selectedUserIds.length} user(s) selected</span>
                     <div className="flex items-center gap-2 flex-wrap">
@@ -231,7 +239,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
             )}
 
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-x-auto">
-                 <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                     <thead className="bg-slate-50 dark:bg-slate-700">
                         <tr>
                             <th className="px-4 py-3">
@@ -255,7 +263,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                         {filteredUsers.map(user => (
                             <tr key={user.id} className={selectedUserIds.includes(user.id) ? 'bg-primary-light dark:dark:bg-primary-light-dark' : ''}>
                                 <td className="px-4 py-4">
-                                     <input
+                                    <input
                                         type="checkbox"
                                         className="h-4 w-4 rounded text-primary focus:ring-primary border-slate-300"
                                         checked={selectedUserIds.includes(user.id)}
@@ -342,53 +350,61 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                                     )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                                    <div className="flex items-center space-x-2">
-                                        <span className="font-mono text-slate-700 dark:text-slate-200">{user.password}</span>
-                                        <button onClick={() => user.password && navigator.clipboard.writeText(user.password).then(() => alert(`Password for ${user.name} copied.`))} className="text-slate-400 hover:text-primary transition" title="Copy password">
-                                            <i className="fas fa-copy"></i>
-                                        </button>
-                                    </div>
+                                    {(realUser?.role === Role.ADMIN || (realUser?.role as string) === 'Admin') ? (
+                                        <div className="flex items-center space-x-2">
+                                            <span className="font-mono text-slate-700 dark:text-slate-200">{user.password}</span>
+                                            <button onClick={() => user.password && navigator.clipboard.writeText(user.password).then(() => alert(`Password for ${user.name} copied.`))} className="text-slate-400 hover:text-primary transition" title="Copy password">
+                                                <i className="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <span className="italic text-xs opacity-50">Hidden</span>
+                                    )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                     {realUser?.id === user.id ? (
+                                    {realUser?.id === user.id ? (
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === UserStatus.ACTIVE ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{user.status}</span>
-                                     ) : (
+                                    ) : (
                                         <select value={user.status} onChange={(e) => setUsers(prev => prev.map(u => u.id === user.id ? { ...u, status: e.target.value as UserStatus } : u))} className="w-full p-1 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition" aria-label={`Change status for ${user.name}`}>
                                             <option value={UserStatus.ACTIVE}>Active</option>
                                             <option value={UserStatus.INACTIVE}>Inactive</option>
                                         </select>
-                                     )}
+                                    )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                    <button 
-                                        onClick={() => setUserToImpersonate(user)} 
-                                        className="p-2 text-yellow-600 hover:text-yellow-900 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition" 
-                                        title="Impersonate User" 
-                                        disabled={realUser?.id === user.id}
-                                    >
-                                        <i className="fas fa-user-secret"></i>
-                                    </button>
-                                    <button 
-                                        onClick={() => onEditUser(user)} 
-                                        className="p-2 text-primary hover:text-blue-900 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition" 
-                                        title="Edit User"
-                                    >
-                                        <i className="fas fa-edit"></i>
-                                    </button>
-                                    <button 
-                                        onClick={() => handleDeleteUser(user)} 
-                                        className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition" 
-                                        title="Delete User" 
-                                        disabled={realUser?.id === user.id}
-                                    >
-                                        <i className="fas fa-trash"></i>
-                                    </button>
+                                    {(realUser?.role === Role.ADMIN || (realUser?.role as string) === 'Admin') && (
+                                        <>
+                                            <button
+                                                onClick={() => setUserToImpersonate(user)}
+                                                className="p-2 text-yellow-600 hover:text-yellow-900 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition"
+                                                title="Impersonate User"
+                                                disabled={realUser?.id === user.id}
+                                            >
+                                                <i className="fas fa-user-secret"></i>
+                                            </button>
+                                            <button
+                                                onClick={() => onEditUser(user)}
+                                                className="p-2 text-primary hover:text-blue-900 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition"
+                                                title="Edit User"
+                                            >
+                                                <i className="fas fa-edit"></i>
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteUser(user)}
+                                                className="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+                                                title="Delete User"
+                                                disabled={realUser?.id === user.id}
+                                            >
+                                                <i className="fas fa-trash"></i>
+                                            </button>
+                                        </>
+                                    )}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                 {filteredUsers.length === 0 && <p className="text-center p-8 text-slate-500 dark:text-slate-400">{globalFilter ? `No users found for "${globalFilter}".` : "No users to display."}</p>}
+                {filteredUsers.length === 0 && <p className="text-center p-8 text-slate-500 dark:text-slate-400">{globalFilter ? `No users found for "${globalFilter}".` : "No users to display."}</p>}
             </div>
 
             {/* Impersonation Confirmation Modal */}
@@ -423,9 +439,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                     </div>
                 </div>
             )}
-            
+
             {isConfirmingBulkDelete && (
-                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 modal-backdrop">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 modal-backdrop">
                     <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl p-6 w-full max-w-md text-center modal-content">
                         <div className="text-red-500 mb-4"><i className="fas fa-exclamation-triangle fa-3x"></i></div>
                         <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Confirm Bulk Deletion</h2>
