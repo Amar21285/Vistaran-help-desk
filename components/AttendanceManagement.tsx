@@ -328,6 +328,129 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
         }
     };
 
+    const handleExportMonthlyPDF = async () => {
+        if (!selectedEmployeeId) return;
+        setIsGeneratingPDF(true);
+        try {
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 15;
+            const emp = users.find(u => u.id === selectedEmployeeId);
+            const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][selectedMonth];
+
+            const drawHeader = (pageNum: number) => {
+                pdf.setFillColor(15, 23, 42);
+                pdf.rect(0, 0, pageWidth, 50, 'F');
+                pdf.setTextColor(255, 255, 255);
+                pdf.setFontSize(22);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text("Monthly Attendance Report", margin, 20);
+                pdf.setFontSize(10);
+                pdf.setFont('helvetica', 'normal');
+                pdf.text(`EMPLOYEE: ${emp?.name || 'N/A'} (${emp?.employeeId || 'NO ID'})`, margin, 32);
+                pdf.text(`PERIOD: ${monthName} ${selectedYear}`, margin, 38);
+                pdf.text(`PAGE: ${pageNum}`, pageWidth - 30, 20);
+            };
+
+            const drawTableHeaders = (y: number) => {
+                pdf.setFillColor(241, 245, 249);
+                pdf.rect(margin, y, pageWidth - (margin * 2), 10, 'F');
+                pdf.setTextColor(30, 41, 59);
+                pdf.setFontSize(8);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text("DATE", margin + 5, y + 7);
+                pdf.text("DAY", margin + 35, y + 7);
+                pdf.text("IN TIME", margin + 65, y + 7);
+                pdf.text("OUT TIME", margin + 95, y + 7);
+                pdf.text("STATUS", margin + 125, y + 7);
+                pdf.text("NOTES", margin + 155, y + 7);
+                return y + 10;
+            };
+
+            let pageNum = 1;
+            drawHeader(pageNum);
+            let currentY = 60;
+            currentY = drawTableHeaders(currentY);
+
+            const daysCount = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+            for (let d = 1; d <= daysCount; d++) {
+                const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const record = attendance.find(r => r.userId === selectedEmployeeId && r.date === dateStr);
+                const dateObj = new Date(dateStr);
+                const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
+
+                if (currentY + 12 > pageHeight - 30) {
+                    pdf.addPage();
+                    pageNum++;
+                    drawHeader(pageNum);
+                    currentY = 60;
+                    currentY = drawTableHeaders(currentY);
+                }
+
+                pdf.setFontSize(8);
+                pdf.setFont('helvetica', isWeekend ? 'italic' : 'normal');
+                pdf.setTextColor(isWeekend ? 150 : 30, isWeekend ? 150 : 41, isWeekend ? 150 : 59);
+
+                pdf.text(dateStr, margin + 5, currentY + 7);
+                pdf.text(dateObj.toLocaleDateString([], { weekday: 'short' }), margin + 35, currentY + 7);
+                pdf.text(record?.checkIn ? new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-', margin + 65, currentY + 7);
+                pdf.text(record?.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-', margin + 95, currentY + 7);
+
+                if (record) {
+                    const statusColor = record.status === AttendanceStatus.PRESENT ? [16, 185, 129] : record.status === AttendanceStatus.LATE ? [245, 158, 11] : [239, 68, 68];
+                    pdf.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.text(record.status, margin + 125, currentY + 7);
+                } else {
+                    pdf.setTextColor(isWeekend ? 150 : 239, isWeekend ? 150 : 68, isWeekend ? 150 : 68);
+                    pdf.text(isWeekend ? 'WEEKEND' : 'ABSENT', margin + 125, currentY + 7);
+                }
+
+                pdf.setTextColor(100);
+                pdf.setFont('helvetica', 'normal');
+                pdf.text(record?.notes || '-', margin + 155, currentY + 7, { maxWidth: 30 });
+
+                pdf.setDrawColor(241, 245, 249);
+                pdf.line(margin, currentY + 10, pageWidth - margin, currentY + 10);
+                currentY += 10;
+            }
+
+            if (currentY + 40 > pageHeight) {
+                pdf.addPage();
+                pageNum++;
+                drawHeader(pageNum);
+                currentY = 60;
+            }
+
+            currentY += 10;
+            pdf.setFillColor(248, 250, 252);
+            pdf.rect(margin, currentY, pageWidth - (margin * 2), 30, 'F');
+            pdf.setDrawColor(226, 232, 240);
+            pdf.rect(margin, currentY, pageWidth - (margin * 2), 30, 'S');
+
+            pdf.setTextColor(30, 41, 59);
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text("Monthly Summary", margin + 5, currentY + 8);
+
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'normal');
+            const present = attendance.filter(r => r.userId === selectedEmployeeId && new Date(r.date).getMonth() === selectedMonth && new Date(r.date).getFullYear() === selectedYear && r.status === AttendanceStatus.PRESENT).length;
+            const late = attendance.filter(r => r.userId === selectedEmployeeId && new Date(r.date).getMonth() === selectedMonth && new Date(r.date).getFullYear() === selectedYear && r.status === AttendanceStatus.LATE).length;
+            const totalDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+            const absent = totalDays - (present + late);
+
+            pdf.text(`Total Present: ${present}`, margin + 5, currentY + 18);
+            pdf.text(`Late Entries: ${late}`, margin + 60, currentY + 18);
+            pdf.text(`Absent/Leaves: ${absent}`, margin + 115, currentY + 18);
+
+            pdf.save(`Monthly_Register_${monthName}_${selectedYear}_${emp?.name || 'Staff'}.pdf`);
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    };
+
     return (
         <div className="space-y-10 max-w-6xl mx-auto pb-24">
             {showCamera && <CameraCapture isOut={isOutMode} onCapture={photo => { setCapturedPhoto(photo); setShowCamera(false); fetchLocation(); }} onCancel={() => setShowCamera(false)} />}
@@ -573,6 +696,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                                     link.download = `Monthly_Register_${selectedMonth + 1}_${selectedYear}_${selectedEmployeeId}.csv`;
                                     link.click();
                                 }} className="bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center gap-2 uppercase tracking-widest text-[10px]"><i className="fas fa-file-excel"></i> CSV Register</button>
+                                <button onClick={handleExportMonthlyPDF} disabled={isGeneratingPDF} className="bg-rose-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50"><i className={isGeneratingPDF ? "fas fa-spinner fa-spin" : "fas fa-file-pdf"}></i> {isGeneratingPDF ? 'Compiling Report...' : 'PDF Register'}</button>
                             </div>
                         </div>
 
