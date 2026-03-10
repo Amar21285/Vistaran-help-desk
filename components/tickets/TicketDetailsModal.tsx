@@ -40,18 +40,18 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ ticket, technic
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value as Status;
-    setEditedTicket(prev => ({ 
-        ...prev, 
-        status: newStatus,
-        dateResolved: newStatus === Status.RESOLVED ? new Date().toISOString() : prev.dateResolved 
+    setEditedTicket(prev => ({
+      ...prev,
+      status: newStatus,
+      dateResolved: newStatus === Status.RESOLVED ? new Date().toISOString() : prev.dateResolved
     }));
   };
 
   const handleSave = () => {
     if (onUpdate) {
       onUpdate(editedTicket);
-       // Show a toast or notification for success
-       console.log("Ticket updated and automation mail sent to user and admin.");
+      // Show a toast or notification for success
+      console.log("Ticket updated and automation mail sent to user and admin.");
     }
   };
 
@@ -82,11 +82,11 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ ticket, technic
 
           <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-               <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
                 {isEditable ? (
                   <select name="status" value={editedTicket.status} onChange={handleStatusChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600">
-                    {Object.values(Status).map(s => <option key={s} value={s}>{s}</option>)}
+                    {(Object.values(Status) as Status[]).map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 ) : (
                   <p>{editedTicket.status}</p>
@@ -105,21 +105,21 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ ticket, technic
               </div>
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes</label>
-                 {isEditable ? (
-                    <textarea name="notes" value={editedTicket.notes} onChange={handleChange} rows={4} className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600"></textarea>
-                 ) : (
-                    <p className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 p-2 rounded">{editedTicket.notes || 'No notes yet.'}</p>
-                 )}
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes</label>
+              {isEditable ? (
+                <textarea name="notes" value={editedTicket.notes} onChange={handleChange} rows={4} className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600"></textarea>
+              ) : (
+                <p className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 p-2 rounded">{editedTicket.notes || 'No notes yet.'}</p>
+              )}
             </div>
           </div>
         </div>
-        
+
         {isEditable && (
-            <div className="p-6 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-end space-x-3">
-                <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 dark:hover:bg-gray-500">Cancel</button>
-                <button onClick={handleSave} className="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-700">Save Changes</button>
-            </div>
+          <div className="p-6 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-end space-x-3">
+            <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 dark:hover:bg-gray-500">Cancel</button>
+            <button onClick={handleSave} className="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-700">Save Changes</button>
+          </div>
         )}
       </div>
     </div>
@@ -127,4 +127,3 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ ticket, technic
 };
 
 export default TicketDetailsModal;
-   

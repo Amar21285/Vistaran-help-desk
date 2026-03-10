@@ -57,6 +57,9 @@ export enum TicketStatus {
     RESOLVED = 'Resolved',
 }
 
+export type Status = TicketStatus;
+export const Status = TicketStatus;
+
 export enum FileType {
     IMAGE = 'Image',
     PDF = 'PDF',
@@ -121,15 +124,15 @@ export interface InvoiceItem {
     quantity: number;
     unit: string;
     rate: number;
-    gstRate: number; 
-    discount?: number; 
+    gstRate: number;
+    discount?: number;
     remarks?: string;
-    serialNumber?: string; 
+    serialNumber?: string;
 }
 
 export interface Invoice {
-    id: string; 
-    vendorId: string; 
+    id: string;
+    vendorId: string;
     dateIssued: string;
     dueDate: string;
     challanRef?: string;
@@ -217,7 +220,7 @@ export interface AuditLogEntry {
     userName: string;
     action: string;
     timestamp: string;
-    ip: string; 
+    ip: string;
 }
 
 export interface AppNotification {
@@ -254,7 +257,7 @@ export interface InventoryItem {
     name: string; // Model Name
     category: string; // Asset Type (Laptop, Desktop, etc.)
     quantity: number;
-    unit: string; 
+    unit: string;
     minStock: number;
     vendorId: string;
     location?: string;
@@ -271,7 +274,7 @@ export interface InventoryItem {
     warrantyStart?: string;
     warrantyEnd?: string;
     amcStatus?: boolean;
-    invoiceFile?: string; 
+    invoiceFile?: string;
     screenSize?: string;
     resolution?: string;
     refreshRate?: string;
@@ -305,7 +308,7 @@ export interface ReceivingChallanItem {
 }
 
 export interface ReceivingChallan {
-    id: string; 
+    id: string;
     vendorId: string;
     dateReceived: string;
     receivedByUserId: string;
@@ -330,7 +333,7 @@ export interface PurchaseOrderItem {
 }
 
 export interface PurchaseOrder {
-    id: string; 
+    id: string;
     vendorId: string;
     dateCreated: string;
     expectedDeliveryDate: string;
