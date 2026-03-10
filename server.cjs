@@ -8,6 +8,9 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const server = createServer(app);
 
+// Use JSON body parser for POST requests
+app.use(express.json());
+
 // Trust proxy for production environments (Railway/Heroku/etc)
 app.set('trust proxy', 1);
 
@@ -53,6 +56,32 @@ app.get('/api/:collection', (req, res) => {
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: Date.now() });
+});
+
+app.post('/api/login', (req, res) => {
+  const { identity, password } = req.body;
+  const users = dataStores.get('users') || [];
+
+  if (!identity) {
+    return res.status(400).json({ error: 'Identity (name or email) is required' });
+  }
+
+  const foundUser = users.find(u =>
+    (u.email?.toLowerCase() === identity.toLowerCase() || u.name?.toLowerCase() === identity.toLowerCase()) &&
+    String(u.password) === String(password)
+  );
+
+  if (!foundUser) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  if (foundUser.status?.toLowerCase() !== 'active') {
+    return res.status(403).json({ error: 'User account is inactive' });
+  }
+
+  // Return user without password
+  const { password: _, ...userWithoutPassword } = foundUser;
+  res.json(userWithoutPassword);
 });
 
 // Serve static files from the 'dist' directory
