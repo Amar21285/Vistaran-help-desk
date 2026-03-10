@@ -329,7 +329,6 @@ const TicketManagement: React.FC<TicketManagementProps> = ({ tickets, setTickets
                     onSave={handleTicketSave}
                     technicians={technicians}
                     users={users}
-                    setInfoModalContent={setInfoModalContent}
                 />
             )}
             

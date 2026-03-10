@@ -1,8 +1,8 @@
 
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Ticket, TicketStatus, Priority, Technician, User, TicketHistory, Role, ChatMessage, Symptom } from '../types';
 import { useAuth } from '../hooks/useAuth';
-import { generateTicketSummary, getTicketDiagnostic, suggestTicketReply } from '../utils/genai';
+import { generateTicketSummary, suggestTicketReply } from '../utils/genai';
 import TicketHistoryView from './TicketHistoryView';
 import { useSettings } from '../hooks/useSettings';
 import { logUserAction } from '../utils/auditLogger';
@@ -24,10 +24,9 @@ interface TicketModalProps {
     technicians: Technician[];
     users: User[];
     symptoms?: Symptom[];
-    setInfoModalContent: (content: { title: string; message: React.ReactNode; actions?: any[] } | null) => void;
 }
 
-const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, technicians, users, symptoms = [], setInfoModalContent }) => {
+const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, technicians, users, symptoms = [] }) => {
     const { user, realUser } = useAuth();
     const { notificationSettings, emailjsServiceId, emailjsPublicKey, emailTemplates } = useSettings();
     
@@ -36,12 +35,22 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
     const [assignedTechId, setAssignedTechId] = useState(ticket.assignedTechId);
     const [notes, setNotes] = useState(ticket.notes || '');
     const [cc, setCc] = useState(ticket.cc || '');
-    const [history, setHistory] = useState<TicketHistory[]>(ticket.history || []);
+    const history = ticket.history || [];
     
     const [summary, setSummary] = useState('Generating summary...');
     const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     
+    const handleRefreshSummary = React.useCallback(async () => {
+        setIsGeneratingSummary(true);
+        try {
+            const s = await generateTicketSummary(ticket, users);
+            setSummary(s);
+        } finally {
+            setIsGeneratingSummary(false);
+        }
+    }, [ticket, users]);
+
     const [newMessage, setNewMessage] = useState('');
     const [chatAttachment, setChatAttachment] = useState<File | null>(null);
     const [chatAttachmentPreview, setChatAttachmentPreview] = useState<string>('');
@@ -54,23 +63,22 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
     const chatInputRef = useRef<HTMLTextAreaElement>(null);
 
     const symptomName = useMemo(() => symptoms.find(s => s.id === ticket.symptomId)?.name || 'General Issue', [symptoms, ticket.symptomId]);
-
-    const handleRefreshSummary = useCallback(async () => {
-        setIsGeneratingSummary(true);
-        try {
-            const s = await generateTicketSummary(ticket, users);
-            setSummary(s);
-        } catch (error) {
-            console.error("Summary Generation Error:", error);
-            setSummary("AI Summary currently unavailable. Please check back later.");
-        } finally {
-            setIsGeneratingSummary(false);
-        }
-    }, [ticket, users]);
+    const reporter = useMemo(() => users.find(u => u.id === ticket.userId), [users, ticket.userId]);
+    const assignedTech = useMemo(() => technicians.find(t => t.id === assignedTechId), [technicians, assignedTechId]);
+    
+    const ticketAge = useMemo(() => {
+        const start = new Date(ticket.dateCreated).getTime();
+        const end = ticket.dateResolved ? new Date(ticket.dateResolved).getTime() : Date.now();
+        const diff = end - start;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        if (days > 0) return `${days}d ${hours}h`;
+        return `${hours}h`;
+    }, [ticket.dateCreated, ticket.dateResolved]);
 
     useEffect(() => { 
         handleRefreshSummary(); 
-    }, [ticket.id, handleRefreshSummary]);
+    }, [handleRefreshSummary]);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -84,12 +92,6 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
         try {
             const suggestion = await suggestTicketReply(ticket, symptomName);
             setSuggestedReply(suggestion);
-        } catch (error) {
-            console.error("Reply Suggestion Error:", error);
-            setInfoModalContent({
-                title: "AI Suggestion Failed",
-                message: "We couldn't generate a reply suggestion at this time. Please try again or draft your own response."
-            });
         } finally {
             setIsSuggestingReply(false);
         }
@@ -195,7 +197,6 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
         };
 
         // --- EMAIL DISPATCH ---
-        let emailError = false;
         try {
             const originalUser = users.find(u => u.id === ticket.userId);
             
@@ -203,27 +204,24 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
             if (isResolving && originalUser) {
                 if (notificationSettings.userOnTicketResolved) {
                     const uMail = generateResolvedTicketUserEmail(finalTicket, originalUser, user, emailTemplates);
-                    const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                    await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                         subject: uMail.subject, message: uMail.body, to_email: uMail.to_email, to_name: uMail.to_name
                     });
-                    if (!res.success) emailError = true;
                 }
                 if (notificationSettings.adminOnTicketResolved) {
                     const adminUser = USERS.find(u => u.role === Role.ADMIN) || USERS[0];
                     const aMail = generateResolvedTicketAdminEmail(finalTicket, originalUser, adminUser, user, emailTemplates);
-                    const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                    await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                         subject: aMail.subject, message: aMail.body, to_email: aMail.to_email, to_name: aMail.to_name
                     });
-                    if (!res.success) emailError = true;
                 }
             } 
             // 2. Status Update Mails
             else if (isStatusChanged && originalUser && notificationSettings.userOnTicketStatusChanged) {
                 const uMail = generateStatusUpdateUserEmail(finalTicket, originalUser, user, emailTemplates);
-                const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                     subject: uMail.subject, message: uMail.body, to_email: uMail.to_email, to_name: uMail.to_name
                 });
-                if (!res.success) emailError = true;
             }
 
             // 3. Assignment Mails
@@ -231,27 +229,17 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
                 const tech = technicians.find(t => t.id === assignedTechId);
                 if (tech) {
                     const tMail = generateAssignedTicketTechEmail(finalTicket, tech, originalUser, user, emailTemplates);
-                    const res = await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
+                    await sendEmail(emailjsServiceId, emailjsPublicKey, GENERIC_EMAIL_TEMPLATE_ID, {
                         subject: tMail.subject, message: tMail.body, to_email: tMail.to_email, to_name: tMail.to_name
                     });
-                    if (!res.success) emailError = true;
                 }
             }
         } catch (emailErr) {
             console.error("Workflow notification failed:", emailErr);
-            emailError = true;
         }
 
         onSave(finalTicket, true);
         if (changes.length > 0) logUserAction(realUser, `Updated Ticket #${ticket.id}: ${changes.join(' ')}`);
-        
-        if (emailError) {
-            setInfoModalContent({
-                title: "Update Successful with Warnings",
-                message: "The ticket record has been updated, but some email notifications could not be delivered. Please inform relevant parties manually if necessary."
-            });
-        }
-        
         setIsUpdating(false);
     };
 
@@ -273,16 +261,33 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
             <div className="bg-white dark:bg-slate-900 rounded-[48px] shadow-2xl w-full max-w-7xl max-h-[95vh] flex flex-col modal-content overflow-hidden border border-white/10">
                 <header className="px-10 py-8 border-b dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 shrink-0">
                     <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center text-white text-3xl shadow-2xl shadow-primary/30">
-                            <i className="fas fa-ticket-alt"></i>
+                        <div className="w-16 h-16 rounded-3xl bg-primary flex items-center justify-center text-white text-3xl shadow-2xl shadow-primary/30 relative overflow-hidden group">
+                            <i className="fas fa-ticket-alt relative z-10"></i>
+                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                         </div>
                         <div>
                             <div className="flex items-center gap-3">
-                                <h2 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Ticket Resolution Hub</h2>
+                                <h2 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Resolution Hub</h2>
                                 <span className="text-slate-400 font-mono text-xl opacity-30">/</span>
                                 <span className="text-primary font-black text-2xl tracking-tighter">#{ticket.id}</span>
+                                <div className={`ml-4 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${
+                                    status === TicketStatus.RESOLVED ? 'bg-green-500/10 text-green-500' : 
+                                    status === TicketStatus.IN_PROGRESS ? 'bg-amber-500/10 text-amber-500' : 'bg-blue-500/10 text-blue-500'
+                                }`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full ${
+                                        status === TicketStatus.RESOLVED ? 'bg-green-500' : 
+                                        status === TicketStatus.IN_PROGRESS ? 'bg-amber-500' : 'bg-blue-500'
+                                    }`}></span>
+                                    {status}
+                                </div>
                             </div>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-2">Operational Response Protocol v4.0</p>
+                            <div className="flex items-center gap-4 mt-2">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Operational Response Protocol v4.2</p>
+                                <div className="h-1 w-1 rounded-full bg-slate-300"></div>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                                    <i className="far fa-clock"></i> Age: {ticketAge}
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <button onClick={onClose} className="w-12 h-12 rounded-full flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all text-3xl">&times;</button>
@@ -293,7 +298,10 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
                     <div className="lg:col-span-8 p-10 space-y-10 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-transparent">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                             <div className="space-y-8">
-                                <section className="p-8 bg-white dark:bg-slate-800/50 rounded-[32px] border dark:border-slate-800 shadow-xl">
+                                <section className="p-8 bg-white dark:bg-slate-800/50 rounded-[32px] border dark:border-slate-800 shadow-xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-4 opacity-5">
+                                        <i className="fas fa-quote-right text-6xl"></i>
+                                    </div>
                                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2"><i className="fas fa-file-lines"></i> Primary Incident Report</h3>
                                     <div className="space-y-6">
                                         <p className="text-sm font-bold text-slate-700 dark:text-slate-200 whitespace-pre-wrap leading-relaxed">
@@ -327,9 +335,41 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
                                     </div>
                                 </section>
 
-                                <section className="bg-gradient-to-br from-indigo-600 to-blue-700 p-8 rounded-[32px] text-white shadow-2xl relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 -translate-y-10 translate-x-10 rounded-full blur-2xl"></div>
-                                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><i className="fas fa-sparkles"></i> Intelligence Summary</h3>
+                                <section className="p-8 bg-white dark:bg-slate-800/50 rounded-[32px] border dark:border-slate-800 shadow-xl">
+                                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2"><i className="fas fa-user-circle"></i> Reporter Profile</h3>
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center overflow-hidden border-2 dark:border-slate-600">
+                                            {reporter?.photo ? (
+                                                <img src={reporter.photo} className="w-full h-full object-cover" alt={reporter.name} />
+                                            ) : (
+                                                <i className="fas fa-user text-2xl text-slate-400"></i>
+                                            )}
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-tighter">{reporter?.name || 'Unknown User'}</p>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{reporter?.department || ticket.department} / {reporter?.designation || 'Staff'}</p>
+                                            <div className="flex items-center gap-3 mt-2">
+                                                <a href={`mailto:${reporter?.email || ticket.email}`} className="text-[9px] font-black text-primary uppercase tracking-widest hover:underline flex items-center gap-1">
+                                                    <i className="far fa-envelope"></i> {reporter?.email || ticket.email}
+                                                </a>
+                                                {reporter?.phone && (
+                                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                                                        <i className="fas fa-phone"></i> {reporter.phone}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section className="bg-gradient-to-br from-indigo-600 to-blue-700 p-8 rounded-[32px] text-white shadow-2xl relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 -translate-y-10 translate-x-10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2"><i className="fas fa-sparkles"></i> Intelligence Summary</h3>
+                                        <button onClick={handleRefreshSummary} disabled={isGeneratingSummary} className="text-[8px] font-black uppercase tracking-widest bg-white/10 px-2 py-1 rounded hover:bg-white/20 transition disabled:opacity-50">
+                                            {isGeneratingSummary ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-sync"></i>}
+                                        </button>
+                                    </div>
                                     <p className="text-sm font-bold text-indigo-50 italic leading-relaxed">"{summary}"</p>
                                 </section>
                             </div>
@@ -359,6 +399,14 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
                                                 {technicians.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                                             </select>
                                         </div>
+                                        <div>
+                                            <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Private Resolution Notes</label>
+                                            <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Internal technical notes..." className="w-full p-4 text-xs font-bold border-2 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 focus:ring-4 focus:ring-primary/10 outline-none transition-all min-h-[100px] resize-none" />
+                                        </div>
+                                        <div>
+                                            <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">CC Recipients (Comma separated)</label>
+                                            <input value={cc} onChange={e => setCc(e.target.value)} placeholder="manager@company.com, admin@company.com" className="w-full p-3.5 text-xs font-bold border-2 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 focus:ring-4 focus:ring-primary/10 outline-none transition-all" />
+                                        </div>
                                         <button 
                                             type="submit" 
                                             disabled={isUpdating}
@@ -369,6 +417,21 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
                                         </button>
                                     </form>
                                 </section>
+
+                                {assignedTech && (
+                                    <section className="p-8 bg-slate-900 text-white rounded-[32px] shadow-xl border border-white/5">
+                                        <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-6 flex items-center gap-2"><i className="fas fa-user-shield"></i> Assigned Specialist</h3>
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary text-xl">
+                                                <i className="fas fa-user-tie"></i>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-black uppercase tracking-tighter">{assignedTech.name}</p>
+                                                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{assignedTech.department} Specialist</p>
+                                            </div>
+                                        </div>
+                                    </section>
+                                )}
 
                                 <div className="grid grid-cols-2 gap-4">
                                      <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-[28px] border dark:border-slate-700 flex flex-col items-center justify-center text-center">
@@ -436,7 +499,10 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
                                     {msgs.map(msg => (
                                         <div key={msg.id} className={`flex items-end gap-3 ${msg.senderId === user?.id ? 'flex-row-reverse' : ''} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                                             <div className={`max-w-[85%] space-y-1.5 ${msg.senderId === user?.id ? 'items-end text-right' : 'items-start text-left'}`}>
-                                                <div className={`p-4 rounded-2xl shadow-sm text-sm font-medium leading-relaxed ${msg.senderId === user?.id ? 'bg-primary text-white rounded-br-none' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border dark:border-slate-700 rounded-bl-none'}`}>
+                                                <div className={`p-4 rounded-2xl shadow-sm text-sm font-medium leading-relaxed ${
+                                                    msg.isSystem ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 italic border-2 border-dashed border-slate-200 dark:border-slate-700 w-full text-center' :
+                                                    msg.senderId === user?.id ? 'bg-primary text-white rounded-br-none' : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border dark:border-slate-700 rounded-bl-none'
+                                                }`}>
                                                     {msg.message}
                                                     {msg.fileUrl && (
                                                         <div className="mt-3 pt-3 border-t border-black/10 dark:border-white/10">
@@ -459,7 +525,7 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
                                                         </div>
                                                     )}
                                                 </div>
-                                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">{msg.senderName}</span>
+                                                {!msg.isSystem && <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">{msg.senderName}</span>}
                                             </div>
                                         </div>
                                     ))}

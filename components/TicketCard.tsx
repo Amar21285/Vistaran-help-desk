@@ -61,7 +61,7 @@ const TicketCard: React.FC<TicketCardProps> = ({ ticket, onEdit, technicianName,
     const isPDF = ticket.photoUrl?.startsWith('data:application/pdf');
     
     return (
-        <div className={`relative bg-white dark:bg-slate-800 rounded-3xl p-4 md:p-6 flex flex-col justify-between transition-all duration-300 border border-slate-100 dark:border-slate-700 ${isSelected ? 'ring-4 ring-primary shadow-2xl' : 'shadow-md hover:shadow-xl'}`}>
+        <div className={`relative bg-white dark:bg-slate-800 rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 border border-slate-100 dark:border-slate-700 ${isSelected ? 'ring-4 ring-primary shadow-2xl' : 'shadow-md hover:shadow-xl'}`}>
             {slaBreached && isOpen && (
                 <div className="absolute top-0 right-0 bg-red-600 text-white text-[9px] font-black px-3 py-1 rounded-tr-3xl rounded-bl-xl z-10 flex items-center gap-1 uppercase tracking-widest shadow-lg" title="SLA Breached">
                     <i className="fas fa-exclamation-triangle"></i>

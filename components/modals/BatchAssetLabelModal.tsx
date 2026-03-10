@@ -81,7 +81,12 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                     <title>Vistaran_Batch_Print</title>
                     <style>
                         @page { size: ${finalPageWidth}mm ${finalPageHeight}mm; margin: 0 !important; }
-                        * { box-sizing: border-box !important; -webkit-print-color-adjust: exact !important; }
+                        * { 
+                            box-sizing: border-box !important; 
+                            -webkit-print-color-adjust: exact !important; 
+                            -webkit-font-smoothing: none !important;
+                            text-rendering: optimizeSpeed !important;
+                        }
                         body { margin: 0 !important; padding: 0 !important; background: white !important; }
                         .page-wrapper {
                             width: ${finalPageWidth}mm; height: ${finalPageHeight}mm;
@@ -93,8 +98,15 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                             transform: rotate(${rotation}deg) !important;
                             transform-origin: center center !important;
                         }
-                        .high-contrast-mode { filter: contrast(1000) grayscale(1) brightness(0.8) !important; }
-                        svg, img { image-rendering: pixelated; }
+                        .high-contrast-mode { filter: contrast(500%) grayscale(100%) brightness(80%) !important; }
+                        .thermal-optimized { color: #000 !important; border-color: #000 !important; }
+                        .thermal-optimized * { 
+                            color: #000 !important; 
+                            border-color: #000 !important; 
+                            font-weight: 900 !important; 
+                            -webkit-font-smoothing: none !important;
+                        }
+                        svg, img { image-rendering: pixelated !important; image-rendering: crisp-edges !important; }
                     </style>
                 </head>
                 <body>
@@ -405,7 +417,15 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-                .high-contrast-mode { filter: contrast(1000) grayscale(1) brightness(0.8) !important; }
+                .high-contrast-mode { filter: contrast(500%) grayscale(100%) brightness(80%) !important; }
+                .thermal-optimized { color: #000 !important; border-color: #000 !important; }
+                .thermal-optimized * { 
+                    color: #000 !important; 
+                    border-color: #000 !important; 
+                    font-weight: 900 !important; 
+                    -webkit-font-smoothing: none !important;
+                }
+                svg, img { image-rendering: pixelated !important; image-rendering: crisp-edges !important; }
             `}</style>
         </div>
     );

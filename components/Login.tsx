@@ -56,11 +56,10 @@ const Login: React.FC = () => {
                 setOtpSentToast(true);
                 setTimeout(() => setOtpSentToast(false), 5000);
             } else {
-                setError(`Mail Delivery Failed: ${emailResult.message || 'The email service is currently unavailable.'}`);
+                setError(`Mail Error: ${emailResult.message}`);
             }
         } catch (err) {
-            console.error("Login OTP error:", err);
-            setError("Network Error: Could not reach the authentication server. Please check your connection.");
+            setError("Transmission error.");
         } finally {
             setIsSendingOtp(false);
         }
@@ -73,8 +72,7 @@ const Login: React.FC = () => {
       if (otp === generatedOtp && pendingUser) {
           finalizeLogin(pendingUser);
       } else {
-          setError('Verification Failed: The code you entered is incorrect or has expired.');
-          setOtp('');
+          setError('Invalid code.');
       }
   };
 

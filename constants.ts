@@ -2,15 +2,9 @@ import { User, Role, UserStatus, Technician, Symptom, Ticket, Priority, TicketSt
 
 export const USERS: User[] = [
     { id: 'USR001', name: 'Amarjeet yadav', email: 'ITsupport@vistaran.in', password: '88283671', role: Role.ADMIN, department: 'IT', status: UserStatus.ACTIVE, joinedDate: '2023-01-15T10:00:00Z', photo: 'https://randomuser.me/api/portraits/men/1.jpg', phone: '+918828367178', whatsapp: '+918828367178' },
-    { id: 'USR002', name: 'BHANDUP -001', email: 'purchasebhandup@vistaran.in', password: '10001', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
+    { id: 'USR002', name: 'BHANDUOP -001', email: 'purchasebhandup@vistaran.in', password: '10001', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
     { id: 'USR003', name: 'VIKHROLI -002', email: 'purchasevikhroli@vistaran.in', password: '10002', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
     { id: 'USR004', name: 'HIRANANDANI -003', email: 'purchasepowai@vistaran.in', password: '10003', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR005', name: 'POWAI -004', email: 'purchasepowai2@vistaran.in', password: '10004', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR006', name: 'Mulund -005', email: 'purchasemulund@vistaran.in', password: '10005', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR007', name: 'Mulund -006', email: 'purchaseveenanagar@vistaran.in', password: '10006', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR008', name: 'Mulund -007', email: 'purchasecyprus@vistaran.in', password: '10007', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR009', name: 'Hindustan Chowk 008', email: 'purchasecolonymul@vistaran.in', password: '10008', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR010', name: 'Tambe Nagar 009', email: 'purchasetambenagar@vistaran.in', password: '10009', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
     { id: 'USR026', name: 'Vistaran office Ho', email: 'purchase@vistaran.in', password: '776688', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
     { id: 'USR027', name: 'Warehouse 501', email: 'purchasedc@vistaran.in', password: '50001', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
 ];

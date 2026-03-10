@@ -46,8 +46,7 @@ export const PrintableLabel: React.FC<{
     // For very small labels (like 50x25), we need to scale up the content slightly more than linear
     // to maintain readability on thermal printers.
     const isSmallLabel = labelWidth <= 55 && labelHeight <= 30;
-    const baseScale = (isSmallLabel ? Math.min(scaleX, scaleY) * 1.3 : Math.min(scaleX, scaleY)) * fontScale;
-    const strokeScale = isHighContrast ? 1.25 : 1.0;
+    const baseScale = (isSmallLabel ? Math.min(scaleX, scaleY) * 1.4 : Math.min(scaleX, scaleY)) * fontScale;
     
     useEffect(() => {
         if (barcodeRef.current) {
@@ -55,8 +54,8 @@ export const PrintableLabel: React.FC<{
                 barcodeRef.current.innerHTML = "";
                 JsBarcode(barcodeRef.current, item.id, {
                     format: "CODE128",
-                    width: Math.max(1, 2.2 * scaleX * barcodeWidthScale), 
-                    height: Math.max(8, 15 * scaleY * barcodeHeightScale),
+                    width: Math.max(3, 4 * scaleX * barcodeWidthScale), 
+                    height: Math.max(12, 25 * scaleY * barcodeHeightScale),
                     displayValue: false,
                     margin: 0,
                     background: "transparent",
@@ -77,43 +76,44 @@ export const PrintableLabel: React.FC<{
         display: 'flex',
         overflow: 'hidden',
         position: 'relative',
-        color: isDarkMode ? '#ffffff' : 'black',
-        border: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#ffffff' : '#000'}`,
+        color: isDarkMode ? '#ffffff' : '#000000',
+        border: `${1.2 * baseScale}mm solid ${isDarkMode ? '#ffffff' : '#000000'}`,
         transform: `rotate(${rotation}deg)`,
         transformOrigin: 'center center',
     };
 
     // --- TEMPLATE: OFFICIAL (MATCHES PDF PROVIDED BY USER) ---
     if (template === 'official') {
+        const borderThickness = `${1.2 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`;
         return (
-            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column', gap: 0, padding: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
+            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column', gap: 0, padding: 0 }} className={isHighContrast ? 'high-contrast-mode thermal-optimized' : ''}>
                 {/* Header Row: Logo | Asset ID | Verified */}
-                <div style={{ display: 'flex', alignItems: 'center', borderBottom: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
+                <div style={{ display: 'flex', alignItems: 'center', borderBottom: borderThickness, padding: `${1.5 * baseScale}mm` }}>
                     <div style={{ width: '25%' }}>
                         <Logo className={isDarkMode ? "brightness-200" : "grayscale brightness-0"} style={{ height: `${5 * baseScale}mm`, width: 'auto' }} />
                     </div>
-                    <div style={{ flex: 1, borderLeft: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, paddingLeft: `${3 * baseScale}mm` }}>
-                        <span style={{ fontSize: `${1.8 * baseScale}mm`, fontWeight: 800, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Asset ID</span>
-                        <span style={{ fontSize: `${4 * baseScale}mm`, fontWeight: 900, display: 'block', marginTop: '-0.5mm', color: isDarkMode ? '#fff' : '#000' }}>{item.id}</span>
+                    <div style={{ flex: 1, borderLeft: borderThickness, paddingLeft: `${3 * baseScale}mm` }}>
+                        <span style={{ fontSize: `${2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Asset ID</span>
+                        <span style={{ fontSize: `${4.5 * baseScale}mm`, fontWeight: 900, display: 'block', marginTop: '-0.5mm', color: isDarkMode ? '#fff' : '#000' }}>{item.id}</span>
                     </div>
                     <div style={{ width: '20%', textAlign: 'right' }}>
-                        <span style={{ fontSize: `${1.8 * baseScale}mm`, fontWeight: 800, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Verified</span>
-                        <span style={{ fontSize: `${3 * baseScale}mm`, fontWeight: 900, display: 'block', marginTop: '-0.5mm', color: isDarkMode ? '#fff' : '#000' }}>{new Date().toLocaleDateString()}</span>
+                        <span style={{ fontSize: `${2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Verified</span>
+                        <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, display: 'block', marginTop: '-0.5mm', color: isDarkMode ? '#fff' : '#000' }}>{new Date().toLocaleDateString()}</span>
                     </div>
                 </div>
 
                 {/* Designation Row */}
-                <div style={{ borderBottom: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
-                    <span style={{ fontSize: `${1.8 * baseScale}mm`, fontWeight: 800, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Designation</span>
-                    <p style={{ fontSize: `${4.5 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', margin: 0, lineHeight: 1.1, color: isDarkMode ? '#fff' : '#000' }}>{item.name}</p>
+                <div style={{ borderBottom: borderThickness, padding: `${1.5 * baseScale}mm` }}>
+                    <span style={{ fontSize: `${2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Designation</span>
+                    <p style={{ fontSize: `${5 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', margin: 0, lineHeight: 1.1, color: isDarkMode ? '#fff' : '#000' }}>{item.name}</p>
                 </div>
 
                 {/* Middle Section: QR (Left) | Category & Bin (Right) */}
                 <div style={{ flex: 1, display: 'flex' }}>
                     {/* QR Section */}
-                    <div style={{ width: '35%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRight: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1 * baseScale}mm` }}>
-                        <img src={qrCodeUrl} style={{ width: '75%', height: 'auto', imageRendering: 'pixelated', filter: isDarkMode ? 'invert(1)' : 'none' }} alt="QR" />
-                        <p style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${1 * baseScale}mm`, textAlign: 'center', lineHeight: 1.2, width: '90%', color: isDarkMode ? '#fff' : '#000' }}>
+                    <div style={{ width: '35%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRight: borderThickness, padding: `${1 * baseScale}mm` }}>
+                        <img src={qrCodeUrl} style={{ width: '80%', height: 'auto', imageRendering: 'pixelated', filter: isDarkMode ? 'invert(1)' : 'none' }} alt="QR" />
+                        <p style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', marginTop: `${1 * baseScale}mm`, textAlign: 'center', lineHeight: 1.2, width: '90%', color: isDarkMode ? '#fff' : '#000' }}>
                             Property Of<br/>Vistaran Health Care<br/>Services
                         </p>
                     </div>
@@ -121,22 +121,22 @@ export const PrintableLabel: React.FC<{
                     {/* Category & Bin Section */}
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: `${2 * baseScale}mm`, gap: `${2 * baseScale}mm`, justifyContent: 'center' }}>
                         <div style={{ display: 'flex', gap: `${2 * baseScale}mm` }}>
-                            <div style={{ flex: 1, border: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
-                                <span style={{ fontSize: `${1.8 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Category</span>
-                                <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000' }}>{item.category}</span>
+                            <div style={{ flex: 1, border: borderThickness, padding: `${1.5 * baseScale}mm` }}>
+                                <span style={{ fontSize: `${2 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Category</span>
+                                <span style={{ fontSize: `${3.5 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000' }}>{item.category}</span>
                             </div>
-                            <div style={{ flex: 1, border: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm` }}>
-                                <span style={{ fontSize: `${1.8 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Bin / Rack</span>
-                                <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000' }}>{item.location || 'N/A'}</span>
+                            <div style={{ flex: 1, border: borderThickness, padding: `${1.5 * baseScale}mm` }}>
+                                <span style={{ fontSize: `${2 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Bin / Rack</span>
+                                <span style={{ fontSize: `${3.5 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000' }}>{item.location || 'N/A'}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Footer Barcode Section */}
-                <div style={{ borderTop: `${0.8 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg ref={barcodeRef} style={{ width: '95%', height: `${9 * baseScale}mm`, filter: isDarkMode ? 'invert(1)' : 'none' }}></svg>
-                    <span style={{ fontSize: `${4 * baseScale}mm`, fontWeight: 900, fontFamily: 'monospace', letterSpacing: `${1 * baseScale}mm`, marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000' }}>{item.id}</span>
+                <div style={{ borderTop: borderThickness, padding: `${1.5 * baseScale}mm`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg ref={barcodeRef} style={{ width: '95%', height: `${10 * baseScale}mm`, filter: isDarkMode ? 'invert(1)' : 'none' }}></svg>
+                    <span style={{ fontSize: `${4.5 * baseScale}mm`, fontWeight: 900, fontFamily: 'monospace', letterSpacing: `${1.2 * baseScale}mm`, marginTop: `${0.5 * baseScale}mm`, color: isDarkMode ? '#fff' : '#000' }}>{item.id}</span>
                 </div>
             </div>
         );
@@ -144,48 +144,49 @@ export const PrintableLabel: React.FC<{
 
     // --- TEMPLATE: THERMAL (OPTIMIZED FOR 50x25) ---
     if (template === 'thermal') {
+        const borderThickness = `${1 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`;
         return (
-            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column', padding: 0, gap: 0 }} className={isHighContrast ? 'high-contrast-mode' : ''}>
+            <div id={`${idPrefix}printable-label-content`} style={{...containerStyle, flexDirection: 'column', padding: 0, gap: 0 }} className={isHighContrast ? 'high-contrast-mode thermal-optimized' : ''}>
                 {/* Top Row: Logo | System ID */}
-                <div style={{ display: 'flex', alignItems: 'center', borderBottom: `${0.6 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.8 * baseScale}mm` }}>
+                <div style={{ display: 'flex', alignItems: 'center', borderBottom: borderThickness, padding: `${0.8 * baseScale}mm` }}>
                     <div style={{ width: '30%' }}>
-                        <Logo className={isDarkMode ? "brightness-200" : "grayscale brightness-0"} style={{ height: `${3.5 * baseScale}mm`, width: 'auto' }} />
+                        <Logo className={isDarkMode ? "brightness-200" : "grayscale brightness-0"} style={{ height: `${4 * baseScale}mm`, width: 'auto' }} />
                     </div>
                     <div style={{ flex: 1, textAlign: 'right' }}>
-                        <span style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000', lineHeight: 1 }}>System ID</span>
-                        <span style={{ fontSize: `${3.2 * baseScale}mm`, fontWeight: 900, display: 'block', color: isDarkMode ? '#fff' : '#000', lineHeight: 1 }}>{item.id}</span>
+                        <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000', lineHeight: 1 }}>System ID</span>
+                        <span style={{ fontSize: `${3.8 * baseScale}mm`, fontWeight: 900, display: 'block', color: isDarkMode ? '#fff' : '#000', lineHeight: 1 }}>{item.id}</span>
                     </div>
                 </div>
 
                 {/* Middle Section: QR (Left) | Description & Boxes (Right) */}
                 <div style={{ flex: 1, display: 'flex' }}>
                     {/* QR Section */}
-                    <div style={{ width: '30%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: `${0.6 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.5 * baseScale}mm` }}>
+                    <div style={{ width: '30%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: borderThickness, padding: `${0.5 * baseScale}mm` }}>
                         <img src={qrCodeUrl} style={{ width: '100%', height: 'auto', imageRendering: 'pixelated', filter: isDarkMode ? 'invert(1)' : 'none' }} alt="QR" />
                     </div>
 
                     {/* Description Section */}
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: `${0.8 * baseScale}mm`, gap: `${0.5 * baseScale}mm` }}>
                         <div>
-                            <span style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Asset Description</span>
-                            <span style={{ fontSize: `${3.5 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000', lineHeight: 1.1 }}>{item.name}</span>
+                            <span style={{ fontSize: `${1.4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>Asset Description</span>
+                            <span style={{ fontSize: `${4 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000', lineHeight: 1.1 }}>{item.name}</span>
                         </div>
                         <div style={{ display: 'flex', gap: `${1 * baseScale}mm`, marginTop: 'auto' }}>
-                            <div style={{ flex: 1, border: `${0.4 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.4 * baseScale}mm` }}>
-                                <span style={{ fontSize: `${1 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Type</span>
-                                <span style={{ fontSize: `${2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>{item.category}</span>
+                            <div style={{ flex: 1, border: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.4 * baseScale}mm` }}>
+                                <span style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Type</span>
+                                <span style={{ fontSize: `${2.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>{item.category}</span>
                             </div>
-                            <div style={{ flex: 1, border: `${0.4 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.4 * baseScale}mm` }}>
-                                <span style={{ fontSize: `${1 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Loc</span>
-                                <span style={{ fontSize: `${2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>{item.location || 'N/A'}</span>
+                            <div style={{ flex: 1, border: `${0.6 * baseScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.4 * baseScale}mm` }}>
+                                <span style={{ fontSize: `${1.2 * baseScale}mm`, fontWeight: 900, display: 'block', textTransform: 'uppercase', color: isDarkMode ? '#fff' : '#000' }}>Loc</span>
+                                <span style={{ fontSize: `${2.2 * baseScale}mm`, fontWeight: 900, textTransform: 'uppercase', display: 'block', color: isDarkMode ? '#fff' : '#000' }}>{item.location || 'N/A'}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Barcode Section */}
-                <div style={{ borderTop: `${0.6 * baseScale * strokeScale}mm solid ${isDarkMode ? '#fff' : '#000'}`, padding: `${0.5 * baseScale}mm`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg ref={barcodeRef} style={{ width: '90%', height: `${6 * baseScale}mm`, filter: isDarkMode ? 'invert(1)' : 'none' }}></svg>
+                <div style={{ borderTop: borderThickness, padding: `${0.5 * baseScale}mm`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg ref={barcodeRef} style={{ width: '90%', height: `${7 * baseScale}mm`, filter: isDarkMode ? 'invert(1)' : 'none' }}></svg>
                 </div>
             </div>
         );
@@ -329,10 +330,18 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                     <title>Print_Asset_Tag</title>
                     <style>
                         @page { size: ${finalPageWidth}mm ${finalPageHeight}mm; margin: 0 !important; }
-                        * { box-sizing: border-box !important; -webkit-print-color-adjust: exact !important; }
+                        * { 
+                            box-sizing: border-box !important; 
+                            -webkit-print-color-adjust: exact !important; 
+                            -webkit-font-smoothing: none !important;
+                            text-rendering: optimizeSpeed !important;
+                        }
                         body { margin: 0 !important; padding: 0 !important; background: white !important; width: ${finalPageWidth}mm; height: ${finalPageHeight}mm; display: flex; align-items: center; justify-content: center; overflow: hidden; }
                         #modal-printable-label-content { width: ${labelWidth}mm !important; height: ${labelHeight}mm !important; transform: rotate(${rotation}deg) !important; transform-origin: center center !important; }
-                        .high-contrast-mode { filter: contrast(1000) grayscale(1) brightness(0.8) !important; }
+                        .high-contrast-mode { filter: contrast(500%) grayscale(100%) brightness(80%) !important; }
+                        .thermal-optimized { color: #000 !important; border-color: #000 !important; }
+                        .thermal-optimized * { color: #000 !important; border-color: #000 !important; font-weight: 900 !important; }
+                        svg, img { image-rendering: pixelated !important; image-rendering: crisp-edges !important; }
                     </style>
                 </head>
                 <body>
@@ -484,7 +493,15 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                         </div>
                     </footer>
                     <style>{`
-                        .high-contrast-mode { filter: contrast(1000) grayscale(1) brightness(0.8) !important; }
+                        .high-contrast-mode { filter: contrast(500%) grayscale(100%) brightness(80%) !important; }
+                        .thermal-optimized { color: #000 !important; border-color: #000 !important; }
+                        .thermal-optimized * { 
+                            color: #000 !important; 
+                            border-color: #000 !important; 
+                            font-weight: 900 !important; 
+                            -webkit-font-smoothing: none !important;
+                        }
+                        svg, img { image-rendering: pixelated !important; image-rendering: crisp-edges !important; }
                     `}</style>
                 </div>
             </div>

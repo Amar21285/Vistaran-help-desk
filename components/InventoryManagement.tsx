@@ -28,9 +28,11 @@ interface InventoryManagementProps {
     purchaseOrders: PurchaseOrder[];
     setPurchaseOrders: React.Dispatch<React.SetStateAction<PurchaseOrder[]>>;
     users: User[];
+    setInfoModalContent: (content: { title: string; message: React.ReactNode; actions?: { label: string; onClick: () => void; className?: string; }[] } | null) => void;
 }
 
 type TabType = 'stock' | 'assets' | 'vendors' | 'receiving' | 'outward' | 'purchase-orders' | 'attendance' | 'petty-cash' | 'internet';
+type HardwareScanMode = 'lookup' | 'in' | 'out';
 
 const ASSET_TYPES = [
     "Laptop", "Desktop", "Monitor", "Printer", "Scanner", 
@@ -38,7 +40,7 @@ const ASSET_TYPES = [
 ];
 
 const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
-    const { inventory, setInventory, vendors, setVendors, globalFilter, setGlobalFilter, challans, setChallans, invoices, setInvoices, purchaseOrders, setPurchaseOrders, users } = props;
+    const { inventory, setInventory, vendors, setVendors, globalFilter, setGlobalFilter, challans, setChallans, invoices, setInvoices, purchaseOrders, setPurchaseOrders, users, setInfoModalContent } = props;
     const { user, realUser } = useAuth();
     const [activeTab, setActiveTab] = useState<TabType>('assets');
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
@@ -52,6 +54,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
     const [isAllocationModalOpen, setIsAllocationModalOpen] = useState(false);
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+    const [isAddStockModalOpen, setIsAddStockModalOpen] = useState(false);
     
     const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
     const [itemToDelete, setItemToDelete] = useState<InventoryItem | null>(null);
@@ -61,6 +64,19 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
     const [historyItem, setHistoryItem] = useState<InventoryItem | null>(null);
     const [viewingLabelItem, setViewingLabelItem] = useState<InventoryItem | null>(null);
     const [editingVendor, setEditingVendor] = useState<Vendor | null>(null);
+    const [stockTargetItem, setStockTargetItem] = useState<InventoryItem | null>(null);
+
+    const [scannedValue, setScannedValue] = useState<string | null>(null);
+    const [scanMode, setScanMode] = useState<HardwareScanMode>('lookup');
+    const hardwareScanInputRef = useRef<HTMLInputElement>(null);
+    const [isHardwareScannerActive, setIsHardwareScannerActive] = useState(false);
+
+    // Auto-focus hardware scanner on mount and tab change
+    React.useEffect(() => {
+        if (activeTab === 'assets' || activeTab === 'stock') {
+            hardwareScanInputRef.current?.focus();
+        }
+    }, [activeTab]);
 
     // Asset Form Specific State
     const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -344,6 +360,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
         }
         setIsItemModalOpen(false);
         setAttachedInvoice('');
+        setScannedValue(null);
     };
 
     const handleReturnAsset = (itemId: string) => {
@@ -448,6 +465,137 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
         setTransferringItem(null);
     };
 
+    const handleScanResult = (decodedText: string) => {
+        setIsScannerOpen(false);
+        setIsHardwareScannerActive(false);
+        const upperText = decodedText.toUpperCase().trim();
+        
+        const foundItem = inventory.find(i => 
+            i.id.toUpperCase() === upperText || 
+            (i.serialNumber && i.serialNumber.toUpperCase() === upperText)
+        );
+
+        if (foundItem) {
+            if (scanMode === 'in') {
+                setStockTargetItem(foundItem);
+                setIsAddStockModalOpen(true);
+                return;
+            }
+            if (scanMode === 'out') {
+                setAllocatingItem(foundItem);
+                setIsAllocationModalOpen(true);
+                return;
+            }
+
+            setInfoModalContent({
+                title: "Asset Verified",
+                message: (
+                    <div className="text-left space-y-3 p-2">
+                        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-2xl border border-green-100 dark:border-green-800 flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white text-xl">
+                                <i className="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black uppercase text-green-600 dark:text-green-400 tracking-widest">Ownership Confirmed</p>
+                                <p className="text-sm font-black text-slate-800 dark:text-white uppercase">Vistaran Asset Master</p>
+                            </div>
+                        </div>
+                        <div className="space-y-2 text-xs font-bold text-slate-600 dark:text-slate-400">
+                            <p className="flex justify-between"><span>Tag ID:</span> <span className="text-slate-900 dark:text-slate-100 font-mono">{foundItem.id}</span></p>
+                            <p className="flex justify-between"><span>Model:</span> <span className="text-slate-900 dark:text-slate-100">{foundItem.brand} {foundItem.name}</span></p>
+                            <p className="flex justify-between"><span>Category:</span> <span className="text-slate-900 dark:text-slate-100">{foundItem.category}</span></p>
+                            <p className="flex justify-between"><span>Status:</span> <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-[9px] uppercase">{foundItem.assetStatus}</span></p>
+                            <p className="flex justify-between"><span>Current Stock:</span> <span className="text-slate-900 dark:text-slate-100 font-black">{foundItem.quantity} {foundItem.unit}</span></p>
+                            <p className="flex justify-between"><span>Current Location:</span> <span className="text-slate-900 dark:text-slate-100 font-bold">{foundItem.location || 'N/A'}</span></p>
+                        </div>
+                    </div>
+                ),
+                actions: [
+                    { 
+                        label: "Add to Stock", 
+                        className: "bg-emerald-600 text-white",
+                        onClick: () => { 
+                            setStockTargetItem(foundItem);
+                            setIsAddStockModalOpen(true);
+                            setInfoModalContent(null); 
+                        } 
+                    },
+                    { 
+                        label: "Issue / Out", 
+                        className: "bg-primary text-white",
+                        onClick: () => { 
+                            setAllocatingItem(foundItem);
+                            setIsAllocationModalOpen(true);
+                            setInfoModalContent(null); 
+                        } 
+                    },
+                    { 
+                        label: "View Details", 
+                        onClick: () => { 
+                            setGlobalFilter(foundItem.id); 
+                            setActiveTab('assets');
+                            setInfoModalContent(null); 
+                        } 
+                    }
+                ]
+            });
+        } else {
+            setInfoModalContent({
+                title: "Verification Failed",
+                message: (
+                    <div className="text-center space-y-4">
+                        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto text-red-500">
+                            <i className="fas fa-times-circle text-2xl"></i>
+                        </div>
+                        <p className="text-sm font-medium">The tag/serial <span className="font-mono font-black text-slate-800 dark:text-white">{decodedText}</span> was not found in our Asset Master.</p>
+                        <p className="text-[10px] text-slate-400 uppercase font-black">Would you like to register this as a new asset?</p>
+                    </div>
+                ),
+                actions: [
+                    { 
+                        label: "Register New Asset", 
+                        onClick: () => { 
+                            setInfoModalContent(null);
+                            setScannedValue(decodedText);
+                            openAssetForm(null);
+                        } 
+                    }
+                ]
+            });
+        }
+    };
+
+    const handleAddStockSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!stockTargetItem) return;
+        const fd = new FormData(e.currentTarget);
+        const addQty = parseInt(fd.get('addQty') as string) || 0;
+        const targetLoc = fd.get('targetLoc') as string;
+
+        setInventory(prev => prev.map(i => i.id === stockTargetItem.id ? {
+            ...i,
+            quantity: i.quantity + addQty,
+            location: targetLoc || i.location,
+            lastUpdated: new Date().toISOString(),
+            movementHistory: [
+                ...(i.movementHistory || []),
+                {
+                    id: `STK-${Date.now()}`,
+                    toUserId: 'STOCK',
+                    toDept: 'DC',
+                    toLocation: targetLoc || i.location || 'DC',
+                    transferDate: new Date().toISOString(),
+                    reason: `Stock Addition via Scanner (+${addQty} ${i.unit})`,
+                    approvedBy: realUser?.name || user?.name || 'Admin'
+                }
+            ]
+        } : i));
+
+        logUserAction(realUser || user, `Stock Added: +${addQty} ${stockTargetItem.unit} to ${stockTargetItem.name} (Tag: ${stockTargetItem.id})`);
+        setIsAddStockModalOpen(false);
+        setStockTargetItem(null);
+    };
+
     const openAssetForm = (item: InventoryItem | null) => {
         setEditingItem(item);
         setAttachedInvoice(item?.invoiceFile || '');
@@ -544,6 +692,66 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
 
     return (
         <div className="space-y-6">
+            {/* HARDWARE SCANNER HUB */}
+            <div className="no-print bg-slate-900 dark:bg-black rounded-[32px] p-6 shadow-2xl border border-white/10">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                    <div className="flex items-center gap-4 shrink-0">
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-all duration-500 ${isHardwareScannerActive ? 'bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] animate-pulse' : 'bg-slate-800 text-slate-400'}`}>
+                            <i className="fas fa-barcode"></i>
+                        </div>
+                        <div>
+                            <h3 className="text-white font-black uppercase text-sm tracking-widest">Hardware Scanner Hub</h3>
+                            <p className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em]">Honeywell / TVS / Zebra Ready</p>
+                        </div>
+                    </div>
+
+                    <div className="flex-1 w-full">
+                        <div className="relative group">
+                            <input 
+                                ref={hardwareScanInputRef}
+                                type="text"
+                                placeholder="Scan Tag or Serial Number..."
+                                className="w-full bg-slate-800/50 border-2 border-slate-700 rounded-2xl p-4 pl-12 text-white font-mono font-black placeholder:text-slate-600 outline-none focus:border-primary transition-all"
+                                onFocus={() => setIsHardwareScannerActive(true)}
+                                onBlur={() => setIsHardwareScannerActive(false)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleScanResult(e.currentTarget.value);
+                                        e.currentTarget.value = '';
+                                    }
+                                }}
+                            />
+                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600">
+                                <i className="fas fa-keyboard"></i>
+                            </div>
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                <span className="text-[8px] font-black text-slate-500 uppercase bg-slate-700 px-2 py-1 rounded">Auto-Focus</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex bg-slate-800 p-1.5 rounded-2xl gap-1 shrink-0">
+                        {[
+                            { id: 'lookup', label: 'Lookup', icon: 'fa-search' },
+                            { id: 'in', label: 'Stock In', icon: 'fa-plus-circle' },
+                            { id: 'out', label: 'Sale / Out', icon: 'fa-minus-circle' }
+                        ].map(mode => (
+                            <button 
+                                key={mode.id}
+                                onClick={() => {
+                                    setScanMode(mode.id as HardwareScanMode);
+                                    hardwareScanInputRef.current?.focus();
+                                }}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${scanMode === mode.id ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                            >
+                                <i className={`fas ${mode.icon}`}></i>
+                                <span className="hidden lg:inline">{mode.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
             <header className="flex flex-col md:flex-row justify-between items-center gap-4 no-print">
                 <div>
                     <h2 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tighter leading-none">Logistics Center</h2>
@@ -614,8 +822,33 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             <div className="space-y-4">
                 {activeTab === 'assets' && (
                     <div className="space-y-4">
-                        {/* Desktop Table */}
-                        <div className="hidden md:block bg-white dark:bg-slate-800 rounded-[32px] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                        {filteredInventory.length === 0 ? (
+                            <div className="bg-white dark:bg-slate-800 rounded-[32px] p-12 text-center border-2 border-dashed border-slate-100 dark:border-slate-700 shadow-sm">
+                                <div className="w-20 h-20 bg-slate-50 dark:bg-slate-900/50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                                    <i className="fas fa-search text-3xl"></i>
+                                </div>
+                                <h3 className="text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight">No Assets Found</h3>
+                                <p className="text-slate-500 dark:text-slate-400 text-xs mt-2 max-w-xs mx-auto font-medium">
+                                    We couldn't find any assets matching your filters or search terms.
+                                    {globalFilter && (
+                                        <span className="block mt-6">
+                                            <button 
+                                                onClick={() => {
+                                                    setScannedValue(globalFilter);
+                                                    openAssetForm(null);
+                                                }}
+                                                className="bg-primary text-white text-[10px] font-black uppercase tracking-widest px-8 py-4 rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all active:scale-95"
+                                            >
+                                                Register "{globalFilter}" as New Asset
+                                            </button>
+                                        </span>
+                                    )}
+                                </p>
+                            </div>
+                        ) : (
+                            <>
+                                {/* Desktop Table */}
+                                <div className="hidden md:block bg-white dark:bg-slate-800 rounded-[32px] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-700">
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                                     <thead className="bg-slate-50 dark:bg-slate-900/50">
@@ -765,11 +998,21 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                                 );
                             })}
                         </div>
-                    </div>
+                    </>
                 )}
+            </div>
+        )}
 
                 {activeTab === 'stock' && (
                     <div className="space-y-4">
+                        <div className="flex justify-end no-print">
+                            <button 
+                                onClick={() => setIsScannerOpen(true)}
+                                className="bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-2"
+                            >
+                                <i className="fas fa-barcode"></i> Scan to Add Stock
+                            </button>
+                        </div>
                         {/* Desktop Table */}
                         <div className="hidden md:block bg-white dark:bg-slate-800 rounded-[32px] shadow-xl overflow-hidden border border-slate-100 dark:border-slate-700">
                             <div className="overflow-x-auto">
@@ -1061,6 +1304,59 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                 </div>
             )}
 
+            {isAddStockModalOpen && stockTargetItem && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-[110] p-4">
+                    <div className="bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl w-full max-w-md overflow-hidden border border-white/10 animate-in zoom-in-95 duration-200">
+                        <header className="p-6 border-b dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/30">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20"><i className="fas fa-plus-circle"></i></div>
+                                <div>
+                                    <h3 className="text-lg font-black uppercase tracking-tighter">Add Stock</h3>
+                                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Inbound Logistics Update</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setIsAddStockModalOpen(false)} className="text-slate-400 hover:text-red-500 text-2xl transition">&times;</button>
+                        </header>
+                        <form onSubmit={handleAddStockSubmit} className="p-8 space-y-6">
+                            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border dark:border-slate-800">
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Target Item</p>
+                                <p className="text-sm font-black text-slate-800 dark:text-white uppercase">{stockTargetItem.brand} {stockTargetItem.name}</p>
+                                <p className="text-[10px] font-bold text-primary uppercase mt-1">Current: {stockTargetItem.quantity} {stockTargetItem.unit}</p>
+                            </div>
+
+                            <div>
+                                <label className="block text-[9px] font-black uppercase text-slate-400 mb-2 ml-1">Quantity to Add *</label>
+                                <div className="relative">
+                                    <input 
+                                        name="addQty" 
+                                        type="number" 
+                                        required 
+                                        min="1" 
+                                        placeholder="0"
+                                        className="w-full p-5 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-800 font-black text-2xl outline-none focus:border-emerald-500 transition-all text-center"
+                                    />
+                                    <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 uppercase">{stockTargetItem.unit}</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-[9px] font-black uppercase text-slate-400 mb-2 ml-1">Storage Location</label>
+                                <input 
+                                    name="targetLoc" 
+                                    defaultValue={stockTargetItem.location} 
+                                    placeholder="e.g. DC Rack 4"
+                                    className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-800 font-bold text-sm outline-none focus:border-emerald-500 transition-all"
+                                />
+                            </div>
+
+                            <button type="submit" className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl uppercase shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[10px] tracking-widest flex items-center justify-center gap-3">
+                                <i className="fas fa-check-circle"></i> Confirm Stock Addition
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             {/* ASSET REGISTRY MODAL */}
             {isItemModalOpen && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-[100] p-4 overflow-y-auto">
@@ -1128,7 +1424,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <div className="col-span-1">
                                             <label className="block text-[9px] font-black uppercase text-slate-400 mb-1 ml-1">Serial Number (S/N)</label>
-                                            <input name="serialNumber" defaultValue={editingItem?.serialNumber} placeholder="Unique Hardware Serial" className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-800 font-mono font-bold text-sm outline-none" />
+                                            <input name="serialNumber" defaultValue={editingItem?.serialNumber || scannedValue || ''} placeholder="Unique Hardware Serial" className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-800 font-mono font-bold text-sm outline-none" />
                                         </div>
                                         <div className="col-span-1">
                                             <label className="block text-[9px] font-black uppercase text-slate-400 mb-1 ml-1">IMEI / Secondary ID</label>
@@ -1319,7 +1615,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             {isBatchLabelModalOpen && <BatchAssetLabelModal items={filteredInventory} onClose={() => setIsBatchLabelModalOpen(false)} />}
             
             {/* SCANNER MODAL */}
-            {isScannerOpen && <ScannerModal onClose={() => setIsScannerOpen(false)} onResult={(res) => setGlobalFilter(res)} />}
+            {isScannerOpen && <ScannerModal onClose={() => setIsScannerOpen(false)} onResult={handleScanResult} />}
 
             {/* DELETE ASSET CONFIRMATION */}
             {itemToDelete && (

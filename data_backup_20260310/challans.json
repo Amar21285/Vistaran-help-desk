@@ -1,0 +1,176 @@
+[
+  {
+    "id": "CHN-2026-0002",
+    "vendorId": "VEN1769175521819",
+    "purpose": "Repair ke liye",
+    "dateReceived": "2026-02-23T07:26:52.279Z",
+    "receivedByUserId": "USR001",
+    "items": [
+      {
+        "id": "ITEM-1771831581690",
+        "description": "Dell USB Keyboard",
+        "quantity": 3,
+        "unit": "Unit",
+        "remarks": "HO + DC Work"
+      },
+      {
+        "id": "ITEM-1771831607535",
+        "description": " HDMI to HDMI Connector",
+        "quantity": 2,
+        "unit": "Unit",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1772709161768",
+        "description": "HP LaserJet MFP M438nda Cartridge Refilling",
+        "quantity": 1,
+        "unit": "Unit",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1772709253313",
+        "description": "Monitor Repair (LCD / LED)",
+        "quantity": 1,
+        "unit": "Unit",
+        "remarks": "DC Work"
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "CHN-2026-0001",
+    "vendorId": "VEN1769175766111",
+    "purpose": "Job Work",
+    "dateReceived": "2026-02-16T06:49:39.285Z",
+    "receivedByUserId": "USR001",
+    "items": [
+      {
+        "id": "ITEM-1771224551601",
+        "description": "A4 size Copy Paper",
+        "quantity": 1,
+        "unit": "Box",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771512820699",
+        "description": "Royal Rubber Band",
+        "quantity": 2,
+        "unit": "Pkt",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771512908348",
+        "description": "Nandi Tissue Paper ",
+        "quantity": 2,
+        "unit": "Box",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771512958433",
+        "description": "A4 size Paper",
+        "quantity": 1,
+        "unit": "Pkt",
+        "remarks": ""
+      },
+      {
+        "id": "ITEM-1771513016545",
+        "description": "JK Copier paper",
+        "quantity": 2,
+        "unit": "Pkt",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771513051273",
+        "description": "Pin Stapler",
+        "quantity": 1,
+        "unit": "Box",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771513101252",
+        "description": "JK Copier paper",
+        "quantity": 1,
+        "unit": "Pkt",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771513152785",
+        "description": "Royal Rubber Band",
+        "quantity": 2,
+        "unit": "Pkt",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771513257131",
+        "description": " 88a cartridge refilling",
+        "quantity": 2,
+        "unit": "Unit",
+        "remarks": "DC + Branch 009"
+      },
+      {
+        "id": "ITEM-1771513417549",
+        "description": " Disposable Paper Plate BIG",
+        "quantity": 1,
+        "unit": "Pkt",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771513504354",
+        "description": " Disposable Paper Plate Small",
+        "quantity": 1,
+        "unit": "Pkt",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771578818010",
+        "description": "88a cartridge refilling",
+        "quantity": 1,
+        "unit": "Unit",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771830664223",
+        "description": "Capital Tissue ",
+        "quantity": 2,
+        "unit": "Box",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771830772220",
+        "description": "broom stick",
+        "quantity": 1,
+        "unit": "Unit",
+        "remarks": "Branch -023"
+      },
+      {
+        "id": "ITEM-1771831012124",
+        "description": "Colour Xerox Copy",
+        "quantity": 2,
+        "unit": "Unit",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1771831265632",
+        "description": "Colour Spot A4 Labels Paper",
+        "quantity": 1,
+        "unit": "Pkt",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1772005641136",
+        "description": "Camlin Permanent Marker",
+        "quantity": 1,
+        "unit": "Box",
+        "remarks": "DC Work"
+      },
+      {
+        "id": "ITEM-1772007839917",
+        "description": "Cash memo book",
+        "quantity": 3,
+        "unit": "Unit",
+        "remarks": "Branch Work"
+      }
+    ],
+    "notes": ""
+  }
+]
