@@ -15,18 +15,19 @@ interface TopNavProps {
     onToggleSidebar: () => void;
     notifications?: AppNotification[];
     setNotifications?: (notifs: AppNotification[]) => void;
+    isSyncConnected?: boolean;
 }
 
-const TopNav: React.FC<TopNavProps> = ({ 
-    user, onLogout, globalFilter, setGlobalFilter, onScanClick, 
+const TopNav: React.FC<TopNavProps> = ({
+    user, onLogout, globalFilter, setGlobalFilter, onScanClick,
     isImpersonating, stopImpersonation, onViewProfile, onToggleSidebar,
-    notifications = [], setNotifications
+    notifications = [], setNotifications, isSyncConnected = false
 }) => {
     const { appName, logoUrl, notificationSettings } = useSettings();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [notifOpen, setNotifOpen] = useState(false);
     const [isPulsing, setIsPulsing] = useState(false);
-    
+
     const dropdownRef = useRef<HTMLDivElement>(null);
     const notifRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -118,11 +119,10 @@ const TopNav: React.FC<TopNavProps> = ({
                             onChange={(e) => setGlobalFilter(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Search fleet..."
-                            className={`w-full bg-slate-100 dark:bg-slate-700 border rounded-2xl py-2 pl-11 pr-24 focus:outline-none focus:ring-4 transition-all text-xs font-medium shadow-inner ${
-                                isPulsing 
-                                    ? 'border-primary ring-primary/20 bg-white dark:bg-slate-600' 
-                                    : 'border-slate-200 dark:border-slate-600 focus:ring-primary/10 focus:border-primary placeholder-slate-400 dark:placeholder-slate-500'
-                            }`}
+                            className={`w-full bg-slate-100 dark:bg-slate-700 border rounded-2xl py-2 pl-11 pr-24 focus:outline-none focus:ring-4 transition-all text-xs font-medium shadow-inner ${isPulsing
+                                ? 'border-primary ring-primary/20 bg-white dark:bg-slate-600'
+                                : 'border-slate-200 dark:border-slate-600 focus:ring-primary/10 focus:border-primary placeholder-slate-400 dark:placeholder-slate-500'
+                                }`}
                         />
                         <div className="absolute inset-y-0 right-0 pr-2 flex items-center gap-1">
                             {globalFilter && (
@@ -139,9 +139,14 @@ const TopNav: React.FC<TopNavProps> = ({
                         <i className="fas fa-camera text-lg"></i>
                     </button>
 
+                    <div className="flex flex-col items-center justify-center min-w-[40px] px-2">
+                        <div className={`w-2.5 h-2.5 rounded-full ${isSyncConnected ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'} transition-all duration-500`}></div>
+                        <span className="text-[7px] font-black uppercase tracking-tighter mt-1 text-slate-400">Live</span>
+                    </div>
+
                     {notificationSettings.enableInAppNotifications && (
                         <div className="relative" ref={notifRef}>
-                            <button 
+                            <button
                                 onClick={() => setNotifOpen(!notifOpen)}
                                 className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors relative ${notifOpen ? 'bg-primary text-white' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'}`}
                             >
@@ -161,8 +166,8 @@ const TopNav: React.FC<TopNavProps> = ({
                                     </header>
                                     <div className="max-h-96 overflow-y-auto custom-scrollbar">
                                         {notifications.length > 0 ? notifications.map(notif => (
-                                            <div 
-                                                key={notif.id} 
+                                            <div
+                                                key={notif.id}
                                                 onClick={() => markRead(notif.id)}
                                                 className={`p-4 border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer flex gap-3 ${!notif.isRead ? 'bg-primary/5' : ''}`}
                                             >
@@ -187,9 +192,9 @@ const TopNav: React.FC<TopNavProps> = ({
 
                     <div className="relative" ref={dropdownRef}>
                         <div className="cursor-pointer" onClick={() => setDropdownOpen(!dropdownOpen)}>
-                            <img 
-                                src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`} 
-                                alt="Profile" 
+                            <img
+                                src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`}
+                                alt="Profile"
                                 className="w-8 h-8 rounded-full object-cover border-2 border-slate-100 dark:border-slate-600"
                             />
                         </div>

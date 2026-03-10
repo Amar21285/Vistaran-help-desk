@@ -70,7 +70,12 @@ const useRealtimeSync = (): RealtimeSyncHook => {
 
     // Connect to Socket.IO server
     const socket = io({
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'], // Fallback to polling for restricted networks
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
       auth: {
         userId,
         role
