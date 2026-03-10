@@ -83,7 +83,32 @@ button, nav, header, footer, .no-select {
   @apply max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8;
 }
 
+/* Table responsiveness */
+.table-container {
+  @apply w-full overflow-x-auto custom-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-container table {
+  @apply min-w-[600px] sm:min-w-full;
+}
+
+/* Safe areas */
+.pb-safe {
+  padding-bottom: max(1.25rem, var(--safe-area-inset-bottom));
+}
+
+.pt-safe {
+  padding-top: max(1rem, var(--safe-area-inset-top));
+}
+
 /* Touch targets */
 .touch-target {
   @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+}
+
+/* Prevent body scroll bounce on iOS PWA */
+html, body {
+  overscroll-behavior: none;
+  height: 100%;
 }

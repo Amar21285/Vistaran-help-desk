@@ -63,7 +63,7 @@ const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: 
                 <div className="relative aspect-square bg-slate-900 overflow-hidden">
                     <video ref={videoRef} className="w-full h-full object-cover mirror" playsInline muted></video>
                     <div className="absolute inset-0 border-[40px] border-black/20 pointer-events-none">
-                         <div className={`w-full h-full border-2 rounded-full animate-pulse ${isOut ? 'border-indigo-500/50' : 'border-primary/50'}`}></div>
+                        <div className={`w-full h-full border-2 rounded-full animate-pulse ${isOut ? 'border-indigo-500/50' : 'border-primary/50'}`}></div>
                     </div>
                 </div>
                 <div className="p-8 flex flex-col gap-4">
@@ -86,15 +86,15 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
     const [nameSortOrder, setNameSortOrder] = useState<'asc' | 'desc' | 'none'>('none');
-    
+
     const [isPunching, setIsPunching] = useState(false);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
     const [showCamera, setShowCamera] = useState(false);
     const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
-    const [capturedLocation, setCapturedLocation] = useState<{lat: number, lng: number} | null>(null);
+    const [capturedLocation, setCapturedLocation] = useState<{ lat: number, lng: number } | null>(null);
     const [locationStatus, setLocationStatus] = useState<'idle' | 'fetching' | 'success' | 'failed'>('idle');
     const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null);
-    
+
     const isAdmin = realUser?.role === Role.ADMIN || user?.role === Role.ADMIN;
     const todayStr = new Date().toISOString().split('T')[0];
 
@@ -131,27 +131,27 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
 
         if (isOutMode && todayRecord) {
             // Updating existing record with Checkout info
-            setAttendance(prev => prev.map(r => 
-                r.id === todayRecord.id 
-                    ? { 
-                        ...r, 
-                        checkOut: new Date().toISOString(), 
-                        checkOutPhoto: capturedPhoto, 
+            setAttendance(prev => prev.map(r =>
+                r.id === todayRecord.id
+                    ? {
+                        ...r,
+                        checkOut: new Date().toISOString(),
+                        checkOutPhoto: capturedPhoto,
                         checkOutLocation: capturedLocation ? { lat: capturedLocation.lat, lng: capturedLocation.lng } : undefined,
                         lastUpdated: new Date().toISOString()
-                    } 
+                    }
                     : r
             ));
             logUserAction(realUser || user, `Secure Selfie Check-Out: Logged departure successfully.`);
         } else {
             // Create new In record
-            const newRecord: AttendanceRecord = { 
-                id: `ATT-${Date.now()}`, 
-                userId: user.id, 
-                userName: user.name, 
-                date: todayStr, 
-                checkIn: new Date().toISOString(), 
-                status: AttendanceStatus.PRESENT, 
+            const newRecord: AttendanceRecord = {
+                id: `ATT-${Date.now()}`,
+                userId: user.id,
+                userName: user.name,
+                date: todayStr,
+                checkIn: new Date().toISOString(),
+                status: AttendanceStatus.PRESENT,
                 photo: capturedPhoto,
                 location: capturedLocation ? { lat: capturedLocation.lat, lng: capturedLocation.lng } : undefined
             };
@@ -191,7 +191,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
     const handleUpdateRecord = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!editingRecord || !isAdmin) return;
-        
+
         const formData = new FormData(e.currentTarget);
         const newDate = formData.get('editDate') as string;
         const newInTime = formData.get('editInTime') as string;
@@ -201,17 +201,17 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
         const updatedCheckIn = new Date(`${newDate}T${newInTime}`).toISOString();
         const updatedCheckOut = newOutTime ? new Date(`${newDate}T${newOutTime}`).toISOString() : undefined;
 
-        setAttendance(prev => prev.map(r => 
-            r.id === editingRecord.id 
-                ? { 
-                    ...r, 
-                    date: newDate, 
-                    checkIn: updatedCheckIn, 
+        setAttendance(prev => prev.map(r =>
+            r.id === editingRecord.id
+                ? {
+                    ...r,
+                    date: newDate,
+                    checkIn: updatedCheckIn,
                     checkOut: updatedCheckOut,
-                    status: newStatus, 
-                    lastUpdated: new Date().toISOString(), 
-                    notes: 'Manual Modification' 
-                } 
+                    status: newStatus,
+                    lastUpdated: new Date().toISOString(),
+                    notes: 'Manual Modification'
+                }
                 : r
         ));
 
@@ -221,9 +221,9 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
 
     const historyData = useMemo(() => {
         const filtered = attendance.filter(r => r.date >= startDate && r.date <= endDate);
-        
+
         if (nameSortOrder === 'none') return filtered;
-        
+
         return [...filtered].sort((a, b) => {
             if (nameSortOrder === 'asc') {
                 return a.userName.localeCompare(b.userName);
@@ -244,11 +244,11 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
     const handleExportCSV = () => {
         const headers = ["ID", "Staff", "Date", "In Time", "Out Time", "Status", "GPS In", "GPS Out", "Notes"];
         const rows = historyData.map(r => [
-            r.id, r.userName, r.date, 
-            new Date(r.checkIn).toLocaleTimeString(), 
+            r.id, r.userName, r.date,
+            new Date(r.checkIn).toLocaleTimeString(),
             r.checkOut ? new Date(r.checkOut).toLocaleTimeString() : 'N/A',
-            r.status, 
-            r.location ? `${r.location.lat};${r.location.lng}` : '', 
+            r.status,
+            r.location ? `${r.location.lat};${r.location.lng}` : '',
             r.checkOutLocation ? `${r.checkOutLocation.lat};${r.checkOutLocation.lng}` : '',
             r.notes || ''
         ]);
@@ -263,7 +263,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
     const handleExportPDF = async () => {
         if (historyData.length === 0) return;
         setIsGeneratingPDF(true);
-        
+
         try {
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pageWidth = pdf.internal.pageSize.getWidth();
@@ -324,14 +324,14 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                 pdf.setFont('helvetica', 'bold');
                 pdf.setFontSize(8);
                 pdf.text(record.userName.toUpperCase(), margin + 5, currentY + 8);
-                
+
                 pdf.setFont('helvetica', 'normal');
                 pdf.setFontSize(7);
                 pdf.text(`Date: ${record.date}`, margin + 5, currentY + 13);
                 pdf.text(`Status: ${record.status}`, margin + 5, currentY + 18);
 
-                pdf.text(`Time: ${new Date(record.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`, margin + 55, currentY + 8);
-                pdf.text(`Exit: ${record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : 'ACTIVE'}`, margin + 55, currentY + 13);
+                pdf.text(`Time: ${new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, margin + 55, currentY + 8);
+                pdf.text(`Exit: ${record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'ACTIVE'}`, margin + 55, currentY + 13);
 
                 // Punch-In Photo
                 if (record.photo) {
@@ -340,7 +340,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                         pdf.setDrawColor(0);
                         pdf.setLineWidth(0.1);
                         pdf.rect(margin + 90, currentY + 2, 21, 21);
-                    } catch (e) {}
+                    } catch (e) { }
                 } else {
                     pdf.setFontSize(6);
                     pdf.setTextColor(150);
@@ -354,7 +354,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                         pdf.setDrawColor(0);
                         pdf.setLineWidth(0.1);
                         pdf.rect(margin + 135, currentY + 2, 21, 21);
-                    } catch (e) {}
+                    } catch (e) { }
                 } else {
                     pdf.setFontSize(6);
                     pdf.setTextColor(150);
@@ -373,7 +373,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
     return (
         <div className="space-y-10 max-w-6xl mx-auto pb-24">
             {showCamera && <CameraCapture isOut={isOutMode} onCapture={photo => { setCapturedPhoto(photo); setShowCamera(false); fetchLocation(); }} onCancel={() => setShowCamera(false)} />}
-            
+
             <header className="flex flex-col md:flex-row justify-between md:items-end gap-6 no-print">
                 <div>
                     <h2 className="text-4xl font-black text-slate-800 dark:text-slate-100 uppercase tracking-tighter leading-none">Staff Registry</h2>
@@ -382,7 +382,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                         Unified Evidence-Based Attendance
                     </p>
                 </div>
-                
+
                 {isAdmin && (
                     <nav className="flex p-1 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-700">
                         <button onClick={() => setActiveSubTab('live')} className={`px-10 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'live' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Live Terminal</button>
@@ -410,7 +410,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{staff.department}</p>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="space-y-2">
                                             {record ? (
                                                 <div className="flex flex-col gap-2">
@@ -434,8 +434,8 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                                                 </div>
                                             ) : (
                                                 <div className="grid grid-cols-2 gap-2">
-                                                     <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.PRESENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-emerald-50 hover:text-emerald-600 transition-all tracking-widest">Mark Present</button>
-                                                     <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.ABSENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-rose-50 hover:text-rose-600 transition-all tracking-widest">Mark Absent</button>
+                                                    <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.PRESENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-emerald-50 hover:text-emerald-600 transition-all tracking-widest">Mark Present</button>
+                                                    <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.ABSENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-rose-50 hover:text-rose-600 transition-all tracking-widest">Mark Absent</button>
                                                 </div>
                                             )}
                                         </div>
@@ -457,7 +457,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                                         <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] max-w-sm">
                                             {isOutMode ? 'Log your departure time to complete your attendance record for today.' : 'Face verification and GPRS positioning are required for authorized presence reporting.'}
                                         </p>
-                                        
+
                                         <div className="flex items-center justify-center gap-4 py-4">
                                             <div className={`w-3 h-3 rounded-full ${todayRecord ? 'bg-emerald-500' : 'bg-slate-200'}`}></div>
                                             <div className={`h-1 w-12 rounded-full ${todayRecord ? 'bg-emerald-500' : 'bg-slate-100'}`}></div>
@@ -478,13 +478,13 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                                                     <i className={`fas ${isOutMode ? 'fa-sign-out' : 'fa-check-circle'} text-white text-4xl`}></i>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className={`p-4 rounded-2xl flex items-center justify-center gap-3 transition-all ${locationStatus === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'}`}>
                                                 <i className={`fas ${locationStatus === 'fetching' ? 'fa-spinner fa-spin' : 'fa-location-dot'}`}></i>
                                                 <span className="text-[10px] font-black uppercase tracking-widest">
-                                                    {locationStatus === 'fetching' ? 'Acquiring GPS Signal...' : 
-                                                     locationStatus === 'success' ? 'GPRS Coordinates Identified' : 
-                                                     locationStatus === 'failed' ? 'GPS Signal Blocked' : 'Waiting for GPS'}
+                                                    {locationStatus === 'fetching' ? 'Acquiring GPS Signal...' :
+                                                        locationStatus === 'success' ? 'GPRS Coordinates Identified' :
+                                                            locationStatus === 'failed' ? 'GPS Signal Blocked' : 'Waiting for GPS'}
                                                 </span>
                                             </div>
 
@@ -544,7 +544,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                     </div>
 
                     <div className="bg-white dark:bg-slate-800 rounded-[45px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                        <div className="overflow-x-auto">
+                        <div className="table-container">
                             <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
                                 <thead className="bg-slate-50/50 dark:bg-slate-900/50">
                                     <tr>
@@ -577,31 +577,30 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-3">
                                                     {r.photo && <img src={r.photo} className="w-10 h-10 rounded-lg object-cover border-2 border-white shadow-md" alt="In" />}
-                                                    <p className="text-[9px] font-bold text-primary uppercase">{new Date(r.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>
+                                                    <p className="text-[9px] font-bold text-primary uppercase">{new Date(r.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
                                                 {r.checkOut ? (
                                                     <div className="flex items-center gap-3">
                                                         {r.checkOutPhoto && <img src={r.checkOutPhoto} className="w-10 h-10 rounded-lg object-cover border-2 border-white shadow-md" alt="Out" />}
-                                                        <p className="text-[9px] font-bold text-indigo-500 uppercase">{new Date(r.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>
+                                                        <p className="text-[9px] font-bold text-indigo-500 uppercase">{new Date(r.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                                     </div>
                                                 ) : (
                                                     <span className="text-[9px] font-black text-slate-300 uppercase italic">On Duty</span>
                                                 )}
                                             </td>
                                             <td className="px-8 py-6 text-center">
-                                                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                                                    r.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' :
-                                                    r.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' :
-                                                    'bg-rose-100 text-rose-600'
-                                                }`}>{r.status}</span>
+                                                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${r.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' :
+                                                        r.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' :
+                                                            'bg-rose-100 text-rose-600'
+                                                    }`}>{r.status}</span>
                                             </td>
                                             <td className="px-8 py-6 text-right opacity-40 group-hover:opacity-100 transition-opacity">
                                                 {isAdmin && (
                                                     <div className="flex justify-end gap-1">
                                                         <button onClick={() => setEditingRecord(r)} className="p-2 text-primary hover:bg-primary/10 rounded-lg transition" title="Modify Record"><i className="fas fa-edit"></i></button>
-                                                        <button onClick={() => { if(confirm('Delete record?')) setAttendance(prev => prev.filter(att => att.id !== r.id)) }} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Purge Record"><i className="fas fa-trash-alt"></i></button>
+                                                        <button onClick={() => { if (confirm('Delete record?')) setAttendance(prev => prev.filter(att => att.id !== r.id)) }} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Purge Record"><i className="fas fa-trash-alt"></i></button>
                                                     </div>
                                                 )}
                                             </td>
@@ -625,7 +624,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                             </div>
                             <button onClick={() => setEditingRecord(null)} className="text-slate-400 hover:text-red-500 text-3xl transition-all">&times;</button>
                         </header>
-                        
+
                         <form onSubmit={handleUpdateRecord} className="p-8 space-y-6">
                             <div className="grid grid-cols-1 gap-4">
                                 <div>

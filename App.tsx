@@ -310,7 +310,7 @@ const AppContent: React.FC = () => {
                         setNotifications={setNotifications}
                         isSyncConnected={isConnected}
                     />
-                    <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative custom-scrollbar">
+                    <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-safe md:pb-8 relative custom-scrollbar">
                         {scanToast && (
                             <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-10 duration-500">
                                 <div className="bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3">

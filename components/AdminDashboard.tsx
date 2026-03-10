@@ -24,11 +24,10 @@ const StatItem: React.FC<{ label: string; value: number | string }> = ({ label, 
 const TabButton: React.FC<{ label: string; isActive: boolean; onClick: () => void; iconClass?: string }> = ({ label, isActive, onClick, iconClass }) => (
     <button
         onClick={onClick}
-        className={`py-2 px-4 font-semibold rounded-t-lg transition-colors duration-200 focus:outline-none flex items-center gap-2 ${
-            isActive
+        className={`py-2 px-4 font-semibold rounded-t-lg transition-colors duration-200 focus:outline-none flex items-center gap-2 ${isActive
                 ? 'bg-white dark:bg-slate-800 text-primary dark:text-primary-dark border-b-2 border-primary'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-        }`}
+            }`}
     >
         {iconClass && <i className={iconClass}></i>}
         {label}
@@ -37,7 +36,7 @@ const TabButton: React.FC<{ label: string; isActive: boolean; onClick: () => voi
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUsers, onEditUser, setCurrentView, departments }) => {
     const { realUser } = useAuth();
-    const [activeTab, setActiveTab] = useState('analytics'); 
+    const [activeTab, setActiveTab] = useState('analytics');
     const [isCreateFormVisible, setCreateFormVisible] = useState(false);
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
     const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
@@ -65,7 +64,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
             totalUsers: users.length,
         };
     }, [tickets, users]);
-    
+
     const handleCreateUser = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -151,7 +150,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
                     </div>
                 </div>
             </div>
-            
+
             <div className="bg-slate-100 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
                 <nav className="flex space-x-2 overflow-x-auto no-scrollbar">
                     <TabButton label="Analytics" isActive={activeTab === 'analytics'} onClick={() => setActiveTab('analytics')} iconClass="fas fa-chart-bar" />
@@ -160,7 +159,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
                     <TabButton label="System Logs" isActive={activeTab === 'logs'} onClick={() => setActiveTab('logs')} iconClass="fas fa-terminal" />
                 </nav>
             </div>
-            
+
             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md min-h-[300px]">
                 {activeTab === 'analytics' && (
                     <Analytics tickets={tickets} users={users} departments={departments} />
@@ -173,12 +172,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
                                 <i className="fas fa-user-plus"></i> Create New User
                             </button>
                         </div>
-                        
+
                         {isCreateFormVisible && (
-                             <div className="bg-slate-50 dark:bg-slate-700/50 p-6 rounded-lg shadow-inner my-4">
+                            <div className="bg-slate-50 dark:bg-slate-700/50 p-6 rounded-lg shadow-inner my-4">
                                 <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Create New User Form</h3>
                                 <form onSubmit={handleCreateUser} className="space-y-4">
-                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Full Name *</label>
                                             <input type="text" name="name" required className="mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700" />
@@ -191,7 +190,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
                                             <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Password *</label>
                                             <input type="password" name="password" required className="mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700" />
                                         </div>
-                                         <div>
+                                        <div>
                                             <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Role *</label>
                                             <select name="role" required className="mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700">
                                                 <option value={Role.USER}>User</option>
@@ -201,7 +200,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
                                         <div>
                                             <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Department *</label>
                                             <select name="department" defaultValue={departments[0] || ''} required className="mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700">
-                                                 {departments.map(d => <option key={d} value={d}>{d}</option>)}
+                                                {departments.map(d => <option key={d} value={d}>{d}</option>)}
                                             </select>
                                         </div>
                                         <div>
@@ -220,8 +219,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
                             </div>
                         )}
 
-                        <div className="overflow-x-auto mt-4">
-                             <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                        <div className="table-container mt-4">
+                            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                                 <thead className="bg-slate-50 dark:bg-slate-700">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase">Name</th>
@@ -253,9 +252,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
                     </div>
                 )}
                 {activeTab === 'tickets' && (
-                     <div>
+                    <div>
                         <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4">Recent Tickets</h3>
-                        <div className="overflow-x-auto">
+                        <div className="table-container">
                             <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                                 <thead className="bg-slate-50 dark:bg-slate-700">
                                     <tr>
@@ -266,7 +265,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                                    {[...tickets].sort((a,b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()).slice(0, 5).map(ticket => (
+                                    {[...tickets].sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()).slice(0, 5).map(ticket => (
                                         <tr key={ticket.id}>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-800 dark:text-slate-100">{ticket.id}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400 max-w-sm truncate">{ticket.description}</td>
@@ -279,18 +278,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
                         </div>
                     </div>
                 )}
-                 {activeTab === 'logs' && (
-                     <div>
+                {activeTab === 'logs' && (
+                    <div>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Live System Audit Logs</h3>
-                             <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2">
                                 <button onClick={() => alert('Feature coming soon: Export to CSV')} className="bg-emerald-600 text-white font-semibold py-1.5 px-3 rounded-lg hover:bg-emerald-700 transition text-xs flex items-center gap-2">
                                     <i className="fas fa-file-csv"></i> Export
                                 </button>
                                 <button onClick={handleClearLogs} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-3 rounded-lg transition text-xs flex items-center gap-2">
                                     <i className="fas fa-trash"></i> Clear Logs
                                 </button>
-                             </div>
+                            </div>
                         </div>
                         <div className="bg-slate-900 text-green-300 font-mono text-xs p-4 rounded-lg h-96 overflow-y-auto shadow-inner border border-slate-700">
                             {auditLogs.length > 0 ? auditLogs.map(log => (

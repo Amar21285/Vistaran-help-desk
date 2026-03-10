@@ -139,9 +139,9 @@ const TopNav: React.FC<TopNavProps> = ({
                         <i className="fas fa-camera text-lg"></i>
                     </button>
 
-                    <div className="flex flex-col items-center justify-center min-w-[40px] px-2">
-                        <div className={`w-2.5 h-2.5 rounded-full ${isSyncConnected ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'} transition-all duration-500`}></div>
-                        <span className="text-[7px] font-black uppercase tracking-tighter mt-1 text-slate-400">Live</span>
+                    <div className="flex items-center justify-center gap-1 min-w-[32px] sm:min-w-[40px] px-1 sm:px-2">
+                        <div className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${isSyncConnected ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'} transition-all duration-500`}></div>
+                        <span className="text-[6px] sm:text-[7px] font-black uppercase tracking-tighter mt-0.5 text-slate-400">Live</span>
                     </div>
 
                     {notificationSettings.enableInAppNotifications && (
