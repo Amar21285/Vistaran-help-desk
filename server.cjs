@@ -8,8 +8,9 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const server = createServer(app);
 
-// Use JSON body parser for POST requests
-app.use(express.json());
+// Use JSON body parser for POST requests with increased limit for backups
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Trust proxy for production environments (Railway/Heroku/etc)
 app.set('trust proxy', 1);
@@ -79,6 +80,31 @@ app.post('/api/login', (req, res) => {
   // Return user without password
   const { password: _, ...userWithoutPassword } = foundUser;
   res.json(userWithoutPassword);
+});
+
+// Restoration API endpoints
+app.post('/api/admin/restore-from-master', (req, res) => {
+  console.log('POST /api/admin/restore-from-master received');
+  const result = restoreFromMasterBackup();
+  console.log('Restoration result:', result.success ? 'Success' : 'Failed');
+  if (result.success) {
+    res.json(result);
+  } else {
+    res.status(500).json(result);
+  }
+});
+
+app.post('/api/admin/restore-from-upload', (req, res) => {
+  console.log('POST /api/admin/restore-from-upload received');
+  const masterData = req.body;
+  if (!masterData || typeof masterData !== 'object') {
+    console.warn('Invalid master data received in upload');
+    return res.status(400).json({ success: false, error: 'Invalid data format' });
+  }
+  
+  const result = performSystemRestoration(masterData, 'User Upload');
+  console.log('Upload restoration result:', result.success ? 'Success' : 'Failed');
+  res.json(result);
 });
 
 // Serve static files from the 'dist' directory
@@ -185,24 +211,7 @@ function restoreFromMasterBackup() {
 }
 
 // REST API for restoration
-app.post('/api/admin/restore-from-master', (req, res) => {
-  const result = restoreFromMasterBackup();
-  if (result.success) {
-    res.json(result);
-  } else {
-    res.status(500).json(result);
-  }
-});
-
-app.post('/api/admin/restore-from-upload', (req, res) => {
-  const masterData = req.body;
-  if (!masterData || typeof masterData !== 'object') {
-    return res.status(400).json({ success: false, error: 'Invalid data format' });
-  }
-  
-  const result = performSystemRestoration(masterData, 'User Upload');
-  res.json(result);
-});
+// (Moved to top)
 
 function loadDataFromFile() {
   const masterPaths = [
