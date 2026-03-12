@@ -14,7 +14,13 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
   }, [initialValue, key]);
 
   const [storedValue, setStoredValue] = useState<T>(readValue);
+  const storedValueRef = useRef<T>(storedValue);
   const channelRef = useRef<BroadcastChannel | null>(null);
+
+  // Update ref whenever storedValue changes
+  useEffect(() => {
+    storedValueRef.current = storedValue;
+  }, [storedValue]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -57,7 +63,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
 
   const setValue = useCallback((value: T | ((val: T) => T)) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const valueToStore = value instanceof Function ? value(storedValueRef.current) : value;
       setStoredValue(valueToStore);
 
       if (typeof window !== 'undefined') {
@@ -71,7 +77,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
     } catch (error) {
       console.warn(`Error setting localStorage key “${key}”:`, error);
     }
-  }, [key, storedValue]);
+  }, [key]);
 
   return [storedValue, setValue];
 }
