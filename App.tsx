@@ -103,24 +103,27 @@ const AppContent: React.FC = () => {
         socketService.connect();
         
         socketService.onUpdate((data) => {
-            console.log('Received real-time update:', data.type);
-            switch (data.type) {
-                case 'tickets': setAllTickets(data.payload); break;
-                case 'users': setAllUsers(data.payload); break;
-                case 'inventory': setAllInventory(data.payload); break;
-                case 'vendors': setAllVendors(data.payload); break;
-                case 'challans': setAllChallans(data.payload); break;
-                case 'invoices': setAllInvoices(data.payload); break;
-                case 'purchase-orders': setAllPurchaseOrders(data.payload); break;
-                case 'technicians': setAllTechnicians(data.payload); break;
-                case 'departments': setAllDepartments(data.payload); break;
-                case 'notifications': setNotifications(data.payload); break;
-                case 'files': setAllFiles(data.payload); break;
-                case 'symptoms': setAllSymptoms(data.payload); break;
-                case 'templates': setAllTemplates(data.payload); break;
-                case 'attendance': setAllAttendance(data.payload); break;
-                case 'reimbursements': setAllReimbursements(data.payload); break;
-                case 'internet-vendors': setAllInternetVendors(data.payload); break;
+            console.log('Received real-time update:', data.collection || data.type);
+            const targetCollection = data.collection || (data as any).type;
+            const payload = data.data || (data as any).payload;
+
+            switch (targetCollection) {
+                case 'tickets': setAllTickets(payload); break;
+                case 'users': setAllUsers(payload); break;
+                case 'inventory': setAllInventory(payload); break;
+                case 'vendors': setAllVendors(payload); break;
+                case 'challans': setAllChallans(payload); break;
+                case 'invoices': setAllInvoices(payload); break;
+                case 'purchase-orders': setAllPurchaseOrders(payload); break;
+                case 'technicians': setAllTechnicians(payload); break;
+                case 'departments': setAllDepartments(payload); break;
+                case 'notifications': setNotifications(payload); break;
+                case 'files': setAllFiles(payload); break;
+                case 'symptoms': setAllSymptoms(payload); break;
+                case 'templates': setAllTemplates(payload); break;
+                case 'attendance': setAllAttendance(payload); break;
+                case 'reimbursements': setAllReimbursements(payload); break;
+                case 'internet-vendors': setAllInternetVendors(payload); break;
             }
         });
 

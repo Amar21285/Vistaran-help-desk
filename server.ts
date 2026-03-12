@@ -20,10 +20,10 @@ async function startServer() {
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    socket.on("sync-data", (data) => {
+    socket.on("sync_data", (data) => {
       // Broadcast the data to all other connected clients
-      // data: { type: 'tickets' | 'inventory' | ..., payload: any }
-      socket.broadcast.emit("data-updated", data);
+      // data: { collection: string, data: any, type?: string, userId?: string, timestamp?: number }
+      socket.broadcast.emit("data_update", data);
     });
 
     socket.on("disconnect", () => {

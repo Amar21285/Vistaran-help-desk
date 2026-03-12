@@ -578,15 +578,41 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                             {record ? (
                                                 <div className="flex flex-col gap-2">
                                                     <div className="grid grid-cols-2 gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-900 rounded-xl border dark:border-slate-700">
-                                                        <div className="border-r dark:border-slate-800 pr-2">
-                                                            <p className="text-[7px] font-black text-slate-400 uppercase">In Time</p>
-                                                            <p className="text-[10px] font-black text-primary">{new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                                        <div className="border-r dark:border-slate-800 pr-2 flex items-center justify-between">
+                                                            <div>
+                                                                <p className="text-[7px] font-black text-slate-400 uppercase">In Time</p>
+                                                                <p className="text-[10px] font-black text-primary">{new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                                            </div>
+                                                            {record.location && (
+                                                                <a 
+                                                                    href={`https://www.google.com/maps?q=${record.location.lat},${record.location.lng}`} 
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-primary hover:text-primary-hover transition-colors ml-1"
+                                                                    title="View check-in location"
+                                                                >
+                                                                    <i className="fas fa-location-dot text-[10px]"></i>
+                                                                </a>
+                                                            )}
                                                         </div>
-                                                        <div className="pl-1">
-                                                            <p className="text-[7px] font-black text-slate-400 uppercase">Out Time</p>
-                                                            <p className={`text-[10px] font-black ${record.checkOut ? 'text-indigo-500' : 'text-slate-300 italic'}`}>
-                                                                {record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
-                                                            </p>
+                                                        <div className="pl-1 flex items-center justify-between">
+                                                            <div>
+                                                                <p className="text-[7px] font-black text-slate-400 uppercase">Out Time</p>
+                                                                <p className={`text-[10px] font-black ${record.checkOut ? 'text-indigo-500' : 'text-slate-300 italic'}`}>
+                                                                    {record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+                                                                </p>
+                                                            </div>
+                                                            {record.checkOut && record.checkOutLocation && (
+                                                                <a 
+                                                                    href={`https://www.google.com/maps?q=${record.checkOutLocation.lat},${record.checkOutLocation.lng}`} 
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-indigo-500 hover:text-indigo-600 transition-colors ml-1"
+                                                                    title="View check-out location"
+                                                                >
+                                                                    <i className="fas fa-location-dot text-[10px]"></i>
+                                                                </a>
+                                                            )}
                                                         </div>
                                                     </div>
                                                     <div className="grid grid-cols-3 gap-1">

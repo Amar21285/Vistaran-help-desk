@@ -18,14 +18,14 @@ class SocketService {
     });
   }
 
-  emitUpdate(type: string, payload: any) {
+  emitUpdate(collection: string, payload: any) {
     if (!this.socket) return;
-    this.socket.emit("sync-data", { type, payload });
+    this.socket.emit("sync_data", { collection, data: payload });
   }
 
-  onUpdate(callback: (data: { type: string; payload: any }) => void) {
+  onUpdate(callback: (data: { type: string; collection: string; data: any }) => void) {
     if (!this.socket) return;
-    this.socket.on("data-updated", callback);
+    this.socket.on("data_update", callback);
   }
 
   disconnect() {

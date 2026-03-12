@@ -1,9 +1,0 @@
-{
-  "name": "Vistaran Help Desk",
-  "description": "A responsive PWA help desk ticketing system. Installable on Android, iOS, and Desktop for a seamless app experience.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone",
-    "geolocation"
-  ]
-}

@@ -8,52 +8,55 @@ interface BottomNavProps {
 
 const BottomNav: React.FC<BottomNavProps> = ({ currentView, setCurrentView, onQuickTicket }) => {
     return (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-40 pb-safe">
-            <div className="flex justify-around items-center h-16 relative">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 glass-header border-t border-white/10 dark:border-slate-800 z-40 pb-safe">
+            <div className="flex justify-around items-center h-16 relative px-4">
                 <button 
                     onClick={() => setCurrentView('dashboard')}
-                    className={`flex flex-col items-center gap-1 transition-all ${currentView === 'dashboard' ? 'text-primary' : 'text-slate-400'}`}
+                    className={`flex flex-col items-center gap-1.5 transition-all duration-300 button-pop ${currentView === 'dashboard' ? 'text-primary scale-110' : 'text-slate-400 opacity-60'}`}
                 >
-                    <i className="fas fa-home text-lg"></i>
-                    <span className="text-[10px] font-black uppercase tracking-widest">Home</span>
+                    <div className={`p-1.5 rounded-xl transition-all ${currentView === 'dashboard' ? 'bg-primary/10' : ''}`}>
+                        <i className={`fas fa-home ${currentView === 'dashboard' ? 'text-xl' : 'text-lg'}`}></i>
+                    </div>
                 </button>
 
                 <button 
                     onClick={() => setCurrentView('tickets')}
-                    className={`flex flex-col items-center gap-1 transition-all ${currentView === 'tickets' ? 'text-primary' : 'text-slate-400'}`}
+                    className={`flex flex-col items-center gap-1.5 transition-all duration-300 button-pop ${currentView === 'tickets' ? 'text-primary scale-110' : 'text-slate-400 opacity-60'}`}
                 >
-                    <i className="fas fa-ticket-alt text-lg"></i>
-                    <span className="text-[10px] font-black uppercase tracking-widest">Tickets</span>
+                    <div className={`p-1.5 rounded-xl transition-all ${currentView === 'tickets' ? 'bg-primary/10' : ''}`}>
+                        <i className={`fas fa-ticket-alt ${currentView === 'tickets' ? 'text-xl' : 'text-lg'}`}></i>
+                    </div>
                 </button>
 
                 {/* Central Floating Quick Action */}
-                <div className="relative -top-6">
+                <div className="relative -top-7">
                     <button 
                         onClick={onQuickTicket}
-                        className="bg-primary text-white w-14 h-14 rounded-full shadow-2xl shadow-primary/40 flex items-center justify-center transform active:scale-90 transition-all border-4 border-slate-100 dark:border-slate-900"
+                        className="bg-primary text-white w-16 h-16 rounded-[22px] shadow-2xl shadow-primary/40 flex items-center justify-center transform active:scale-90 transition-all border-4 border-slate-50 dark:border-slate-900 hover-glow"
                     >
-                        <i className="fas fa-bolt text-xl"></i>
+                        <i className="fas fa-plus text-2xl"></i>
                     </button>
-                    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] font-black uppercase text-primary whitespace-nowrap tracking-widest">Quick Raise</span>
+                    <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-primary rounded-full blur-[1px] opacity-50"></div>
                 </div>
 
                 <button 
                     onClick={() => setCurrentView('inventory')}
-                    className={`flex flex-col items-center gap-1 transition-all ${currentView === 'inventory' ? 'text-primary' : 'text-slate-400'}`}
+                    className={`flex flex-col items-center gap-1.5 transition-all duration-300 button-pop ${currentView === 'inventory' ? 'text-primary scale-110' : 'text-slate-400 opacity-60'}`}
                 >
-                    <i className="fas fa-box text-lg"></i>
-                    <span className="text-[10px] font-black uppercase tracking-widest">Assets</span>
+                    <div className={`p-1.5 rounded-xl transition-all ${currentView === 'inventory' ? 'bg-primary/10' : ''}`}>
+                        <i className={`fas fa-box-open ${currentView === 'inventory' ? 'text-xl' : 'text-lg'}`}></i>
+                    </div>
                 </button>
 
                 <button 
                     onClick={() => setCurrentView('my-profile')}
-                    className={`flex flex-col items-center gap-1 transition-all ${currentView === 'my-profile' ? 'text-primary' : 'text-slate-400'}`}
+                    className={`flex flex-col items-center gap-1.5 transition-all duration-300 button-pop ${currentView === 'my-profile' ? 'text-primary scale-110' : 'text-slate-400 opacity-60'}`}
                 >
-                    <i className="fas fa-user-circle text-lg"></i>
-                    <span className="text-[10px] font-black uppercase tracking-widest">Profile</span>
+                    <div className={`p-1.5 rounded-xl transition-all ${currentView === 'my-profile' ? 'bg-primary/10' : ''}`}>
+                        <i className={`fas fa-user ${currentView === 'my-profile' ? 'text-xl' : 'text-lg'}`}></i>
+                    </div>
                 </button>
             </div>
-            <div className="h-[env(safe-area-inset-bottom)] bg-transparent"></div>
         </div>
     );
 };
