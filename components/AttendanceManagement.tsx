@@ -518,7 +518,8 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         
         for (let d = 1; d <= daysInMonth; d++) {
             const date = new Date(selectedYear, selectedMonth, d);
-            const dateStr = date.toISOString().split('T')[0];
+            // Fix: Use direct string construction to avoid timezone shifts from toISOString()
+            const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
             const record = attendance.find(r => r.userId === selectedEmployeeId && r.date === dateStr);
             const isPast = date < new Date(now.getFullYear(), now.getMonth(), now.getDate());
             
@@ -796,7 +797,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                             <div className="flex flex-col gap-1">
                                 <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Year</label>
                                 <select value={selectedYear} onChange={e => setSelectedYear(parseInt(e.target.value))} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm">
-                                    {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
+                                    {[2022, 2023, 2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                             </div>
                             <div className="flex gap-3">
