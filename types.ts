@@ -49,6 +49,7 @@ export interface User {
     whatsapp?: string;
     employeeId?: string;
     designation?: string;
+    permissions?: Permission[];
 }
 
 export enum TicketStatus {

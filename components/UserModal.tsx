@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { User, Role, UserStatus } from '../types';
+import { User, Role, UserStatus, Permission } from '../types';
 import { logUserAction } from '../utils/auditLogger';
 
 interface UserModalProps {
@@ -22,6 +22,7 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
     const [whatsapp, setWhatsapp] = useState(userToEdit.whatsapp || '');
     const [employeeId, setEmployeeId] = useState(userToEdit.employeeId || '');
     const [designation, setDesignation] = useState(userToEdit.designation || '');
+    const [permissions, setPermissions] = useState<Permission[]>(userToEdit.permissions || []);
 
 
     const isSelfEdit = currentUser.id === userToEdit.id;
@@ -42,6 +43,7 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
             role: isAdmin && !isSelfEdit ? role : userToEdit.role,
             department: isAdmin ? department : userToEdit.department,
             status: isAdmin && !isSelfEdit ? status : userToEdit.status,
+            permissions: isAdmin && !isSelfEdit ? permissions : userToEdit.permissions,
         };
 
         if (password.trim() !== '' && isAdmin && !isSelfEdit) {
@@ -186,7 +188,7 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
                                 )}
                             </div>
                         </div>
-                         <div>
+                        <div>
                             <label className="block text-sm font-medium text-slate-600">Status</label>
                             {isAdmin && !isSelfEdit ? (
                                 <select 
@@ -203,6 +205,40 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
                                 <input type="text" value={status} readOnly className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-slate-100"/>
                             )}
                         </div>
+
+                        {isAdmin && !isSelfEdit && (
+                            <div className="pt-4 border-t border-slate-100 dark:border-slate-700">
+                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-4 uppercase tracking-widest text-[10px]">Explicitly Granted Rights</label>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {Object.values(Permission).map((perm) => (
+                                        <label key={perm} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group">
+                                            <div className="relative flex items-center">
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={permissions.includes(perm)}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setPermissions([...permissions, perm]);
+                                                        } else {
+                                                            setPermissions(permissions.filter(p => p !== perm));
+                                                        }
+                                                    }}
+                                                    className="w-5 h-5 rounded-lg border-2 border-slate-300 dark:border-slate-600 text-primary focus:ring-primary/20 transition-all cursor-pointer accent-primary"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-bold text-slate-700 dark:text-slate-200 capitalize">{perm.replace(/_/g, ' ')}</span>
+                                                <span className="text-[9px] text-slate-400 font-medium uppercase tracking-tight">Allow access to this feature</span>
+                                            </div>
+                                        </label>
+                                    ))}
+                                </div>
+                                <p className="mt-4 text-[10px] text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-100 dark:border-amber-900/30">
+                                    <i className="fas fa-exclamation-triangle mr-2"></i>
+                                    Note: Non-admins only have ticket creation and attendance rights by default. All other rights must be granted here.
+                                </p>
+                            </div>
+                        )}
                     </main>
                     <footer className="p-4 bg-slate-50 border-t flex justify-end gap-2">
                         <button type="button" onClick={onClose} className="bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>

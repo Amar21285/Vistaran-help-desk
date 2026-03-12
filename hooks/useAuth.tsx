@@ -61,9 +61,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const can = useCallback((permission: Permission): boolean => {
     if (!user) return false;
-    const permissions = rolePermissions[user.role] || [];
-    return permissions.includes(permission);
-  }, [user, rolePermissions]);
+    
+    // Admins have all rights
+    if (user.role === Role.ADMIN) return true;
+
+    // Base permissions allowed for everyone
+    if (permission === Permission.CREATE_TICKETS || permission === Permission.MARK_ATTENDANCE) {
+      return true;
+    }
+
+    // Check for explicitly granted permissions
+    return user.permissions?.includes(permission) || false;
+  }, [user]);
 
   const finalizeLogin = useCallback((foundUser: User) => {
     setUser(foundUser);
