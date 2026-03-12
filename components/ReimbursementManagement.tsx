@@ -3,20 +3,20 @@ import React, { useState, useMemo, useRef } from 'react';
 import { ReimbursementRequest, ReimbursementStatus, Role, User } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { logUserAction } from '../utils/auditLogger';
-import useLocalStorage from '../hooks/useLocalStorage';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import Logo from './icons/Logo';
 
 interface ReimbursementManagementProps {
     users: User[];
+    requests?: ReimbursementRequest[];
+    setRequests?: React.Dispatch<React.SetStateAction<ReimbursementRequest[]>>;
 }
 
 const CATEGORIES = ['Travel', 'Food', 'Stationery', 'Repairs', 'Office Supply', 'House Rent / Light Bill'];
 
-const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users }) => {
+const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users, requests = [], setRequests = () => {} }) => {
     const { user, realUser } = useAuth();
-    const [requests, setRequests] = useLocalStorage<ReimbursementRequest[]>('vistaran-helpdesk-reimbursements', []);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [viewingRequest, setViewingRequest] = useState<ReimbursementRequest | null>(null);
     const [editingRequest, setEditingRequest] = useState<ReimbursementRequest | null>(null);
@@ -146,7 +146,8 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
         if (!voucherRef.current || !viewingRequest) return;
         setIsGeneratingPDF(true);
         try {
-            const canvas = await html2canvas(voucherRef.current, { 
+            const element = voucherRef.current;
+            const canvas = await html2canvas(element, { 
                 scale: 2, 
                 useCORS: true, 
                 backgroundColor: '#ffffff',
@@ -156,29 +157,29 @@ const ReimbursementManagement: React.FC<ReimbursementManagementProps> = ({ users
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
-            const margin = 10;
-            const imgWidth = pageWidth - (margin * 2);
+            const margin = 0;
+            const imgWidth = pageWidth;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             
             let heightLeft = imgHeight;
-            let position = margin;
+            let position = 0;
 
             // First page
             pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
-            heightLeft -= (pageHeight - margin * 2);
+            heightLeft -= pageHeight;
 
             // Subsequent pages
             while (heightLeft > 0) {
-                position = heightLeft - imgHeight + margin;
+                position = heightLeft - imgHeight;
                 pdf.addPage();
                 pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
-                heightLeft -= (pageHeight - margin * 2);
+                heightLeft -= pageHeight;
             }
             
             pdf.save(`Voucher-${viewingRequest.id}.pdf`);
         } catch (error) {
             console.error("PDF Generation Error:", error);
-            alert("Failed to generate PDF. Please try again.");
+            alert("Failed to generate PDF. Please try printing (Ctrl+P) and saving as PDF instead.");
         } finally { 
             setIsGeneratingPDF(false); 
         }

@@ -98,13 +98,14 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                             transform: rotate(${rotation}deg) !important;
                             transform-origin: center center !important;
                         }
-                        .high-contrast-mode { filter: contrast(500%) grayscale(100%) brightness(80%) !important; }
+                        .high-contrast-mode { filter: contrast(800%) grayscale(100%) brightness(70%) !important; }
                         .thermal-optimized { color: #000 !important; border-color: #000 !important; }
                         .thermal-optimized * { 
                             color: #000 !important; 
                             border-color: #000 !important; 
                             font-weight: 900 !important; 
                             -webkit-font-smoothing: none !important;
+                            text-shadow: 0.05mm 0.05mm 0 #000, -0.05mm -0.05mm 0 #000 !important;
                         }
                         svg, img { image-rendering: pixelated !important; image-rendering: crisp-edges !important; }
                     </style>
@@ -417,13 +418,14 @@ const BatchAssetLabelModal: React.FC<BatchAssetLabelModalProps> = ({ items, onCl
                 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-                .high-contrast-mode { filter: contrast(500%) grayscale(100%) brightness(80%) !important; }
+                .high-contrast-mode { filter: contrast(800%) grayscale(100%) brightness(70%) !important; }
                 .thermal-optimized { color: #000 !important; border-color: #000 !important; }
                 .thermal-optimized * { 
                     color: #000 !important; 
                     border-color: #000 !important; 
                     font-weight: 900 !important; 
                     -webkit-font-smoothing: none !important;
+                    text-shadow: 0.05mm 0.05mm 0 #000, -0.05mm -0.05mm 0 #000 !important;
                 }
                 svg, img { image-rendering: pixelated !important; image-rendering: crisp-edges !important; }
             `}</style>

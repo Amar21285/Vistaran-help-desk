@@ -2,11 +2,12 @@
 import React, { useState, useMemo } from 'react';
 import { InternetVendor, Role, InventoryItem } from '../types';
 import { useAuth } from '../hooks/useAuth';
-import useLocalStorage from '../hooks/useLocalStorage';
 import { logUserAction } from '../utils/auditLogger';
 
 interface InternetVendorManagementProps {
     inventory?: InventoryItem[];
+    vendors?: InternetVendor[];
+    setVendors?: React.Dispatch<React.SetStateAction<InternetVendor[]>>;
 }
 
 const INITIAL_DATA: InternetVendor[] = [
@@ -33,9 +34,8 @@ const INITIAL_DATA: InternetVendor[] = [
     { id: 'IV-21', name: 'Hathway Cable and Datacom Ltd (Tambe Nagar 009)', planName: '100Mbps Static IP', amount: 9425, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-06-20', customerID: '1348072583' },
 ];
 
-const InternetVendorManagement: React.FC<InternetVendorManagementProps> = ({ inventory = [] }) => {
+const InternetVendorManagement: React.FC<InternetVendorManagementProps> = ({ inventory = [], vendors = [], setVendors = () => {} }) => {
     const { user, realUser } = useAuth();
-    const [vendors, setVendors] = useLocalStorage<InternetVendor[]>('vistaran-internet-vendors', INITIAL_DATA);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingVendor, setEditingVendor] = useState<InternetVendor | null>(null);
 

@@ -73,7 +73,7 @@ const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purch
 
     const handleAddItem = () => {
         if (!newItemDesc.trim()) return;
-        setItems(prev => [...prev, { id: `PO-ITEM-${Date.now()}`, description: newItemDesc, quantity: newItemQty, unit: 'pcs', price: newItemPrice }]);
+        setItems(prev => [...prev, { id: `PO-ITEM-${Date.now()}`, description: newItemDesc, quantity: isNaN(newItemQty) ? 0 : newItemQty, unit: 'pcs', price: isNaN(newItemPrice) ? 0 : newItemPrice }]);
         setNewItemDesc(''); setNewItemQty(1); setNewItemPrice(0);
     };
 
@@ -171,7 +171,7 @@ const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purch
                             <div className="p-6 bg-slate-50 dark:bg-slate-900 rounded-3xl border space-y-4">
                                 <div className="grid grid-cols-12 gap-3">
                                     <div className="col-span-12 md:col-span-7"><input list="s-opt" value={newItemDesc} onChange={e => setNewItemDesc(e.target.value)} placeholder="Material..." className="w-full p-4 border rounded-2xl font-bold text-sm" /><datalist id="s-opt">{inventory.map(i => <option key={i.id} value={i.name} />)}</datalist></div>
-                                    <div className="col-span-6 md:col-span-3"><input type="number" value={newItemQty} onChange={e => setNewItemQty(parseFloat(e.target.value))} placeholder="Qty" className="w-full p-4 border rounded-2xl font-bold text-sm" /></div>
+                                    <div className="col-span-6 md:col-span-3"><input type="number" value={isNaN(newItemQty) ? '' : newItemQty} onChange={e => setNewItemQty(e.target.value === '' ? NaN : parseFloat(e.target.value))} placeholder="Qty" className="w-full p-4 border rounded-2xl font-bold text-sm" /></div>
                                     <div className="col-span-6 md:col-span-2"><button onClick={handleAddItem} className="w-full h-full bg-emerald-600 text-white font-black rounded-2xl">Add</button></div>
                                 </div>
                                 {items.map(i => <div key={i.id} className="flex justify-between p-4 bg-white rounded-xl border border-slate-100"><span>{i.description} x {i.quantity}</span><button onClick={() => setItems(items.filter(it => it.id !== i.id))} className="text-red-500"><i className="fas fa-times"></i></button></div>)}

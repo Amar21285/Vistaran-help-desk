@@ -1,56 +1,21 @@
+
 {
   "name": "Vistaran Help Desk",
   "short_name": "Vistaran",
   "description": "IT Support Ticket Management System",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#0f172a",
+  "orientation": "portrait",
+  "background_color": "#f1f5f9",
   "theme_color": "#3b82f6",
   "scope": "/",
-  "categories": [
-    "business",
-    "productivity",
-    "utilities"
-  ],
-  "shortcuts": [
-    {
-      "name": "New Ticket",
-      "short_name": "New",
-      "description": "Raise a new support ticket",
-      "url": "/?view=create-ticket",
-      "icons": [
-        {
-          "src": "https://via.placeholder.com/192/3b82f6/ffffff?text=+",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Inventory",
-      "short_name": "Assets",
-      "description": "View asset inventory",
-      "url": "/?view=inventory",
-      "icons": [
-        {
-          "src": "https://via.placeholder.com/192/3b82f6/ffffff?text=A",
-          "sizes": "192x192"
-        }
-      ]
-    }
-  ],
+  "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
       "src": "https://via.placeholder.com/192/3b82f6/ffffff?text=V",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://via.placeholder.com/192/3b82f6/ffffff?text=V",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "https://via.placeholder.com/512/3b82f6/ffffff?text=Vistaran",

@@ -24,9 +24,8 @@ import AttendanceManagement from './components/AttendanceManagement';
 import ScannerModal from './components/modals/ScannerModal';
 import QuickTicketModal from './components/modals/QuickTicketModal';
 import { USERS, TICKETS, TECHNICIANS, SYMPTOMS, FILES, TICKET_TEMPLATES, INVENTORY, VENDORS } from './constants';
-import { User, Ticket, ManagedFile, Technician, Symptom, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder, AppNotification, Permission } from './types';
+import { User, Ticket, ManagedFile, Technician, Symptom, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder, AppNotification, Permission, AttendanceRecord, ReimbursementRequest, InternetVendor } from './types';
 import { logUserAction } from './utils/auditLogger';
-import useRealtimeSync from './hooks/useRealtimeSync';
 
 interface ModalAction {
     label: string;
@@ -51,7 +50,7 @@ const InfoModal: React.FC<{
                     {message}
                 </div>
                 <div className="flex justify-center flex-wrap gap-4 mt-8">
-                    {actions?.map((action, index) => (
+                     {actions?.map((action, index) => (
                         <button
                             key={index}
                             onClick={action.onClick}
@@ -72,15 +71,19 @@ const InfoModal: React.FC<{
     );
 };
 
+import { socketService } from './src/services/socketService';
+
 const AppContent: React.FC = () => {
     const { user, realUser, logout, updateUser, startImpersonation, stopImpersonation, can } = useAuth();
     const { wallpaper } = useTheme();
     const { appName, notificationSettings } = useSettings();
-
+    console.log(`App Name: ${appName}`);
+    
     const [allUsers, setAllUsers] = useLocalStorage<User[]>('vistaran-helpdesk-users', USERS);
     const [allTickets, setAllTickets] = useLocalStorage<Ticket[]>('vistaran-helpdesk-tickets', TICKETS);
     const [allFiles, setAllFiles] = useLocalStorage<ManagedFile[]>('vistaran-helpdesk-files', FILES);
     const [allTechnicians, setAllTechnicians] = useLocalStorage<Technician[]>('vistaran-helpdesk-technicians', TECHNICIANS);
+    console.log(`Loaded ${allTechnicians.length} technicians`);
     const [allSymptoms, setAllSymptoms] = useLocalStorage<Symptom[]>('vistaran-helpdesk-symptoms', SYMPTOMS);
     const [allTemplates, setAllTemplates] = useLocalStorage<TicketTemplate[]>('vistaran-helpdesk-templates', TICKET_TEMPLATES);
     const [allInventory, setAllInventory] = useLocalStorage<InventoryItem[]>('vistaran-helpdesk-inventory', INVENTORY);
@@ -88,9 +91,159 @@ const AppContent: React.FC = () => {
     const [allChallans, setAllChallans] = useLocalStorage<ReceivingChallan[]>('vistaran-helpdesk-challans', []);
     const [allInvoices, setAllInvoices] = useLocalStorage<Invoice[]>('vistaran-helpdesk-outward-invoices', []);
     const [allPurchaseOrders, setAllPurchaseOrders] = useLocalStorage<PurchaseOrder[]>('vistaran-helpdesk-purchase-orders', []);
+    const [allAttendance, setAllAttendance] = useLocalStorage<AttendanceRecord[]>('vistaran-helpdesk-attendance', []);
+    const [allReimbursements, setAllReimbursements] = useLocalStorage<ReimbursementRequest[]>('vistaran-helpdesk-reimbursements', []);
+    const [allInternetVendors, setAllInternetVendors] = useLocalStorage<InternetVendor[]>('vistaran-internet-vendors', []);
     const [notifications, setNotifications] = useLocalStorage<AppNotification[]>('vistaran-helpdesk-notifications', []);
-
+    
     const [allDepartments, setAllDepartments] = useLocalStorage<string[]>('vistaran-helpdesk-departments', ['IT', 'Operations', 'HR', 'Accounts', 'Staff']);
+
+    // Real-time sync setup
+    useEffect(() => {
+        socketService.connect();
+        
+        socketService.onUpdate((data) => {
+            console.log('Received real-time update:', data.type);
+            switch (data.type) {
+                case 'tickets': setAllTickets(data.payload); break;
+                case 'users': setAllUsers(data.payload); break;
+                case 'inventory': setAllInventory(data.payload); break;
+                case 'vendors': setAllVendors(data.payload); break;
+                case 'challans': setAllChallans(data.payload); break;
+                case 'invoices': setAllInvoices(data.payload); break;
+                case 'purchase-orders': setAllPurchaseOrders(data.payload); break;
+                case 'technicians': setAllTechnicians(data.payload); break;
+                case 'departments': setAllDepartments(data.payload); break;
+                case 'notifications': setNotifications(data.payload); break;
+                case 'files': setAllFiles(data.payload); break;
+                case 'symptoms': setAllSymptoms(data.payload); break;
+                case 'templates': setAllTemplates(data.payload); break;
+                case 'attendance': setAllAttendance(data.payload); break;
+                case 'reimbursements': setAllReimbursements(data.payload); break;
+                case 'internet-vendors': setAllInternetVendors(data.payload); break;
+            }
+        });
+
+        return () => socketService.disconnect();
+    }, [
+        setAllTickets, setAllUsers, setAllInventory, setAllVendors, 
+        setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllTechnicians, 
+        setAllDepartments, setNotifications, setAllFiles, setAllSymptoms, 
+        setAllTemplates, setAllAttendance, setAllReimbursements, setAllInternetVendors
+    ]);
+
+    // Wrapped setters to emit updates
+    const syncSetAllTickets = useCallback((val: Ticket[] | ((prev: Ticket[]) => Ticket[])) => {
+        setAllTickets(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('tickets', next);
+            return next;
+        });
+    }, [setAllTickets]);
+
+    const syncSetAllUsers = useCallback((val: User[] | ((prev: User[]) => User[])) => {
+        setAllUsers(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('users', next);
+            return next;
+        });
+    }, [setAllUsers]);
+
+    const syncSetAllInventory = useCallback((val: InventoryItem[] | ((prev: InventoryItem[]) => InventoryItem[])) => {
+        setAllInventory(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('inventory', next);
+            return next;
+        });
+    }, [setAllInventory]);
+
+    const syncSetAllVendors = useCallback((val: Vendor[] | ((prev: Vendor[]) => Vendor[])) => {
+        setAllVendors(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('vendors', next);
+            return next;
+        });
+    }, [setAllVendors]);
+
+    const syncSetAllChallans = useCallback((val: ReceivingChallan[] | ((prev: ReceivingChallan[]) => ReceivingChallan[])) => {
+        setAllChallans(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('challans', next);
+            return next;
+        });
+    }, [setAllChallans]);
+
+    const syncSetAllInvoices = useCallback((val: Invoice[] | ((prev: Invoice[]) => Invoice[])) => {
+        setAllInvoices(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('invoices', next);
+            return next;
+        });
+    }, [setAllInvoices]);
+
+    const syncSetAllPurchaseOrders = useCallback((val: PurchaseOrder[] | ((prev: PurchaseOrder[]) => PurchaseOrder[])) => {
+        setAllPurchaseOrders(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('purchase-orders', next);
+            return next;
+        });
+    }, [setAllPurchaseOrders]);
+
+    const syncSetAllDepartments = useCallback((val: string[] | ((prev: string[]) => string[])) => {
+        setAllDepartments(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('departments', next);
+            return next;
+        });
+    }, [setAllDepartments]);
+
+    const syncSetAllFiles = useCallback((val: ManagedFile[] | ((prev: ManagedFile[]) => ManagedFile[])) => {
+        setAllFiles(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('files', next);
+            return next;
+        });
+    }, [setAllFiles]);
+
+    const syncSetAllSymptoms = useCallback((val: Symptom[] | ((prev: Symptom[]) => Symptom[])) => {
+        setAllSymptoms(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('symptoms', next);
+            return next;
+        });
+    }, [setAllSymptoms]);
+
+    const syncSetAllTemplates = useCallback((val: TicketTemplate[] | ((prev: TicketTemplate[]) => TicketTemplate[])) => {
+        setAllTemplates(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('templates', next);
+            return next;
+        });
+    }, [setAllTemplates]);
+
+    const syncSetAllAttendance = useCallback((val: AttendanceRecord[] | ((prev: AttendanceRecord[]) => AttendanceRecord[])) => {
+        setAllAttendance(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('attendance', next);
+            return next;
+        });
+    }, [setAllAttendance]);
+
+    const syncSetAllReimbursements = useCallback((val: ReimbursementRequest[] | ((prev: ReimbursementRequest[]) => ReimbursementRequest[])) => {
+        setAllReimbursements(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('reimbursements', next);
+            return next;
+        });
+    }, [setAllReimbursements]);
+
+    const syncSetAllInternetVendors = useCallback((val: InternetVendor[] | ((prev: InternetVendor[]) => InternetVendor[])) => {
+        setAllInternetVendors(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('internet-vendors', next);
+            return next;
+        });
+    }, [setAllInternetVendors]);
 
     const [currentView, setCurrentView] = useState('dashboard');
     const [globalFilter, setGlobalFilter] = useState('');
@@ -99,33 +252,9 @@ const AppContent: React.FC = () => {
     const [isQuickTicketOpen, setIsQuickTicketOpen] = useState(false);
     const [scanToast, setScanToast] = useState<string | null>(null);
 
-    const { isConnected, connect, disconnect: disconnectSync } = useRealtimeSync();
-
-    useEffect(() => {
-        if (user) {
-            connect(user.id, user.role);
-        } else {
-            disconnectSync();
-        }
-        return () => disconnectSync();
-    }, [user, connect, disconnectSync]);
-
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
     const [infoModalContent, setInfoModalContent] = useState<{ title: string; message: React.ReactNode; actions?: ModalAction[] } | null>(null);
-
-    const addNotification = useCallback((title: string, message: string, type: 'ticket' | 'system' | 'alert' = 'system') => {
-        if (!notificationSettings.enableInAppNotifications) return;
-        const newNotif: AppNotification = {
-            id: `NTF${Date.now()}`,
-            title,
-            message,
-            timestamp: new Date().toISOString(),
-            isRead: false,
-            type
-        };
-        setNotifications(prev => [newNotif, ...prev].slice(0, 20));
-    }, [notificationSettings.enableInAppNotifications, setNotifications]);
 
     useEffect(() => {
         const viewPermissions: Record<string, Permission> = {
@@ -160,9 +289,9 @@ const AppContent: React.FC = () => {
         setScanToast(decodedText);
         setTimeout(() => setScanToast(null), 3000);
         logUserAction(realUser || user, `Optical scan successful: Identified entity "${decodedText}"`);
-
+        
         const upperText = decodedText.toUpperCase();
-
+        
         // Smart routing based on prefix
         if (upperText.startsWith('TKT')) {
             setCurrentView('tickets');
@@ -170,8 +299,8 @@ const AppContent: React.FC = () => {
         }
 
         // Check if it's an asset (ours or not)
-        const foundItem = allInventory.find(i =>
-            i.id.toUpperCase() === upperText ||
+        const foundItem = allInventory.find(i => 
+            i.id.toUpperCase() === upperText || 
             (i.serialNumber && i.serialNumber.toUpperCase() === upperText)
         );
 
@@ -199,13 +328,13 @@ const AppContent: React.FC = () => {
                     </div>
                 ),
                 actions: [
-                    {
-                        label: "Manage in Inventory",
-                        onClick: () => {
-                            setGlobalFilter(foundItem.id);
+                    { 
+                        label: "Manage in Inventory", 
+                        onClick: () => { 
+                            setGlobalFilter(foundItem.id); 
                             setCurrentView('inventory');
-                            setInfoModalContent(null);
-                        }
+                            setInfoModalContent(null); 
+                        } 
                     }
                 ]
             });
@@ -223,13 +352,13 @@ const AppContent: React.FC = () => {
                     </div>
                 ),
                 actions: [
-                    {
-                        label: "Register New Asset",
-                        onClick: () => {
+                    { 
+                        label: "Register New Asset", 
+                        onClick: () => { 
                             setInfoModalContent(null);
                             setGlobalFilter(decodedText);
                             setCurrentView('inventory');
-                        }
+                        } 
                     }
                 ]
             });
@@ -237,18 +366,18 @@ const AppContent: React.FC = () => {
     };
 
     const handleUpdateUser = (updatedUser: User) => {
-        setAllUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
+        syncSetAllUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
         updateUser(updatedUser);
         setEditingUser(null);
     };
 
     const handleTicketsUpdate = useCallback((newTickets: Ticket[] | ((prev: Ticket[]) => Ticket[])) => {
-        setAllTickets(prev => {
+        syncSetAllTickets(prev => {
             const next = typeof newTickets === 'function' ? newTickets(prev) : newTickets;
             return next;
         });
-    }, []);
-
+    }, [syncSetAllTickets]);
+    
     if (!user) return <Login />;
 
     const currentUserTechnician = allTechnicians.find(tech => tech.email === user.email);
@@ -257,9 +386,9 @@ const AppContent: React.FC = () => {
     const renderView = () => {
         switch (currentView) {
             case 'dashboard':
-                return can(Permission.MANAGE_SETTINGS)
-                    ? <AdminDashboard tickets={allTickets} users={allUsers} setUsers={setAllUsers} onEditUser={setEditingUser} setCurrentView={setCurrentView} departments={allDepartments} />
-                    : <Dashboard tickets={allTickets} users={allUsers} globalFilter={globalFilter} />;
+                return can(Permission.MANAGE_SETTINGS) 
+                    ? <AdminDashboard tickets={allTickets} users={allUsers} setUsers={syncSetAllUsers} onEditUser={setEditingUser} setCurrentView={setCurrentView} departments={allDepartments} />
+                    : <Dashboard tickets={allTickets} users={allUsers} globalFilter={globalFilter} inventory={allInventory} />;
             case 'tickets':
                 return <TicketManagement tickets={allTickets} setTickets={handleTicketsUpdate} users={allUsers} technicians={allTechnicians} symptoms={allSymptoms} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} setInfoModalContent={setInfoModalContent} departments={allDepartments} onEditTicketExternal={setEditingTicket} />;
             case 'assigned-tickets':
@@ -267,23 +396,57 @@ const AppContent: React.FC = () => {
             case 'create-ticket':
                 return <CreateTicket templates={allTemplates} symptoms={allSymptoms} setTickets={handleTicketsUpdate} setCurrentView={setCurrentView} setInfoModalContent={setInfoModalContent} departments={allDepartments} />;
             case 'inventory':
-                return <InventoryManagement inventory={allInventory} setInventory={setAllInventory} vendors={allVendors} setVendors={setAllVendors} globalFilter={globalFilter} setGlobalFilter={setGlobalFilter} challans={allChallans} setChallans={setAllChallans} invoices={allInvoices} setInvoices={setAllInvoices} purchaseOrders={allPurchaseOrders} setPurchaseOrders={setAllPurchaseOrders} users={allUsers} setInfoModalContent={setInfoModalContent} />;
+                return <InventoryManagement 
+                    inventory={allInventory} 
+                    setInventory={syncSetAllInventory} 
+                    vendors={allVendors} 
+                    setVendors={syncSetAllVendors} 
+                    globalFilter={globalFilter} 
+                    setGlobalFilter={setGlobalFilter} 
+                    challans={allChallans} 
+                    setChallans={syncSetAllChallans} 
+                    invoices={allInvoices} 
+                    setInvoices={syncSetAllInvoices} 
+                    purchaseOrders={allPurchaseOrders} 
+                    setPurchaseOrders={syncSetAllPurchaseOrders} 
+                    users={allUsers} 
+                    setInfoModalContent={setInfoModalContent}
+                    attendance={allAttendance}
+                    setAttendance={syncSetAllAttendance}
+                    reimbursements={allReimbursements}
+                    setReimbursements={syncSetAllReimbursements}
+                    internetVendors={allInternetVendors}
+                    setInternetVendors={syncSetAllInternetVendors}
+                />;
             case 'attendance':
-                return <AttendanceManagement users={allUsers} />;
+                return <AttendanceManagement users={allUsers} attendance={allAttendance} setAttendance={syncSetAllAttendance} />;
             case 'users':
-                return <UserManagement users={allUsers} setUsers={setAllUsers} globalFilter={globalFilter} onImpersonate={startImpersonation} onEditUser={setEditingUser} onPhotoUpdate={(uid, p) => setAllUsers(prev => prev.map(u => u.id === uid ? { ...u, photo: p } : u))} departments={allDepartments} />;
+                return <UserManagement users={allUsers} setUsers={syncSetAllUsers} globalFilter={globalFilter} onImpersonate={startImpersonation} onEditUser={setEditingUser} onPhotoUpdate={(uid, p) => syncSetAllUsers(prev => prev.map(u => u.id === uid ? {...u, photo: p} : u))} departments={allDepartments} />;
             case 'app-settings':
-                return <Settings templates={allTemplates} setTemplates={setAllTemplates} symptoms={allSymptoms} setSymptoms={setAllSymptoms} departments={allDepartments} setDepartments={setAllDepartments} users={allUsers} tickets={allTickets} />;
+                return <Settings templates={allTemplates} setTemplates={syncSetAllTemplates} symptoms={allSymptoms} setSymptoms={syncSetAllSymptoms} departments={allDepartments} setDepartments={syncSetAllDepartments} users={allUsers} tickets={allTickets} />;
             case 'my-profile':
-                return <Profile tickets={allTickets} onEditUser={setEditingUser} />;
+                 return <Profile tickets={allTickets} onEditUser={setEditingUser} />;
             case 'reports':
-                return <Reports tickets={allTickets} users={allUsers} departments={allDepartments} inventory={allInventory} vendors={allVendors} challans={allChallans} invoices={allInvoices} technicians={allTechnicians} purchaseOrders={allPurchaseOrders} />;
+                return <Reports 
+                    tickets={allTickets} 
+                    users={allUsers} 
+                    departments={allDepartments} 
+                    inventory={allInventory} 
+                    vendors={allVendors} 
+                    challans={allChallans} 
+                    invoices={allInvoices} 
+                    technicians={allTechnicians} 
+                    purchaseOrders={allPurchaseOrders}
+                    attendance={allAttendance}
+                    reimbursements={allReimbursements}
+                    internetVendors={allInternetVendors}
+                />;
             case 'file-manager':
-                return <FileManager globalFilter={globalFilter} files={allFiles} onFileAdd={f => setAllFiles(prev => [...prev, f])} onFileDelete={id => setAllFiles(prev => prev.filter(f => f.id !== id))} />;
+                return <FileManager globalFilter={globalFilter} files={allFiles} onFileAdd={f => syncSetAllFiles(prev => [...prev, f])} onFileDelete={id => syncSetAllFiles(prev => prev.filter(f => f.id !== id))} />;
             case 'help-center':
                 return <HelpCenter />;
             default:
-                return <Dashboard tickets={allTickets} users={allUsers} globalFilter={globalFilter} />;
+                return <Dashboard tickets={allTickets} users={allUsers} globalFilter={globalFilter} inventory={allInventory} />;
         }
     };
 
@@ -296,9 +459,9 @@ const AppContent: React.FC = () => {
                 <Sidebar currentView={currentView} setCurrentView={setCurrentView} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
                 {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden" />}
                 <div className="flex-1 flex flex-col overflow-hidden relative">
-                    <TopNav
-                        user={user}
-                        onLogout={logout}
+                    <TopNav 
+                        user={user} 
+                        onLogout={logout} 
                         globalFilter={globalFilter}
                         setGlobalFilter={setGlobalFilter}
                         onScanClick={() => setIsScannerOpen(true)}
@@ -308,9 +471,8 @@ const AppContent: React.FC = () => {
                         onToggleSidebar={() => setIsSidebarOpen(true)}
                         notifications={notifications}
                         setNotifications={setNotifications}
-                        isSyncConnected={isConnected}
                     />
-                    <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-safe md:pb-8 relative custom-scrollbar">
+                    <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative custom-scrollbar">
                         {scanToast && (
                             <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-top-10 duration-500">
                                 <div className="bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3">
@@ -326,9 +488,9 @@ const AppContent: React.FC = () => {
                         )}
                         {renderView()}
                     </main>
-                    <BottomNav
-                        currentView={currentView}
-                        setCurrentView={setCurrentView}
+                    <BottomNav 
+                        currentView={currentView} 
+                        setCurrentView={setCurrentView} 
                         onQuickTicket={() => setIsQuickTicketOpen(true)}
                     />
                 </div>
@@ -337,8 +499,8 @@ const AppContent: React.FC = () => {
             {infoModalContent && <InfoModal title={infoModalContent.title} message={infoModalContent.message} onClose={() => setInfoModalContent(null)} actions={infoModalContent.actions} />}
             {isScannerOpen && <ScannerModal onClose={() => setIsScannerOpen(false)} onResult={handleScanResult} />}
             {isQuickTicketOpen && (
-                <QuickTicketModal
-                    onClose={() => setIsQuickTicketOpen(false)}
+                <QuickTicketModal 
+                    onClose={() => setIsQuickTicketOpen(false)} 
                     setTickets={handleTicketsUpdate}
                     symptoms={allSymptoms}
                     departments={allDepartments}

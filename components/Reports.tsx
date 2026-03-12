@@ -2,7 +2,6 @@
 import React, { useState, useMemo } from 'react';
 import { User, Role, Technician, AttendanceStatus, Ticket, TicketStatus, InventoryItem, ReceivingChallan, Invoice, Vendor, PurchaseOrder, PurchaseOrderStatus, InternetVendor, AttendanceRecord, ReimbursementRequest } from '../types';
 import { jsPDF } from 'jspdf';
-import useLocalStorage from '../hooks/useLocalStorage';
 
 interface ReportsProps {
     tickets: Ticket[];
@@ -14,6 +13,9 @@ interface ReportsProps {
     invoices?: Invoice[];
     technicians?: Technician[];
     purchaseOrders?: PurchaseOrder[];
+    attendance?: AttendanceRecord[];
+    reimbursements?: ReimbursementRequest[];
+    internetVendors?: InternetVendor[];
 }
 
 type ReportTab = 'tickets' | 'attendance' | 'lowStock' | 'inventory' | 'vendors' | 'receiving' | 'outward' | 'purchase-orders' | 'petty-cash' | 'internet';
@@ -33,7 +35,10 @@ const MetricCard: React.FC<{ title: string; value: string | number; iconClass: s
 const Reports: React.FC<ReportsProps> = ({ 
     tickets: allTickets = [], users = [], departments = [], 
     inventory = [], vendors = [], challans = [], 
-    invoices = [], purchaseOrders = [] 
+    invoices = [], purchaseOrders = [],
+    attendance: allAttendance = [],
+    reimbursements: allPettyCash = [],
+    internetVendors: allInternet = []
 }) => {
     // Component logic here
     
@@ -47,9 +52,6 @@ const Reports: React.FC<ReportsProps> = ({
     });
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
 
-    const [allAttendance] = useLocalStorage<AttendanceRecord[]>('vistaran-helpdesk-attendance', []);
-    const [allPettyCash] = useLocalStorage<ReimbursementRequest[]>('vistaran-helpdesk-reimbursements', []);
-    const [allInternet] = useLocalStorage<InternetVendor[]>('vistaran-internet-vendors', []);
     const [isExporting, setIsExporting] = useState(false);
 
     const setQuickRange = (days: number | 'ytd') => {

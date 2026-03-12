@@ -1,6 +1,6 @@
 {
   "adminOnNewTicket": true,
-  "userOnNewTicket": false,
+  "userOnNewTicket": true,
   "userOnTicketResolved": true,
   "adminOnTicketResolved": true,
   "techOnTicketAssigned": true,

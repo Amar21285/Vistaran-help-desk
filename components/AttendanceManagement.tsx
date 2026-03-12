@@ -3,11 +3,12 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { AttendanceRecord, AttendanceStatus, Role, User } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { logUserAction } from '../utils/auditLogger';
-import useLocalStorage from '../hooks/useLocalStorage';
 import { jsPDF } from 'jspdf';
 
 interface AttendanceManagementProps {
     users?: User[];
+    attendance?: AttendanceRecord[];
+    setAttendance?: React.Dispatch<React.SetStateAction<AttendanceRecord[]>>;
 }
 
 const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: () => void; isOut?: boolean }> = ({ onCapture, onCancel, isOut }) => {
@@ -28,7 +29,7 @@ const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: 
                         setIsStreamReady(true);
                     };
                 }
-            } catch (err) {
+            } catch {
                 alert("Camera access denied. Please enable permissions in your browser settings.");
                 onCancel();
             }
@@ -63,7 +64,7 @@ const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: 
                 <div className="relative aspect-square bg-slate-900 overflow-hidden">
                     <video ref={videoRef} className="w-full h-full object-cover mirror" playsInline muted></video>
                     <div className="absolute inset-0 border-[40px] border-black/20 pointer-events-none">
-                        <div className={`w-full h-full border-2 rounded-full animate-pulse ${isOut ? 'border-indigo-500/50' : 'border-primary/50'}`}></div>
+                         <div className={`w-full h-full border-2 rounded-full animate-pulse ${isOut ? 'border-indigo-500/50' : 'border-primary/50'}`}></div>
                     </div>
                 </div>
                 <div className="p-8 flex flex-col gap-4">
@@ -79,30 +80,32 @@ const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: 
     );
 };
 
-const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] }) => {
+const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [], attendance = [], setAttendance = () => {} }) => {
     const { user, realUser } = useAuth();
-    const [attendance, setAttendance] = useLocalStorage<AttendanceRecord[]>('vistaran-helpdesk-attendance', []);
     const [activeSubTab, setActiveSubTab] = useState<'live' | 'history' | 'register'>('live');
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
     const [nameSortOrder, setNameSortOrder] = useState<'asc' | 'desc' | 'none'>('none');
-
+    
+    // Register View States
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-    const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>(user?.id || '');
-
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('');
+    
     const [isPunching, setIsPunching] = useState(false);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
     const [showCamera, setShowCamera] = useState(false);
     const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
-    const [capturedLocation, setCapturedLocation] = useState<{ lat: number, lng: number } | null>(null);
+    const [capturedLocation, setCapturedLocation] = useState<{lat: number, lng: number} | null>(null);
     const [locationStatus, setLocationStatus] = useState<'idle' | 'fetching' | 'success' | 'failed'>('idle');
     const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null);
-
+    
     const isAdmin = realUser?.role === Role.ADMIN || user?.role === Role.ADMIN;
     const todayStr = new Date().toISOString().split('T')[0];
 
+    // UPDATED: Filter only Staff members for attendance monitoring
     const staffMembers = useMemo(() => users.filter(u => u.role === Role.STAFF), [users]);
+
     const todayRecord = useMemo(() => attendance.find(r => r.userId === user?.id && r.date === todayStr), [attendance, user, todayStr]);
     const isOutMode = !!(todayRecord && !todayRecord.checkOut);
     const isDayComplete = !!(todayRecord && todayRecord.checkOut);
@@ -130,33 +133,37 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
     const handleSelfPunch = async () => {
         if (!user || !capturedPhoto) return;
         setIsPunching(true);
+
         if (isOutMode && todayRecord) {
-            setAttendance(prev => prev.map(r =>
-                r.id === todayRecord.id
-                    ? {
-                        ...r,
-                        checkOut: new Date().toISOString(),
-                        checkOutPhoto: capturedPhoto,
+            // Updating existing record with Checkout info
+            setAttendance(prev => prev.map(r => 
+                r.id === todayRecord.id 
+                    ? { 
+                        ...r, 
+                        checkOut: new Date().toISOString(), 
+                        checkOutPhoto: capturedPhoto, 
                         checkOutLocation: capturedLocation ? { lat: capturedLocation.lat, lng: capturedLocation.lng } : undefined,
                         lastUpdated: new Date().toISOString()
-                    }
+                    } 
                     : r
             ));
             logUserAction(realUser || user, `Secure Selfie Check-Out: Logged departure successfully.`);
         } else {
-            const newRecord: AttendanceRecord = {
-                id: `ATT-${Date.now()}`,
-                userId: user.id,
-                userName: user.name,
-                date: todayStr,
-                checkIn: new Date().toISOString(),
-                status: AttendanceStatus.PRESENT,
+            // Create new In record
+            const newRecord: AttendanceRecord = { 
+                id: `ATT-${Date.now()}`, 
+                userId: user.id, 
+                userName: user.name, 
+                date: todayStr, 
+                checkIn: new Date().toISOString(), 
+                status: AttendanceStatus.PRESENT, 
                 photo: capturedPhoto,
                 location: capturedLocation ? { lat: capturedLocation.lat, lng: capturedLocation.lng } : undefined
             };
             setAttendance(prev => [newRecord, ...prev]);
             logUserAction(realUser || user, `Secure Selfie Check-In: Logged arrival successfully.`);
         }
+
         setIsPunching(false);
         setCapturedPhoto(null);
         setCapturedLocation(null);
@@ -189,36 +196,45 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
     const handleUpdateRecord = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!editingRecord || !isAdmin) return;
+        
         const formData = new FormData(e.currentTarget);
         const newDate = formData.get('editDate') as string;
         const newInTime = formData.get('editInTime') as string;
         const newOutTime = formData.get('editOutTime') as string;
         const newStatus = formData.get('editStatus') as AttendanceStatus;
+
         const updatedCheckIn = new Date(`${newDate}T${newInTime}`).toISOString();
         const updatedCheckOut = newOutTime ? new Date(`${newDate}T${newOutTime}`).toISOString() : undefined;
-        setAttendance(prev => prev.map(r =>
-            r.id === editingRecord.id
-                ? {
-                    ...r,
-                    date: newDate,
-                    checkIn: updatedCheckIn,
+
+        setAttendance(prev => prev.map(r => 
+            r.id === editingRecord.id 
+                ? { 
+                    ...r, 
+                    date: newDate, 
+                    checkIn: updatedCheckIn, 
                     checkOut: updatedCheckOut,
-                    status: newStatus,
-                    lastUpdated: new Date().toISOString(),
-                    notes: 'Manual Modification'
-                }
+                    status: newStatus, 
+                    lastUpdated: new Date().toISOString(), 
+                    notes: 'Manual Modification' 
+                } 
                 : r
         ));
+
         logUserAction(realUser || user, `Database Modification: Updated record ${editingRecord.id} for ${editingRecord.userName}.`);
         setEditingRecord(null);
     };
 
     const historyData = useMemo(() => {
         const filtered = attendance.filter(r => r.date >= startDate && r.date <= endDate);
+        
         if (nameSortOrder === 'none') return filtered;
+        
         return [...filtered].sort((a, b) => {
-            if (nameSortOrder === 'asc') return a.userName.localeCompare(b.userName);
-            return b.userName.localeCompare(a.userName);
+            if (nameSortOrder === 'asc') {
+                return a.userName.localeCompare(b.userName);
+            } else {
+                return b.userName.localeCompare(a.userName);
+            }
         });
     }, [attendance, startDate, endDate, nameSortOrder]);
 
@@ -233,16 +249,16 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
     const handleExportCSV = () => {
         const headers = ["ID", "Staff", "Date", "In Time", "Out Time", "Status", "GPS In", "GPS Out", "Notes"];
         const rows = historyData.map(r => [
-            r.id, r.userName, r.date,
-            new Date(r.checkIn).toLocaleTimeString(),
+            r.id, r.userName, r.date, 
+            new Date(r.checkIn).toLocaleTimeString(), 
             r.checkOut ? new Date(r.checkOut).toLocaleTimeString() : 'N/A',
-            r.status,
-            r.location ? `${r.location.lat};${r.location.lng}` : '',
+            r.status, 
+            r.location ? `${r.location.lat};${r.location.lng}` : '', 
             r.checkOutLocation ? `${r.checkOutLocation.lat};${r.checkOutLocation.lng}` : '',
             r.notes || ''
         ]);
-        const csvContent = [headers.join(","), ...rows.map(row => row.join(","))].join("\\n");
-        const blob = new Blob(["\\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const csvContent = [headers.join(","), ...rows.map(row => row.join(","))].join("\n");
+        const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = `Attendance_Ledger_${startDate}_to_${endDate}.csv`;
@@ -252,12 +268,14 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
     const handleExportPDF = async () => {
         if (historyData.length === 0) return;
         setIsGeneratingPDF(true);
+        
         try {
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
             const margin = 15;
             let currentY = 55;
+
             const drawHeader = (pageNum: number) => {
                 pdf.setFillColor(15, 23, 42); // slate-900
                 pdf.rect(0, 0, pageWidth, 45, 'F');
@@ -273,6 +291,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                 pdf.setFontSize(8);
                 pdf.text("AUTHORIZED FOR PERSONNEL TRACKING & VERIFICATION", margin, 40);
             };
+
             const drawTableHeaders = (y: number) => {
                 pdf.setFillColor(241, 245, 249);
                 pdf.rect(margin, y, pageWidth - (margin * 2), 10, 'F');
@@ -285,526 +304,670 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [] 
                 pdf.text("OUT-PUNCH SELFIE", margin + 135, y + 7);
                 return y + 10;
             };
+
             let pageNum = 1;
             drawHeader(pageNum);
             currentY = drawTableHeaders(currentY);
+
             for (let i = 0; i < historyData.length; i++) {
                 const record = historyData[i];
+                // Check for page break (Row height increased for photos)
                 if (currentY + 30 > pageHeight - 20) {
                     pdf.addPage();
                     pageNum++;
                     drawHeader(pageNum);
                     currentY = drawTableHeaders(55);
                 }
+
                 if (i % 2 !== 0) {
                     pdf.setFillColor(252, 252, 252);
                     pdf.rect(margin, currentY, pageWidth - (margin * 2), 25, 'F');
                 }
+
+                // Text details
                 pdf.setTextColor(30, 41, 59);
                 pdf.setFont('helvetica', 'bold');
                 pdf.setFontSize(8);
                 pdf.text(record.userName.toUpperCase(), margin + 5, currentY + 8);
+                
                 pdf.setFont('helvetica', 'normal');
                 pdf.setFontSize(7);
                 pdf.text(`Date: ${record.date}`, margin + 5, currentY + 13);
                 pdf.text(`Status: ${record.status}`, margin + 5, currentY + 18);
-                pdf.text(`Time: ${new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, margin + 55, currentY + 8);
-                pdf.text(`Exit: ${record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'ACTIVE'}`, margin + 55, currentY + 13);
+
+                pdf.text(`Time: ${new Date(record.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`, margin + 55, currentY + 8);
+                pdf.text(`Exit: ${record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : 'ACTIVE'}`, margin + 55, currentY + 13);
+
+                // Punch-In Photo
                 if (record.photo) {
-                    try { pdf.addImage(record.photo, 'JPEG', margin + 90, currentY + 2, 21, 21); pdf.setDrawColor(0); pdf.setLineWidth(0.1); pdf.rect(margin + 90, currentY + 2, 21, 21); } catch (e) { }
+                    try {
+                        pdf.addImage(record.photo, 'JPEG', margin + 90, currentY + 2, 21, 21);
+                        pdf.setDrawColor(0);
+                        pdf.setLineWidth(0.1);
+                        pdf.rect(margin + 90, currentY + 2, 21, 21);
+                    } catch (e) {
+                        console.error("PDF In-Photo Error:", e);
+                    }
                 } else {
-                    pdf.setFontSize(6); pdf.setTextColor(150); pdf.text("NO IN-PHOTO", margin + 90, currentY + 12);
+                    pdf.setFontSize(6);
+                    pdf.setTextColor(150);
+                    pdf.text("NO IN-PHOTO", margin + 90, currentY + 12);
                 }
+
+                // Punch-Out Photo
                 if (record.checkOutPhoto) {
-                    try { pdf.addImage(record.checkOutPhoto, 'JPEG', margin + 135, currentY + 2, 21, 21); pdf.setDrawColor(0); pdf.setLineWidth(0.1); pdf.rect(margin + 135, currentY + 2, 21, 21); } catch (e) { }
+                    try {
+                        pdf.addImage(record.checkOutPhoto, 'JPEG', margin + 135, currentY + 2, 21, 21);
+                        pdf.setDrawColor(0);
+                        pdf.setLineWidth(0.1);
+                        pdf.rect(margin + 135, currentY + 2, 21, 21);
+                    } catch (e) {
+                        console.error("PDF Out-Photo Error:", e);
+                    }
                 } else {
-                    pdf.setFontSize(6); pdf.setTextColor(150); pdf.text(record.checkOut ? "NO OUT-PHOTO" : "SHIFT ACTIVE", margin + 135, currentY + 12);
+                    pdf.setFontSize(6);
+                    pdf.setTextColor(150);
+                    pdf.text(record.checkOut ? "NO OUT-PHOTO" : "SHIFT ACTIVE", margin + 135, currentY + 12);
                 }
+
                 currentY += 25;
             }
+
             pdf.save(`Vistaran_Staff_Visual_Ledger_${startDate}_${endDate}.pdf`);
         } finally {
             setIsGeneratingPDF(false);
         }
     };
 
-    const handleExportMonthlyPDF = async () => {
-        if (!selectedEmployeeId) return;
+    const handleExportMonthlyRegisterPDF = async () => {
+        if (!selectedEmployeeId || !registerData.length) return;
         setIsGeneratingPDF(true);
+        const employee = staffMembers.find(s => s.id === selectedEmployeeId);
+        const monthName = new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' });
+
         try {
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
             const margin = 15;
-            const emp = users.find(u => u.id === selectedEmployeeId);
-            const monthName = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][selectedMonth];
-
-            const drawHeader = (pageNum: number) => {
-                pdf.setFillColor(15, 23, 42);
-                pdf.rect(0, 0, pageWidth, 50, 'F');
-                pdf.setTextColor(255, 255, 255);
-                pdf.setFontSize(22);
-                pdf.setFont('helvetica', 'bold');
-                pdf.text("Monthly Attendance Report", margin, 20);
-                pdf.setFontSize(10);
-                pdf.setFont('helvetica', 'normal');
-                pdf.text(`EMPLOYEE: ${emp?.name || 'N/A'} (${emp?.employeeId || 'NO ID'})`, margin, 32);
-                pdf.text(`PERIOD: ${monthName} ${selectedYear}`, margin, 38);
-                pdf.text(`PAGE: ${pageNum}`, pageWidth - 30, 20);
-            };
-
-            const drawTableHeaders = (y: number) => {
-                pdf.setFillColor(241, 245, 249);
-                pdf.rect(margin, y, pageWidth - (margin * 2), 10, 'F');
-                pdf.setTextColor(30, 41, 59);
-                pdf.setFontSize(8);
-                pdf.setFont('helvetica', 'bold');
-                pdf.text("DATE", margin + 5, y + 7);
-                pdf.text("DAY", margin + 35, y + 7);
-                pdf.text("IN TIME", margin + 65, y + 7);
-                pdf.text("OUT TIME", margin + 95, y + 7);
-                pdf.text("STATUS", margin + 125, y + 7);
-                pdf.text("NOTES", margin + 155, y + 7);
-                return y + 10;
-            };
-
-            let pageNum = 1;
-            drawHeader(pageNum);
-            let currentY = 60;
-            currentY = drawTableHeaders(currentY);
-
-            const daysCount = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-            for (let d = 1; d <= daysCount; d++) {
-                const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const record = attendance.find(r => r.userId === selectedEmployeeId && r.date === dateStr);
-                const dateObj = new Date(dateStr);
-                const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
-
-                if (currentY + 12 > pageHeight - 30) {
-                    pdf.addPage();
-                    pageNum++;
-                    drawHeader(pageNum);
-                    currentY = 60;
-                    currentY = drawTableHeaders(currentY);
-                }
-
-                pdf.setFontSize(8);
-                pdf.setFont('helvetica', isWeekend ? 'italic' : 'normal');
-                pdf.setTextColor(isWeekend ? 150 : 30, isWeekend ? 150 : 41, isWeekend ? 150 : 59);
-
-                pdf.text(dateStr, margin + 5, currentY + 7);
-                pdf.text(dateObj.toLocaleDateString([], { weekday: 'short' }), margin + 35, currentY + 7);
-                pdf.text(record?.checkIn ? new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-', margin + 65, currentY + 7);
-                pdf.text(record?.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-', margin + 95, currentY + 7);
-
-                if (record) {
-                    const statusColor = record.status === AttendanceStatus.PRESENT ? [16, 185, 129] : record.status === AttendanceStatus.LATE ? [245, 158, 11] : [239, 68, 68];
-                    pdf.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
-                    pdf.setFont('helvetica', 'bold');
-                    pdf.text(record.status, margin + 125, currentY + 7);
-                } else {
-                    pdf.setTextColor(isWeekend ? 150 : 239, isWeekend ? 150 : 68, isWeekend ? 150 : 68);
-                    pdf.text(isWeekend ? 'WEEKEND' : 'ABSENT', margin + 125, currentY + 7);
-                }
-
-                pdf.setTextColor(100);
-                pdf.setFont('helvetica', 'normal');
-                pdf.text(record?.notes || '-', margin + 155, currentY + 7, { maxWidth: 30 });
-
-                pdf.setDrawColor(241, 245, 249);
-                pdf.line(margin, currentY + 10, pageWidth - margin, currentY + 10);
-                currentY += 10;
-            }
-
-            if (currentY + 40 > pageHeight) {
-                pdf.addPage();
-                pageNum++;
-                drawHeader(pageNum);
-                currentY = 60;
-            }
-
-            currentY += 10;
-            pdf.setFillColor(248, 250, 252);
-            pdf.rect(margin, currentY, pageWidth - (margin * 2), 30, 'F');
-            pdf.setDrawColor(226, 232, 240);
-            pdf.rect(margin, currentY, pageWidth - (margin * 2), 30, 'S');
-
-            pdf.setTextColor(30, 41, 59);
-            pdf.setFontSize(10);
+            
+            // Header
+            pdf.setFillColor(15, 23, 42);
+            pdf.rect(0, 0, pageWidth, 40, 'F');
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(18);
             pdf.setFont('helvetica', 'bold');
-            pdf.text("Monthly Summary", margin + 5, currentY + 8);
-
-            pdf.setFontSize(8);
+            pdf.text("MONTHLY ATTENDANCE REGISTER", margin, 15);
+            pdf.setFontSize(10);
             pdf.setFont('helvetica', 'normal');
-            const present = attendance.filter(r => r.userId === selectedEmployeeId && new Date(r.date).getMonth() === selectedMonth && new Date(r.date).getFullYear() === selectedYear && r.status === AttendanceStatus.PRESENT).length;
-            const late = attendance.filter(r => r.userId === selectedEmployeeId && new Date(r.date).getMonth() === selectedMonth && new Date(r.date).getFullYear() === selectedYear && r.status === AttendanceStatus.LATE).length;
-            const totalDays = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-            const absent = totalDays - (present + late);
+            pdf.text(`EMPLOYEE: ${employee?.name?.toUpperCase()}`, margin, 23);
+            pdf.text(`PERIOD: ${monthName} ${selectedYear}`, margin, 29);
+            pdf.text(`GENERATED: ${new Date().toLocaleString()}`, margin, 35);
 
-            pdf.text(`Total Present: ${present}`, margin + 5, currentY + 18);
-            pdf.text(`Late Entries: ${late}`, margin + 60, currentY + 18);
-            pdf.text(`Absent/Leaves: ${absent}`, margin + 115, currentY + 18);
+            // Summary Box
+            const summary = registerData.reduce((acc, day) => {
+                if (day.record) {
+                    if (day.record.status === AttendanceStatus.PRESENT) acc.present++;
+                    else if (day.record.status === AttendanceStatus.LATE) acc.late++;
+                    else if (day.record.status === AttendanceStatus.ABSENT) acc.absent++;
+                } else if (day.isPast) {
+                    acc.absent++;
+                }
+                return acc;
+            }, { present: 0, late: 0, absent: 0 });
 
-            pdf.save(`Monthly_Register_${monthName}_${selectedYear}_${emp?.name || 'Staff'}.pdf`);
+            pdf.setFillColor(241, 245, 249);
+            pdf.rect(margin, 45, pageWidth - (margin * 2), 15, 'F');
+            pdf.setTextColor(30, 41, 59);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(`PRESENT: ${summary.present}`, margin + 10, 54);
+            pdf.text(`LATE: ${summary.late}`, margin + 60, 54);
+            pdf.text(`ABSENT: ${summary.absent}`, margin + 110, 54);
+
+            // Table Headers
+            let currentY = 70;
+            pdf.setFillColor(226, 232, 240);
+            pdf.rect(margin, currentY, pageWidth - (margin * 2), 8, 'F');
+            pdf.setFontSize(8);
+            pdf.text("DATE", margin + 5, currentY + 5);
+            pdf.text("DAY", margin + 30, currentY + 5);
+            pdf.text("STATUS", margin + 60, currentY + 5);
+            pdf.text("IN-TIME", margin + 90, currentY + 5);
+            pdf.text("OUT-TIME", margin + 120, currentY + 5);
+            pdf.text("NOTES", margin + 150, currentY + 5);
+            currentY += 8;
+
+            // Table Rows
+            pdf.setFont('helvetica', 'normal');
+            registerData.forEach((day, idx) => {
+                if (idx % 2 === 0) {
+                    pdf.setFillColor(248, 250, 252);
+                    pdf.rect(margin, currentY, pageWidth - (margin * 2), 6, 'F');
+                }
+                
+                const dateStr = day.date.split('-')[2];
+                const dayName = new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' });
+                
+                pdf.text(dateStr, margin + 5, currentY + 4);
+                pdf.text(dayName, margin + 30, currentY + 4);
+                
+                if (day.record) {
+                    pdf.text(day.record.status, margin + 60, currentY + 4);
+                    pdf.text(new Date(day.record.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), margin + 90, currentY + 4);
+                    pdf.text(day.record.checkOut ? new Date(day.record.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '--:--', margin + 120, currentY + 4);
+                    pdf.text(day.record.notes || '', margin + 150, currentY + 4);
+                } else if (day.isPast) {
+                    pdf.setTextColor(225, 29, 72);
+                    pdf.text("ABSENT", margin + 60, currentY + 4);
+                    pdf.setTextColor(30, 41, 59);
+                } else {
+                    pdf.setTextColor(148, 163, 184);
+                    pdf.text("PENDING", margin + 60, currentY + 4);
+                    pdf.setTextColor(30, 41, 59);
+                }
+                
+                currentY += 6;
+                if (currentY > 280) {
+                    pdf.addPage();
+                    currentY = 20;
+                }
+            });
+
+            pdf.save(`Monthly_Register_${employee?.name}_${monthName}_${selectedYear}.pdf`);
         } finally {
             setIsGeneratingPDF(false);
         }
     };
 
+    const handleExportMonthlyRegisterCSV = () => {
+        if (!selectedEmployeeId || !registerData.length) return;
+        const employee = staffMembers.find(s => s.id === selectedEmployeeId);
+        const monthName = new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' });
+        
+        const headers = ["Date", "Day", "Status", "Punch In", "Punch Out", "Notes"];
+        const rows = registerData.map(day => {
+            const dateStr = day.date.split('-')[2];
+            const dayName = new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' });
+            const inTime = day.record ? new Date(day.record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--";
+            const outTime = day.record?.checkOut ? new Date(day.record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--";
+            const notes = day.record?.notes || "";
+            const status = day.record ? day.record.status : (day.isPast ? "ABSENT" : "PENDING");
+
+            return [
+                `${dateStr}-${monthName}-${selectedYear}`,
+                dayName,
+                status,
+                inTime,
+                outTime,
+                notes
+            ];
+        });
+
+        const csvContent = [headers.join(","), ...rows.map(row => row.map(cell => `"${cell}"`).join(","))].join("\n");
+        const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Monthly_Register_${employee?.name}_${monthName}_${selectedYear}.csv`;
+        link.click();
+    };
+
+    const registerData = useMemo(() => {
+        if (!selectedEmployeeId) return [];
+        const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+        const data = [];
+        const now = new Date();
+        
+        for (let d = 1; d <= daysInMonth; d++) {
+            const date = new Date(selectedYear, selectedMonth, d);
+            const dateStr = date.toISOString().split('T')[0];
+            const record = attendance.find(r => r.userId === selectedEmployeeId && r.date === dateStr);
+            const isPast = date < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            
+            data.push({
+                date: dateStr,
+                record,
+                isPast
+            });
+        }
+        return data;
+    }, [attendance, selectedEmployeeId, selectedMonth, selectedYear]);
+
     return (
         <div className="space-y-10 max-w-6xl mx-auto pb-24">
             {showCamera && <CameraCapture isOut={isOutMode} onCapture={photo => { setCapturedPhoto(photo); setShowCamera(false); fetchLocation(); }} onCancel={() => setShowCamera(false)} />}
-
+            
             <header className="flex flex-col md:flex-row justify-between md:items-end gap-6 no-print">
-                <div >
+                <div>
                     <h2 className="text-4xl font-black text-slate-800 dark:text-slate-100 uppercase tracking-tighter leading-none">Staff Registry</h2>
                     <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-xs mt-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-primary animate-ping"></span>
-                        Unified Evidence - Based Attendance
+                        Unified Evidence-Based Attendance
                     </p>
                 </div>
-
+                
                 {isAdmin && (
                     <nav className="flex p-1 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-700">
-                        <button onClick={() => setActiveSubTab('live')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'live' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}> Live Terminal</button>
-                        <button onClick={() => setActiveSubTab('history')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'history' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Ledger History</button>
-                        <button onClick={() => setActiveSubTab('register')} className={`px-8 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'register' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Monthly Register</button>
+                        <button onClick={() => setActiveSubTab('live')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'live' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Live Terminal</button>
+                        <button onClick={() => setActiveSubTab('history')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'history' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Ledger History</button>
+                        <button onClick={() => setActiveSubTab('register')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'register' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Monthly Register</button>
                     </nav>
                 )}
             </header>
 
-            {activeSubTab === 'live' && (
+            {activeSubTab === 'live' ? (
                 <div className="space-y-10 animate-in fade-in duration-500">
-                    {
-                        isAdmin ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {
-                                    staffMembers.map(staff => {
-                                        const record = attendance.find(r => r.userId === staff.id && r.date === todayStr);
-                                        return (
-                                            <div key={staff.id} className={`bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border-2 transition-all group ${record ? 'border-emerald-500/20' : 'border-slate-50 dark:border-slate-800'}`}>
-                                                <div className="flex items-center gap-4 mb-6">
-                                                    <div className="relative">
-                                                        <img src={staff.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(staff.name)}&background=random`} className="w-14 h-14 rounded-2xl object-cover border-2 dark:border-slate-600 shadow-lg" alt="" />
-                                                        {record?.checkOut && <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-indigo-500 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] text-white shadow-lg"><i className="fas fa-home"></i></div>}
-                                                        {record && !record.checkOut && <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] text-white shadow-lg"><i className="fas fa-check"></i></div>}
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <h4 className="font-black text-slate-800 dark:text-white uppercase tracking-tighter truncate leading-tight">{staff.name}</h4>
-                                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{staff.department}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-2">
-                                                    {
-                                                        record ? (
-                                                            <div className="flex flex-col gap-2">
-                                                                <div className="grid grid-cols-2 gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-900 rounded-xl border dark:border-slate-700">
-                                                                    <div className="border-r dark:border-slate-800 pr-2">
-                                                                        <p className="text-[7px] font-black text-slate-400 uppercase">In Time</p>
-                                                                        <p className="text-[10px] font-black text-primary">{new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                                                                    </div>
-                                                                    <div className="pl-1">
-                                                                        <p className="text-[7px] font-black text-slate-400 uppercase">Out Time</p>
-                                                                        <p className={`text-[10px] font-black ${record.checkOut ? 'text-indigo-500' : 'text-slate-300 italic'}`}>
-                                                                            {record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="grid grid-cols-3 gap-1">
-                                                                    <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.PRESENT)
-                                                                    } className={`py-2 rounded-lg text-[8px] font-black uppercase border transition-all ${record.status === AttendanceStatus.PRESENT ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' : 'bg-white text-slate-400'}`}> Present</button>
-                                                                    <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.LATE)} className={`py-2 rounded-lg text-[8px] font-black uppercase border transition-all ${record.status === AttendanceStatus.LATE ? 'bg-amber-500 border-amber-500 text-white shadow-lg' : 'bg-white text-slate-400'}`}>Late</button>
-                                                                    <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.ABSENT)} className={`py-2 rounded-lg text-[8px] font-black uppercase border transition-all ${record.status === AttendanceStatus.ABSENT ? 'bg-rose-500 border-rose-500 text-white shadow-lg' : 'bg-white text-slate-400'}`}>Absent</button>
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="grid grid-cols-2 gap-2">
-                                                                <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.PRESENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-emerald-50 hover:text-emerald-600 transition-all tracking-widest">Mark Present</button>
-                                                                <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.ABSENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-rose-50 hover:text-rose-600 transition-all tracking-widest">Mark Absent</button>
-                                                            </div>
-                                                        )}
-                                                </div>
+                    {isAdmin ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {staffMembers.map(staff => {
+                                const record = attendance.find(r => r.userId === staff.id && r.date === todayStr);
+                                return (
+                                    <div key={staff.id} className={`bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border-2 transition-all group ${record ? 'border-emerald-500/20' : 'border-slate-50 dark:border-slate-800'}`}>
+                                        <div className="flex items-center gap-4 mb-6">
+                                            <div className="relative">
+                                                <img src={staff.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(staff.name)}&background=random`} className="w-14 h-14 rounded-2xl object-cover border-2 dark:border-slate-600 shadow-lg" alt="" />
+                                                {record?.checkOut && <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-indigo-500 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] text-white shadow-lg"><i className="fas fa-home"></i></div>}
+                                                {record && !record.checkOut && <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] text-white shadow-lg"><i className="fas fa-check"></i></div>}
                                             </div>
-                                        );
-                                    })}
-                            </div>
-                        ) : (
-                            <div className="max-w-2xl mx-auto bg-white dark:bg-slate-800 p-12 rounded-[50px] shadow-2xl border border-slate-100 dark:border-slate-700 text-center flex flex-col items-center gap-10">
-                                {
-                                    !isDayComplete ? (
-                                        <>
-                                            <div className="space-y-4">
-                                                <div className={`w-24 h-24 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 ${isOutMode ? 'bg-indigo-50 text-indigo-500' : 'bg-primary/10 text-primary'}`}>
-                                                    <i className={`fas ${isOutMode ? 'fa-door-open' : 'fa-shield-halved'}`}></i>
-                                                </div>
-                                                <h3 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">{isOutMode ? 'Home Time Check-Out' : 'Arrival Check-In'}</h3>
-                                                <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] max-w-sm">{isOutMode ? 'Log your departure time to complete your attendance record for today.' : 'Face verification and GPRS positioning are required for authorized presence reporting.'}</p>
-                                            </div>
-                                            {!capturedPhoto ? (
-                                                <button onClick={() => setShowCamera(true)} className={`text-white font-black px-16 py-6 rounded-[30px] shadow-2xl active:scale-95 transition-all uppercase tracking-[0.2em] text-sm flex items-center gap-4 ${isOutMode ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/30' : 'bg-primary hover:bg-primary-hover shadow-primary/30'}`}>
-                                                    <i className="fas fa-camera text-xl"></i> {isOutMode ? 'Proceed to Out-Punch' : 'Start In-Punch'}
-                                                </button>
-                                            ) : (
-                                                <div className="w-full space-y-6 animate-in zoom-in-95">
-                                                    <div className={`relative w-40 h-40 mx-auto rounded-3xl overflow-hidden border-4 shadow-2xl ${isOutMode ? 'border-indigo-500 shadow-indigo-500/20' : 'border-emerald-500 shadow-emerald-500/20'}`
-                                                    }>
-                                                        <img src={capturedPhoto} className="w-full h-full object-cover mirror" alt="" />
-                                                        <div className={`absolute inset-0 flex items-center justify-center ${isOutMode ? 'bg-indigo-500/10' : 'bg-emerald-500/10'}`}>
-                                                            <i className={`fas ${isOutMode ? 'fa-sign-out' : 'fa-check-circle'} text-white text-4xl`}></i>
-                                                        </div>
-                                                    </div>
-                                                    <div className={`p-4 rounded-2xl flex items-center justify-center gap-3 transition-all ${locationStatus === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'}`}>
-                                                        <i className={`fas ${locationStatus === 'fetching' ? 'fa-spinner fa-spin' : 'fa-location-dot'}`}></i>
-                                                        <span className="text-[10px] font-black uppercase tracking-widest">{locationStatus === 'fetching' ? 'Acquiring GPS Signal...' : locationStatus === 'success' ? 'GPRS Coordinates Identified' : locationStatus === 'failed' ? 'GPS Signal Blocked' : 'Waiting for GPS'}</span>
-                                                    </div>
-                                                    <button onClick={handleSelfPunch} disabled={isPunching || locationStatus !== 'success'} className={`w-full text-white font-black py-6 rounded-[30px] shadow-2xl active:scale-95 transition-all uppercase tracking-[0.2em] text-xs disabled:opacity-30 ${isOutMode ? 'bg-indigo-600 shadow-indigo-600/20' : 'bg-emerald-600 shadow-emerald-600/20'}`}>
-                                                        {isOutMode ? 'Confirm Day Closing' : 'Confirm Presence Protocol'}
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <div className="space-y-8 animate-in zoom-in-95">
-                                            <div className="w-32 h-32 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-5xl mx-auto shadow-inner"><i className="fas fa-check-double"></i></div>
-                                            <div >
-                                                <h3 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Day Complete</h3>
-                                                <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">Both arrival and departure punches have been verified.</p>
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-4 w-full">
-                                                <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border dark:border-slate-700">
-                                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">In-Stamp</p>
-                                                    <p className="text-sm font-mono font-black text-primary uppercase mt-1">{new Date(todayRecord?.checkIn || '').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                                                </div>
-                                                <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border dark:border-slate-700">
-                                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Out-Stamp</p>
-                                                    <p className="text-sm font-mono font-black text-indigo-500 uppercase mt-1">{new Date(todayRecord?.checkOut || '').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                                                </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="font-black text-slate-800 dark:text-white uppercase tracking-tighter truncate leading-tight">{staff.name}</h4>
+                                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{staff.department}</p>
                                             </div>
                                         </div>
-                                    )}
-                            </div>
-                        )}
-                </div>
-            )}
-
-            {
-                activeSubTab === 'history' && (
-                    <div className="space-y-10 animate-in fade-in duration-500 pb-20">
-                        <div className="flex flex-wrap items-center justify-center gap-6 bg-white dark:bg-slate-800 p-10 rounded-[45px] shadow-2xl border border-slate-100 dark:border-slate-700 no-print">
-                            <div className="flex flex-col gap-1">
-                                <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Timeline Start</label>
-                                <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm" />
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Timeline End</label>
-                                <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm" />
-                            </div>
-                            <div className="flex items-end gap-3 pt-5">
-                                <button onClick={handleExportCSV} className="bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center gap-2 uppercase tracking-widest text-[10px]"><i className="fas fa-file-excel"></i> Export CSV</button>
-                                <button onClick={handleExportPDF} disabled={isGeneratingPDF} className="bg-rose-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50"><i className={isGeneratingPDF ? "fas fa-spinner fa-spin" : "fas fa-file-pdf"}></i> {isGeneratingPDF ? 'Compiling Visuals...' : 'PDF Visual Ledger'}</button>
-                            </div>
-                        </div>
-
-                        <div className="bg-white dark:bg-slate-800 rounded-[45px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                            <div className="table-container">
-                                <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
-                                    <thead className="bg-slate-50/50 dark:bg-slate-900/50">
-                                        <tr>
-                                            <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest cursor-pointer hover:text-primary transition-colors select-none" onClick={toggleNameSort}>
-                                                <div className="flex items-center gap-2">Personnel Identity <i className={`fas ${nameSortOrder === 'asc' ? 'fa-sort-alpha-down' : nameSortOrder === 'desc' ? 'fa-sort-alpha-up' : 'fa-sort'} text-[12px] opacity-60`}></i></div>
-                                            </th>
-                                            <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">In-Evidence</th>
-                                            < th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Out-Evidence</th>
-                                            < th className="px-8 py-6 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</th>
-                                            < th className="px-8 py-6 text-right text-[10px] font-black uppercase text-slate-400 tracking-widest">Hub</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                                        {
-                                            historyData.map(r => (
-                                                <tr key={r.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors group">
-                                                    <td className="px-8 py-6">
-                                                        <div className="flex items-center gap-4">
-                                                            <div className="w-10 h-10 rounded-xl overflow-hidden border dark:border-slate-700 shadow-sm"><img src={r.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(r.userName)}&background=random`} className="w-full h-full object-cover" alt="" /></div>
-                                                            <div >
-                                                                <p className="font-black text-slate-800 dark:text-white uppercase text-xs tracking-tight">{r.userName}</p>
-                                                                <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">{r.date}</p>
-                                                            </div>
+                                        
+                                        <div className="space-y-2">
+                                            {record ? (
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="grid grid-cols-2 gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-900 rounded-xl border dark:border-slate-700">
+                                                        <div className="border-r dark:border-slate-800 pr-2">
+                                                            <p className="text-[7px] font-black text-slate-400 uppercase">In Time</p>
+                                                            <p className="text-[10px] font-black text-primary">{new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                                         </div>
-                                                    </td>
-                                                    <td className="px-8 py-6">{r.photo && <div className="flex items-center gap-3"><img src={r.photo} className="w-10 h-10 rounded-lg object-cover border-2 border-white shadow-md" alt="In" /><p className="text-[9px] font-bold text-primary uppercase">{new Date(r.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p></div>}</td>
-                                                    <td className="px-8 py-6">{r.checkOut ? <div className="flex items-center gap-3">{r.checkOutPhoto && <img src={r.checkOutPhoto} className="w-10 h-10 rounded-lg object-cover border-2 border-white shadow-md" alt="Out" />}<p className="text-[9px] font-bold text-indigo-500 uppercase">{new Date(r.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p></div> : <span className="text-[9px] font-black text-slate-300 uppercase italic">On Duty</span>}</td>
-                                                    <td className="px-8 py-6 text-center"><span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${r.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' : r.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' : 'bg-rose-100 text-rose-600'}`}>{r.status}</span></td>
-                                                    <td className="px-8 py-6 text-right opacity-40 group-hover:opacity-100 transition-opacity">
-                                                        {isAdmin && (
-                                                            <div className="flex justify-end gap-1">
-                                                                <button onClick={() => setEditingRecord(r)} className="p-2 text-primary hover:bg-primary/10 rounded-lg transition" title="Modify Record"><i className="fas fa-edit"></i></button>
-                                                                <button onClick={() => { if (confirm('Delete record?')) setAttendance(prev => prev.filter(att => att.id !== r.id)) }
-                                                                } className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Purge Record"><i className="fas fa-trash-alt"></i></button>
-                                                            </div>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                                        <div className="pl-1">
+                                                            <p className="text-[7px] font-black text-slate-400 uppercase">Out Time</p>
+                                                            <p className={`text-[10px] font-black ${record.checkOut ? 'text-indigo-500' : 'text-slate-300 italic'}`}>
+                                                                {record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 gap-1">
+                                                        <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.PRESENT)} className={`py-2 rounded-lg text-[8px] font-black uppercase border transition-all ${record.status === AttendanceStatus.PRESENT ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' : 'bg-white text-slate-400'}`}>Present</button>
+                                                        <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.LATE)} className={`py-2 rounded-lg text-[8px] font-black uppercase border transition-all ${record.status === AttendanceStatus.LATE ? 'bg-amber-500 border-amber-500 text-white shadow-lg' : 'bg-white text-slate-400'}`}>Late</button>
+                                                        <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.ABSENT)} className={`py-2 rounded-lg text-[8px] font-black uppercase border transition-all ${record.status === AttendanceStatus.ABSENT ? 'bg-rose-500 border-rose-500 text-white shadow-lg' : 'bg-white text-slate-400'}`}>Absent</button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="grid grid-cols-2 gap-2">
+                                                     <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.PRESENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-emerald-50 hover:text-emerald-600 transition-all tracking-widest">Mark Present</button>
+                                                     <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.ABSENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-rose-50 hover:text-rose-600 transition-all tracking-widest">Mark Absent</button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="max-w-2xl mx-auto bg-white dark:bg-slate-800 p-12 rounded-[50px] shadow-2xl border border-slate-100 dark:border-slate-700 text-center flex flex-col items-center gap-10">
+                            {!isDayComplete ? (
+                                <>
+                                    <div className="space-y-4">
+                                        <div className={`w-24 h-24 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 ${isOutMode ? 'bg-indigo-50 text-indigo-500' : 'bg-primary/10 text-primary'}`}>
+                                            <i className={`fas ${isOutMode ? 'fa-door-open' : 'fa-shield-halved'}`}></i>
+                                        </div>
+                                        <h3 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">
+                                            {isOutMode ? 'Home Time Check-Out' : 'Arrival Check-In'}
+                                        </h3>
+                                        <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] max-w-sm">
+                                            {isOutMode ? 'Log your departure time to complete your attendance record for today.' : 'Face verification and GPRS positioning are required for authorized presence reporting.'}
+                                        </p>
+                                        
+                                        <div className="flex items-center justify-center gap-4 py-4">
+                                            <div className={`w-3 h-3 rounded-full ${todayRecord ? 'bg-emerald-500' : 'bg-slate-200'}`}></div>
+                                            <div className={`h-1 w-12 rounded-full ${todayRecord ? 'bg-emerald-500' : 'bg-slate-100'}`}></div>
+                                            <div className={`w-3 h-3 rounded-full ${isDayComplete ? 'bg-emerald-500' : 'bg-slate-200'}`}></div>
+                                        </div>
+                                    </div>
+
+                                    {!capturedPhoto ? (
+                                        <button onClick={() => setShowCamera(true)} className={`text-white font-black px-16 py-6 rounded-[30px] shadow-2xl active:scale-95 transition-all uppercase tracking-[0.2em] text-sm flex items-center gap-4 ${isOutMode ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/30' : 'bg-primary hover:bg-primary-hover shadow-primary/30'}`}>
+                                            <i className="fas fa-camera text-xl"></i>
+                                            {isOutMode ? 'Proceed to Out-Punch' : 'Start In-Punch'}
+                                        </button>
+                                    ) : (
+                                        <div className="w-full space-y-6 animate-in zoom-in-95">
+                                            <div className={`relative w-40 h-40 mx-auto rounded-3xl overflow-hidden border-4 shadow-2xl ${isOutMode ? 'border-indigo-500 shadow-indigo-500/20' : 'border-emerald-500 shadow-emerald-500/20'}`}>
+                                                <img src={capturedPhoto} className="w-full h-full object-cover mirror" alt="" />
+                                                <div className={`absolute inset-0 flex items-center justify-center ${isOutMode ? 'bg-indigo-500/10' : 'bg-emerald-500/10'}`}>
+                                                    <i className={`fas ${isOutMode ? 'fa-sign-out' : 'fa-check-circle'} text-white text-4xl`}></i>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className={`p-4 rounded-2xl flex items-center justify-center gap-3 transition-all ${locationStatus === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'}`}>
+                                                <i className={`fas ${locationStatus === 'fetching' ? 'fa-spinner fa-spin' : 'fa-location-dot'}`}></i>
+                                                <span className="text-[10px] font-black uppercase tracking-widest">
+                                                    {locationStatus === 'fetching' ? 'Acquiring GPS Signal...' : 
+                                                     locationStatus === 'success' ? 'GPRS Coordinates Identified' : 
+                                                     locationStatus === 'failed' ? 'GPS Signal Blocked' : 'Waiting for GPS'}
+                                                </span>
+                                            </div>
+
+                                            <button onClick={handleSelfPunch} disabled={isPunching || locationStatus !== 'success'} className={`w-full text-white font-black py-6 rounded-[30px] shadow-2xl active:scale-95 transition-all uppercase tracking-[0.2em] text-xs disabled:opacity-30 ${isOutMode ? 'bg-indigo-600 shadow-indigo-600/20' : 'bg-emerald-600 shadow-emerald-600/20'}`}>
+                                                {isOutMode ? 'Confirm Day Closing' : 'Confirm Presence Protocol'}
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <div className="space-y-8 animate-in zoom-in-95">
+                                    <div className="w-32 h-32 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-5xl mx-auto shadow-inner">
+                                        <i className="fas fa-check-double"></i>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Day Complete</h3>
+                                        <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">Both arrival and departure punches have been verified.</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4 w-full">
+                                        <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border dark:border-slate-700">
+                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">In-Stamp</p>
+                                            <p className="text-sm font-mono font-black text-primary uppercase mt-1">
+                                                {new Date(todayRecord?.checkIn || '').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </p>
+                                        </div>
+                                        <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border dark:border-slate-700">
+                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Out-Stamp</p>
+                                            <p className="text-sm font-mono font-black text-indigo-500 uppercase mt-1">
+                                                {new Date(todayRecord?.checkOut || '').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            ) : activeSubTab === 'history' ? (
+                <div className="space-y-10 animate-in fade-in duration-500 pb-20">
+                    <div className="flex flex-wrap items-center justify-center gap-6 bg-white dark:bg-slate-800 p-10 rounded-[45px] shadow-2xl border border-slate-100 dark:border-slate-700">
+                        <div className="flex flex-col gap-1">
+                            <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Timeline Start</label>
+                            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Timeline End</label>
+                            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm" />
+                        </div>
+                        <div className="flex items-end gap-3 pt-5">
+                            <button onClick={handleExportCSV} className="bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center gap-2 uppercase tracking-widest text-[10px]">
+                                <i className="fas fa-file-excel"></i> Export CSV
+                            </button>
+                            <button onClick={handleExportPDF} disabled={isGeneratingPDF} className="bg-rose-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50">
+                                <i className={isGeneratingPDF ? "fas fa-spinner fa-spin" : "fas fa-file-pdf"}></i> {isGeneratingPDF ? 'Compiling Visuals...' : 'PDF Visual Ledger'}
+                            </button>
                         </div>
                     </div>
-                )}
 
-            {
-                activeSubTab === 'register' && (
-                    <div className="space-y-10 animate-in fade-in duration-500 pb-20">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 bg-white dark:bg-slate-800 p-10 rounded-[45px] shadow-2xl border border-slate-100 dark:border-slate-700">
+                    <div className="bg-white dark:bg-slate-800 rounded-[45px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
+                                <thead className="bg-slate-50/50 dark:bg-slate-900/50">
+                                    <tr>
+                                        <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest cursor-pointer hover:text-primary transition-colors select-none" onClick={toggleNameSort}>
+                                            <div className="flex items-center gap-2">
+                                                Personnel Identity
+                                                <i className={`fas ${nameSortOrder === 'asc' ? 'fa-sort-alpha-down' : nameSortOrder === 'desc' ? 'fa-sort-alpha-up' : 'fa-sort'} text-[12px] opacity-60`}></i>
+                                            </div>
+                                        </th>
+                                        <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">In-Evidence</th>
+                                        <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Out-Evidence</th>
+                                        <th className="px-8 py-6 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</th>
+                                        <th className="px-8 py-6 text-right text-[10px] font-black uppercase text-slate-400 tracking-widest">Hub</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                                    {historyData.map(r => (
+                                        <tr key={r.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors group">
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-xl overflow-hidden border dark:border-slate-700 shadow-sm">
+                                                        <img src={r.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(r.userName)}&background=random`} className="w-full h-full object-cover" alt="" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-black text-slate-800 dark:text-white uppercase text-xs tracking-tight">{r.userName}</p>
+                                                        <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">{r.date}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center gap-3">
+                                                    {r.photo && <img src={r.photo} className="w-10 h-10 rounded-lg object-cover border-2 border-white shadow-md" alt="In" />}
+                                                    <p className="text-[9px] font-bold text-primary uppercase">{new Date(r.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>
+                                                </div>
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                {r.checkOut ? (
+                                                    <div className="flex items-center gap-3">
+                                                        {r.checkOutPhoto && <img src={r.checkOutPhoto} className="w-10 h-10 rounded-lg object-cover border-2 border-white shadow-md" alt="Out" />}
+                                                        <p className="text-[9px] font-bold text-indigo-500 uppercase">{new Date(r.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-[9px] font-black text-slate-300 uppercase italic">On Duty</span>
+                                                )}
+                                            </td>
+                                            <td className="px-8 py-6 text-center">
+                                                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                                                    r.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' :
+                                                    r.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' :
+                                                    'bg-rose-100 text-rose-600'
+                                                }`}>{r.status}</span>
+                                            </td>
+                                            <td className="px-8 py-6 text-right opacity-40 group-hover:opacity-100 transition-opacity">
+                                                {isAdmin && (
+                                                    <div className="flex justify-end gap-1">
+                                                        <button onClick={() => setEditingRecord(r)} className="p-2 text-primary hover:bg-primary/10 rounded-lg transition" title="Modify Record"><i className="fas fa-edit"></i></button>
+                                                        <button onClick={() => { if(confirm('Delete record?')) setAttendance(prev => prev.filter(att => att.id !== r.id)) }} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Purge Record"><i className="fas fa-trash-alt"></i></button>
+                                                    </div>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="space-y-10 animate-in fade-in duration-500 pb-20">
+                    <div className="bg-white dark:bg-slate-800 p-10 rounded-[45px] shadow-2xl border border-slate-100 dark:border-slate-700">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                             <div className="flex flex-col gap-1">
                                 <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Select Employee</label>
                                 <select value={selectedEmployeeId} onChange={e => setSelectedEmployeeId(e.target.value)} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm">
-                                    <option value="">-- Choose Personnel --</option>
-                                    {users.map(u => <option key={u.id} value={u.id}>{u.name} ({u.employeeId || 'No ID'})</option>)}
+                                    <option value="">Choose Personnel...</option>
+                                    {staffMembers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                 </select>
                             </div>
                             <div className="flex flex-col gap-1">
-                                <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Fiscal Month</label>
-                                <select value={selectedMonth} onChange={e => setSelectedMonth(parseInt(e.target.value))
-                                } className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm">
-                                    {
-                                        ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((m, i) => <option key={i} value={i}>{m}</option>)}
+                                <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Month</label>
+                                <select value={selectedMonth} onChange={e => setSelectedMonth(parseInt(e.target.value))} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm">
+                                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((m, i) => (
+                                        <option key={m} value={i}>{m}</option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="flex flex-col gap-1">
-                                <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Fiscal Year</label>
+                                <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Year</label>
                                 <select value={selectedYear} onChange={e => setSelectedYear(parseInt(e.target.value))} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm">
-                                    {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(y => <option key={y} value={y}>{y}</option>)}
+                                    {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
                                 </select>
                             </div>
-                            <div className="flex items-end gap-3 pt-5">
-                                <button onClick={() => {
-                                    const headers = ["Date", "Employee Name", "Employee ID", "In-Time", "Out-Time", "Status", "Notes"];
-                                    const daysCount = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-                                    const rows = [];
-                                    for (let d = 1; d <= daysCount; d++) {
-                                        const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                                        const record = attendance.find(r => r.userId === selectedEmployeeId && r.date === dateStr);
-                                        const emp = users.find(u => u.id === selectedEmployeeId);
-                                        rows.push([dateStr, emp?.name || 'N/A', emp?.employeeId || 'N/A', record?.checkIn ? new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-', record?.checkOut ? new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-', record?.status || 'ABSENT', record?.notes || '']);
-                                    }
-                                    const csvContent = [headers.join(","), ...rows.map(row => row.join(","))].join("\\n");
-                                    const blob = new Blob(["\\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
-                                    const link = document.createElement("a");
-                                    link.href = URL.createObjectURL(blob);
-                                    link.download = `Monthly_Register_${selectedMonth + 1}_${selectedYear}_${selectedEmployeeId}.csv`;
-                                    link.click();
-                                }} className="bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center gap-2 uppercase tracking-widest text-[10px]"><i className="fas fa-file-excel"></i> CSV Register</button>
-                                <button onClick={handleExportMonthlyPDF} disabled={isGeneratingPDF} className="bg-rose-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50"><i className={isGeneratingPDF ? "fas fa-spinner fa-spin" : "fas fa-file-pdf"}></i> {isGeneratingPDF ? 'Compiling Report...' : 'PDF Register'}</button>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {
-                                [
-                                    { label: 'Present Days', val: attendance.filter(r => r.userId === selectedEmployeeId && new Date(r.date).getMonth() === selectedMonth && new Date(r.date).getFullYear() === selectedYear && r.status === AttendanceStatus.PRESENT).length, color: 'text-emerald-500', bg: 'bg-emerald-50/50' },
-                                    { label: 'Late Entries', val: attendance.filter(r => r.userId === selectedEmployeeId && new Date(r.date).getMonth() === selectedMonth && new Date(r.date).getFullYear() === selectedYear && r.status === AttendanceStatus.LATE).length, color: 'text-amber-500', bg: 'bg-amber-50/50' },
-                                    { label: 'Absent/Leaves', val: (new Date(selectedYear, selectedMonth + 1, 0).getDate()) - attendance.filter(r => r.userId === selectedEmployeeId && new Date(r.date).getMonth() === selectedMonth && new Date(r.date).getFullYear() === selectedYear && (r.status === AttendanceStatus.PRESENT || r.status === AttendanceStatus.LATE)).length, color: 'text-rose-500', bg: 'bg-rose-50/50' },
-                                ].map((stat, i) => (
-                                    <div key={i} className={`${stat.bg} p-8 rounded-[40px] border border-slate-100 dark:border-slate-800 text-center shadow-sm`}><p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-2">{stat.label}</p><p className={`text-5xl font-black ${stat.color}`}>{stat.val}</p></div>
-                                ))
-                            }
-                        </div>
-
-                        <div className="bg-white dark:bg-slate-800 rounded-[45px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                            <div className="table-container">
-                                <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
-                                    <thead className="bg-slate-50/50 dark:bg-slate-900/50">
-                                        <tr>
-                                            <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Date</th>
-                                            < th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Punch In</th>
-                                            < th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Punch Out</th>
-                                            < th className="px-8 py-6 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</th>
-                                            < th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Notes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                                        {
-                                            Array.from({ length: new Date(selectedYear, selectedMonth + 1, 0).getDate() }, (_, i) => {
-                                                const day = i + 1;
-                                                const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                                                const record = attendance.find(r => r.userId === selectedEmployeeId && r.date === dateStr);
-                                                const dateObj = new Date(dateStr);
-                                                const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
-                                                return (
-                                                    <tr key={day} className={`hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors ${isWeekend ? 'bg-slate-50/30' : ''}`}>
-                                                        <td className="px-8 py-6"><div className="flex items-center gap-3"><div className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center border shadow-sm ${isWeekend ? 'bg-slate-100 text-slate-400' : 'bg-white dark:bg-slate-700 text-primary'}`}><span className="text-[10px] font-black leading-none">{day}</span><span className="text-[7px] font-black uppercase mt-0.5">{dateObj.toLocaleDateString([], { weekday: 'short' })}</span></div> <div><p className="font-black text-slate-800 dark:text-white uppercase text-xs tracking-tight">{dateObj.toLocaleDateString([], { month: 'short', year: 'numeric' })}</p></div></div></td>
-                                                        <td className="px-8 py-6">{record?.checkIn ? <p className="text-[10px] font-bold text-primary uppercase">{new Date(record.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p> : <span className="text-slate-300">-</span>}</td>
-                                                        <td className="px-8 py-6">{record?.checkOut ? <p className="text-[10px] font-bold text-indigo-500 uppercase">{new Date(record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p> : <span className="text-slate-300">-</span>}</td>
-                                                        <td className="px-8 py-6 text-center">{record ? <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${record.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' : record.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' : 'bg-rose-100 text-rose-600'}`}>{record.status}</span> : <span className={`text-[9px] font-black uppercase tracking-widest ${isWeekend ? 'text-slate-300' : 'text-rose-300'}`}>{isWeekend ? 'WEEKEND' : 'ABSENT'}</span>}</td>
-                                                        <td className="px-8 py-6"><p className="text-[10px] text-slate-500 dark:text-slate-400 italic max-w-xs truncate">{record?.notes || '-'}</p></td>
-                                                    </tr>
-                                                );
-                                            })}
-                                    </tbody>
-                                </table>
+                            <div className="flex gap-3">
+                                <button onClick={handleExportMonthlyRegisterCSV} disabled={!selectedEmployeeId} className="bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50 h-[58px] flex-1">
+                                    <i className="fas fa-file-excel"></i> CSV
+                                </button>
+                                <button onClick={handleExportMonthlyRegisterPDF} disabled={!selectedEmployeeId || isGeneratingPDF} className="bg-rose-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50 h-[58px] flex-1">
+                                    <i className="fas fa-file-pdf"></i> PDF
+                                </button>
                             </div>
                         </div>
                     </div>
-                )}
+
+                    {selectedEmployeeId ? (
+                        <div className="space-y-8">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {(() => {
+                                    const summary = registerData.reduce((acc, day) => {
+                                        if (day.record) {
+                                            if (day.record.status === AttendanceStatus.PRESENT) acc.present++;
+                                            else if (day.record.status === AttendanceStatus.LATE) acc.late++;
+                                            else if (day.record.status === AttendanceStatus.ABSENT) acc.absent++;
+                                        } else if (day.isPast) {
+                                            acc.absent++;
+                                        }
+                                        return acc;
+                                    }, { present: 0, late: 0, absent: 0 });
+
+                                    return (
+                                        <>
+                                            <div className="bg-white dark:bg-slate-800 p-8 rounded-[35px] shadow-xl border border-emerald-500/10 text-center">
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Present Days</p>
+                                                <p className="text-4xl font-black text-emerald-500">{summary.present}</p>
+                                            </div>
+                                            <div className="bg-white dark:bg-slate-800 p-8 rounded-[35px] shadow-xl border-amber-500/10 text-center">
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Late Arrivals</p>
+                                                <p className="text-4xl font-black text-amber-500">{summary.late}</p>
+                                            </div>
+                                            <div className="bg-white dark:bg-slate-800 p-8 rounded-[35px] shadow-xl border-rose-500/10 text-center">
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Absent Days</p>
+                                                <p className="text-4xl font-black text-rose-500">{summary.absent}</p>
+                                            </div>
+                                        </>
+                                    );
+                                })()}
+                            </div>
+
+                            <div className="bg-white dark:bg-slate-800 rounded-[45px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
+                                        <thead className="bg-slate-50/50 dark:bg-slate-900/50">
+                                            <tr>
+                                                <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Date</th>
+                                                <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</th>
+                                                <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Punch In</th>
+                                                <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Punch Out</th>
+                                                <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                                            {registerData.map(day => (
+                                                <tr key={day.date} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                                                    <td className="px-8 py-4">
+                                                        <p className="font-black text-slate-800 dark:text-white uppercase text-xs tracking-tight">
+                                                            {day.date.split('-')[2]} {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' })}
+                                                        </p>
+                                                    </td>
+                                                    <td className="px-8 py-4">
+                                                        {day.record ? (
+                                                            <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
+                                                                day.record.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' :
+                                                                day.record.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' :
+                                                                'bg-rose-100 text-rose-600'
+                                                            }`}>{day.record.status}</span>
+                                                        ) : day.isPast ? (
+                                                            <span className="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest bg-rose-100 text-rose-600">ABSENT</span>
+                                                        ) : (
+                                                            <span className="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest bg-slate-100 text-slate-400">PENDING</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="px-8 py-4">
+                                                        <p className="text-[10px] font-bold text-slate-500 uppercase">
+                                                            {day.record ? new Date(day.record.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '--:--'}
+                                                        </p>
+                                                    </td>
+                                                    <td className="px-8 py-4">
+                                                        <p className="text-[10px] font-bold text-slate-500 uppercase">
+                                                            {day.record?.checkOut ? new Date(day.record.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '--:--'}
+                                                        </p>
+                                                    </td>
+                                                    <td className="px-8 py-4">
+                                                        <p className="text-[9px] font-medium text-slate-400 italic truncate max-w-[150px]">
+                                                            {day.record?.notes || '--'}
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-[45px] border-2 border-dashed border-slate-200 dark:border-slate-700">
+                            <div className="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-300 text-3xl mx-auto mb-6">
+                                <i className="fas fa-user-clock"></i>
+                            </div>
+                            <h4 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">No Personnel Selected</h4>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Select a staff member above to view their monthly attendance ledger.</p>
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Admin Modification Hub */}
-            {
-                editingRecord && (
-                    <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex justify-center items-center z-[250] p-4 overflow-y-auto">
-                        <div className="bg-white dark:bg-slate-900 rounded-[45px] shadow-2xl w-full max-w-lg modal-content overflow-hidden border border-white/10 my-auto">
-                            <header className="p-8 border-b dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex justify-between items-center">
-                                <div >
-                                    <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-800 dark:text-white">Admin override</h3>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Personnel: {editingRecord.userName}</p>
-                                </div>
-                                <button onClick={() => setEditingRecord(null)} className="text-slate-400 hover:text-red-500 text-3xl transition-all">&times;</button>
-                            </header>
-                            <form onSubmit={handleUpdateRecord} className="p-8 space-y-6">
-                                <div className="grid grid-cols-1 gap-4">
-                                    <div >
-                                        <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Shift Date</label>
-                                        <input name="editDate" type="date" defaultValue={editingRecord.date} required className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none" />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div >
-                                            <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">In Time</label>
-                                            <input name="editInTime" type="time" defaultValue={new Date(editingRecord.checkIn).toLocaleTimeString('it-IT').slice(0, 5)} required className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none" />
-                                        </div>
-                                        <div>
-                                            <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Out Time</label>
-                                            <input name="editOutTime" type="time" defaultValue={editingRecord.checkOut ? new Date(editingRecord.checkOut).toLocaleTimeString('it-IT').slice(0, 5) : ''} className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none" />
-                                        </div>
-                                    </div>
-                                </div>
+            {editingRecord && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex justify-center items-center z-[250] p-4 overflow-y-auto">
+                    <div className="bg-white dark:bg-slate-900 rounded-[45px] shadow-2xl w-full max-w-lg modal-content overflow-hidden border border-white/10 my-auto">
+                        <header className="p-8 border-b dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-2xl font-black uppercase tracking-tighter text-slate-800 dark:text-white">Admin override</h3>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Personnel: {editingRecord.userName}</p>
+                            </div>
+                            <button onClick={() => setEditingRecord(null)} className="text-slate-400 hover:text-red-500 text-3xl transition-all">&times;</button>
+                        </header>
+                        
+                        <form onSubmit={handleUpdateRecord} className="p-8 space-y-6">
+                            <div className="grid grid-cols-1 gap-4">
                                 <div>
-                                    <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Presence State</label>
-                                    <select name="editStatus" defaultValue={editingRecord.status} className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none">
-                                        {Object.values(AttendanceStatus).map(s => <option key={s} value={s}>{s}</option>)}
-                                    </select>
+                                    <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Shift Date</label>
+                                    <input name="editDate" type="date" defaultValue={editingRecord.date} required className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none" />
                                 </div>
-                                <button type="submit" className="w-full bg-primary text-white font-black py-5 rounded-2xl shadow-xl hover:bg-primary-hover active:scale-95 transition-all uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3"><i className="fas fa-cloud-upload"></i> Commit database changes</button>
-                            </form>
-                        </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">In Time</label>
+                                        <input name="editInTime" type="time" defaultValue={new Date(editingRecord.checkIn).toLocaleTimeString('it-IT').slice(0, 5)} required className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none" />
+                                    </div>
+                                    <div>
+                                        <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Out Time</label>
+                                        <input name="editOutTime" type="time" defaultValue={editingRecord.checkOut ? new Date(editingRecord.checkOut).toLocaleTimeString('it-IT').slice(0, 5) : ''} className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-[9px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Presence State</label>
+                                <select name="editStatus" defaultValue={editingRecord.status} className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none">
+                                    {Object.values(AttendanceStatus).map(s => <option key={s} value={s}>{s}</option>)}
+                                </select>
+                            </div>
+
+                            <button type="submit" className="w-full bg-primary text-white font-black py-5 rounded-2xl shadow-xl hover:bg-primary-hover active:scale-95 transition-all uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3">
+                                <i className="fas fa-cloud-upload"></i> Commit database changes
+                            </button>
+                        </form>
                     </div>
-                )
-            }
+                </div>
+            )}
 
             {/* Compiled PDF Generator Overlay */}
-            {
-                isGeneratingPDF && (
-                    <div className="fixed inset-0 bg-slate-900/90 flex items-center justify-center z-[300] backdrop-blur-xl">
-                        <div className="bg-white p-16 rounded-[60px] text-center space-y-8 shadow-2xl max-w-sm">
-                            <div className="w-24 h-24 border-8 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-                            <div >
-                                <h5 className="font-black text-2xl uppercase tracking-tighter text-slate-800">Compiling Visual Ledger</h5>
-                                <p className="font-bold text-slate-400 uppercase tracking-[0.3em] text-[10px] mt-2">Embedding Photo Evidence...</p>
-                            </div>
+            {isGeneratingPDF && (
+                <div className="fixed inset-0 bg-slate-900/90 flex items-center justify-center z-[300] backdrop-blur-xl">
+                    <div className="bg-white p-16 rounded-[60px] text-center space-y-8 shadow-2xl max-w-sm">
+                        <div className="w-24 h-24 border-8 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        <div>
+                            <h5 className="font-black text-2xl uppercase tracking-tighter text-slate-800">Compiling Visual Ledger</h5>
+                            <p className="font-bold text-slate-400 uppercase tracking-[0.3em] text-[10px] mt-2">Embedding Photo Evidence...</p>
                         </div>
                     </div>
-                )
-            }
+                </div>
+            )}
         </div>
     );
 };

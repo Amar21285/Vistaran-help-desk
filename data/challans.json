@@ -2,7 +2,7 @@
   {
     "id": "CHN-2026-0002",
     "vendorId": "VEN1769175521819",
-    "purpose": "Repair ke liye",
+    "purpose": "Job Work",
     "dateReceived": "2026-02-23T07:26:52.279Z",
     "receivedByUserId": "USR001",
     "items": [
@@ -17,20 +17,6 @@
         "id": "ITEM-1771831607535",
         "description": " HDMI to HDMI Connector",
         "quantity": 2,
-        "unit": "Unit",
-        "remarks": "DC Work"
-      },
-      {
-        "id": "ITEM-1772709161768",
-        "description": "HP LaserJet MFP M438nda Cartridge Refilling",
-        "quantity": 1,
-        "unit": "Unit",
-        "remarks": "DC Work"
-      },
-      {
-        "id": "ITEM-1772709253313",
-        "description": "Monitor Repair (LCD / LED)",
-        "quantity": 1,
         "unit": "Unit",
         "remarks": "DC Work"
       }

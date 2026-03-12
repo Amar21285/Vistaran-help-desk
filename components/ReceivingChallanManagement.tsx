@@ -63,7 +63,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
         setItems(prev => [...prev, { 
             id: `ITEM-${Date.now()}`, 
             description: newItemDesc, 
-            quantity: newItemQty, 
+            quantity: isNaN(newItemQty) ? 0 : newItemQty, 
             unit: newItemUnit,
             remarks: newItemRemarks 
         }]);
@@ -135,7 +135,8 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
         if (!printableRef.current || !viewingChallan) return;
         setIsGeneratingPDF(true);
         try {
-            const canvas = await html2canvas(printableRef.current, { 
+            const element = printableRef.current;
+            const canvas = await html2canvas(element, { 
                 scale: 2, 
                 useCORS: true, 
                 backgroundColor: '#ffffff',
@@ -157,7 +158,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
 
             // Subsequent pages
             while (heightLeft > 0) {
-                position -= pageHeight;
+                position = heightLeft - imgHeight;
                 pdf.addPage();
                 pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
@@ -166,7 +167,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
             pdf.save(`Receipt-${viewingChallan.id}.pdf`);
         } catch (error) {
             console.error("PDF Generation Error:", error);
-            alert("Failed to generate PDF. Please try again.");
+            alert("Failed to generate PDF. Please try printing (Ctrl+P) and saving as PDF instead.");
         } finally { 
             setIsGeneratingPDF(false); 
         }
@@ -267,7 +268,25 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                             </div>
 
                             <div className="p-8 bg-primary/5 rounded-[35px] border-2 border-primary/20 space-y-6">
-                                <h4 className="text-[10px] font-black uppercase text-primary tracking-widest mb-2 px-1">Item Detail Engine</h4>
+                                <div className="flex justify-between items-center mb-2 px-1">
+                                    <h4 className="text-[10px] font-black uppercase text-primary tracking-widest">Item Detail Engine</h4>
+                                    <button 
+                                        type="button"
+                                        onClick={() => {
+                                            const mockItems = Array.from({ length: 25 }, (_, i) => ({
+                                                id: `ITEM-${Date.now()}-${i}`,
+                                                description: `Test Item ${i + 1} - High Precision Component`,
+                                                quantity: Math.floor(Math.random() * 10) + 1,
+                                                unit: 'Nos',
+                                                remarks: 'Standard verification passed'
+                                            }));
+                                            setItems(mockItems);
+                                        }}
+                                        className="text-[9px] font-black text-primary uppercase hover:underline bg-white/50 px-3 py-1 rounded-full border border-primary/20"
+                                    >
+                                        ⚡ Fill 25 Items (Test)
+                                    </button>
+                                </div>
                                 <div className="grid grid-cols-12 gap-3 items-end">
                                     <div className="col-span-12 lg:col-span-4">
                                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 block ml-1">Item Description</label>
@@ -276,7 +295,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                                     </div>
                                     <div className="col-span-4 lg:col-span-2">
                                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 block ml-1">Qty</label>
-                                        <input type="number" value={newItemQty} onChange={e => setNewItemQty(parseFloat(e.target.value))} className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-black text-sm outline-none shadow-sm focus:border-primary transition-all" />
+                                        <input type="number" value={isNaN(newItemQty) ? '' : newItemQty} onChange={e => setNewItemQty(e.target.value === '' ? NaN : parseFloat(e.target.value))} className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-black text-sm outline-none shadow-sm focus:border-primary transition-all" />
                                     </div>
                                     <div className="col-span-4 lg:col-span-2">
                                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 block ml-1">Unit</label>

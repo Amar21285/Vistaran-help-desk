@@ -5,13 +5,12 @@ import StatCard from './StatCard';
 import TicketStatusChart from './charts/TicketStatusChart';
 import TicketsTrendChart from './charts/TicketsTrendChart';
 import DepartmentChart from './charts/DepartmentChart';
-import useLocalStorage from '../hooks/useLocalStorage';
-import { INVENTORY } from '../constants';
 
 interface DashboardProps {
     tickets: Ticket[];
     users: User[];
     globalFilter: string;
+    inventory: InventoryItem[];
 }
 
 const TicketRow: React.FC<{ticket: Ticket}> = ({ ticket }) => (
@@ -30,30 +29,14 @@ const TicketRow: React.FC<{ticket: Ticket}> = ({ ticket }) => (
     </div>
 );
 
-const ResolvedTicketRow: React.FC<{ ticket: Ticket }> = ({ ticket }) => (
-    <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 rounded-xl transition">
-        <div className="overflow-hidden">
-            <p className="font-bold text-slate-700 dark:text-slate-200 text-xs">#{ticket.id}</p>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{ticket.description}</p>
-        </div>
-        <div className="text-right shrink-0 ml-2">
-            <p className="text-[8px] font-black text-green-700 dark:text-green-400 uppercase">Resolved</p>
-            <p className="text-[8px] text-slate-400 uppercase font-bold">
-                {ticket.dateResolved ? new Date(ticket.dateResolved).toLocaleDateString() : 'N/A'}
-            </p>
-        </div>
-    </div>
-);
 
-
-const Dashboard: React.FC<DashboardProps> = ({ tickets, users, globalFilter }) => {
+const Dashboard: React.FC<DashboardProps> = ({ tickets, users, globalFilter, inventory }) => {
     const { user: currentUser } = useAuth();
-    const [inventory] = useLocalStorage<InventoryItem[]>('vistaran-helpdesk-inventory', INVENTORY);
 
     const filteredTickets = useMemo(() => {
         if (!currentUser) return [];
 
-        let userTickets = currentUser.role === Role.ADMIN
+        const userTickets = currentUser.role === Role.ADMIN
             ? tickets
             : tickets.filter(ticket => ticket.userId === currentUser.id);
 
@@ -74,13 +57,6 @@ const Dashboard: React.FC<DashboardProps> = ({ tickets, users, globalFilter }) =
     const recentTickets = useMemo(() => {
       return [...filteredTickets].sort((a,b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime())
     }, [filteredTickets]);
-
-    const recentlyResolvedTickets = useMemo(() => {
-        return tickets
-            .filter(ticket => ticket.status === TicketStatus.RESOLVED && ticket.dateResolved)
-            .sort((a, b) => new Date(b.dateResolved!).getTime() - new Date(a.dateResolved!).getTime())
-            .slice(0, 5);
-    }, [tickets]);
 
     const lowStockItems = useMemo(() => {
         return inventory.filter(item => item.quantity <= item.minStock);

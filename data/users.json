@@ -7,11 +7,7 @@
     "role": "Admin",
     "department": "IT",
     "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z",
-    "phone": "8828367178",
-    "whatsapp": "8828367178",
-    "employeeId": "",
-    "designation": ""
+    "joinedDate": "2026-02-14T14:26:22.198Z"
   },
   {
     "id": "USR002",
@@ -318,6 +314,16 @@
     "joinedDate": "2026-02-14T14:26:22.198Z"
   },
   {
+    "id": "USR034",
+    "name": "Kailash",
+    "email": "kailash.s@vistaran.in",
+    "password": "10034",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Active",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
     "id": "USR035",
     "name": "Owais",
     "email": "owais@vistaran.in",
@@ -472,6 +478,16 @@
     "name": "Vaishnavi",
     "email": "vaishnavi@vistaran.in",
     "password": "10050",
+    "role": "Staff",
+    "department": "Staff",
+    "status": "Active",
+    "joinedDate": "2026-02-14T14:26:22.198Z"
+  },
+  {
+    "id": "USR051",
+    "name": "Megha",
+    "email": "megha@vistaran.in",
+    "password": "10051",
     "role": "Staff",
     "department": "Staff",
     "status": "Active",

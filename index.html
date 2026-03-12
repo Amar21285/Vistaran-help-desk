@@ -1,217 +1,205 @@
+
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Vistaran Help Desk</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vistaran">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="apple-touch-fullscreen" content="yes">
+    
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192/3b82f6/ffffff?text=V">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://via.placeholder.com/152/3b82f6/ffffff?text=V">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://via.placeholder.com/180/3b82f6/ffffff?text=V">
+    <link rel="apple-touch-icon" sizes="167x167" href="https://via.placeholder.com/167/3b82f6/ffffff?text=V">
+    
+    <!-- Splash Screens for iOS -->
+    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/2048x2732/3b82f6/ffffff?text=Vistaran" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1668x2224/3b82f6/ffffff?text=Vistaran" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1536x2048/3b82f6/ffffff?text=Vistaran" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1125x2436/3b82f6/ffffff?text=Vistaran" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1242x2208/3b82f6/ffffff?text=Vistaran" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/750x1334/3b82f6/ffffff?text=Vistaran" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Vistaran Help Desk</title>
-
-  <!-- PWA Meta Tags -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Vistaran">
-  <meta name="theme-color" content="#3b82f6" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="HandheldFriendly" content="true">
-  <meta name="apple-touch-fullscreen" content="yes">
-
-  <link rel="manifest" href="./manifest.json">
-  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/3b82f6/ffffff?text=V">
-  <link rel="apple-touch-icon" sizes="152x152" href="https://via.placeholder.com/152/3b82f6/ffffff?text=V">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://via.placeholder.com/180/3b82f6/ffffff?text=V">
-  <link rel="apple-touch-icon" sizes="167x167" href="https://via.placeholder.com/167/3b82f6/ffffff?text=V">
-
-  <!-- Splash Screens for iOS -->
-  <link rel="apple-touch-startup-image" href="https://via.placeholder.com/2048x2732/3b82f6/ffffff?text=Vistaran"
-    media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1668x2224/3b82f6/ffffff?text=Vistaran"
-    media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1536x2048/3b82f6/ffffff?text=Vistaran"
-    media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1125x2436/3b82f6/ffffff?text=Vistaran"
-    media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1242x2208/3b82f6/ffffff?text=Vistaran"
-    media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-  <link rel="apple-touch-startup-image" href="https://via.placeholder.com/750x1334/3b82f6/ffffff?text=Vistaran"
-    media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-
-  <!-- Tailwind Config -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['var(--font-family)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-            serif: ['var(--font-family)', 'ui-serif', 'Georgia', 'serif'],
-            mono: ['var(--font-family)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+    <!-- Tailwind Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['var(--font-family)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+              serif: ['var(--font-family)', 'ui-serif', 'Georgia', 'serif'],
+              mono: ['var(--font-family)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+            },
           },
         },
-      },
-    }
-  </script>
+      }
+    </script>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-  <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
-
-  <style>
-    :root {
-      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      --safe-area-inset-bottom: env(safe-area-inset-bottom);
-    }
-
-    html,
-    body {
-      font-family: var(--font-family) !important;
-      overscroll-behavior-y: none;
-      min-height: 100%;
-      width: 100%;
-    }
-
-    /* Desktop app feel remains locked, but allows login scroll */
-    .app-is-logged-in {
-      overflow: hidden;
-      position: fixed;
-      inset: 0;
-    }
-
-    .custom-scrollbar {
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .font-bold-app {
-      font-weight: 600 !important;
-    }
-
-    .font-bold-app h1,
-    .font-bold-app h2,
-    .font-bold-app h3,
-    .font-bold-app p,
-    .font-bold-app span,
-    .font-bold-app div {
-      font-weight: 700 !important;
-    }
-
-    @media print {
-      .no-print {
-        display: none !important;
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+    
+    <style>
+      :root {
+        --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --safe-area-inset-bottom: env(safe-area-inset-bottom);
+      }
+      
+      html, body {
+        font-family: var(--font-family) !important;
+        overscroll-behavior-y: none;
+        min-height: 100%;
+        width: 100%;
       }
 
-      body {
-        background-color: white !important;
-        color: black !important;
-        overflow: visible !important;
-        position: static !important;
-        width: 100% !important;
-        height: auto !important;
+      /* Desktop app feel remains locked, but allows login scroll */
+      .app-is-logged-in {
+        overflow: hidden;
+        position: fixed;
+        inset: 0;
       }
 
-      #root {
-        position: static !important;
-        height: auto !important;
-        overflow: visible !important;
+      .custom-scrollbar {
+        -webkit-overflow-scrolling: touch;
       }
 
-      .printable-area {
-        display: block !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 20px !important;
-        border: none !important;
-        box-shadow: none !important;
+      .font-bold-app {
+        font-weight: 600 !important;
+      }
+      .font-bold-app h1, .font-bold-app h2, .font-bold-app h3, .font-bold-app p, .font-bold-app span, .font-bold-app div {
+        font-weight: 700 !important;
       }
 
-      /* Hide everything except the printable area when printing */
-      body>*:not(#root),
-      #root>*:not(.fixed) {
-        display: none !important;
+      @media print {
+        .no-print { display: none !important; }
+        body { 
+          background-color: white !important; 
+          color: black !important; 
+          overflow: visible !important; 
+          position: static !important; 
+          width: 100% !important;
+          height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        #root { 
+          position: static !important; 
+          height: auto !important; 
+          overflow: visible !important; 
+        }
+        .printable-area { 
+          display: block !important; 
+          width: 100% !important; 
+          margin: 0 !important; 
+          padding: 0 !important; 
+          border: none !important;
+          box-shadow: none !important;
+          background: white !important;
+        }
+        /* Hide everything except the printable area when printing */
+        body > *:not(#root), #root > *:not(.fixed) { display: none !important; }
+        .fixed.inset-0 { 
+          position: static !important; 
+          display: block !important; 
+          background: none !important; 
+          backdrop-filter: none !important; 
+          padding: 0 !important; 
+          overflow: visible !important;
+          z-index: auto !important;
+        }
+        .bg-white.rounded-\[50px\], .bg-white.rounded-\[40px\] { 
+          border: none !important; 
+          border-radius: 0 !important; 
+          box-shadow: none !important; 
+          width: 100% !important; 
+          max-width: none !important; 
+          margin: 0 !important; 
+          position: static !important;
+        }
+        header.no-print, footer.no-print { display: none !important; }
+        
+        /* Table page break handling */
+        table { 
+          width: 100% !important;
+          border-collapse: collapse !important;
+          page-break-inside: auto !important; 
+          margin-bottom: 20px !important;
+        }
+        tr { 
+          page-break-inside: avoid !important; 
+          page-break-after: auto !important; 
+        }
+        thead { 
+          display: table-header-group !important; 
+        }
+        tfoot { 
+          display: table-footer-group !important; 
+        }
+        
+        /* Avoid breaking sections */
+        .p-8, .p-16, .p-6 {
+          page-break-inside: avoid !important;
+        }
+
+        /* Ensure signature area stays together */
+        .mt-32, .mt-20 {
+          page-break-inside: avoid !important;
+          margin-top: 50px !important;
+        }
+
+        /* Ensure text is black and backgrounds are white */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          color: black !important;
+          text-shadow: none !important;
+        }
+        
+        .text-primary, .text-indigo-600, .text-blue-600 {
+          color: #000 !important;
+        }
+        
+        .bg-primary, .bg-slate-900, .bg-rose-600 {
+          background-color: transparent !important;
+          border: 1px solid #000 !important;
+          color: #000 !important;
+        }
+
+        .bg-slate-50, .bg-primary\/5 {
+          background-color: #f8fafc !important;
+        }
+
+        /* Force page breaks if needed */
+        .page-break {
+          page-break-before: always !important;
+        }
       }
 
-      .fixed.inset-0 {
-        position: static !important;
-        display: block !important;
-        background: none !important;
-        backdrop-filter: none !important;
-        padding: 0 !important;
-        overflow: visible !important;
+      @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+      .mobile-modal { animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+      
+      :root, :root[data-theme='default'] {
+        --color-primary-rgb: 59 130 246; 
+        --color-primary-hover-rgb: 37 99 235;
       }
+      
+      .bg-primary { background-color: rgb(var(--color-primary-rgb)); }
+      .text-primary { color: rgb(var(--color-primary-rgb)); }
+      .border-primary { border-color: rgb(var(--color-primary-rgb)); }
 
-      .bg-white.rounded-\[50px\],
-      .bg-white.rounded-\[40px\] {
-        border: none !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        width: 100% !important;
-        max-width: none !important;
-        margin: 0 !important;
-        position: static !important;
-      }
-
-      header.no-print,
-      footer.no-print {
-        display: none !important;
-      }
-
-      /* Table page break handling */
-      table {
-        page-break-inside: auto;
-      }
-
-      tr {
-        page-break-inside: avoid;
-        page-break-after: auto;
-      }
-
-      thead {
-        display: table-header-group;
-      }
-
-      tfoot {
-        display: table-footer-group;
-      }
-    }
-
-    @keyframes slideUp {
-      from {
-        transform: translateY(100%);
-      }
-
-      to {
-        transform: translateY(0);
-      }
-    }
-
-    .mobile-modal {
-      animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-
-    :root,
-    :root[data-theme='default'] {
-      --color-primary-rgb: 59 130 246;
-      --color-primary-hover-rgb: 37 99 235;
-    }
-
-    .bg-primary {
-      background-color: rgb(var(--color-primary-rgb));
-    }
-
-    .text-primary {
-      color: rgb(var(--color-primary-rgb));
-    }
-
-    .border-primary {
-      border-color: rgb(var(--color-primary-rgb));
-    }
-
-    button {
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-  </style>
+      button { -webkit-tap-highlight-color: transparent; user-select: none; }
+    </style>
 
   <script type="importmap">
 {
@@ -230,21 +218,19 @@
   }
 }
 </script>
-  <link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="/index.css">
 </head>
-
-<body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-200">
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root" class="min-h-screen w-full"></div>
-  <script type="module" src="./index.tsx"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW failed'));
-      });
-    }
-  </script>
+  <body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-200">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root" class="min-h-screen w-full"></div>
+    <script type="module" src="./index.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW failed'));
+        });
+      }
+    </script>
   <script type="module" src="/index.tsx"></script>
 </body>
-
 </html>

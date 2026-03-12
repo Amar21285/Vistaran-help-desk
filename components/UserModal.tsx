@@ -29,12 +29,7 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (!isAdmin) {
-            alert("Only admins can update user details.");
-            return;
-        }
-
+        
         const updatedUser: User = {
             ...userToEdit,
             name,
@@ -52,7 +47,7 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
         if (password.trim() !== '' && isAdmin && !isSelfEdit) {
             updatedUser.password = password;
         }
-
+        
         logUserAction(currentUser, `Updated profile for user '${userToEdit.name}'.`);
         onSave(updatedUser);
     };
@@ -61,33 +56,31 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 modal-backdrop">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-lg modal-content">
                 <form onSubmit={handleSubmit}>
-                    <header className="p-4 border-b">
-                        <h2 className="text-xl font-bold text-slate-800">{isAdmin ? 'Edit User Details' : 'View User Details'}</h2>
+                     <header className="p-4 border-b">
+                        <h2 className="text-xl font-bold text-slate-800">Edit User Details</h2>
                     </header>
                     <main className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-600">Full Name *</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    required
-                                    readOnly={!isAdmin}
-                                    className={`mt-1 w-full p-2 border border-slate-300 rounded-md ${!isAdmin ? 'bg-slate-50 opacity-70' : ''}`}
+                                <input 
+                                    type="text" 
+                                    name="name" 
+                                    value={name} 
+                                    onChange={(e) => setName(e.target.value)} 
+                                    required 
+                                    className="mt-1 w-full p-2 border border-slate-300 rounded-md" 
                                 />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-600">Email Address *</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    readOnly={!isAdmin}
-                                    className={`mt-1 w-full p-2 border border-slate-300 rounded-md ${!isAdmin ? 'bg-slate-50 opacity-70' : ''}`}
+                                <input 
+                                    type="email" 
+                                    name="email" 
+                                    value={email} 
+                                    onChange={(e) => setEmail(e.target.value)} 
+                                    required 
+                                    className="mt-1 w-full p-2 border border-slate-300 rounded-md" 
                                 />
                             </div>
                         </div>
@@ -95,26 +88,24 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-600">Employee ID</label>
-                                <input
-                                    type="text"
-                                    name="employeeId"
-                                    value={employeeId}
-                                    onChange={(e) => setEmployeeId(e.target.value)}
-                                    placeholder="EMP-12345"
-                                    readOnly={!isAdmin}
-                                    className={`mt-1 w-full p-2 border border-slate-300 rounded-md ${!isAdmin ? 'bg-slate-50 opacity-70' : ''}`}
+                                <input 
+                                    type="text" 
+                                    name="employeeId" 
+                                    value={employeeId} 
+                                    onChange={(e) => setEmployeeId(e.target.value)} 
+                                    placeholder="EMP-12345" 
+                                    className="mt-1 w-full p-2 border border-slate-300 rounded-md" 
                                 />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-600">Designation</label>
-                                <input
-                                    type="text"
-                                    name="designation"
-                                    value={designation}
-                                    onChange={(e) => setDesignation(e.target.value)}
-                                    placeholder="Senior Engineer"
-                                    readOnly={!isAdmin}
-                                    className={`mt-1 w-full p-2 border border-slate-300 rounded-md ${!isAdmin ? 'bg-slate-50 opacity-70' : ''}`}
+                                <input 
+                                    type="text" 
+                                    name="designation" 
+                                    value={designation} 
+                                    onChange={(e) => setDesignation(e.target.value)} 
+                                    placeholder="Senior Engineer" 
+                                    className="mt-1 w-full p-2 border border-slate-300 rounded-md" 
                                 />
                             </div>
                         </div>
@@ -122,53 +113,51 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-slate-600">Phone Number</label>
-                                <input
-                                    type="tel"
-                                    name="phone"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    placeholder="+91 98765 43210"
-                                    readOnly={!isAdmin}
-                                    className={`mt-1 w-full p-2 border border-slate-300 rounded-md ${!isAdmin ? 'bg-slate-50 opacity-70' : ''}`}
+                                <input 
+                                    type="tel" 
+                                    name="phone" 
+                                    value={phone} 
+                                    onChange={(e) => setPhone(e.target.value)} 
+                                    placeholder="+91 98765 43210" 
+                                    className="mt-1 w-full p-2 border border-slate-300 rounded-md" 
                                 />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-600">WhatsApp Number</label>
-                                <input
-                                    type="tel"
-                                    name="whatsapp"
-                                    value={whatsapp}
-                                    onChange={(e) => setWhatsapp(e.target.value)}
-                                    placeholder="+91 98765 43210"
-                                    readOnly={!isAdmin}
-                                    className={`mt-1 w-full p-2 border border-slate-300 rounded-md ${!isAdmin ? 'bg-slate-50 opacity-70' : ''}`}
+                                <input 
+                                    type="tel" 
+                                    name="whatsapp" 
+                                    value={whatsapp} 
+                                    onChange={(e) => setWhatsapp(e.target.value)} 
+                                    placeholder="+91 98765 43210" 
+                                    className="mt-1 w-full p-2 border border-slate-300 rounded-md" 
                                 />
                             </div>
                         </div>
-
+                        
                         {isAdmin && !isSelfEdit && (
-                            <div>
+                             <div>
                                 <label className="block text-sm font-medium text-slate-600">New Password</label>
-                                <input
-                                    type="password"
-                                    name="password"
+                                <input 
+                                    type="password" 
+                                    name="password" 
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Leave blank to keep current password"
-                                    className="mt-1 w-full p-2 border border-slate-300 rounded-md"
+                                    placeholder="Leave blank to keep current password" 
+                                    className="mt-1 w-full p-2 border border-slate-300 rounded-md" 
                                 />
                             </div>
                         )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
+                             <div>
                                 <label className="block text-sm font-medium text-slate-600">Role</label>
                                 {isAdmin && !isSelfEdit ? (
-                                    <select
-                                        name="role"
-                                        value={role}
-                                        onChange={(e) => setRole(e.target.value as Role)}
-                                        required
+                                    <select 
+                                        name="role" 
+                                        value={role} 
+                                        onChange={(e) => setRole(e.target.value as Role)} 
+                                        required 
                                         className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-white"
                                     >
                                         <option value={Role.USER}>User (Branch)</option>
@@ -178,48 +167,46 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
                                         <option value={Role.ADMIN}>Admin</option>
                                     </select>
                                 ) : (
-                                    <input type="text" value={role} readOnly className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-slate-100 opacity-70" />
+                                    <input type="text" value={role} readOnly className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-slate-100"/>
                                 )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-600">Department</label>
                                 {isAdmin ? (
-                                    <select
-                                        name="department"
-                                        value={department}
-                                        onChange={(e) => setDepartment(e.target.value)}
+                                    <select 
+                                        name="department" 
+                                        value={department} 
+                                        onChange={(e) => setDepartment(e.target.value)} 
                                         className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-white"
                                     >
                                         {departments.map(d => <option key={d} value={d}>{d}</option>)}
                                     </select>
                                 ) : (
-                                    <input type="text" value={department} readOnly className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-slate-100 opacity-70" />
+                                     <input type="text" value={department} readOnly className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-slate-100"/>
                                 )}
                             </div>
                         </div>
-                        <div>
+                         <div>
                             <label className="block text-sm font-medium text-slate-600">Status</label>
                             {isAdmin && !isSelfEdit ? (
-                                <select
-                                    name="status"
-                                    value={status}
-                                    onChange={(e) => setStatus(e.target.value as UserStatus)}
-                                    required
+                                <select 
+                                    name="status" 
+                                    value={status} 
+                                    onChange={(e) => setStatus(e.target.value as UserStatus)} 
+                                    required 
                                     className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-white"
                                 >
                                     <option value={UserStatus.ACTIVE}>Active</option>
                                     <option value={UserStatus.INACTIVE}>Inactive</option>
                                 </select>
                             ) : (
-                                <input type="text" value={status} readOnly className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-slate-100 opacity-70" />
+                                <input type="text" value={status} readOnly className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-slate-100"/>
                             )}
                         </div>
                     </main>
                     <footer className="p-4 bg-slate-50 border-t flex justify-end gap-2">
-                        <button type="button" onClick={onClose} className="bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Close</button>
-                        {isAdmin && (
-                            <button type="submit" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition">Update User</button>
-                        )}
+                        <button type="button" onClick={onClose} className="bg-slate-200 text-slate-700 font-semibold px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+                        <button type="submit" className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition">Update User</button>
                     </footer>
                 </form>
             </div>

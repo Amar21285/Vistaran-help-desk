@@ -9,27 +9,10 @@ import { jsPDF } from 'jspdf';
 
 const SELLER_DETAILS = {
     name: "Vistaran Health Care Services Pvt. Ltd.",
-    address: "A-Wing, B-101, Bldg No: 2, Kailas Industrial Complex, Veer Savarkar Marg, Parksite, Vikhroli West, Mumbai - 400079",
+    address: "A-Wing, Unit No.A3 , Bldg No: 2, Kailas Industrial Complex, Veer Savarkar Marg, Parksite, Vikhroli West, Mumbai - 400079",
     gstin: "27AAACV1234F1Z5",
     state: "Maharashtra",
     stateCode: "27"
-};
-
-const numberToWords = (num: number): string => {
-    const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
-    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-    let nStr = num.toString();
-    if (nStr.length > 9) return 'overflow';
-    let n = ('000000000' + nStr).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-    if (!n) return '';
-    let str = '';
-    str += (Number(n[1]) != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
-    str += (Number(n[2]) != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
-    str += (Number(n[3]) != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
-    str += (Number(n[4]) != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
-    str += (Number(n[5]) != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
-    return str.trim() + ' Only';
 };
 
 const TRANSACTION_PURPOSES = [
@@ -71,7 +54,6 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
     const [ticketId, setTicketId] = useState('');
     const [engineerName, setEngineerName] = useState('');
     const [notes, setNotes] = useState('');
-    const [consigneeDetails, setConsigneeDetails] = useState('');
 
     const [newItemDesc, setNewItemDesc] = useState('');
     const [newItemHsn, setNewItemHsn] = useState('');
@@ -93,17 +75,16 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
 
     const calculateTotals = (inv: Invoice) => {
         let subTotal = 0, taxTotal = 0;
+        let cgst = 0, sgst = 0;
         inv.items.forEach(i => {
             const taxable = (i.rate * i.quantity) * (1 - (i.discount || 0) / 100);
             subTotal += taxable;
-            taxTotal += taxable * (i.gstRate / 100);
+            const itemTax = taxable * (i.gstRate / 100);
+            taxTotal += itemTax;
+            cgst += itemTax / 2;
+            sgst += itemTax / 2;
         });
-        
-        const isTaxInvoice = inv.purpose === "Sales" || inv.purpose === "Logistics Sale";
-        const cgst = isTaxInvoice ? taxTotal / 2 : 0;
-        const sgst = isTaxInvoice ? taxTotal / 2 : 0;
-        
-        return { subTotal, taxTotal, cgst, sgst, grandTotal: Math.round(subTotal + taxTotal), isTaxInvoice };
+        return { subTotal, taxTotal, cgst, sgst, grandTotal: Math.round(subTotal + taxTotal) };
     };
 
     const handleOpenEdit = (inv: Invoice) => {
@@ -117,7 +98,6 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
         setTicketId(inv.ticketId || '');
         setEngineerName(inv.engineerName || '');
         setNotes(inv.notes || '');
-        setConsigneeDetails(inv.consigneeDetails || '');
         setIsCreateModalOpen(true);
     };
 
@@ -132,7 +112,6 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
         setTicketId('');
         setEngineerName('');
         setNotes('');
-        setConsigneeDetails('');
         setIsCreateModalOpen(true);
     };
 
@@ -170,15 +149,17 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
             id: `ITEM-${Date.now()}`, 
             description: newItemDesc, 
             hsn: newItemHsn, 
-            quantity: newItemQty, 
+            quantity: isNaN(newItemQty) ? 0 : newItemQty, 
             unit: newItemUnit, 
-            rate: newItemRate, 
-            gstRate: newItemGst,
+            rate: isNaN(newItemRate) ? 0 : newItemRate, 
+            gstRate: isNaN(newItemGst) ? 0 : newItemGst,
             remarks: newItemRemarks
         }]);
         setNewItemDesc(''); 
         setNewItemHsn(''); 
+        setNewItemQty(1);
         setNewItemRate(0);
+        setNewItemGst(18);
         setNewItemRemarks('');
     };
 
@@ -194,8 +175,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
             ticketId, 
             engineerName,
             purpose: selectedPurpose,
-            notes,
-            consigneeDetails
+            notes
         };
 
         if (editingInvoice) {
@@ -220,7 +200,8 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
         if (!printableRef.current || !viewingInvoice) return;
         setIsGeneratingPDF(true);
         try {
-            const canvas = await html2canvas(printableRef.current, { 
+            const element = printableRef.current;
+            const canvas = await html2canvas(element, { 
                 scale: 2, 
                 useCORS: true, 
                 backgroundColor: '#ffffff',
@@ -242,7 +223,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
 
             // Subsequent pages
             while (heightLeft > 0) {
-                position -= pageHeight;
+                position = heightLeft - imgHeight;
                 pdf.addPage();
                 pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
@@ -251,7 +232,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
             pdf.save(`Invoice-${viewingInvoice.id}.pdf`);
         } catch (error) {
             console.error("PDF Generation Error:", error);
-            alert("Failed to generate PDF. Please try again.");
+            alert("Failed to generate PDF. Please try printing (Ctrl+P) and saving as PDF instead.");
         } finally { 
             setIsGeneratingPDF(false); 
         }
@@ -343,7 +324,27 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                             </div>
 
                             <div className="p-8 bg-primary/5 rounded-[35px] border-2 border-primary/20 space-y-6">
-                                <h4 className="text-[10px] font-black uppercase text-primary tracking-widest px-1">Itemized Distribution Ledger</h4>
+                                <div className="flex justify-between items-center mb-2 px-1">
+                                    <h4 className="text-[10px] font-black uppercase text-primary tracking-widest">Itemized Distribution Ledger</h4>
+                                    <button 
+                                        type="button"
+                                        onClick={() => {
+                                            const mockItems = Array.from({ length: 25 }, (_, i) => ({
+                                                id: `INV-ITEM-${Date.now()}-${i}`,
+                                                description: `Test Component ${i + 1} - Industrial Grade`,
+                                                quantity: Math.floor(Math.random() * 5) + 1,
+                                                unit: 'Nos',
+                                                rate: Math.floor(Math.random() * 5000) + 500,
+                                                gstRate: 18,
+                                                hsn: '8471'
+                                            }));
+                                            setItems(mockItems);
+                                        }}
+                                        className="text-[9px] font-black text-primary uppercase hover:underline bg-white/50 px-3 py-1 rounded-full border border-primary/20"
+                                    >
+                                        ⚡ Fill 25 Items (Test)
+                                    </button>
+                                </div>
                                 <div className="grid grid-cols-12 gap-3 items-end">
                                     <div className="col-span-12 lg:col-span-4">
                                         <label className="text-[9px] font-black text-slate-400 uppercase mb-1 block ml-1">Description of Goods</label>
@@ -352,27 +353,21 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                     </div>
                                     <div className="col-span-4 lg:col-span-2">
                                         <label className="text-[9px] font-black text-slate-400 uppercase mb-1 block ml-1">HSN/SAC</label>
-                                        <input value={newItemHsn} onChange={e => setNewItemHsn(e.target.value)} placeholder="Code" className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-black text-sm outline-none shadow-sm focus:border-primary transition-all" />
+                                        <input value={newItemHsn} onChange={e => setNewItemHsn(e.target.value)} placeholder="8517..." className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-black text-sm outline-none shadow-sm focus:border-primary transition-all" />
                                     </div>
                                     <div className="col-span-4 lg:col-span-1">
                                         <label className="text-[9px] font-black text-slate-400 uppercase mb-1 block ml-1">Qty</label>
-                                        <input type="number" value={newItemQty} onChange={e => setNewItemQty(parseFloat(e.target.value))} className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-black text-sm outline-none shadow-sm focus:border-primary transition-all" />
+                                        <input type="number" value={isNaN(newItemQty) ? '' : newItemQty} onChange={e => setNewItemQty(e.target.value === '' ? NaN : parseFloat(e.target.value))} className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-black text-sm outline-none shadow-sm focus:border-primary transition-all" />
                                     </div>
                                     <div className="col-span-4 lg:col-span-2">
                                         <label className="text-[9px] font-black text-slate-400 uppercase mb-1 block ml-1">Rate</label>
-                                        <input type="number" value={newItemRate} onChange={e => setNewItemRate(parseFloat(e.target.value))} className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-black text-sm outline-none shadow-sm focus:border-primary transition-all" />
+                                        <input type="number" value={isNaN(newItemRate) ? '' : newItemRate} onChange={e => setNewItemRate(e.target.value === '' ? NaN : parseFloat(e.target.value))} className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-black text-sm outline-none shadow-sm focus:border-primary transition-all" />
                                     </div>
-                                    <div className="col-span-4 lg:col-span-3">
+                                    <div className="col-span-12 lg:col-span-3">
                                         <div className="flex gap-2">
                                             <div className="flex-1">
                                                 <label className="text-[9px] font-black text-slate-400 uppercase mb-1 block ml-1">GST %</label>
-                                                <select value={newItemGst} onChange={e => setNewItemGst(parseInt(e.target.value))} className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-bold text-xs outline-none">
-                                                    <option value={0}>0%</option>
-                                                    <option value={5}>5%</option>
-                                                    <option value={12}>12%</option>
-                                                    <option value={18}>18%</option>
-                                                    <option value={28}>28%</option>
-                                                </select>
+                                                <input type="number" value={isNaN(newItemGst) ? '' : newItemGst} onChange={e => setNewItemGst(e.target.value === '' ? NaN : parseFloat(e.target.value))} className="w-full p-4 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 font-black text-sm outline-none shadow-sm focus:border-primary transition-all" placeholder="18" />
                                             </div>
                                             <button onClick={handleAddItem} className="bg-primary text-white p-4 rounded-xl shadow-xl hover:bg-primary-hover active:scale-95 transition-all mt-4"><i className="fas fa-plus"></i></button>
                                         </div>
@@ -407,11 +402,8 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                     </div>
                                 </div>
                                 <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase text-slate-400 block tracking-widest">Master Note / Remark</label>
                                     <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="General consignment notes..." className="w-full p-4 border-2 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none h-24 resize-none shadow-inner"></textarea>
-                                </div>
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black uppercase text-slate-400 block tracking-widest">Details of Consignee (Shipped To)</label>
-                                    <textarea value={consigneeDetails} onChange={e => setConsigneeDetails(e.target.value)} placeholder="Full shipping address & contact details..." className="w-full p-4 border-2 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none h-24 resize-none shadow-inner"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -441,13 +433,13 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                             <button onClick={() => setViewingInvoice(null)} className="w-12 h-12 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 transition-all text-3xl">&times;</button>
                         </header>
 
-                        <div ref={printableRef} className={`p-16 text-slate-900 bg-white printable-area ${selectedTemplate === 'executive' ? 'border-t-[15px] border-primary' : ''}`}>
+                        <div ref={printableRef} className={`p-16 text-slate-900 bg-white printable-area ${selectedTemplate === 'executive' ? 'border-t-[15px] border-primary' : ''} ${selectedTemplate === 'logistics' ? 'font-serif' : ''}`}>
                             {selectedTemplate === 'classic' ? (
                                 <>
                                     <div className="flex justify-between border-b-[5px] border-slate-900 pb-10 mb-10">
                                         <div>
                                             <Logo className="h-14 w-auto grayscale brightness-0 mb-4" />
-                                            <h1 className="text-4xl font-black uppercase tracking-tighter">Material Issue</h1>
+                                            <h1 className="text-4xl font-black uppercase tracking-tighter">{viewingInvoice.purpose === 'Sales' ? 'Tax Invoice' : 'Material Issue'}</h1>
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-1">{SELLER_DETAILS.name}</p>
                                         </div>
                                         <div className="text-right">
@@ -464,6 +456,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Buyer / Consignee</p>
                                             <p className="font-black text-xl uppercase leading-tight text-slate-900">{vendors.find(v => v.id === viewingInvoice.vendorId)?.name}</p>
                                             {viewingInvoice.departmentName && <p className="text-xs font-bold text-slate-500 mt-1 uppercase">Dept: {viewingInvoice.departmentName}</p>}
+                                            {vendors.find(v => v.id === viewingInvoice.vendorId)?.gstin && <p className="text-[9px] font-black text-slate-400 mt-2 uppercase">GSTIN: {vendors.find(v => v.id === viewingInvoice.vendorId)?.gstin}</p>}
                                         </div>
                                         <div className="p-6 border-l-[6px] border-primary bg-primary/5 rounded-r-[30px] text-right">
                                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Issue Logic</p>
@@ -478,7 +471,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                         <div className="space-y-6">
                                             <Logo className="h-16 w-auto grayscale brightness-0" />
                                             <div>
-                                                <h1 className="text-5xl font-black uppercase tracking-tighter text-primary">Outward Ledger</h1>
+                                                <h1 className="text-5xl font-black uppercase tracking-tighter text-primary">{viewingInvoice.purpose === 'Sales' ? 'Tax Invoice' : 'Outward Ledger'}</h1>
                                                 <div className="flex gap-4 mt-2">
                                                     <span className="bg-slate-900 text-white px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-md">REF: {viewingInvoice.id}</span>
                                                     <span className="bg-slate-100 text-slate-500 px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-md">DATE: {new Date(viewingInvoice.dateIssued).toLocaleDateString()}</span>
@@ -489,6 +482,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                             <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Authorized Transfer Document</p>
                                             <p className="font-black text-lg uppercase text-slate-800">{SELLER_DETAILS.name}</p>
                                             <p className="text-[10px] text-slate-500 font-bold uppercase leading-relaxed max-w-[250px] ml-auto">{SELLER_DETAILS.address}</p>
+                                            <p className="text-[10px] font-black text-primary uppercase">GSTIN: {SELLER_DETAILS.gstin}</p>
                                         </div>
                                     </div>
 
@@ -497,6 +491,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                             <p className="text-[9px] font-black uppercase text-primary tracking-widest">Recipient</p>
                                             <p className="text-lg font-black uppercase text-slate-800">{vendors.find(v => v.id === viewingInvoice.vendorId)?.name}</p>
                                             <p className="text-[10px] font-bold text-slate-500 uppercase">{viewingInvoice.departmentName || 'General Fleet'}</p>
+                                            {vendors.find(v => v.id === viewingInvoice.vendorId)?.gstin && <p className="text-[9px] font-black text-slate-400 mt-1 uppercase">GSTIN: {vendors.find(v => v.id === viewingInvoice.vendorId)?.gstin}</p>}
                                         </div>
                                         <div className="space-y-1 border-x border-slate-200 px-8 text-center">
                                             <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest">Dispatch Reason</p>
@@ -511,146 +506,138 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                     </div>
                                 </div>
                             ) : (
-                                <div className="space-y-10">
-                                    <div className="flex justify-between items-start border-b-4 border-slate-900 pb-8">
-                                        <div className="flex gap-6 items-center">
-                                            <Logo className="h-16 w-auto grayscale brightness-0" />
-                                            <div>
-                                                <h1 className="text-4xl font-black uppercase tracking-tighter">Tax Invoice</h1>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Supply Chain Operations v1.0</p>
+                                <div className="space-y-8">
+                                    <div className="flex justify-between items-start border-b-2 border-slate-900 pb-6">
+                                        <div className="space-y-2">
+                                            <h1 className="text-4xl font-serif font-bold italic text-slate-900">Tax Invoice</h1>
+                                            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Logistics & Supply Chain Division</p>
+                                            <div className="mt-4">
+                                                <p className="text-lg font-bold text-slate-900">{SELLER_DETAILS.name}</p>
+                                                <p className="text-[10px] text-slate-600 max-w-xs">{SELLER_DETAILS.address}</p>
+                                                <p className="text-[10px] font-bold text-slate-900 mt-1">GSTIN: {SELLER_DETAILS.gstin} | State: {SELLER_DETAILS.state} ({SELLER_DETAILS.stateCode})</p>
                                             </div>
                                         </div>
-                                        <div className="text-right space-y-1">
-                                            <p className="text-lg font-black uppercase">{SELLER_DETAILS.name}</p>
-                                            <p className="text-[9px] text-slate-500 font-bold uppercase max-w-[300px] ml-auto">{SELLER_DETAILS.address}</p>
-                                            <div className="flex justify-end gap-4 mt-2">
-                                                <div className="text-center">
-                                                    <p className="text-[8px] font-black uppercase text-slate-400">GSTIN</p>
-                                                    <p className="text-xs font-black">{SELLER_DETAILS.gstin}</p>
-                                                </div>
-                                                <div className="text-center">
-                                                    <p className="text-[8px] font-black uppercase text-slate-400">State</p>
-                                                    <p className="text-xs font-black">{SELLER_DETAILS.state} ({SELLER_DETAILS.stateCode})</p>
-                                                </div>
+                                        <div className="text-right space-y-4">
+                                            <Logo className="h-12 w-auto grayscale brightness-0 ml-auto" />
+                                            <div className="space-y-1">
+                                                <p className="text-xs font-bold text-slate-500 uppercase">Invoice Number</p>
+                                                <p className="text-2xl font-serif font-bold text-slate-900">{viewingInvoice.id}</p>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <p className="text-xs font-bold text-slate-500 uppercase">Date of Issue</p>
+                                                <p className="text-sm font-bold text-slate-900">{new Date(viewingInvoice.dateIssued).toLocaleDateString('en-IN')}</p>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-px bg-slate-200 border-x-2 border-y-2 border-slate-200">
-                                        <div className="bg-white p-6">
-                                            <p className="text-[10px] font-black uppercase text-primary tracking-widest mb-3">Details of Receiver (Billed To)</p>
-                                            <p className="text-xl font-black uppercase text-slate-900">{vendors.find(v => v.id === viewingInvoice.vendorId)?.name}</p>
-                                            <p className="text-xs font-bold text-slate-500 mt-2 uppercase leading-relaxed">{vendors.find(v => v.id === viewingInvoice.vendorId)?.address || 'Address Not Provided'}</p>
-                                            <div className="mt-4 pt-4 border-t border-slate-100 flex gap-6">
-                                                <div>
-                                                    <p className="text-[8px] font-black uppercase text-slate-400">GSTIN</p>
-                                                    <p className="text-[10px] font-black">{vendors.find(v => v.id === viewingInvoice.vendorId)?.gstin || 'N/A'}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-[8px] font-black uppercase text-slate-400">State</p>
-                                                    <p className="text-[10px] font-black">{vendors.find(v => v.id === viewingInvoice.vendorId)?.state || 'N/A'}</p>
-                                                </div>
-                                            </div>
+                                    <div className="grid grid-cols-2 gap-0 border border-slate-900">
+                                        <div className="p-6 border-r border-slate-900">
+                                            <p className="text-[10px] font-bold text-slate-500 uppercase mb-2">Details of Receiver (Billed To)</p>
+                                            <p className="text-lg font-bold text-slate-900">{vendors.find(v => v.id === viewingInvoice.vendorId)?.name}</p>
+                                            <p className="text-[10px] text-slate-600 mt-1">{vendors.find(v => v.id === viewingInvoice.vendorId)?.address || 'Address Not Provided'}</p>
+                                            <p className="text-[10px] font-bold text-slate-900 mt-2">GSTIN: {vendors.find(v => v.id === viewingInvoice.vendorId)?.gstin || 'URD'}</p>
+                                            <p className="text-[10px] font-bold text-slate-900">State: {vendors.find(v => v.id === viewingInvoice.vendorId)?.state || 'N/A'}</p>
                                         </div>
-                                        <div className="bg-white p-6">
-                                            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3">Details of Consignee (Shipped To)</p>
-                                            <p className="text-sm font-bold text-slate-700 leading-relaxed uppercase whitespace-pre-wrap">{viewingInvoice.consigneeDetails || viewingInvoice.notes || 'Same as Billing Address'}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-3 gap-6">
-                                        <div className="p-4 bg-slate-50 border rounded-2xl">
-                                            <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Invoice Number</p>
-                                            <p className="text-sm font-black font-mono">{viewingInvoice.id}</p>
-                                        </div>
-                                        <div className="p-4 bg-slate-50 border rounded-2xl">
-                                            <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Date of Issue</p>
-                                            <p className="text-sm font-black">{new Date(viewingInvoice.dateIssued).toLocaleDateString('en-IN')}</p>
-                                        </div>
-                                        <div className="p-4 bg-slate-50 border rounded-2xl">
-                                            <p className="text-[8px] font-black uppercase text-slate-400 mb-1">Place of Supply</p>
-                                            <p className="text-sm font-black uppercase">{vendors.find(v => v.id === viewingInvoice.vendorId)?.state || SELLER_DETAILS.state}</p>
+                                        <div className="p-6">
+                                            <p className="text-[10px] font-bold text-slate-500 uppercase mb-2">Details of Consignee (Shipped To)</p>
+                                            <p className="text-lg font-bold text-slate-900">{vendors.find(v => v.id === viewingInvoice.vendorId)?.name}</p>
+                                            <p className="text-[10px] text-slate-600 mt-1">{viewingInvoice.departmentName || 'Main Facility'}</p>
+                                            <p className="text-[10px] font-bold text-slate-900 mt-2">Place of Supply: {vendors.find(v => v.id === viewingInvoice.vendorId)?.state || 'N/A'}</p>
+                                            <p className="text-[10px] font-bold text-slate-900">Delivery Method: {viewingInvoice.deliveryMethod || 'Surface Logistics'}</p>
                                         </div>
                                     </div>
                                 </div>
                             )}
 
-                            <table className="w-full mb-10 border-collapse mt-10">
-                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : selectedTemplate === 'logistics' ? 'bg-slate-900 text-white' : 'border-b-2 border-slate-900 text-slate-900'}`}>
+                            <table className="w-full mb-0 border-collapse mt-10 border border-slate-900">
+                                <thead className={`text-[10px] font-black uppercase tracking-widest ${selectedTemplate === 'executive' ? 'bg-primary text-white' : selectedTemplate === 'logistics' ? 'bg-slate-100 text-slate-900 border-b border-slate-900' : 'border-b-2 border-slate-900 text-slate-900'}`}>
                                     <tr>
-                                        <th className="p-4 text-left w-12 rounded-l-xl">#</th>
-                                        <th className="p-4 text-left">Description of Goods</th>
-                                        {selectedTemplate === 'logistics' && <th className="p-4 text-center">HSN/SAC</th>}
-                                        <th className="p-4 text-center">Qty</th>
-                                        <th className="p-4 text-right">Rate</th>
-                                        <th className="p-4 text-right rounded-r-xl">Total</th>
+                                        <th className="p-3 text-left w-12 border-r border-slate-900">#</th>
+                                        <th className="p-3 text-left border-r border-slate-900">Description of Goods</th>
+                                        <th className="p-3 text-center border-r border-slate-900">HSN</th>
+                                        <th className="p-3 text-center border-r border-slate-900">Qty</th>
+                                        <th className="p-3 text-right border-r border-slate-900">Rate</th>
+                                        <th className="p-3 text-right">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {viewingInvoice.items.map((i, idx) => (
-                                        <tr key={i.id} className="border-b border-slate-100">
-                                            <td className="p-4 text-xs font-bold text-slate-400">{idx + 1}</td>
-                                            <td className="p-4 font-black uppercase text-sm text-slate-800">{i.description}</td>
-                                            {selectedTemplate === 'logistics' && <td className="p-4 text-center text-xs font-bold text-slate-600">{i.hsn || 'N/A'}</td>}
-                                            <td className="p-4 text-center text-xs font-bold text-slate-600">{i.quantity}</td>
-                                            <td className="p-4 text-right text-xs font-bold text-slate-600">₹{i.rate.toLocaleString()}</td>
-                                            <td className="p-4 text-right font-black text-sm text-slate-900">₹{(i.rate * i.quantity).toLocaleString()}</td>
+                                        <tr key={i.id} className="border-b border-slate-900">
+                                            <td className="p-3 text-xs font-bold text-slate-600 border-r border-slate-900">{idx + 1}</td>
+                                            <td className="p-3 font-bold uppercase text-xs text-slate-800 border-r border-slate-900">
+                                                {i.description}
+                                                {i.gstRate > 0 && <span className="block text-[8px] text-slate-400 mt-0.5">GST @ {i.gstRate}% Included</span>}
+                                            </td>
+                                            <td className="p-3 text-center text-xs font-bold text-slate-600 border-r border-slate-900">{i.hsn || '---'}</td>
+                                            <td className="p-3 text-center text-xs font-bold text-slate-600 border-r border-slate-900">{i.quantity}</td>
+                                            <td className="p-3 text-right text-xs font-bold text-slate-600 border-r border-slate-900">₹{i.rate.toLocaleString()}</td>
+                                            <td className="p-3 text-right font-bold text-xs text-slate-900">₹{(i.rate * i.quantity).toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                    {/* Empty rows to fill space in logistics template */}
+                                    {selectedTemplate === 'logistics' && Array.from({ length: Math.max(0, 8 - viewingInvoice.items.length) }).map((_, i) => (
+                                        <tr key={`empty-${i}`} className="border-b border-slate-900 h-8">
+                                            <td className="border-r border-slate-900"></td>
+                                            <td className="border-r border-slate-900"></td>
+                                            <td className="border-r border-slate-900"></td>
+                                            <td className="border-r border-slate-900"></td>
+                                            <td className="border-r border-slate-900"></td>
+                                            <td></td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                             
-                            <div className="flex flex-col md:flex-row justify-between items-start gap-10 mb-10">
-                                <div className="flex-1 space-y-4">
-                                    {selectedTemplate === 'logistics' && (
-                                        <div className="p-6 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
-                                            <p className="text-[10px] font-black uppercase text-slate-400 mb-1">Total Amount in Words</p>
-                                            <p className="text-sm font-black text-slate-800 italic uppercase">Rupees {numberToWords(calculateTotals(viewingInvoice).grandTotal)}</p>
-                                        </div>
-                                    )}
-                                    <div className={`p-8 rounded-[35px] ${selectedTemplate === 'executive' ? 'bg-primary/5 border-2 border-primary/10' : 'bg-slate-50 border'}`}>
-                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Terms & Acknowledgement</p>
-                                        <p className="text-xs font-bold text-slate-700 leading-relaxed italic">{viewingInvoice.notes || 'The above listed goods have been issued for operational use as per policy. Any discrepancies must be reported within 24 hours of receipt.'}</p>
-                                    </div>
-                                </div>
-
-                                <div className={`p-8 rounded-[35px] w-80 space-y-3 shrink-0 ${selectedTemplate === 'executive' ? 'bg-primary text-white shadow-2xl shadow-primary/30' : 'bg-slate-900 text-white shadow-xl'}`}>
-                                    <div className="flex justify-between opacity-60 text-[9px] font-black uppercase tracking-widest">
-                                        <span>Sub Total</span>
+                            <div className="flex justify-end mb-0">
+                                <div className={`p-6 border-x border-b border-slate-900 w-full max-w-md space-y-2 ${selectedTemplate === 'executive' ? 'bg-primary text-white' : 'bg-white text-slate-900'}`}>
+                                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
+                                        <span>Taxable Value</span>
                                         <span>₹{calculateTotals(viewingInvoice).subTotal.toLocaleString()}</span>
                                     </div>
-                                    {calculateTotals(viewingInvoice).isTaxInvoice ? (
+                                    {(viewingInvoice.purpose === 'Sales' || viewingInvoice.purpose === 'Logistics Sale' || selectedTemplate === 'logistics') ? (
                                         <>
-                                            <div className="flex justify-between opacity-60 text-[9px] font-black uppercase tracking-widest">
+                                            <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-500">
                                                 <span>CGST (Central Tax)</span>
                                                 <span>₹{calculateTotals(viewingInvoice).cgst.toLocaleString()}</span>
                                             </div>
-                                            <div className="flex justify-between opacity-60 text-[9px] font-black uppercase tracking-widest pb-3 border-b border-white/10">
+                                            <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-500">
                                                 <span>SGST (State Tax)</span>
                                                 <span>₹{calculateTotals(viewingInvoice).sgst.toLocaleString()}</span>
                                             </div>
                                         </>
                                     ) : (
-                                        <div className="flex justify-between opacity-60 text-[9px] font-black uppercase tracking-widest pb-3 border-b border-white/10">
+                                        <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-500">
                                             <span>Estimated Tax</span>
                                             <span>₹{calculateTotals(viewingInvoice).taxTotal.toLocaleString()}</span>
                                         </div>
                                     )}
-                                    <div className="flex justify-between items-center pt-2">
-                                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Grand Total</span>
-                                        <span className="text-2xl font-black">₹{calculateTotals(viewingInvoice).grandTotal.toLocaleString()}</span>
+                                    <div className="flex justify-between items-center pt-2 border-t border-slate-900">
+                                        <span className="text-xs font-black uppercase tracking-[0.2em]">Total Invoice Value</span>
+                                        <span className="text-xl font-black">₹{calculateTotals(viewingInvoice).grandTotal.toLocaleString()}</span>
                                     </div>
                                 </div>
+                            </div>
+
+                            {selectedTemplate === 'logistics' && (
+                                <div className="border-x border-b border-slate-900 p-4">
+                                    <p className="text-[8px] font-bold uppercase text-slate-400 mb-1">Total Amount in Words</p>
+                                    <p className="text-[10px] font-bold italic text-slate-800 uppercase">Rupees {calculateTotals(viewingInvoice).grandTotal.toLocaleString()} Only</p>
+                                </div>
+                            )}
+
+                            <div className={`p-8 rounded-b-[35px] mb-12 border-x border-b border-slate-900 ${selectedTemplate === 'executive' ? 'bg-primary/5' : 'bg-slate-50'}`}>
+                                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Terms & Acknowledgement</p>
+                                <p className="text-xs font-bold text-slate-700 leading-relaxed italic">{viewingInvoice.notes || 'The above listed goods have been issued for operational use as per policy. Any discrepancies must be reported within 24 hours of receipt.'}</p>
                             </div>
 
                             <div className="mt-20 grid grid-cols-2 gap-20 text-center">
                                 <div className="space-y-4">
                                     <div className="h-20 border-b-2 border-slate-200"></div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Authorized Receiver Signature</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Receiver's Signature & Stamp</p>
                                 </div>
                                 <div className="space-y-4">
                                     <div className="h-20 border-b-2 border-slate-200 flex items-end justify-center pb-2">
-                                         <p className="text-[9px] font-black text-primary uppercase">E-Verified by Admin Hub</p>
+                                         <p className="text-[9px] font-black text-primary uppercase">Digitally Signed by Vistaran Hub</p>
                                     </div>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">For {SELLER_DETAILS.name}</p>
                                 </div>

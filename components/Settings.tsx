@@ -10,6 +10,7 @@ import EmailTemplates from './settings/EmailTemplates';
 import DepartmentSettings from './settings/DepartmentSettings';
 import NetworkSettings from './settings/NetworkSettings';
 import PermissionSettings from './settings/PermissionSettings';
+import MasterSyncSettings from './settings/MasterSyncSettings';
 import { TicketTemplate, Symptom, User, Ticket } from '../types';
 
 interface SettingsProps {
@@ -64,6 +65,8 @@ const Settings: React.FC<SettingsProps> = (props) => {
                 return <NetworkSettings />;
             case 'permissions':
                 return <PermissionSettings />;
+            case 'sync':
+                return <MasterSyncSettings />;
             default:
                 return <GeneralSettings />;
         }
@@ -80,6 +83,7 @@ const Settings: React.FC<SettingsProps> = (props) => {
                 <nav className="-mb-px flex space-x-2 overflow-x-auto" aria-label="Tabs">
                     <TabButton label="General" iconClass="fas fa-sliders-h" isActive={activeTab === 'general'} onClick={() => setActiveTab('general')} />
                     <TabButton label="Permissions" iconClass="fas fa-user-lock" isActive={activeTab === 'permissions'} onClick={() => setActiveTab('permissions')} />
+                    <TabButton label="Master Sync" iconClass="fas fa-database" isActive={activeTab === 'sync'} onClick={() => setActiveTab('sync')} />
                     <TabButton label="Departments & Issues" iconClass="fas fa-sitemap" isActive={activeTab === 'departments'} onClick={() => setActiveTab('departments')} />
                     <TabButton label="Notifications" iconClass="fas fa-bell" isActive={activeTab === 'notifications'} onClick={() => setActiveTab('notifications')} />
                     <TabButton label="Ticket Templates" iconClass="fas fa-paste" isActive={activeTab === 'templates'} onClick={() => setActiveTab('templates')} />

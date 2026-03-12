@@ -338,9 +338,15 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                         }
                         body { margin: 0 !important; padding: 0 !important; background: white !important; width: ${finalPageWidth}mm; height: ${finalPageHeight}mm; display: flex; align-items: center; justify-content: center; overflow: hidden; }
                         #modal-printable-label-content { width: ${labelWidth}mm !important; height: ${labelHeight}mm !important; transform: rotate(${rotation}deg) !important; transform-origin: center center !important; }
-                        .high-contrast-mode { filter: contrast(500%) grayscale(100%) brightness(80%) !important; }
+                        .high-contrast-mode { filter: contrast(800%) grayscale(100%) brightness(70%) !important; }
                         .thermal-optimized { color: #000 !important; border-color: #000 !important; }
-                        .thermal-optimized * { color: #000 !important; border-color: #000 !important; font-weight: 900 !important; }
+                        .thermal-optimized * { 
+                            color: #000 !important; 
+                            border-color: #000 !important; 
+                            font-weight: 900 !important; 
+                            -webkit-font-smoothing: none !important;
+                            text-shadow: 0.05mm 0.05mm 0 #000, -0.05mm -0.05mm 0 #000 !important;
+                        }
                         svg, img { image-rendering: pixelated !important; image-rendering: crisp-edges !important; }
                     </style>
                 </head>
@@ -493,13 +499,14 @@ const AssetLabelModal: React.FC<AssetLabelModalProps> = ({ item, onClose }) => {
                         </div>
                     </footer>
                     <style>{`
-                        .high-contrast-mode { filter: contrast(500%) grayscale(100%) brightness(80%) !important; }
+                        .high-contrast-mode { filter: contrast(800%) grayscale(100%) brightness(70%) !important; }
                         .thermal-optimized { color: #000 !important; border-color: #000 !important; }
                         .thermal-optimized * { 
                             color: #000 !important; 
                             border-color: #000 !important; 
                             font-weight: 900 !important; 
                             -webkit-font-smoothing: none !important;
+                            text-shadow: 0.05mm 0.05mm 0 #000, -0.05mm -0.05mm 0 #000 !important;
                         }
                         svg, img { image-rendering: pixelated !important; image-rendering: crisp-edges !important; }
                     `}</style>

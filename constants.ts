@@ -98,7 +98,17 @@ export const INVENTORY: InventoryItem[] = [
         vendorId: "VEN002", quantity: 1, unit: "Nos", minStock: 0, lastUpdated: new Date().toISOString(),
         resolution: "2MP", lensType: "fixed 3.6 mm", storage: "DVR Supported",
         location: "Bhandup-001", assetStatus: AssetStatus.IN_USE, assignedToDept: "Branch", allocationDate: "2026-02-07"
-    }
+    },
+    { id: "AST-MOCK-001", brand: "Logitech", name: "M170 Wireless Mouse", category: "Peripherals", quantity: 50, unit: "Nos", minStock: 5, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" },
+    { id: "AST-MOCK-002", brand: "Dell", name: "KB216 Wired Keyboard", category: "Peripherals", quantity: 30, unit: "Nos", minStock: 5, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" },
+    { id: "AST-MOCK-003", brand: "HP", name: "LaserJet Pro M12w", category: "Printer", quantity: 5, unit: "Nos", minStock: 1, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" },
+    { id: "AST-MOCK-004", brand: "SanDisk", name: "Cruzer Blade 32GB", category: "Storage", quantity: 100, unit: "Nos", minStock: 10, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" },
+    { id: "AST-MOCK-005", brand: "TP-Link", name: "Archer C6", category: "Networking", quantity: 10, unit: "Nos", minStock: 2, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" },
+    { id: "AST-MOCK-006", brand: "APC", name: "Back-UPS 600VA", category: "Power", quantity: 15, unit: "Nos", minStock: 3, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" },
+    { id: "AST-MOCK-007", brand: "Seagate", name: "Expansion 1TB HDD", category: "Storage", quantity: 20, unit: "Nos", minStock: 2, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" },
+    { id: "AST-MOCK-008", brand: "Samsung", name: "870 EVO 500GB SSD", category: "Storage", quantity: 25, unit: "Nos", minStock: 5, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" },
+    { id: "AST-MOCK-009", brand: "Crucial", name: "8GB DDR4 3200MHz RAM", category: "Components", quantity: 40, unit: "Nos", minStock: 5, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" },
+    { id: "AST-MOCK-010", brand: "Intel", name: "Core i5-12400", category: "Components", quantity: 10, unit: "Nos", minStock: 1, lastUpdated: new Date().toISOString(), assetStatus: AssetStatus.SPARE, vendorId: "VEN001" }
 ];
 
 export const TICKETS: Ticket[] = [];
