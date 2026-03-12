@@ -13,8 +13,24 @@ class SocketService {
       console.log("Connected to real-time sync server");
     });
 
-    this.socket.on("disconnect", () => {
-      console.log("Disconnected from real-time sync server");
+    this.socket.on("connect_error", (error) => {
+      console.error("Socket connection error:", error.message);
+      console.log("Ensure the server is running and accessible from this network.");
+    });
+
+    this.socket.on("disconnect", (reason) => {
+      console.log("Disconnected from real-time sync server:", reason);
+    });
+
+    // Heartbeat to keep connection alive
+    const heartbeatInterval = setInterval(() => {
+      if (this.socket?.connected) {
+        this.socket.emit("heartbeat", { timestamp: Date.now() });
+      }
+    }, 30000);
+
+    this.socket.on("heartbeat_response", () => {
+      // Server is alive
     });
   }
 

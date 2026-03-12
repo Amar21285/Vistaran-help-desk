@@ -16,14 +16,35 @@ async function startServer() {
 
   const PORT = 3000;
 
+  // Store for real-time data synchronization
+  const dataStores = new Map();
+
   // Socket.io logic
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    socket.on("sync_data", (data) => {
-      // Broadcast the data to all other connected clients
-      // data: { collection: string, data: any, type?: string, userId?: string, timestamp?: number }
-      socket.broadcast.emit("data_update", data);
+    // Send initial data to the newly connected client
+    socket.emit("data_update", {
+      type: "INITIAL_SYNC",
+      data: Object.fromEntries(dataStores)
+    });
+
+    socket.on("sync_data", (data: any) => {
+      const { collection, data: items } = data;
+      if (collection && items !== undefined) {
+        dataStores.set(collection, items);
+        // Broadcast the update to all other connected clients
+        socket.broadcast.emit("data_update", {
+          type: "DATA_UPDATE",
+          collection,
+          data: items,
+          timestamp: Date.now()
+        });
+      }
+    });
+
+    socket.on("heartbeat", () => {
+      socket.emit("heartbeat_response", { timestamp: Date.now() });
     });
 
     socket.on("disconnect", () => {

@@ -108,6 +108,26 @@ const AppContent: React.FC = () => {
             const payload = data.data || (data as any).payload;
 
             switch (targetCollection) {
+                case 'INITIAL_SYNC':
+                    if (payload) {
+                        if (payload.tickets) setAllTickets(payload.tickets);
+                        if (payload.users) setAllUsers(payload.users);
+                        if (payload.inventory) setAllInventory(payload.inventory);
+                        if (payload.vendors) setAllVendors(payload.vendors);
+                        if (payload.challans) setAllChallans(payload.challans);
+                        if (payload.invoices) setAllInvoices(payload.invoices);
+                        if (payload.purchaseOrders) setAllPurchaseOrders(payload.purchaseOrders);
+                        if (payload.technicians) setAllTechnicians(payload.technicians);
+                        if (payload.departments) setAllDepartments(payload.departments);
+                        if (payload.notifications) setNotifications(payload.notifications);
+                        if (payload.files) setAllFiles(payload.files);
+                        if (payload.symptoms) setAllSymptoms(payload.symptoms);
+                        if (payload.templates) setAllTemplates(payload.templates);
+                        if (payload.attendance) setAllAttendance(payload.attendance);
+                        if (payload.reimbursements) setAllReimbursements(payload.reimbursements);
+                        if (payload['internet-vendors']) setAllInternetVendors(payload['internet-vendors']);
+                    }
+                    break;
                 case 'tickets': setAllTickets(payload); break;
                 case 'users': setAllUsers(payload); break;
                 case 'inventory': setAllInventory(payload); break;
