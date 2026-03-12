@@ -148,6 +148,7 @@ export interface Invoice {
     departmentName?: string;
     ticketId?: string;
     engineerName?: string;
+    consigneeDetails?: string;
     roundOff?: number;
 }
 
