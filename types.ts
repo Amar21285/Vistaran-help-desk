@@ -57,6 +57,9 @@ export enum TicketStatus {
     RESOLVED = 'Resolved',
 }
 
+export type Status = TicketStatus;
+export const Status = TicketStatus;
+
 export enum FileType {
     IMAGE = 'Image',
     PDF = 'PDF',
