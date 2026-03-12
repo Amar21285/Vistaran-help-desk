@@ -196,10 +196,26 @@ const SystemSettings: React.FC = () => {
     };
 
     const handleRestoreBackup = () => {
-        const applyRestore = (jsonString: string) => {
+        const applyRestore = async (jsonString: string) => {
             try {
                 const backupData = JSON.parse(jsonString);
                 if (typeof backupData !== 'object') throw new Error('Invalid backup file format.');
+                
+                // Trigger server-side restoration
+                const response = await fetch('/api/admin/restore-from-upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: jsonString
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Server restoration failed');
+                }
+
+                alert("Data Recovery Successful on Server! Synchronizing local state...");
+                
+                // Update local storage as well for immediate effect
                 Object.keys(localStorage).forEach(key => { if (key.startsWith('vistaran-helpdesk-')) localStorage.removeItem(key); });
                 for (const key in backupData) {
                     if (key.startsWith('vistaran-helpdesk-')) {
@@ -207,7 +223,8 @@ const SystemSettings: React.FC = () => {
                         localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
                     }
                 }
-                alert("Data Recovery Successful! System will now restart.");
+                
+                alert("Restoration Complete! System will now restart.");
                 window.location.reload();
             } catch (error: any) {
                 alert(`Recovery failed. Error: ${error.message}`);

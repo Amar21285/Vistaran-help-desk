@@ -117,6 +117,49 @@ const dataFiles = {
 };
 
 // Load existing data from files with master backup fallback
+function performSystemRestoration(masterData, sourceName) {
+  const storageKeyMap = {
+    'users': 'vistaran-helpdesk-users',
+    'tickets': 'vistaran-helpdesk-tickets',
+    'technicians': 'vistaran-helpdesk-technicians',
+    'files': 'vistaran-helpdesk-files',
+    'symptoms': 'vistaran-helpdesk-symptoms',
+    'templates': 'vistaran-helpdesk-templates',
+    'departments': 'vistaran-helpdesk-departments',
+    'inventory': 'vistaran-helpdesk-inventory',
+    'vendors': 'vistaran-helpdesk-vendors',
+    'challans': 'vistaran-helpdesk-challans',
+    'outward-invoices': 'vistaran-helpdesk-outward-invoices',
+    'purchase-orders': 'vistaran-helpdesk-purchase-orders',
+    'attendance': 'vistaran-helpdesk-attendance',
+    'reimbursements': 'vistaran-helpdesk-reimbursements',
+    'audit-logs': 'vistaran-helpdesk-audit-logs',
+    'auditlog': 'vistaran-helpdesk-auditlog',
+    'notifications': 'vistaran-helpdesk-notifications',
+    'notification-settings': 'vistaran-helpdesk-notification-settings',
+    'notificationSettings': 'vistaran-helpdesk-notificationSettings',
+    'theme': 'vistaran-helpdesk-theme',
+    'invoices': 'vistaran-helpdesk-invoices',
+    'branches': 'vistaran-helpdesk-branches'
+  };
+
+  const results = {};
+  for (const [collection, filePath] of Object.entries(dataFiles)) {
+    const masterKey = storageKeyMap[collection] || `vistaran-helpdesk-${collection}`;
+    if (masterData[masterKey]) {
+      const data = masterData[masterKey];
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+      dataStores.set(collection, data);
+      results[collection] = Array.isArray(data) ? data.length : 'Object';
+    }
+  }
+
+  // Broadcast to all clients
+  io.emit('initial_sync', Object.fromEntries(dataStores));
+
+  return { success: true, source: sourceName, results };
+}
+
 function restoreFromMasterBackup() {
   const masterPaths = [
     path.join(__dirname, 'Vistaran_Master_Sync_Update.json'),
@@ -138,43 +181,7 @@ function restoreFromMasterBackup() {
 
   if (!masterData) return { success: false, error: 'No master backup found' };
 
-  const storageKeyMap = {
-    'users': 'vistaran-helpdesk-users',
-    'tickets': 'vistaran-helpdesk-tickets',
-    'technicians': 'vistaran-helpdesk-technicians',
-    'files': 'vistaran-helpdesk-files',
-    'symptoms': 'vistaran-helpdesk-symptoms',
-    'templates': 'vistaran-helpdesk-templates',
-    'departments': 'vistaran-helpdesk-departments',
-    'inventory': 'vistaran-helpdesk-inventory',
-    'vendors': 'vistaran-helpdesk-vendors',
-    'challans': 'vistaran-helpdesk-challans',
-    'outward-invoices': 'vistaran-helpdesk-outward-invoices',
-    'purchase-orders': 'vistaran-helpdesk-purchase-orders',
-    'attendance': 'vistaran-helpdesk-attendance',
-    'reimbursements': 'vistaran-helpdesk-reimbursements',
-    'audit-logs': 'vistaran-helpdesk-audit-logs',
-    'notifications': 'vistaran-helpdesk-notifications',
-    'notification-settings': 'vistaran-helpdesk-notification-settings',
-    'theme': 'vistaran-helpdesk-theme',
-    'invoices': 'vistaran-helpdesk-invoices'
-  };
-
-  const results = {};
-  for (const [collection, filePath] of Object.entries(dataFiles)) {
-    const masterKey = storageKeyMap[collection] || `vistaran-helpdesk-${collection}`;
-    if (masterData[masterKey]) {
-      const data = masterData[masterKey];
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-      dataStores.set(collection, data);
-      results[collection] = Array.isArray(data) ? data.length : 'Object';
-    }
-  }
-
-  // Broadcast to all clients
-  io.emit('initial_sync', Object.fromEntries(dataStores));
-
-  return { success: true, path: path.basename(usedPath), results };
+  return performSystemRestoration(masterData, path.basename(usedPath));
 }
 
 // REST API for restoration
@@ -185,6 +192,16 @@ app.post('/api/admin/restore-from-master', (req, res) => {
   } else {
     res.status(500).json(result);
   }
+});
+
+app.post('/api/admin/restore-from-upload', (req, res) => {
+  const masterData = req.body;
+  if (!masterData || typeof masterData !== 'object') {
+    return res.status(400).json({ success: false, error: 'Invalid data format' });
+  }
+  
+  const result = performSystemRestoration(masterData, 'User Upload');
+  res.json(result);
 });
 
 function loadDataFromFile() {
