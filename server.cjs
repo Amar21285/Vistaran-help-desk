@@ -33,11 +33,8 @@ if (useSupabase) {
   console.log('Using local file storage');
 }
 
-// Check if running on Railway (production) or locally
-const isProduction = process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production';
-const dataDir = isProduction
-  ? path.join(__dirname, 'dist', 'data')
-  : path.join(__dirname, 'data');
+// Set data directory to root 'data' folder - where imported records are stored
+const dataDir = path.join(__dirname, 'data');
 
 // Create data directory if it doesn't exist
 if (!fs.existsSync(dataDir)) {
@@ -121,15 +118,23 @@ const dataFiles = {
 
 // Load existing data from files with master backup fallback
 function loadDataFromFile() {
-  const masterPath = path.join(__dirname, 'Vistaran_Master_Sync_Update.json');
+  // Check for various master sync files in priority order
+  const masterPaths = [
+    path.join(__dirname, 'Vistaran_Master_Sync_Update.json'),
+    path.join(__dirname, 'Vistaran_Master_Sync-1.json'),
+    path.join(__dirname, 'Vistaran_Master_Sync.json')
+  ];
+  
   let masterData = null;
-
-  if (fs.existsSync(masterPath)) {
-    try {
-      masterData = JSON.parse(fs.readFileSync(masterPath, 'utf8'));
-      console.log('Master backup found for fallback');
-    } catch (e) {
-      console.error('Failed to parse master backup:', e);
+  for (const p of masterPaths) {
+    if (fs.existsSync(p)) {
+      try {
+        masterData = JSON.parse(fs.readFileSync(p, 'utf8'));
+        console.log(`Master backup found at: ${path.basename(p)}`);
+        break;
+      } catch (e) {
+        console.error(`Failed to parse master backup at ${p}:`, e.message);
+      }
     }
   }
 
@@ -376,12 +381,18 @@ io.on('connection', (socket) => {
 // (Removed from here, moved to top)
 
 // Serve the index.html file for all routes (SPA support)
-app.get('*', (req, res, next) => {
+app.get('*', (req, res) => {
   // If it's an API request that wasn't handled, return 404 JSON, not HTML
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  
+  const indexPath = path.join(__dirname, 'dist', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send('Frontend build (dist) not found. Please run npm run build.');
+  }
 });
 
 // Use the port from environment variable or default to 3000
