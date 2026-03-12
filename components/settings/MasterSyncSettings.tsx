@@ -7,8 +7,19 @@ const MasterSyncSettings: React.FC = () => {
 
     const handleSync = async () => {
         setStatus('loading');
-        setMessage('Fetching master data from server...');
+        setMessage('Triggering server-side restoration...');
         try {
+            // First trigger server-side restoration
+            const restoreResponse = await fetch('/api/admin/restore-from-master', {
+                method: 'POST'
+            });
+
+            if (!restoreResponse.ok) {
+                const errorData = await restoreResponse.json();
+                throw new Error(errorData.error || 'Server restoration failed');
+            }
+
+            setMessage('Server restored. Fetching master data for local sync...');
             const response = await fetch('/Vistaran_Master_Sync.json');
             if (!response.ok) throw new Error('Failed to fetch master data file.');
             

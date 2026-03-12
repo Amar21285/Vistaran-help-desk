@@ -117,8 +117,77 @@ const dataFiles = {
 };
 
 // Load existing data from files with master backup fallback
+function restoreFromMasterBackup() {
+  const masterPaths = [
+    path.join(__dirname, 'Vistaran_Master_Sync_Update.json'),
+    path.join(__dirname, 'Vistaran_Master_Sync-1.json'),
+    path.join(__dirname, 'Vistaran_Master_Sync.json')
+  ];
+  
+  let masterData = null;
+  let usedPath = '';
+  for (const p of masterPaths) {
+    if (fs.existsSync(p)) {
+      try {
+        masterData = JSON.parse(fs.readFileSync(p, 'utf8'));
+        usedPath = p;
+        break;
+      } catch (e) {}
+    }
+  }
+
+  if (!masterData) return { success: false, error: 'No master backup found' };
+
+  const storageKeyMap = {
+    'users': 'vistaran-helpdesk-users',
+    'tickets': 'vistaran-helpdesk-tickets',
+    'technicians': 'vistaran-helpdesk-technicians',
+    'files': 'vistaran-helpdesk-files',
+    'symptoms': 'vistaran-helpdesk-symptoms',
+    'templates': 'vistaran-helpdesk-templates',
+    'departments': 'vistaran-helpdesk-departments',
+    'inventory': 'vistaran-helpdesk-inventory',
+    'vendors': 'vistaran-helpdesk-vendors',
+    'challans': 'vistaran-helpdesk-challans',
+    'outward-invoices': 'vistaran-helpdesk-outward-invoices',
+    'purchase-orders': 'vistaran-helpdesk-purchase-orders',
+    'attendance': 'vistaran-helpdesk-attendance',
+    'reimbursements': 'vistaran-helpdesk-reimbursements',
+    'audit-logs': 'vistaran-helpdesk-audit-logs',
+    'notifications': 'vistaran-helpdesk-notifications',
+    'notification-settings': 'vistaran-helpdesk-notification-settings',
+    'theme': 'vistaran-helpdesk-theme',
+    'invoices': 'vistaran-helpdesk-invoices'
+  };
+
+  const results = {};
+  for (const [collection, filePath] of Object.entries(dataFiles)) {
+    const masterKey = storageKeyMap[collection] || `vistaran-helpdesk-${collection}`;
+    if (masterData[masterKey]) {
+      const data = masterData[masterKey];
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+      dataStores.set(collection, data);
+      results[collection] = Array.isArray(data) ? data.length : 'Object';
+    }
+  }
+
+  // Broadcast to all clients
+  io.emit('initial_sync', Object.fromEntries(dataStores));
+
+  return { success: true, path: path.basename(usedPath), results };
+}
+
+// REST API for restoration
+app.post('/api/admin/restore-from-master', (req, res) => {
+  const result = restoreFromMasterBackup();
+  if (result.success) {
+    res.json(result);
+  } else {
+    res.status(500).json(result);
+  }
+});
+
 function loadDataFromFile() {
-  // Check for various master sync files in priority order
   const masterPaths = [
     path.join(__dirname, 'Vistaran_Master_Sync_Update.json'),
     path.join(__dirname, 'Vistaran_Master_Sync-1.json'),
@@ -130,7 +199,7 @@ function loadDataFromFile() {
     if (fs.existsSync(p)) {
       try {
         masterData = JSON.parse(fs.readFileSync(p, 'utf8'));
-        console.log(`Master backup found at: ${path.basename(p)}`);
+        console.log(`Initial Load: Master backup found at: ${path.basename(p)}`);
         break;
       } catch (e) {
         console.error(`Failed to parse master backup at ${p}:`, e.message);
@@ -150,7 +219,14 @@ function loadDataFromFile() {
     'vendors': 'vistaran-helpdesk-vendors',
     'challans': 'vistaran-helpdesk-challans',
     'outward-invoices': 'vistaran-helpdesk-outward-invoices',
-    'purchase-orders': 'vistaran-helpdesk-purchase-orders'
+    'purchase-orders': 'vistaran-helpdesk-purchase-orders',
+    'attendance': 'vistaran-helpdesk-attendance',
+    'reimbursements': 'vistaran-helpdesk-reimbursements',
+    'audit-logs': 'vistaran-helpdesk-audit-logs',
+    'notifications': 'vistaran-helpdesk-notifications',
+    'notification-settings': 'vistaran-helpdesk-notification-settings',
+    'theme': 'vistaran-helpdesk-theme',
+    'invoices': 'vistaran-helpdesk-invoices'
   };
 
   for (const [collection, filePath] of Object.entries(dataFiles)) {
@@ -162,18 +238,18 @@ function loadDataFromFile() {
       }
 
       // Fallback to master data if individual file is empty or missing
-      if ((!data || data.length === 0) && masterData) {
+      if ((!data || (Array.isArray(data) && data.length === 0)) && masterData) {
         const masterKey = storageKeyMap[collection] || `vistaran-helpdesk-${collection}`;
         if (masterData[masterKey]) {
           data = masterData[masterKey];
-          console.log(`Fallback: Loaded ${collection} from master backup (${data.length} records)`);
+          console.log(`Fallback: Loaded ${collection} from master backup (${Array.isArray(data) ? data.length : 'Object'} records)`);
           // Save back to individual file
           fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
         }
       }
 
       dataStores.set(collection, data || []);
-      console.log(`Loaded ${collection}: ${dataStores.get(collection).length} records`);
+      console.log(`Loaded ${collection}: ${Array.isArray(data) ? data.length : 'Object'} records`);
     } catch (err) {
       console.error(`Error loading ${collection} data:`, err);
       dataStores.set(collection, []);
