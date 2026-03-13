@@ -115,7 +115,8 @@ const io = new Server(server, {
   cors: {
     origin: "*", // In production, replace with your specific domain
     methods: ["GET", "POST"]
-  }
+  },
+  maxHttpBufferSize: 50e6 // 50MB limit for attendance photos and backups
 });
 
 // Store for real-time data synchronization
@@ -444,6 +445,7 @@ io.on('connection', (socket) => {
   socket.on('sync_data', (data) => {
     const { collection, data: items, type, userId, timestamp } = data;
     if (collection && items !== undefined) {
+      console.log(`[Sync] Received ${collection} update from user ${userId || socket.id} (${Array.isArray(items) ? items.length : 'object'} records)`);
       dataStores.set(collection, items);
 
       // Save to file and/or Supabase
@@ -462,6 +464,9 @@ io.on('connection', (socket) => {
         userId,
         timestamp: timestamp || Date.now()
       });
+      console.log(`[Sync] Broadcasted ${collection} to all other clients`);
+    } else {
+      console.warn(`[Sync] Received invalid sync_data for: ${collection}`);
     }
   });
 

@@ -102,10 +102,15 @@ const AppContent: React.FC = () => {
     useEffect(() => {
         socketService.connect();
         
-        socketService.onUpdate((data) => {
+        const handleUpdate = (data: any) => {
             console.log('Received real-time update:', data.collection || data.type);
             const targetCollection = data.collection || (data as any).type;
             const payload = data.data || (data as any).payload;
+
+            if (!payload && targetCollection !== 'INITIAL_SYNC') {
+                console.warn('Empty payload received for:', targetCollection);
+                return;
+            }
 
             switch (targetCollection) {
                 case 'INITIAL_SYNC':
@@ -145,9 +150,16 @@ const AppContent: React.FC = () => {
                 case 'reimbursements': setAllReimbursements(payload); break;
                 case 'internet-vendors': setAllInternetVendors(payload); break;
             }
-        });
+        };
 
-        return () => socketService.disconnect();
+        socketService.onUpdate(handleUpdate);
+
+        return () => {
+            // Clean up listener to prevent duplicates
+            if (socketService['socket']) {
+                socketService['socket'].off("data_update", handleUpdate);
+            }
+        };
     }, [
         setAllTickets, setAllUsers, setAllInventory, setAllVendors, 
         setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllTechnicians, 
