@@ -49,15 +49,26 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
     };
 
     return (
-        <aside className={`w-72 glass-morphism shadow-2xl flex-shrink-0 p-6 flex flex-col no-print fixed inset-y-0 left-0 z-50 transform transition-all duration-500 ease-out md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-            <div className="mb-10 px-2 flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/30">
-                    <i className="fas fa-v text-xl font-black"></i>
+        <aside 
+            onMouseLeave={() => setIsOpen(false)}
+            className={`w-72 glass-morphism shadow-2xl flex-shrink-0 p-6 flex flex-col no-print fixed inset-y-0 left-0 z-50 transform transition-all duration-500 ease-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+            <div className="mb-10 px-2 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/30">
+                        <i className="fas fa-v text-xl font-black"></i>
+                    </div>
+                    <div>
+                      <h1 className="text-xl font-black text-slate-800 dark:text-white tracking-tighter uppercase leading-none">Vistaran</h1>
+                      <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1">Help Desk</p>
+                    </div>
                 </div>
-                <div>
-                  <h1 className="text-xl font-black text-slate-800 dark:text-white tracking-tighter uppercase leading-none">Vistaran</h1>
-                  <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1">Help Desk</p>
-                </div>
+                <button 
+                    onClick={() => setIsOpen(false)}
+                    className="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                >
+                    <i className="fas fa-times text-lg"></i>
+                </button>
             </div>
 
             <nav className="flex-1 overflow-y-auto custom-scrollbar -mx-2 px-2">

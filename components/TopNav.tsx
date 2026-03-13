@@ -93,7 +93,7 @@ const TopNav: React.FC<TopNavProps> = ({
             )}
             <div className="px-4 py-2 flex justify-between items-center h-16">
                 <div className="flex items-center space-x-3">
-                    <button className="p-2 text-slate-500 rounded-md md:hidden hover:bg-slate-100 dark:hover:bg-slate-700 transition" onClick={onToggleSidebar}>
+                    <button className="p-2 text-slate-500 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition" onClick={onToggleSidebar}>
                         <i className="fas fa-bars text-lg"></i>
                     </button>
                     {logoUrl ? (

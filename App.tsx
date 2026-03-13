@@ -479,8 +479,15 @@ const AppContent: React.FC = () => {
         <div className="relative flex h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans transition-all duration-500 overflow-hidden" style={appBgStyle}>
             {wallpaper && <div className="absolute inset-0 bg-white/40 dark:bg-slate-900/60 backdrop-blur-[2px] pointer-events-none z-0" />}
             <div className="relative flex w-full h-full z-10">
+                {/* Hover trigger area */}
+                <div 
+                    onMouseEnter={() => setIsSidebarOpen(true)}
+                    className="fixed inset-y-0 left-0 w-2 z-40" 
+                />
+                
                 <Sidebar currentView={currentView} setCurrentView={setCurrentView} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-                {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden" />}
+
+                {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black bg-opacity-30 z-40 backdrop-blur-[1px]" />}
                 <div className="flex-1 flex flex-col overflow-hidden relative">
                     <TopNav 
                         user={user} 
@@ -491,7 +498,7 @@ const AppContent: React.FC = () => {
                         isImpersonating={!!(realUser && user.id !== realUser.id)}
                         stopImpersonation={stopImpersonation}
                         onViewProfile={() => setCurrentView('my-profile')}
-                        onToggleSidebar={() => setIsSidebarOpen(true)}
+                        onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
                         notifications={notifications}
                         setNotifications={setNotifications}
                     />
