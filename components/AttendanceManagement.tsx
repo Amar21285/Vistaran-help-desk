@@ -427,19 +427,21 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                     if (day.record.status === AttendanceStatus.PRESENT) acc.present++;
                     else if (day.record.status === AttendanceStatus.LATE) acc.late++;
                     else if (day.record.status === AttendanceStatus.ABSENT) acc.absent++;
+                    else if (day.record.status === AttendanceStatus.HOLIDAY) acc.holiday++;
                 } else if (day.isPast) {
                     acc.absent++;
                 }
                 return acc;
-            }, { present: 0, late: 0, absent: 0 });
+            }, { present: 0, late: 0, absent: 0, holiday: 0 });
 
             pdf.setFillColor(241, 245, 249);
             pdf.rect(margin, 45, pageWidth - (margin * 2), 15, 'F');
             pdf.setTextColor(30, 41, 59);
             pdf.setFont('helvetica', 'bold');
-            pdf.text(`PRESENT: ${summary.present}`, margin + 10, 54);
-            pdf.text(`LATE: ${summary.late}`, margin + 60, 54);
-            pdf.text(`ABSENT: ${summary.absent}`, margin + 110, 54);
+            pdf.text(`PRESENT: ${summary.present}`, margin + 5, 54);
+            pdf.text(`LATE: ${summary.late}`, margin + 45, 54);
+            pdf.text(`ABSENT: ${summary.absent}`, margin + 85, 54);
+            pdf.text(`HOLIDAY: ${summary.holiday}`, margin + 125, 54);
 
             // Table Headers
             let currentY = 70;
@@ -801,6 +803,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                 <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
                                                     r.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' :
                                                     r.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' :
+                                                    r.status === AttendanceStatus.HOLIDAY ? 'bg-indigo-100 text-indigo-600' :
                                                     'bg-rose-100 text-rose-600'
                                                 }`}>{r.status}</span>
                                             </td>
@@ -864,27 +867,32 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                             if (day.record.status === AttendanceStatus.PRESENT) acc.present++;
                                             else if (day.record.status === AttendanceStatus.LATE) acc.late++;
                                             else if (day.record.status === AttendanceStatus.ABSENT) acc.absent++;
+                                            else if (day.record.status === AttendanceStatus.HOLIDAY) acc.holiday++;
                                         } else if (day.isPast) {
                                             acc.absent++;
                                         }
                                         return acc;
-                                    }, { present: 0, late: 0, absent: 0 });
+                                    }, { present: 0, late: 0, absent: 0, holiday: 0 });
 
                                     return (
-                                        <>
-                                            <div className="bg-white dark:bg-slate-800 p-8 rounded-[35px] shadow-xl border border-emerald-500/10 text-center">
+                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                            <div className="bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border border-emerald-500/10 text-center">
                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Present Days</p>
-                                                <p className="text-4xl font-black text-emerald-500">{summary.present}</p>
+                                                <p className="text-3xl font-black text-emerald-500">{summary.present}</p>
                                             </div>
-                                            <div className="bg-white dark:bg-slate-800 p-8 rounded-[35px] shadow-xl border-amber-500/10 text-center">
+                                            <div className="bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border-amber-500/10 text-center">
                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Late Arrivals</p>
-                                                <p className="text-4xl font-black text-amber-500">{summary.late}</p>
+                                                <p className="text-3xl font-black text-amber-500">{summary.late}</p>
                                             </div>
-                                            <div className="bg-white dark:bg-slate-800 p-8 rounded-[35px] shadow-xl border-rose-500/10 text-center">
+                                            <div className="bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border-rose-500/10 text-center">
                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Absent Days</p>
-                                                <p className="text-4xl font-black text-rose-500">{summary.absent}</p>
+                                                <p className="text-3xl font-black text-rose-500">{summary.absent}</p>
                                             </div>
-                                        </>
+                                            <div className="bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border-indigo-500/10 text-center">
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Holidays</p>
+                                                <p className="text-3xl font-black text-indigo-500">{summary.holiday}</p>
+                                            </div>
+                                        </div>
                                     );
                                 })()}
                             </div>
@@ -915,6 +923,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                             <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
                                                                 day.record.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' :
                                                                 day.record.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' :
+                                                                day.record.status === AttendanceStatus.HOLIDAY ? 'bg-indigo-100 text-indigo-600' :
                                                                 'bg-rose-100 text-rose-600'
                                                             }`}>{day.record.status}</span>
                                                         ) : day.isPast ? (

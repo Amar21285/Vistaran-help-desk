@@ -349,6 +349,7 @@ export enum AttendanceStatus {
     LATE = 'Late',
     ABSENT = 'Absent',
     ON_LEAVE = 'On Leave',
+    HOLIDAY = 'Holiday',
 }
 
 export interface AttendanceRecord {
