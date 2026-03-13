@@ -206,21 +206,39 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         const updatedCheckIn = new Date(`${newDate}T${newInTime}`).toISOString();
         const updatedCheckOut = newOutTime ? new Date(`${newDate}T${newOutTime}`).toISOString() : undefined;
 
-        setAttendance(prev => prev.map(r => 
-            r.id === editingRecord.id 
-                ? { 
-                    ...r, 
-                    date: newDate, 
-                    checkIn: updatedCheckIn, 
+        setAttendance(prev => {
+            const isNew = !prev.find(r => r.id === editingRecord.id);
+            
+            if (isNew) {
+                const newRecord: AttendanceRecord = {
+                    ...editingRecord,
+                    id: `ATT-${Date.now()}`,
+                    date: newDate,
+                    checkIn: updatedCheckIn,
                     checkOut: updatedCheckOut,
-                    status: newStatus, 
-                    lastUpdated: new Date().toISOString(), 
-                    notes: 'Manual Modification' 
-                } 
-                : r
-        ));
+                    status: newStatus,
+                    lastUpdated: new Date().toISOString(),
+                    notes: 'Manual Admin Entry'
+                };
+                return [newRecord, ...prev];
+            }
 
-        logUserAction(realUser || user, `Database Modification: Updated record ${editingRecord.id} for ${editingRecord.userName}.`);
+            return prev.map(r => 
+                r.id === editingRecord.id 
+                    ? { 
+                        ...r, 
+                        date: newDate, 
+                        checkIn: updatedCheckIn, 
+                        checkOut: updatedCheckOut,
+                        status: newStatus, 
+                        lastUpdated: new Date().toISOString(), 
+                        notes: r.notes === 'Admin Override' || r.notes === 'Manual Admin Entry' ? r.notes : 'Manual Modification'
+                    } 
+                    : r
+            );
+        });
+
+        logUserAction(realUser || user, `Database Modification: ${!attendance.find(r => r.id === editingRecord.id) ? 'Created' : 'Updated'} record for ${editingRecord.userName} on ${newDate}.`);
         setEditingRecord(null);
     };
 
@@ -881,6 +899,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                 <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Punch In</th>
                                                 <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Punch Out</th>
                                                 <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Notes</th>
+                                                {isAdmin && <th className="px-8 py-6 text-right text-[10px] font-black uppercase text-slate-400 tracking-widest">Actions</th>}
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -919,6 +938,40 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                             {day.record?.notes || '--'}
                                                         </p>
                                                     </td>
+                                                    {isAdmin && (
+                                                        <td className="px-8 py-4 text-right">
+                                                            {day.record ? (
+                                                                <button 
+                                                                    onClick={() => setEditingRecord(day.record)} 
+                                                                    className="p-2 text-primary hover:bg-primary/10 rounded-lg transition"
+                                                                    title="Edit Record"
+                                                                >
+                                                                    <i className="fas fa-edit"></i>
+                                                                </button>
+                                                            ) : (
+                                                                <button 
+                                                                    onClick={() => {
+                                                                        const employee = staffMembers.find(s => s.id === selectedEmployeeId);
+                                                                        if (employee) {
+                                                                            setEditingRecord({
+                                                                                id: `NEW-${Date.now()}`,
+                                                                                userId: employee.id,
+                                                                                userName: employee.name,
+                                                                                date: day.date,
+                                                                                checkIn: new Date(`${day.date}T09:00:00`).toISOString(),
+                                                                                status: AttendanceStatus.PRESENT,
+                                                                                notes: 'Manual Admin Entry'
+                                                                            });
+                                                                        }
+                                                                    }} 
+                                                                    className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition"
+                                                                    title="Add Manual Entry"
+                                                                >
+                                                                    <i className="fas fa-plus-circle"></i>
+                                                                </button>
+                                                            )}
+                                                        </td>
+                                                    )}
                                                 </tr>
                                             ))}
                                         </tbody>
