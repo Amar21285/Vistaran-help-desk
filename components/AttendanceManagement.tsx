@@ -606,25 +606,27 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             pdf.setFillColor(15, 23, 42);
             pdf.rect(0, 0, pageWidth, 25, 'F');
             pdf.setTextColor(255, 255, 255);
-            pdf.setFontSize(14);
+            pdf.setFontSize(16);
             pdf.setFont('helvetica', 'bold');
             pdf.text("MONTHLY ATTENDANCE MATRIX", margin, 12);
-            pdf.setFontSize(9);
+            pdf.setFontSize(10);
             pdf.setFont('helvetica', 'normal');
             pdf.text(`PERIOD: ${monthName} ${selectedYear}  |  GENERATED: ${new Date().toLocaleString()}`, margin, 18);
 
             let currentY = 35;
             const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-            const colWidth = (pageWidth - margin - 50 - 25) / daysInMonth; 
+            const colWidth = (pageWidth - margin - 10 - 45 - 25) / daysInMonth; 
 
             // Table Headers
             pdf.setFillColor(226, 232, 240);
             pdf.rect(margin, currentY, pageWidth - (margin * 2), 7, 'F');
-            pdf.setTextColor(30, 41, 59);
-            pdf.setFontSize(7);
+            pdf.setTextColor(0, 0, 0); // Pure black for better print
+            pdf.setFontSize(9); // Larger font
             pdf.setFont('helvetica', 'bold');
             
             let currentX = margin + 2;
+            pdf.text("S/N", currentX, currentY + 5);
+            currentX += 10;
             pdf.text("PERSONNEL", currentX, currentY + 5);
             currentX += 45;
             
@@ -639,7 +641,6 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             currentY += 7;
 
             // Rows
-            pdf.setFont('helvetica', 'normal');
             matrixData.forEach((row, idx) => {
                 if (idx % 2 === 0) {
                     pdf.setFillColor(248, 250, 252);
@@ -647,6 +648,14 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                 }
                 
                 let cx = margin + 2;
+                
+                // Darker, bolder font for personnel names
+                pdf.setTextColor(0, 0, 0);
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(9);
+                pdf.text(String(idx + 1), cx, currentY + 4);
+                cx += 10;
+
                 let name = row.staff.name.toUpperCase();
                 if (name.length > 20) name = name.substring(0, 18) + '..';
                 pdf.text(name, cx, currentY + 4);
@@ -658,24 +667,25 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                       day.status === AttendanceStatus.HOLIDAY ? 'H' :
                                       day.status === 'PENDING' ? '-' : 'A';
                                       
-                    if (statusStr === 'P') pdf.setTextColor(16, 185, 129); // emerald
-                    else if (statusStr === 'L') pdf.setTextColor(245, 158, 11); // amber
-                    else if (statusStr === 'A') pdf.setTextColor(244, 63, 94); // rose
-                    else if (statusStr === 'H') pdf.setTextColor(99, 102, 241); // indigo
-                    else pdf.setTextColor(148, 163, 184); // slate
+                    // Darker print-optimized colors
+                    if (statusStr === 'P') pdf.setTextColor(0, 128, 0); // Dark Green
+                    else if (statusStr === 'L') pdf.setTextColor(200, 100, 0); // Dark Orange
+                    else if (statusStr === 'A') pdf.setTextColor(200, 0, 0); // Dark Red
+                    else if (statusStr === 'H') pdf.setTextColor(0, 0, 200); // Dark Blue
+                    else pdf.setTextColor(100, 100, 100); // Dark Gray
                     
                     pdf.text(statusStr, cx, currentY + 4);
                     cx += colWidth;
                 });
                 
-                pdf.setTextColor(16, 185, 129);
+                pdf.setTextColor(0, 128, 0);
                 pdf.text(String(row.summary.present), cx + 2, currentY + 4);
-                pdf.setTextColor(245, 158, 11);
+                pdf.setTextColor(200, 100, 0);
                 pdf.text(String(row.summary.late), cx + 10, currentY + 4);
-                pdf.setTextColor(244, 63, 94);
+                pdf.setTextColor(200, 0, 0);
                 pdf.text(String(row.summary.absent), cx + 18, currentY + 4);
                 
-                pdf.setTextColor(30, 41, 59); // reset
+                pdf.setTextColor(0, 0, 0); // reset
                 currentY += 6;
                 
                 if (currentY > 190) {
@@ -685,7 +695,10 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                     pdf.setFillColor(226, 232, 240);
                     pdf.rect(margin, currentY, pageWidth - (margin * 2), 7, 'F');
                     pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(9);
                     let currX = margin + 2;
+                    pdf.text("S/N", currX, currentY + 5);
+                    currX += 10;
                     pdf.text("PERSONNEL", currX, currentY + 5);
                     currX += 45;
                     for (let i = 1; i <= daysInMonth; i++) {
@@ -696,7 +709,6 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                     pdf.text("L", currX + 10, currentY + 5);
                     pdf.text("A", currX + 18, currentY + 5);
                     currentY += 7;
-                    pdf.setFont('helvetica', 'normal');
                 }
             });
 
@@ -711,14 +723,14 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         const monthName = new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' });
         const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
         
-        const headers = ["Personnel"];
+        const headers = ["S/N", "Personnel"];
         for (let i = 1; i <= daysInMonth; i++) {
             headers.push(String(i));
         }
         headers.push("Present", "Late", "Absent");
         
-        const rows = matrixData.map(row => {
-            const rowData = [row.staff.name];
+        const rows = matrixData.map((row, idx) => {
+            const rowData = [String(idx + 1), row.staff.name];
             row.row.forEach(day => {
                 const statusStr = day.status === AttendanceStatus.PRESENT ? 'P' :
                                   day.status === AttendanceStatus.LATE ? 'L' :
@@ -1193,10 +1205,11 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                                            {matrixData.map((row) => (
+                                            {matrixData.map((row, idx) => (
                                                 <tr key={row.staff.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
                                                     <td className="sticky left-0 z-10 bg-white dark:bg-slate-800 group-hover:bg-slate-50 dark:group-hover:bg-slate-900/80 px-6 py-3 border-r dark:border-slate-700 transition-colors">
-                                                        <div className="flex items-center gap-3 w-48">
+                                                        <div className="flex items-center gap-3 w-56">
+                                                            <span className="font-black text-slate-400 text-[10px] w-4 text-right shrink-0">{idx + 1}.</span>
                                                             <div className="w-8 h-8 rounded-lg overflow-hidden border dark:border-slate-700 shadow-sm shrink-0">
                                                                 <img src={row.staff.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(row.staff.name)}`} className="w-full h-full object-cover" alt="" />
                                                             </div>
