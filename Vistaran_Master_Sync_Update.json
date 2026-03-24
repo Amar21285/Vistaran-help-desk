@@ -1,16 +1,4 @@
 {
-  "vistaran-helpdesk-notifications": [],
-  "vistaran-helpdesk-notificationSettings": {
-    "adminOnNewTicket": true,
-    "userOnNewTicket": false,
-    "userOnTicketResolved": true,
-    "adminOnTicketResolved": true,
-    "techOnTicketAssigned": true,
-    "userOnTicketStatusChanged": true,
-    "enableSMSWhatsApp": true,
-    "enableInAppNotifications": true
-  },
-  "vistaran-helpdesk-theme": [],
   "vistaran-helpdesk-users": [
     {
       "id": "USR001",
@@ -285,16 +273,6 @@
       "name": "Sagar",
       "email": "sagar@vistaran.in",
       "password": "10029",
-      "role": "Staff",
-      "department": "Staff",
-      "status": "Active",
-      "joinedDate": "2026-02-14T14:26:22.198Z"
-    },
-    {
-      "id": "USR030",
-      "name": "Amarjeet",
-      "email": "amarjeet.s@vistaran.in",
-      "password": "10030",
       "role": "Staff",
       "department": "Staff",
       "status": "Active",
@@ -26756,5 +26734,17 @@
       "ip": "127.0.0.1"
     }
   ],
+  "vistaran-helpdesk-notifications": [],
+  "vistaran-helpdesk-notification-settings": {
+    "adminOnNewTicket": true,
+    "userOnNewTicket": true,
+    "userOnTicketResolved": true,
+    "adminOnTicketResolved": true,
+    "techOnTicketAssigned": true,
+    "userOnTicketStatusChanged": true,
+    "enableSMSWhatsApp": true,
+    "enableInAppNotifications": true
+  },
+  "vistaran-helpdesk-theme": [],
   "vistaran-helpdesk-invoices": []
 }

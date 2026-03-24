@@ -278,16 +278,6 @@
     "joinedDate": "2026-02-14T14:26:22.198Z"
   },
   {
-    "id": "USR030",
-    "name": "Amarjeet",
-    "email": "amarjeet.s@vistaran.in",
-    "password": "10030",
-    "role": "Staff",
-    "department": "Staff",
-    "status": "Active",
-    "joinedDate": "2026-02-14T14:26:22.198Z"
-  },
-  {
     "id": "USR031",
     "name": "Aditya",
     "email": "aditya@vistaran.in",

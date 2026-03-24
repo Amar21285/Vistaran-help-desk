@@ -91,6 +91,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('');
+    const [matrixSortOrder, setMatrixSortOrder] = useState<'asc' | 'desc'>('asc');
     
     const [isPunching, setIsPunching] = useState(false);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
@@ -559,7 +560,14 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
         const now = new Date();
         
-        return staffMembers.map(staff => {
+        const sortedStaff = [...staffMembers].sort((a, b) => {
+            const nameA = a.name.toLowerCase();
+            const nameB = b.name.toLowerCase();
+            if (matrixSortOrder === 'asc') return nameA.localeCompare(nameB);
+            return nameB.localeCompare(nameA);
+        });
+        
+        return sortedStaff.map(staff => {
             const row = days.map(d => {
                 const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 const record = attendance.find(r => r.userId === staff.id && r.date === dateStr);
@@ -590,7 +598,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                 summary
             };
         });
-    }, [attendance, staffMembers, selectedMonth, selectedYear, selectedEmployeeId]);
+    }, [attendance, staffMembers, selectedMonth, selectedYear, selectedEmployeeId, matrixSortOrder]);
 
     const handleExportMatrixPDF = async () => {
         if (!matrixData.length) return;
@@ -1193,7 +1201,18 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                     <table className="min-w-max w-full divide-y divide-slate-100 dark:divide-slate-700">
                                         <thead className="bg-slate-50/50 dark:bg-slate-900/50">
                                             <tr>
-                                                <th className="sticky left-0 z-10 bg-slate-50 dark:bg-slate-900 px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest border-r dark:border-slate-700">Personnel</th>
+                                                <th className="sticky left-0 z-10 bg-slate-50 dark:bg-slate-900 px-6 py-4 text-left border-r dark:border-slate-700">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Personnel</span>
+                                                        <button 
+                                                            onClick={() => setMatrixSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')} 
+                                                            className="text-slate-400 hover:text-primary transition-colors p-1 bg-slate-100 dark:bg-slate-800 rounded shadow-sm"
+                                                            title={`Sort ${matrixSortOrder === 'asc' ? 'Z to A' : 'A to Z'}`}
+                                                        >
+                                                            <i className={`fas ${matrixSortOrder === 'asc' ? 'fa-sort-alpha-down' : 'fa-sort-alpha-up'}`}></i>
+                                                        </button>
+                                                    </div>
+                                                </th>
                                                 {Array.from({ length: new Date(selectedYear, selectedMonth + 1, 0).getDate() }).map((_, i) => (
                                                     <th key={i} className="px-3 py-4 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest min-w-[40px]">
                                                         {i + 1}
