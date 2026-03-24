@@ -592,6 +592,152 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         });
     }, [attendance, staffMembers, selectedMonth, selectedYear, selectedEmployeeId]);
 
+    const handleExportMatrixPDF = async () => {
+        if (!matrixData.length) return;
+        setIsGeneratingPDF(true);
+        const monthName = new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' });
+        
+        try {
+            const pdf = new jsPDF('l', 'mm', 'a4'); // LANDSCAPE for Matrix
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const margin = 10;
+            
+            // Header
+            pdf.setFillColor(15, 23, 42);
+            pdf.rect(0, 0, pageWidth, 25, 'F');
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(14);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text("MONTHLY ATTENDANCE MATRIX", margin, 12);
+            pdf.setFontSize(9);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(`PERIOD: ${monthName} ${selectedYear}  |  GENERATED: ${new Date().toLocaleString()}`, margin, 18);
+
+            let currentY = 35;
+            const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+            const colWidth = (pageWidth - margin - 50 - 25) / daysInMonth; 
+
+            // Table Headers
+            pdf.setFillColor(226, 232, 240);
+            pdf.rect(margin, currentY, pageWidth - (margin * 2), 7, 'F');
+            pdf.setTextColor(30, 41, 59);
+            pdf.setFontSize(7);
+            pdf.setFont('helvetica', 'bold');
+            
+            let currentX = margin + 2;
+            pdf.text("PERSONNEL", currentX, currentY + 5);
+            currentX += 45;
+            
+            for (let i = 1; i <= daysInMonth; i++) {
+                pdf.text(String(i), currentX, currentY + 5);
+                currentX += colWidth;
+            }
+            pdf.text("P", currentX + 2, currentY + 5);
+            pdf.text("L", currentX + 10, currentY + 5);
+            pdf.text("A", currentX + 18, currentY + 5);
+            
+            currentY += 7;
+
+            // Rows
+            pdf.setFont('helvetica', 'normal');
+            matrixData.forEach((row, idx) => {
+                if (idx % 2 === 0) {
+                    pdf.setFillColor(248, 250, 252);
+                    pdf.rect(margin, currentY, pageWidth - (margin * 2), 6, 'F');
+                }
+                
+                let cx = margin + 2;
+                let name = row.staff.name.toUpperCase();
+                if (name.length > 20) name = name.substring(0, 18) + '..';
+                pdf.text(name, cx, currentY + 4);
+                cx += 45;
+                
+                row.row.forEach(day => {
+                    const statusStr = day.status === AttendanceStatus.PRESENT ? 'P' :
+                                      day.status === AttendanceStatus.LATE ? 'L' :
+                                      day.status === AttendanceStatus.HOLIDAY ? 'H' :
+                                      day.status === 'PENDING' ? '-' : 'A';
+                                      
+                    if (statusStr === 'P') pdf.setTextColor(16, 185, 129); // emerald
+                    else if (statusStr === 'L') pdf.setTextColor(245, 158, 11); // amber
+                    else if (statusStr === 'A') pdf.setTextColor(244, 63, 94); // rose
+                    else if (statusStr === 'H') pdf.setTextColor(99, 102, 241); // indigo
+                    else pdf.setTextColor(148, 163, 184); // slate
+                    
+                    pdf.text(statusStr, cx, currentY + 4);
+                    cx += colWidth;
+                });
+                
+                pdf.setTextColor(16, 185, 129);
+                pdf.text(String(row.summary.present), cx + 2, currentY + 4);
+                pdf.setTextColor(245, 158, 11);
+                pdf.text(String(row.summary.late), cx + 10, currentY + 4);
+                pdf.setTextColor(244, 63, 94);
+                pdf.text(String(row.summary.absent), cx + 18, currentY + 4);
+                
+                pdf.setTextColor(30, 41, 59); // reset
+                currentY += 6;
+                
+                if (currentY > 190) {
+                    pdf.addPage();
+                    currentY = 20;
+                    
+                    pdf.setFillColor(226, 232, 240);
+                    pdf.rect(margin, currentY, pageWidth - (margin * 2), 7, 'F');
+                    pdf.setFont('helvetica', 'bold');
+                    let currX = margin + 2;
+                    pdf.text("PERSONNEL", currX, currentY + 5);
+                    currX += 45;
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        pdf.text(String(i), currX, currentY + 5);
+                        currX += colWidth;
+                    }
+                    pdf.text("P", currX + 2, currentY + 5);
+                    pdf.text("L", currX + 10, currentY + 5);
+                    pdf.text("A", currX + 18, currentY + 5);
+                    currentY += 7;
+                    pdf.setFont('helvetica', 'normal');
+                }
+            });
+
+            pdf.save(`Monthly_Attendance_Matrix_${monthName}_${selectedYear}.pdf`);
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    };
+
+    const handleExportMatrixCSV = () => {
+        if (!matrixData.length) return;
+        const monthName = new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' });
+        const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+        
+        const headers = ["Personnel"];
+        for (let i = 1; i <= daysInMonth; i++) {
+            headers.push(String(i));
+        }
+        headers.push("Present", "Late", "Absent");
+        
+        const rows = matrixData.map(row => {
+            const rowData = [row.staff.name];
+            row.row.forEach(day => {
+                const statusStr = day.status === AttendanceStatus.PRESENT ? 'P' :
+                                  day.status === AttendanceStatus.LATE ? 'L' :
+                                  day.status === AttendanceStatus.HOLIDAY ? 'H' :
+                                  day.status === 'PENDING' ? '-' : 'A';
+                rowData.push(statusStr);
+            });
+            rowData.push(String(row.summary.present), String(row.summary.late), String(row.summary.absent));
+            return rowData;
+        });
+
+        const csvContent = [headers.join(","), ...rows.map(row => row.map(cell => `"${cell}"`).join(","))].join("\n");
+        const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Monthly_Attendance_Matrix_${monthName}_${selectedYear}.csv`;
+        link.click();
+    };
+
     return (
         <div className="space-y-10 max-w-6xl mx-auto pb-24">
             {showCamera && <CameraCapture isOut={isOutMode} onCapture={photo => { setCapturedPhoto(photo); setShowCamera(false); fetchLocation(); }} onCancel={() => setShowCamera(false)} />}
@@ -888,10 +1034,10 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                 </select>
                             </div>
                             <div className="flex gap-3">
-                                <button onClick={handleExportMonthlyRegisterCSV} disabled={!selectedEmployeeId} className="bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50 h-[58px] flex-1">
+                                <button onClick={() => !selectedEmployeeId ? handleExportMatrixCSV() : handleExportMonthlyRegisterCSV()} disabled={!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0} className="bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50 h-[58px] flex-1">
                                     <i className="fas fa-file-excel"></i> CSV
                                 </button>
-                                <button onClick={handleExportMonthlyRegisterPDF} disabled={!selectedEmployeeId || isGeneratingPDF} className="bg-rose-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50 h-[58px] flex-1">
+                                <button onClick={() => !selectedEmployeeId ? handleExportMatrixPDF() : handleExportMonthlyRegisterPDF()} disabled={(!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0) || isGeneratingPDF} className="bg-rose-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50 h-[58px] flex-1">
                                     <i className="fas fa-file-pdf"></i> PDF
                                 </button>
                             </div>
