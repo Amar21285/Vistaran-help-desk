@@ -397,3 +397,53 @@ export interface InternetVendor {
     billingCycle: string;
     customerID?: string;
 }
+
+export interface SalaryStructure {
+    userId: string;
+    basic: number;
+    hra: number;
+    conveyance: number;
+    medical?: number;
+    specialAllowance?: number;
+    pf?: number;
+    esi?: number;
+    professionalTax?: number;
+    tds?: number;
+    otherDeductions?: number;
+    bankName?: string;
+    accountNumber?: string;
+    ifscCode?: string;
+    pan?: string;
+    uan?: string;
+}
+
+export interface MonthlySalarySlip {
+    id: string;
+    userId: string;
+    month: number; // 0-11
+    year: number;
+    totalDays: number;
+    presentDays: number;
+    absentDays: number;
+    lateDays: number;
+    holidayDays: number;
+    earnings: {
+        basic: number;
+        hra: number;
+        conveyance: number;
+        medical: number;
+        special: number;
+        total: number;
+    };
+    deductions: {
+        pf: number;
+        esi: number;
+        pt: number;
+        tds: number;
+        lop: number;
+        other: number;
+        total: number;
+    };
+    netPayable: number;
+    generatedDate: string;
+}

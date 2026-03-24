@@ -1,9 +1,12 @@
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { AttendanceRecord, AttendanceStatus, Role, User } from '../types';
+import { AttendanceRecord, AttendanceStatus, Role, User, SalaryStructure, MonthlySalarySlip } from '../types';
 import { useAuth } from '../hooks/useAuth';
+import { useSettings } from '../hooks/useSettings';
+import { usePayroll } from '../hooks/usePayroll';
 import { logUserAction } from '../utils/auditLogger';
 import { jsPDF } from 'jspdf';
+import SalaryStructureModal from './SalaryStructureModal';
 
 interface AttendanceManagementProps {
     users?: User[];
@@ -100,6 +103,10 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
     const [capturedLocation, setCapturedLocation] = useState<{lat: number, lng: number} | null>(null);
     const [locationStatus, setLocationStatus] = useState<'idle' | 'fetching' | 'success' | 'failed'>('idle');
     const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null);
+    const [salaryUser, setSalaryUser] = useState<User | null>(null);
+    
+    const { companyDetails } = useSettings();
+    const { getSalaryStructure, updateSalaryStructure } = usePayroll();
     
     const isAdmin = realUser?.role === Role.ADMIN || user?.role === Role.ADMIN;
     const todayStr = new Date().toISOString().split('T')[0];
@@ -393,6 +400,203 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             }
 
             pdf.save(`Vistaran_Staff_Visual_Ledger_${startDate}_${endDate}.pdf`);
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    };
+
+    const handleExportSalarySlipPDF = async () => {
+        if (!selectedEmployeeId || !registerData.length) return;
+        setIsGeneratingPDF(true);
+        const employee = staffMembers.find(s => s.id === selectedEmployeeId);
+        const structure = getSalaryStructure(selectedEmployeeId);
+        
+        if (!structure) {
+            alert("Please configure Salary Structure for this employee first.");
+            setIsGeneratingPDF(false);
+            setSalaryUser(employee || null);
+            return;
+        }
+
+        const monthName = new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' });
+        const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+        
+        // Calculate Attendance Summary
+        const summary = registerData.reduce((acc, day) => {
+            if (day.record) {
+                if (day.record.status === AttendanceStatus.PRESENT) acc.present++;
+                else if (day.record.status === AttendanceStatus.LATE) acc.present++; // Late is treated as present for salary
+                else if (day.record.status === AttendanceStatus.ABSENT) acc.absent++;
+                else if (day.record.status === AttendanceStatus.HOLIDAY) acc.holiday++;
+            } else if (day.isPast) {
+                acc.absent++;
+            }
+            return acc;
+        }, { present: 0, absent: 0, holiday: 0 });
+
+        const paidDays = summary.present + summary.holiday;
+        const lopDays = summary.absent;
+        
+        // Calculations
+        const totalEarnings = (structure.basic || 0) + (structure.hra || 0) + (structure.conveyance || 0) + (structure.medical || 0) + (structure.specialAllowance || 0);
+        const perDaySalary = totalEarnings / daysInMonth;
+        const lopAmount = perDaySalary * lopDays;
+        const totalDeductions = (structure.pf || 0) + (structure.esi || 0) + (structure.professionalTax || 0) + (structure.tds || 0) + (structure.otherDeductions || 0) + lopAmount;
+        const netPayable = totalEarnings - totalDeductions;
+
+        try {
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const margin = 15;
+            let cy = 20;
+
+            // Company Header
+            pdf.setFontSize(20);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(15, 23, 42);
+            pdf.text(companyDetails.name.toUpperCase(), margin, cy);
+            cy += 8;
+            
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'normal');
+            pdf.setTextColor(100, 116, 139);
+            pdf.text(companyDetails.address, margin, cy, { maxWidth: 100 });
+            cy += 12;
+
+            pdf.setDrawColor(226, 232, 240);
+            pdf.setLineWidth(0.5);
+            pdf.line(margin, cy, pageWidth - margin, cy);
+            cy += 10;
+
+            // Payslip Title
+            pdf.setFontSize(14);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(15, 23, 42);
+            pdf.text(`PAYSLIP FOR THE MONTH OF ${monthName.toUpperCase()} ${selectedYear}`, pageWidth / 2, cy, { align: 'center' });
+            cy += 12;
+
+            // Employee Details Grid
+            pdf.setFillColor(248, 250, 252);
+            pdf.rect(margin, cy, pageWidth - (margin * 2), 40, 'F');
+            
+            let gridY = cy + 8;
+            pdf.setFontSize(8);
+            pdf.setTextColor(100, 116, 139);
+            pdf.setFont('helvetica', 'bold');
+            
+            pdf.text("EMPLOYEE NAME", margin + 5, gridY);
+            pdf.text("DESIGNATION", margin + 5, gridY + 10);
+            pdf.text("DEPARTMENT", margin + 5, gridY + 20);
+            
+            pdf.text("EMPLOYEE ID", margin + 100, gridY);
+            pdf.text("BANK NAME", margin + 100, gridY + 10);
+            pdf.text("ACCOUNT NO", margin + 100, gridY + 20);
+
+            pdf.setTextColor(30, 41, 59);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(employee?.name || 'N/A', margin + 45, gridY);
+            pdf.text(employee?.designation || 'N/A', margin + 45, gridY + 10);
+            pdf.text(employee?.department || 'N/A', margin + 45, gridY + 20);
+            
+            pdf.text(employee?.employeeId || 'N/A', margin + 140, gridY);
+            pdf.text(structure.bankName || 'N/A', margin + 140, gridY + 10);
+            pdf.text(structure.accountNumber || 'N/A', margin + 140, gridY + 20);
+            
+            cy += 45;
+
+            // Attendance Summary
+            pdf.setFillColor(241, 245, 249);
+            pdf.rect(margin, cy, pageWidth - (margin * 2), 10, 'F');
+            pdf.setFont('helvetica', 'bold');
+            pdf.text("ATTENDANCE SUMMARY", margin + 5, cy + 6.5);
+            
+            cy += 15;
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(`Total Days: ${daysInMonth}`, margin + 5, cy);
+            pdf.text(`Paid Days: ${paidDays}`, margin + 50, cy);
+            pdf.text(`LOP Days: ${lopDays}`, margin + 100, cy);
+            
+            cy += 15;
+
+            // Earnings & Deductions Table
+            const tableW = (pageWidth - (margin * 2)) / 2;
+            const tableH = 70;
+            
+            // Earnings Header
+            pdf.setFillColor(15, 23, 42);
+            pdf.rect(margin, cy, tableW, 8, 'F');
+            pdf.setTextColor(255, 255, 255);
+            pdf.text("EARNINGS", margin + 5, cy + 5.5);
+            pdf.text("AMOUNT", margin + tableW - 15, cy + 5.5, { align: 'right' });
+            
+            // Deductions Header
+            pdf.setFillColor(71, 85, 105);
+            pdf.rect(margin + tableW, cy, tableW, 8, 'F');
+            pdf.setTextColor(255, 255, 255);
+            pdf.text("DEDUCTIONS", margin + tableW + 5, cy + 5.5);
+            pdf.text("AMOUNT", margin + (tableW * 2) - 15, cy + 5.5, { align: 'right' });
+            
+            cy += 8;
+            pdf.setTextColor(30, 41, 59);
+            pdf.setDrawColor(226, 232, 240);
+            pdf.rect(margin, cy, tableW, tableH);
+            pdf.rect(margin + tableW, cy, tableW, tableH);
+            
+            const renderRow = (label: string, value: number, xOff: number, yOff: number) => {
+                pdf.text(label, margin + xOff + 5, cy + yOff);
+                pdf.text(value.toFixed(2), margin + xOff + tableW - 15, cy + yOff, { align: 'right' });
+            };
+
+            // Earnings Rows
+            renderRow("Basic Salary", structure.basic || 0, 0, 8);
+            renderRow("HRA", structure.hra || 0, 0, 16);
+            renderRow("Conveyance", structure.conveyance || 0, 0, 24);
+            renderRow("Medical", structure.medical || 0, 0, 32);
+            renderRow("Special Allowance", structure.specialAllowance || 0, 0, 40);
+            
+            // Deductions Rows
+            renderRow("Provident Fund", structure.pf || 0, tableW, 8);
+            renderRow("ESI", structure.esi || 0, tableW, 16);
+            renderRow("Professional Tax", structure.professionalTax || 0, tableW, 24);
+            renderRow("Income Tax (TDS)", structure.tds || 0, tableW, 32);
+            renderRow("LOP Deduction", lopAmount, tableW, 40);
+            renderRow("Other", structure.otherDeductions || 0, tableW, 48);
+
+            cy += tableH;
+
+            // Totals
+            pdf.setFillColor(248, 250, 252);
+            pdf.rect(margin, cy, tableW, 10, 'F');
+            pdf.rect(margin + tableW, cy, tableW, 10, 'F');
+            pdf.setFont('helvetica', 'bold');
+            pdf.text("TOTAL EARNINGS", margin + 5, cy + 6.5);
+            pdf.text(totalEarnings.toFixed(2), margin + tableW - 15, cy + 6.5, { align: 'right' });
+            
+            pdf.text("TOTAL DEDUCTIONS", margin + tableW + 5, cy + 6.5);
+            pdf.text(totalDeductions.toFixed(2), margin + (tableW * 2) - 15, cy + 6.5, { align: 'right' });
+            
+            cy += 20;
+
+            // Net Payable
+            pdf.setFillColor(15, 23, 42);
+            pdf.rect(margin, cy, pageWidth - (margin * 2), 15, 'F');
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(12);
+            pdf.text("NET PAYABLE AMOUNT", margin + 5, cy + 9.5);
+            pdf.text(`INR ${netPayable.toFixed(2)}`, pageWidth - margin - 5, cy + 9.5, { align: 'right' });
+            
+            cy += 25;
+            pdf.setTextColor(100, 116, 139);
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'italic');
+            pdf.text("* This is a computer-generated salary slip and does not require a signature.", margin, cy);
+
+            pdf.save(`Salary_Slip_${employee?.name}_${monthName}_${selectedYear}.pdf`);
+            logUserAction(realUser || user, `Payroll: Generated salary slip for ${employee?.name} for ${monthName} ${selectedYear}.`);
+
+        } catch (e) {
+            console.error("PDF Execution Error:", e);
+            alert("Failed to generate PDF. Check console for details.");
         } finally {
             setIsGeneratingPDF(false);
         }
@@ -846,11 +1050,25 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                         <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.LATE)} className={`py-2 rounded-lg text-[8px] font-black uppercase border transition-all ${record.status === AttendanceStatus.LATE ? 'bg-amber-500 border-amber-500 text-white shadow-lg' : 'bg-white text-slate-400'}`}>Late</button>
                                                         <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.ABSENT)} className={`py-2 rounded-lg text-[8px] font-black uppercase border transition-all ${record.status === AttendanceStatus.ABSENT ? 'bg-rose-500 border-rose-500 text-white shadow-lg' : 'bg-white text-slate-400'}`}>Absent</button>
                                                     </div>
+                                                    <button 
+                                                        onClick={() => setSalaryUser(staff)}
+                                                        className="w-full py-2.5 mt-1 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-black text-[9px] uppercase hover:bg-indigo-600 hover:text-white transition-all tracking-widest flex items-center justify-center gap-2 border border-indigo-100 dark:border-indigo-900/50"
+                                                    >
+                                                        <i className="fas fa-coins"></i> Salary Structure
+                                                    </button>
                                                 </div>
                                             ) : (
-                                                <div className="grid grid-cols-2 gap-2">
-                                                     <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.PRESENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-emerald-50 hover:text-emerald-600 transition-all tracking-widest">Mark Present</button>
-                                                     <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.ABSENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-rose-50 hover:text-rose-600 transition-all tracking-widest">Mark Absent</button>
+                                                <div className="space-y-2">
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.PRESENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-emerald-50 hover:text-emerald-600 transition-all tracking-widest">Mark Present</button>
+                                                        <button onClick={() => handleMarkAttendanceAdmin(staff, AttendanceStatus.ABSENT)} className="py-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400 font-black text-[9px] uppercase hover:bg-rose-50 hover:text-rose-600 transition-all tracking-widest">Mark Absent</button>
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => setSalaryUser(staff)}
+                                                        className="w-full py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 font-black text-[9px] uppercase hover:bg-indigo-600 hover:text-white transition-all tracking-widest flex items-center justify-center gap-2 border border-slate-100 dark:border-slate-700"
+                                                    >
+                                                        <i className="fas fa-coins"></i> Salary Structure
+                                                    </button>
                                                 </div>
                                             )}
                                         </div>
@@ -1054,12 +1272,21 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                 </select>
                             </div>
                             <div className="flex gap-3">
-                                <button onClick={() => !selectedEmployeeId ? handleExportMatrixCSV() : handleExportMonthlyRegisterCSV()} disabled={!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0} className="bg-emerald-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50 h-[58px] flex-1">
+                                <button onClick={() => !selectedEmployeeId ? handleExportMonthlyRegisterCSV() : handleExportMonthlyRegisterCSV()} disabled={!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0} className="bg-emerald-600 text-white font-black px-6 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[9px] disabled:opacity-50 h-[58px] flex-1">
                                     <i className="fas fa-file-excel"></i> CSV
                                 </button>
-                                <button onClick={() => !selectedEmployeeId ? handleExportMatrixPDF() : handleExportMonthlyRegisterPDF()} disabled={(!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0) || isGeneratingPDF} className="bg-rose-600 text-white font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[10px] disabled:opacity-50 h-[58px] flex-1">
+                                <button onClick={() => !selectedEmployeeId ? handleExportMonthlyRegisterPDF() : handleExportMonthlyRegisterPDF()} disabled={(!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0) || isGeneratingPDF} className="bg-rose-600 text-white font-black px-6 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[9px] disabled:opacity-50 h-[58px] flex-1">
                                     <i className="fas fa-file-pdf"></i> PDF
                                 </button>
+                                {selectedEmployeeId && (
+                                    <button 
+                                        onClick={handleExportSalarySlipPDF} 
+                                        disabled={isGeneratingPDF} 
+                                        className="bg-indigo-600 text-white font-black px-6 py-4 rounded-2xl shadow-xl hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[9px] h-[58px] flex-1 animate-in slide-in-from-right duration-300"
+                                    >
+                                        <i className="fas fa-file-invoice-dollar"></i> Salary Slip
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -1313,6 +1540,20 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                         </form>
                     </div>
                 </div>
+            )}
+
+            {/* Salary Structure Configuration */}
+            {salaryUser && isAdmin && (
+                <SalaryStructureModal 
+                    user={salaryUser}
+                    initialStructure={getSalaryStructure(salaryUser.id)}
+                    onClose={() => setSalaryUser(null)}
+                    onSave={(structure) => {
+                        updateSalaryStructure(structure);
+                        setSalaryUser(null);
+                        logUserAction(realUser || user, `Payroll: Modified salary structure for ${salaryUser.name}.`);
+                    }}
+                />
             )}
 
             {/* Compiled PDF Generator Overlay */}
