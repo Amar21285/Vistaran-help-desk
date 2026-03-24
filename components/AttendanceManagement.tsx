@@ -1272,10 +1272,10 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                 </select>
                             </div>
                             <div className="flex gap-3">
-                                <button onClick={() => !selectedEmployeeId ? handleExportMonthlyRegisterCSV() : handleExportMonthlyRegisterCSV()} disabled={!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0} className="bg-emerald-600 text-white font-black px-6 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[9px] disabled:opacity-50 h-[58px] flex-1">
+                                <button onClick={() => !selectedEmployeeId ? handleExportMatrixCSV() : handleExportMonthlyRegisterCSV()} disabled={!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0} className="bg-emerald-600 text-white font-black px-6 py-4 rounded-2xl shadow-xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[9px] disabled:opacity-50 h-[58px] flex-1">
                                     <i className="fas fa-file-excel"></i> CSV
                                 </button>
-                                <button onClick={() => !selectedEmployeeId ? handleExportMonthlyRegisterPDF() : handleExportMonthlyRegisterPDF()} disabled={(!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0) || isGeneratingPDF} className="bg-rose-600 text-white font-black px-6 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[9px] disabled:opacity-50 h-[58px] flex-1">
+                                <button onClick={() => !selectedEmployeeId ? handleExportMatrixPDF() : handleExportMonthlyRegisterPDF()} disabled={(!selectedEmployeeId ? matrixData.length === 0 : registerData.length === 0) || isGeneratingPDF} className="bg-rose-600 text-white font-black px-6 py-4 rounded-2xl shadow-xl hover:bg-rose-700 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-[9px] disabled:opacity-50 h-[58px] flex-1">
                                     <i className="fas fa-file-pdf"></i> PDF
                                 </button>
                                 {selectedEmployeeId && (
