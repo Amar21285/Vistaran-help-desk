@@ -5,13 +5,13 @@ import ToggleSwitch from '../ToggleSwitch';
 
 const WALLPAPER_PRESETS = [
     { name: 'None', url: '' },
+    { name: 'Professional City', url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=1200' },
+    { name: 'Clean Desk', url: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=1200' },
+    { name: 'Forest Mist', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200' },
+    { name: 'Workspace', url: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=1200' },
     { name: 'Abstract Blue', url: 'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&q=80&w=1200' },
     { name: 'Tech Network', url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200' },
-    { name: 'Modern Office', url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200' },
-    { name: 'Minimalist Mountain', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1200' },
     { name: 'Dark Space', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1200' },
-    { name: 'Soft Gradient', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200' },
-    { name: 'Coding Matrix', url: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200' },
 ];
 
 const FONTS = [
@@ -24,9 +24,10 @@ const FONTS = [
 
 const GeneralSettings: React.FC = () => {
     const { theme, setTheme, colorTheme, setColorTheme, wallpaper, setWallpaper, fontFamily, setFontFamily } = useTheme();
-    const { appName, setAppName, logoUrl, setLogoUrl } = useSettings();
+    const { appName, setAppName, logoUrl, setLogoUrl, companyDetails, setCompanyDetails } = useSettings();
 
     const [localAppName, setLocalAppName] = useState(appName);
+    const [localCompany, setLocalCompany] = useState(companyDetails);
     const [isUploadFormVisible, setUploadFormVisible] = useState(false);
     const [customWallpaperUrl, setCustomWallpaperUrl] = useState('');
     const [isBoldText, setIsBoldText] = useState(localStorage.getItem('vistaran-bold-fonts') === 'true');
@@ -36,8 +37,16 @@ const GeneralSettings: React.FC = () => {
         { name: 'default', label: 'Default Blue', color: 'bg-blue-500' },
         { name: 'emerald', label: 'Emerald Green', color: 'bg-emerald-500' },
         { name: 'crimson', label: 'Crimson Red', color: 'bg-red-600' },
-        { name: 'royal', label: 'Royal Purple', color: 'bg-violet-600' },
+        { name: 'royal', label: 'Royal Blue', color: 'bg-blue-700' },
+        { name: 'indigo', label: 'Deep Indigo', color: 'bg-indigo-600' },
         { name: 'sunset', label: 'Sunset Orange', color: 'bg-orange-500' },
+        { name: 'teal', label: 'Modern Teal', color: 'bg-teal-500' },
+        { name: 'rose', label: 'Elegant Rose', color: 'bg-rose-500' },
+        { name: 'cyan', label: 'Bright Cyan', color: 'bg-cyan-500' },
+        { name: 'fuchsia', label: 'Vivid Fuchsia', color: 'bg-fuchsia-600' },
+        { name: 'amber', label: 'Golden Amber', color: 'bg-amber-500' },
+        { name: 'slate', label: 'Professional Slate', color: 'bg-slate-700' },
+        { name: 'lime', label: 'Fresh Lime', color: 'bg-lime-500' },
     ];
 
     useEffect(() => {
@@ -61,7 +70,8 @@ const GeneralSettings: React.FC = () => {
     const handleSaveBranding = (e: React.FormEvent) => {
         e.preventDefault();
         setAppName(localAppName);
-        alert(`Branding updated successfully!`);
+        setCompanyDetails(localCompany);
+        alert(`Details updated successfully!`);
     }
 
     const ThemeButton: React.FC<{ value: 'light' | 'dark' | 'system', label: string, iconClass: string }> = ({ value, label, iconClass }) => (
@@ -140,15 +150,66 @@ const GeneralSettings: React.FC = () => {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-200">Branding</h3>
-                <form className="mt-4 space-y-4" onSubmit={handleSaveBranding}>
-                    <div>
-                        <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">Application Title</label>
-                        <input type="text" value={localAppName} onChange={e => setLocalAppName(e.target.value)} className="mt-1 w-full p-2 border border-slate-300 rounded-md bg-white dark:bg-slate-700"/>
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-4 font-black uppercase tracking-tighter">🏢 Company & Bank Details</h3>
+                <form className="mt-4 space-y-6" onSubmit={handleSaveBranding}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                            <h4 className="text-xs font-black text-primary uppercase tracking-widest border-b pb-2">Business Information</h4>
+                            <div>
+                                <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">Company Registered Name</label>
+                                <input type="text" value={localCompany.name} onChange={e => setLocalCompany({...localCompany, name: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
+                            </div>
+                            <div>
+                                <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">Full Business Address</label>
+                                <textarea value={localCompany.address} onChange={e => setLocalCompany({...localCompany, address: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all h-20 resize-none"/>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">GSTIN Number</label>
+                                    <input type="text" value={localCompany.gstin} onChange={e => setLocalCompany({...localCompany, gstin: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">Application Title</label>
+                                    <input type="text" value={localAppName} onChange={e => setLocalAppName(e.target.value)} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">State</label>
+                                    <input type="text" value={localCompany.state} onChange={e => setLocalCompany({...localCompany, state: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">State Code</label>
+                                    <input type="text" value={localCompany.stateCode} onChange={e => setLocalCompany({...localCompany, stateCode: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <h4 className="text-xs font-black text-primary uppercase tracking-widest border-b pb-2">Banking Details</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="col-span-2">
+                                    <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">Bank Name</label>
+                                    <input type="text" value={localCompany.bankName} onChange={e => setLocalCompany({...localCompany, bankName: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">Account Number</label>
+                                    <input type="text" value={localCompany.accountNumber} onChange={e => setLocalCompany({...localCompany, accountNumber: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">IFSC Code</label>
+                                    <input type="text" value={localCompany.ifscCode} onChange={e => setLocalCompany({...localCompany, ifscCode: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">Branch Name</label>
+                                    <input type="text" value={localCompany.branch} onChange={e => setLocalCompany({...localCompany, branch: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="text-right">
-                        <button type="submit" className="bg-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-primary-hover shadow-md">Save Branding</button>
+                    <div className="pt-4 border-t dark:border-slate-700 text-right">
+                        <button type="submit" className="bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-primary-hover shadow-xl shadow-primary/20 active:scale-95 transition-all">Save All Details</button>
                     </div>
                 </form>
             </div>

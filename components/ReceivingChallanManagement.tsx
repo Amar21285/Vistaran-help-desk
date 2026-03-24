@@ -6,6 +6,7 @@ import { logUserAction } from '../utils/auditLogger';
 import Logo from './icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { useSettings } from '../hooks/useSettings';
 
 const TRANSACTION_PURPOSES = [
     "Repair ke liye", 
@@ -29,6 +30,7 @@ interface ReceivingChallanManagementProps {
 
 const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({ challans, setChallans, vendors, inventory, globalFilter, users }) => {
     const { user, realUser } = useAuth();
+    const { companyDetails } = useSettings();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [viewingChallan, setViewingChallan] = useState<ReceivingChallan | null>(null);
     const [editingChallan, setEditingChallan] = useState<ReceivingChallan | null>(null);
@@ -373,7 +375,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                                         <div>
                                             <Logo className="h-14 w-auto grayscale brightness-0 mb-4" />
                                             <h1 className="text-4xl font-black uppercase tracking-tighter">Goods Receipt</h1>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-1">Vistaran Health Care Services Pvt. Ltd.</p>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-1">{companyDetails.name}</p>
                                         </div>
                                         <div className="text-right">
                                             <div className="bg-slate-900 text-white px-8 py-6 rounded-[35px] shadow-2xl shadow-slate-900/20">
@@ -410,8 +412,8 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                                         </div>
                                         <div className="text-right space-y-2">
                                             <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Authorized Logistics Entity</p>
-                                            <p className="font-black text-lg uppercase text-slate-800">Vistaran Health Care Services</p>
-                                            <p className="text-[10px] text-slate-500 font-bold uppercase leading-relaxed max-w-[250px] ml-auto">Parksite, Vikhroli West, Mumbai - 400079</p>
+                                            <p className="font-black text-lg uppercase text-slate-800">{companyDetails.name}</p>
+                                            <p className="text-[10px] text-slate-500 font-bold uppercase leading-relaxed max-w-[250px] ml-auto">{companyDetails.address}</p>
                                         </div>
                                     </div>
 

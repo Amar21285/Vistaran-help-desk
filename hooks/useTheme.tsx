@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
 
 type Theme = 'light' | 'dark' | 'system';
-type ColorTheme = 'default' | 'emerald' | 'crimson' | 'royal' | 'sunset';
+type ColorTheme = 'default' | 'emerald' | 'crimson' | 'royal' | 'indigo' | 'sunset' | 'teal' | 'rose' | 'cyan' | 'fuchsia' | 'amber' | 'slate' | 'lime' | 'orange';
 type FontFamily = 'sans' | 'serif' | 'mono' | 'modern' | 'elegant';
 
 interface ThemeContextType {

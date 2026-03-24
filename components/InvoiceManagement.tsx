@@ -7,13 +7,7 @@ import Logo from './icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-const SELLER_DETAILS = {
-    name: "Vistaran Health Care Services Pvt. Ltd.",
-    address: "A-Wing, Unit No.A3 , Bldg No: 2, Kailas Industrial Complex, Veer Savarkar Marg, Parksite, Vikhroli West, Mumbai - 400079",
-    gstin: "27AAACV1234F1Z5",
-    state: "Maharashtra",
-    stateCode: "27"
-};
+import { useSettings } from '../hooks/useSettings';
 
 const TRANSACTION_PURPOSES = [
     "Repair ke liye", 
@@ -37,6 +31,7 @@ interface InvoiceManagementProps {
 
 const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvoices, vendors, inventory, globalFilter }) => {
     const { user, realUser } = useAuth();
+    const { companyDetails } = useSettings();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
     const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
@@ -440,7 +435,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                         <div>
                                             <Logo className="h-14 w-auto grayscale brightness-0 mb-4" />
                                             <h1 className="text-4xl font-black uppercase tracking-tighter">{viewingInvoice.purpose === 'Sales' ? 'Tax Invoice' : 'Material Issue'}</h1>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-1">{SELLER_DETAILS.name}</p>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-1">{companyDetails.name}</p>
                                         </div>
                                         <div className="text-right">
                                             <div className="bg-slate-900 text-white px-8 py-6 rounded-[35px] shadow-2xl">
@@ -480,9 +475,9 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                         </div>
                                         <div className="text-right space-y-2">
                                             <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Authorized Transfer Document</p>
-                                            <p className="font-black text-lg uppercase text-slate-800">{SELLER_DETAILS.name}</p>
-                                            <p className="text-[10px] text-slate-500 font-bold uppercase leading-relaxed max-w-[250px] ml-auto">{SELLER_DETAILS.address}</p>
-                                            <p className="text-[10px] font-black text-primary uppercase">GSTIN: {SELLER_DETAILS.gstin}</p>
+                                            <p className="font-black text-lg uppercase text-slate-800">{companyDetails.name}</p>
+                                            <p className="text-[10px] text-slate-500 font-bold uppercase leading-relaxed max-w-[250px] ml-auto">{companyDetails.address}</p>
+                                            <p className="text-[10px] font-black text-primary uppercase">GSTIN: {companyDetails.gstin}</p>
                                         </div>
                                     </div>
 
@@ -512,9 +507,9 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                             <h1 className="text-4xl font-serif font-bold italic text-slate-900">Tax Invoice</h1>
                                             <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Logistics & Supply Chain Division</p>
                                             <div className="mt-4">
-                                                <p className="text-lg font-bold text-slate-900">{SELLER_DETAILS.name}</p>
-                                                <p className="text-[10px] text-slate-600 max-w-xs">{SELLER_DETAILS.address}</p>
-                                                <p className="text-[10px] font-bold text-slate-900 mt-1">GSTIN: {SELLER_DETAILS.gstin} | State: {SELLER_DETAILS.state} ({SELLER_DETAILS.stateCode})</p>
+                                                <p className="text-lg font-bold text-slate-900">{companyDetails.name}</p>
+                                                <p className="text-[10px] text-slate-600 max-w-xs">{companyDetails.address}</p>
+                                                <p className="text-[10px] font-bold text-slate-900 mt-1">GSTIN: {companyDetails.gstin} | State: {companyDetails.state} ({companyDetails.stateCode})</p>
                                             </div>
                                         </div>
                                         <div className="text-right space-y-4">
@@ -639,7 +634,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                     <div className="h-20 border-b-2 border-slate-200 flex items-end justify-center pb-2">
                                          <p className="text-[9px] font-black text-primary uppercase">Digitally Signed by Vistaran Hub</p>
                                     </div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">For {SELLER_DETAILS.name}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">For {companyDetails.name}</p>
                                 </div>
                             </div>
                         </div>

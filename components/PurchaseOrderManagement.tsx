@@ -6,6 +6,7 @@ import { logUserAction } from '../utils/auditLogger';
 import Logo from './icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { useSettings } from '../hooks/useSettings';
 
 interface PurchaseOrderManagementProps {
     purchaseOrders: PurchaseOrder[];
@@ -18,6 +19,7 @@ interface PurchaseOrderManagementProps {
 
 const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purchaseOrders, setPurchaseOrders, vendors, inventory, globalFilter, users }) => {
     const { user, realUser } = useAuth();
+    const { companyDetails } = useSettings();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [viewingPO, setViewingPO] = useState<PurchaseOrder | null>(null);
     const [editingPO, setEditingPO] = useState<PurchaseOrder | null>(null);
@@ -200,7 +202,7 @@ const PurchaseOrderManagement: React.FC<PurchaseOrderManagementProps> = ({ purch
                             </div>
                             <div className="grid grid-cols-2 gap-10 mb-10">
                                 <div className="p-6 border-2 border-slate-100 rounded-3xl"><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Supplier</p><p className="font-black text-xl uppercase">{vendors.find(v => v.id === viewingPO.vendorId)?.name}</p></div>
-                                <div className="p-6 border-2 border-slate-100 rounded-3xl"><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Ship To</p><p className="font-black text-xl uppercase">Vistaran Health Care</p></div>
+                                <div className="p-6 border-2 border-slate-100 rounded-3xl"><p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Ship To</p><p className="font-black text-xl uppercase">{companyDetails.name}</p></div>
                             </div>
                             <table className="w-full mb-10 border-collapse border-2 border-slate-900">
                                 <thead className="bg-slate-900 text-white text-[10px] font-black uppercase"><tr><th className="p-4 text-left w-12">#</th><th className="p-4 text-left">Item</th><th className="p-4 text-center">Qty</th></tr></thead>

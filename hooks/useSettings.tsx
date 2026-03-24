@@ -20,6 +20,30 @@ export interface NotificationSettings {
   enableInAppNotifications: boolean;
 }
 
+export interface CompanyDetails {
+  name: string;
+  address: string;
+  gstin: string;
+  state: string;
+  stateCode: string;
+  bankName: string;
+  accountNumber: string;
+  ifscCode: string;
+  branch: string;
+}
+
+const DEFAULT_COMPANY_DETAILS: CompanyDetails = {
+  name: 'Vistaran Inc.',
+  address: 'A-Wing, Unit No.A3, Bldg No: 2, Kailas Industrial Complex, Vikhroli West, Mumbai - 400079',
+  gstin: '27AAACV1234F1Z5',
+  state: 'Maharashtra',
+  stateCode: '27',
+  bankName: 'HDFC Bank',
+  accountNumber: '50100XXXXXXXXX',
+  ifscCode: 'HDFC0001234',
+  branch: 'Main Branch'
+};
+
 const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
     adminOnNewTicket: true,
     userOnNewTicket: true,
@@ -187,6 +211,8 @@ interface SettingsContextType {
   setEmailTemplates: (templates: Partial<EmailTemplateSettings>) => void;
   rolePermissions: RolePermissions;
   setRolePermissions: (permissions: RolePermissions) => void;
+  companyDetails: CompanyDetails;
+  setCompanyDetails: (details: CompanyDetails) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -199,6 +225,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [emailjsPublicKey, setEmailjsPublicKeyState] = useState<string>(DEFAULT_EMAILJS_PUBLIC_KEY);
   const [emailTemplates, setEmailTemplatesState] = useState<EmailTemplateSettings>(DEFAULT_EMAIL_TEMPLATES);
   const [rolePermissions, setRolePermissionsState] = useState<RolePermissions>(DEFAULT_ROLE_PERMISSIONS);
+  const [companyDetails, setCompanyDetailsState] = useState<CompanyDetails>(DEFAULT_COMPANY_DETAILS);
 
 
   useEffect(() => {
@@ -234,6 +261,10 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
         const savedRolePermissions = localStorage.getItem('vistaran-helpdesk-rolePermissions');
         if (savedRolePermissions) {
             setRolePermissionsState(JSON.parse(savedRolePermissions));
+        }
+        const savedCompanyDetails = localStorage.getItem('vistaran-helpdesk-companyDetails');
+        if (savedCompanyDetails) {
+            setCompanyDetailsState(JSON.parse(savedCompanyDetails));
         }
     } catch (error) {
         console.error("Failed to load settings from localStorage", error);
@@ -277,6 +308,11 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     localStorage.setItem('vistaran-helpdesk-rolePermissions', JSON.stringify(permissions));
   };
 
+  const setCompanyDetails = (details: CompanyDetails) => {
+    setCompanyDetailsState(details);
+    localStorage.setItem('vistaran-helpdesk-companyDetails', JSON.stringify(details));
+  };
+
   const resetSettings = useCallback(() => {
     setLogoUrlState(DEFAULT_LOGO_URL);
     localStorage.removeItem('vistaran-helpdesk-logoUrl');
@@ -296,6 +332,9 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     setRolePermissionsState(DEFAULT_ROLE_PERMISSIONS);
     localStorage.removeItem('vistaran-helpdesk-rolePermissions');
     
+    setCompanyDetailsState(DEFAULT_COMPANY_DETAILS);
+    localStorage.removeItem('vistaran-helpdesk-companyDetails');
+    
     alert("All application settings have been reset to default.");
   }, []);
 
@@ -308,7 +347,8 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
         emailjsServiceId, setEmailjsServiceId,
         emailjsPublicKey, setEmailjsPublicKey,
         emailTemplates, setEmailTemplates,
-        rolePermissions, setRolePermissions
+        rolePermissions, setRolePermissions,
+        companyDetails, setCompanyDetails
     }}>
       {children}
     </SettingsContext.Provider>
