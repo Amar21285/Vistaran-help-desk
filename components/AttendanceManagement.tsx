@@ -103,8 +103,8 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
     const isAdmin = realUser?.role === Role.ADMIN || user?.role === Role.ADMIN;
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // UPDATED: Filter only Staff members for attendance monitoring
-    const staffMembers = useMemo(() => users.filter(u => u.role === Role.STAFF), [users]);
+    // UPDATED: Filter only Staff and Admin members for attendance monitoring (excluding branch users)
+    const staffMembers = useMemo(() => users.filter(u => u.role === Role.STAFF || u.role === Role.ADMIN), [users]);
 
     const todayRecord = useMemo(() => attendance.find(r => r.userId === user?.id && r.date === todayStr), [attendance, user, todayStr]);
     const isOutMode = !!(todayRecord && !todayRecord.checkOut);
@@ -552,6 +552,46 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         return data;
     }, [attendance, selectedEmployeeId, selectedMonth, selectedYear]);
 
+    const matrixData = useMemo(() => {
+        if (selectedEmployeeId !== '') return [];
+        
+        const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+        const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+        const now = new Date();
+        
+        return staffMembers.map(staff => {
+            const row = days.map(d => {
+                const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const record = attendance.find(r => r.userId === staff.id && r.date === dateStr);
+                const isPast = new Date(selectedYear, selectedMonth, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                
+                return {
+                    date: d,
+                    status: record ? record.status : (isPast ? 'ABSENT' : 'PENDING'),
+                    record
+                };
+            });
+            
+            const summary = row.reduce((acc, day) => {
+                if (day.record) {
+                    if (day.record.status === AttendanceStatus.PRESENT) acc.present++;
+                    else if (day.record.status === AttendanceStatus.LATE) acc.late++;
+                    else if (day.record.status === AttendanceStatus.ABSENT) acc.absent++;
+                    else if (day.record.status === AttendanceStatus.HOLIDAY) acc.holiday++;
+                } else if (day.status === 'ABSENT') {
+                    acc.absent++;
+                }
+                return acc;
+            }, { present: 0, late: 0, absent: 0, holiday: 0 });
+
+            return {
+                staff,
+                row,
+                summary
+            };
+        });
+    }, [attendance, staffMembers, selectedMonth, selectedYear, selectedEmployeeId]);
+
     return (
         <div className="space-y-10 max-w-6xl mx-auto pb-24">
             {showCamera && <CameraCapture isOut={isOutMode} onCapture={photo => { setCapturedPhoto(photo); setShowCamera(false); fetchLocation(); }} onCancel={() => setShowCamera(false)} />}
@@ -567,9 +607,9 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                 
                 {isAdmin && (
                     <nav className="flex p-1 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-700">
-                        <button onClick={() => setActiveSubTab('live')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'live' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Live Terminal</button>
+                        <button onClick={() => setActiveSubTab('live')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'live' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Punch Monitor</button>
                         <button onClick={() => setActiveSubTab('history')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'history' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Ledger History</button>
-                        <button onClick={() => setActiveSubTab('register')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'register' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Monthly Register</button>
+                        <button onClick={() => setActiveSubTab('register')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'register' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Register</button>
                     </nav>
                 )}
             </header>
@@ -829,7 +869,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                             <div className="flex flex-col gap-1">
                                 <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Select Employee</label>
                                 <select value={selectedEmployeeId} onChange={e => setSelectedEmployeeId(e.target.value)} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm">
-                                    <option value="">Choose Personnel...</option>
+                                    <option value="">All Personnel (Monthly Matrix)</option>
                                     {staffMembers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                 </select>
                             </div>
@@ -989,12 +1029,64 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                             </div>
                         </div>
                     ) : (
-                        <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-[45px] border-2 border-dashed border-slate-200 dark:border-slate-700">
-                            <div className="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-300 text-3xl mx-auto mb-6">
-                                <i className="fas fa-user-clock"></i>
+                        <div className="space-y-8 animate-in fade-in duration-500">
+                            <div className="bg-white dark:bg-slate-800 rounded-[45px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-max w-full divide-y divide-slate-100 dark:divide-slate-700">
+                                        <thead className="bg-slate-50/50 dark:bg-slate-900/50">
+                                            <tr>
+                                                <th className="sticky left-0 z-10 bg-slate-50 dark:bg-slate-900 px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest border-r dark:border-slate-700">Personnel</th>
+                                                {Array.from({ length: new Date(selectedYear, selectedMonth + 1, 0).getDate() }).map((_, i) => (
+                                                    <th key={i} className="px-3 py-4 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest min-w-[40px]">
+                                                        {i + 1}
+                                                    </th>
+                                                ))}
+                                                <th className="px-6 py-4 text-center text-[10px] font-black text-emerald-500 uppercase tracking-widest">P</th>
+                                                <th className="px-6 py-4 text-center text-[10px] font-black text-amber-500 uppercase tracking-widest">L</th>
+                                                <th className="px-6 py-4 text-center text-[10px] font-black text-rose-500 uppercase tracking-widest">A</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                                            {matrixData.map((row) => (
+                                                <tr key={row.staff.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                                                    <td className="sticky left-0 z-10 bg-white dark:bg-slate-800 group-hover:bg-slate-50 dark:group-hover:bg-slate-900/80 px-6 py-3 border-r dark:border-slate-700 transition-colors">
+                                                        <div className="flex items-center gap-3 w-48">
+                                                            <div className="w-8 h-8 rounded-lg overflow-hidden border dark:border-slate-700 shadow-sm shrink-0">
+                                                                <img src={row.staff.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(row.staff.name)}`} className="w-full h-full object-cover" alt="" />
+                                                            </div>
+                                                            <p className="font-black text-slate-800 dark:text-white uppercase text-[10px] tracking-tight truncate">{row.staff.name}</p>
+                                                        </div>
+                                                    </td>
+                                                    {row.row.map((day, i) => (
+                                                        <td key={i} className="px-2 py-3 text-center border-r border-slate-50 dark:border-slate-800/50">
+                                                            <span className={`inline-flex items-center justify-center w-6 h-6 rounded-md text-[9px] font-black ${
+                                                                day.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' :
+                                                                day.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' :
+                                                                day.status === AttendanceStatus.HOLIDAY ? 'bg-indigo-100 text-indigo-600' :
+                                                                day.status === 'PENDING' ? 'text-slate-300' :
+                                                                'bg-rose-100 text-rose-600'
+                                                            }`}>
+                                                                {day.status === AttendanceStatus.PRESENT ? 'P' : 
+                                                                 day.status === AttendanceStatus.LATE ? 'L' : 
+                                                                 day.status === AttendanceStatus.HOLIDAY ? 'H' : 
+                                                                 day.status === 'PENDING' ? '-' : 'A'}
+                                                            </span>
+                                                        </td>
+                                                    ))}
+                                                    <td className="px-6 py-3 text-center font-black text-emerald-500 text-[11px] bg-emerald-50/30 dark:bg-emerald-900/10 border-l dark:border-slate-700">{row.summary.present}</td>
+                                                    <td className="px-6 py-3 text-center font-black text-amber-500 text-[11px] bg-amber-50/30 dark:bg-amber-900/10 border-l dark:border-slate-700">{row.summary.late}</td>
+                                                    <td className="px-6 py-3 text-center font-black text-rose-500 text-[11px] bg-rose-50/30 dark:bg-rose-900/10 border-l dark:border-slate-700">{row.summary.absent}</td>
+                                                </tr>
+                                            ))}
+                                            {matrixData.length === 0 && (
+                                                <tr>
+                                                    <td colSpan={35} className="px-6 py-12 text-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">No personnel found for this period.</td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <h4 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">No Personnel Selected</h4>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Select a staff member above to view their monthly attendance ledger.</p>
                         </div>
                     )}
                 </div>

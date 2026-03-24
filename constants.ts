@@ -114,6 +114,28 @@ export const INVENTORY: InventoryItem[] = [
 export const TICKETS: Ticket[] = [];
 export const FILES: ManagedFile[] = [];
 export const FAQ_DATA: FAQItem[] = [
-    { category: 'General', question: 'How do I create a new ticket?', answer: 'Click on Create Ticket in the sidebar.' },
+    { category: 'General', question: 'How do I create a new ticket?', answer: 'Navigate to the "Tickets" or "New Ticket" section in the sidebar. Fill in your department, problem category, priority, and a detailed description, then click Submit.' },
+    { category: 'General', question: 'What is Vistaran Help Desk?', answer: 'Vistaran Help Desk is a comprehensive IT and Operations management platform for Vistaran Inc. It handles ticketing, inventory, billing (Challans/POs), attendance, and reimbursements.' },
+    { category: 'General', question: 'How do I reset my password?', answer: 'Currently, passwords must be reset by an Administrator. Please contact ITSupport@vistaran.in or ask your manager to raise a ticket.' },
+    { category: 'General', question: 'What is the difference between Admin and User roles?', answer: 'Admins have full access to all modules, including system settings, master data imports, and all user tickets. Regular Users can only see and manage their own tickets, attendance, and relevant operational modules.' },
+    
+    { category: 'Ticketing', question: 'How can I check the status of my ticket?', answer: 'Go to the Dashboard or "My Tickets" section. You will see a list of tickets with statuses like Open, In Progress, Resolved, or Closed.' },
+    { category: 'Ticketing', question: 'What are SLAs (Service Level Agreements)?', answer: 'SLAs determine the maximum time a ticket should remain open based on its priority (e.g., Critical tickets must be resolved within 4 hours, High within 8 hours, Medium within 24 hours).' },
+    { category: 'Ticketing', question: 'Can I add comments to an existing ticket?', answer: 'Yes, click on the ticket ID to open its details, and use the history/comments section to add updates or reply to the technician.' },
+    
+    { category: 'Inventory', question: 'How do I assign an asset to a user?', answer: 'Admins can go to the Inventory module, select the asset (like a Laptop or Monitor), click "Assign", and choose the target user and department.' },
+    { category: 'Inventory', question: 'How are asset lifecycle statuses tracked?', answer: 'Assets have statuses such as In Use, Spare, Under Maintenance, and Retired. You can update this status from the Asset Details panel in the Inventory module.' },
+    { category: 'Inventory', question: 'How can I report a broken asset?', answer: 'Create a new ticket under the "Hardware related issues" category and mention the asset tag or serial number in the description.' },
+    
+    { category: 'Attendance & HR', question: 'How is attendance captured?', answer: 'Depending on user role, attendance can be marked via the Attendance module using geographic punch-in/out, or calculated based on shift timing configurations.' },
+    { category: 'Attendance & HR', question: 'How do I apply for a reimbursement?', answer: 'Go to the Reimbursement module, click "New Claim", enter the expense details, attach receipts if possible, and submit for approval.' },
+    
+    { category: 'Logistics', question: 'How do I create a Delivery Challan?', answer: 'Go to Logistics > Challans. Click "New Delivery Challan". Select the Vendor or destination, add the inventory items being sent, and save. It generates a printable DC.' },
+    { category: 'Logistics', question: 'What is a Purchase Order (PO)?', answer: 'A PO is an official document sent to a vendor to authorize a purchase. You can create one in the Logistics > Purchase Orders section by selecting a vendor and adding required items.' },
+    { category: 'Logistics', question: 'How are Outward Invoices handled?', answer: 'Outward Invoices can be generated from the Invoices tab. They support GST/IGST calculations and can be exported as professional PDF reports.' },
+    
+    { category: 'Support', question: 'Is the system available 24/7?', answer: 'Yes, Vistaran Help Desk runs on a 24/7 server architecture, ensuring real-time data sync for multi-branch operations (e.g., Vikhroli, Powai, Bhandup).' },
+    { category: 'Support', question: 'What if the app is offline or I lose network?', answer: 'The Vistaran Help Desk is a Progressive Web App (PWA) with Service Workers. It caches essential assets and will sync your actions once the network is restored.' },
+    { category: 'Support', question: 'How does real-time sync work?', answer: 'We use secure Socket.io connections. When a ticket is created or updated, the change is instantly broadcast to all relevant connected users without needing a page refresh.' }
 ];
 export const TICKET_TEMPLATES: TicketTemplate[] = [];

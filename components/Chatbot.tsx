@@ -103,7 +103,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
         
         try {
             initAudioContext();
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: (import.meta as any).env.VITE_API_KEY as string });
             const response = await ai.models.generateContent({
                 model: "gemini-2.5-flash-preview-tts",
                 contents: [{ parts: [{ text: cleanText }] }],
@@ -133,7 +133,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
         setIsLiveActive(true);
         
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: (import.meta as any).env.VITE_API_KEY as string });
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({sampleRate: 16000});
             
@@ -200,12 +200,22 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
         setIsLoading(true);
 
         try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: (import.meta as any).env.VITE_API_KEY as string });
             const knowledgeBase = FAQ_DATA.map(f => `Q: ${f.question}\nA: ${f.answer}`).join('\n\n');
-            const systemInstruction = `Vistaran AI assistant for ${user?.name} (${user?.department}). Knowledge Base: ${knowledgeBase}. Provide simple, actionable support.`;
+            const systemInstruction = `You are the "Vistaran Core AI", an expert IT & Operations assistant for the Vistaran Help Desk platform. You belong to Vistaran Inc.
+You are assisting: ${user?.name} (Department: ${user?.department}).
+
+Your capabilities:
+1. You have deep knowledge of Vistaran's internal modules: Ticketing, Inventory, Attendance, Invoicing, Delivery Challans, POs, and Vendor Management.
+2. Answer questions accurately and professionally based on the Knowledge Base provided below.
+3. If a user has a problem (e.g., "Printer not working", "Office Wi-Fi down"), guide them step-by-step on how to troubleshoot or ask them to raise a ticket specifying the department.
+4. Keep responses concise, well-formatted, friendly, and actionable. Do not make up non-existent features.
+
+Knowledge Base:
+${knowledgeBase}`;
             
             const responseStream = await ai.models.generateContentStream({
-                model: "gemini-3-flash-preview",
+                model: "gemini-2.5-flash",
                 contents: [...history, { role: 'user', parts: [{ text: userMsg }] }],
                 config: { systemInstruction, temperature: 0.7 }
             });
@@ -227,6 +237,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ currentView, activeTicket }) => {
             
             if (isTtsEnabled) await playAudioResponse(fullAiText);
         } catch (error) {
+            console.error("Chat Action Error:", error);
             setMessages(prev => [...prev, { id: 'err', sender: 'ai', text: "Service temporary unavailable. Please retry." }]);
         } finally {
             setIsLoading(false);

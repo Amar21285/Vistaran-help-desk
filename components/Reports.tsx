@@ -297,9 +297,10 @@ const Reports: React.FC<ReportsProps> = ({
                 columns = [
                     {label: 'S/N', width: 8}, 
                     {label: 'TAG ID', width: 22}, 
-                    {label: 'MODEL / BRAND', width: 45}, 
-                    {label: 'SERIAL / IMEI', width: 35}, 
-                    {label: 'SPECS (RAM/HDD/CPU)', width: 45}, 
+                    {label: 'MODEL / BRAND', width: 40}, 
+                    {label: 'QTY', width: 15},
+                    {label: 'SERIAL / IMEI', width: 30}, 
+                    {label: 'SPECS (RAM/HDD/CPU)', width: 40}, 
                     {label: 'PURCHASE', width: 25}
                 ];
             } else {
@@ -364,6 +365,7 @@ const Reports: React.FC<ReportsProps> = ({
                             idx + 1, 
                             i.id, 
                             `${i.brand || ''} ${i.name}`, 
+                            `${i.quantity} ${i.unit || 'Nos'}`,
                             `${i.serialNumber || i.imei || 'N/A'}`, 
                             `${i.ram || '-'}/${i.storage || '-'}/${i.processor || '-'}`, 
                             i.purchaseDate || 'N/A'
