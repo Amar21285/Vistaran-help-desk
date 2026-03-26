@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Android
+android/local.properties
+android/build
+android/app/build
+android/.gradle
+capacitor-cordova-android-plugins

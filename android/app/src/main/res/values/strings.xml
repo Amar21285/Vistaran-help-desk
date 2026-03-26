@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Vistaran Help Desk</string>
+    <string name="title_activity_main">Vistaran Help Desk</string>
+    <string name="package_name">com.vistaran.helpdesk</string>
+    <string name="custom_url_scheme">com.vistaran.helpdesk</string>
+</resources>
