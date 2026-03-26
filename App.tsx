@@ -290,6 +290,31 @@ const AppContent: React.FC = () => {
     const [editingUser, setEditingUser] = useState<User | null>(null);
     const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
     const [infoModalContent, setInfoModalContent] = useState<{ title: string; message: React.ReactNode; actions?: ModalAction[] } | null>(null);
+    const [isInstallAvailable, setIsInstallAvailable] = useState(false);
+
+    useEffect(() => {
+        const checkInstall = () => {
+            if ((window as any).deferredPrompt) {
+                setIsInstallAvailable(true);
+            }
+        };
+        
+        window.addEventListener('pwa-installavailable', checkInstall);
+        checkInstall(); // Check immediately in case it already fired
+        
+        return () => window.removeEventListener('pwa-installavailable', checkInstall);
+    }, []);
+
+    const handleInstallApp = async () => {
+        const promptEvent = (window as any).deferredPrompt;
+        if (!promptEvent) return;
+        
+        promptEvent.prompt();
+        const { outcome } = await promptEvent.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        (window as any).deferredPrompt = null;
+        setIsInstallAvailable(false);
+    };
 
     useEffect(() => {
         const viewPermissions: Record<string, Permission> = {
@@ -460,7 +485,7 @@ const AppContent: React.FC = () => {
             case 'app-settings':
                 return <Settings templates={allTemplates} setTemplates={syncSetAllTemplates} symptoms={allSymptoms} setSymptoms={syncSetAllSymptoms} departments={allDepartments} setDepartments={syncSetAllDepartments} users={allUsers} tickets={allTickets} />;
             case 'my-profile':
-                 return <Profile tickets={allTickets} onEditUser={setEditingUser} />;
+                 return <Profile tickets={allTickets} onEditUser={setEditingUser} isInstallAvailable={isInstallAvailable} onInstallApp={handleInstallApp} />;
             case 'reports':
                 return <Reports 
                     tickets={allTickets} 

@@ -17,19 +17,15 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="apple-touch-fullscreen" content="yes">
     
-    <link rel="manifest" href="./manifest.json">
-    <link rel="apple-touch-icon" href="https://via.placeholder.com/192/3b82f6/ffffff?text=V">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://via.placeholder.com/152/3b82f6/ffffff?text=V">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://via.placeholder.com/180/3b82f6/ffffff?text=V">
-    <link rel="apple-touch-icon" sizes="167x167" href="https://via.placeholder.com/167/3b82f6/ffffff?text=V">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-512x512.png">
     
     <!-- Splash Screens for iOS -->
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/2048x2732/3b82f6/ffffff?text=Vistaran" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1668x2224/3b82f6/ffffff?text=Vistaran" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1536x2048/3b82f6/ffffff?text=Vistaran" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1125x2436/3b82f6/ffffff?text=Vistaran" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/1242x2208/3b82f6/ffffff?text=Vistaran" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
-    <link rel="apple-touch-startup-image" href="https://via.placeholder.com/750x1334/3b82f6/ffffff?text=Vistaran" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+    <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
 
     <!-- Tailwind Config -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -236,14 +232,21 @@
   <body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-200">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root" class="min-h-screen w-full"></div>
-    <script type="module" src="./index.tsx"></script>
     <script>
+      window.deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+        console.log('beforeinstallprompt event fired');
+        window.dispatchEvent(new CustomEvent('pwa-installavailable'));
+      });
+
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW failed'));
+          navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW failed'));
         });
       }
     </script>
-  <script type="module" src="/index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>

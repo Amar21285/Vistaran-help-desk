@@ -6,6 +6,8 @@ import { useAuth } from '../hooks/useAuth';
 interface ProfileProps {
     tickets: Ticket[];
     onEditUser: (user: User) => void;
+    isInstallAvailable: boolean;
+    onInstallApp: () => void;
 }
 
 const StatItem: React.FC<{ iconClass: string; value: string | number; label: string }> = ({ iconClass, value, label }) => (
@@ -18,7 +20,7 @@ const StatItem: React.FC<{ iconClass: string; value: string | number; label: str
     </div>
 );
 
-const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser }) => {
+const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser, isInstallAvailable, onInstallApp }) => {
     const { user } = useAuth();
     
     const userStats = useMemo(() => {
@@ -42,12 +44,22 @@ const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser }) => {
                     <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">My Profile</h2>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">Manage your personal account settings and information</p>
                 </div>
-                <button 
-                    onClick={() => onEditUser(user)} 
-                    className="bg-primary text-white font-semibold px-4 py-2 rounded-lg hover:bg-primary-hover transition flex items-center gap-2"
-                >
-                    <i className="fas fa-edit"></i> Edit Profile
-                </button>
+                <div className="flex gap-2">
+                    {isInstallAvailable && (
+                        <button 
+                            onClick={onInstallApp} 
+                            className="bg-green-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+                        >
+                            <i className="fas fa-download"></i> Install App
+                        </button>
+                    )}
+                    <button 
+                        onClick={() => onEditUser(user)} 
+                        className="bg-primary text-white font-semibold px-4 py-2 rounded-lg hover:bg-primary-hover transition flex items-center gap-2"
+                    >
+                        <i className="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
             </header>
 
             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md">
