@@ -201,14 +201,7 @@ const Login: React.FC = () => {
               <div className="relative flex justify-center text-[8px] font-black uppercase tracking-[0.3em]"><span className="bg-white px-4 text-slate-300">Unified Vistaran Core</span></div>
             </div>
 
-            <div className="flex gap-3 mb-8 md:mb-0">
-              <button className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-slate-50 border border-slate-100 rounded-xl font-bold text-[8px] uppercase tracking-widest text-slate-600 hover:bg-slate-100 transition active:scale-95">
-                Google
-              </button>
-              <button className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-slate-50 border border-slate-100 rounded-xl font-bold text-[8px] uppercase tracking-widest text-slate-600 hover:bg-slate-100 transition active:scale-95">
-                Microsoft
-              </button>
-            </div>
+            <div className="py-2"></div>
           </div>
         </div>
       </div>
