@@ -1,9 +1,9 @@
 
 const CACHE_NAME = 'vistaran-v2';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
+  './',
+  './index.html',
+  './manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
   'https://cdn.tailwindcss.com',
   'https://unpkg.com/recharts/umd/Recharts.min.js'
@@ -30,8 +30,14 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests unless they are in ASSETS
-  if (!event.request.url.startsWith(self.location.origin) && !ASSETS.includes(event.request.url)) {
+  // Check if the request is for an asset in our cacheable list
+  const isAsset = ASSETS.some(asset => {
+    if (asset.startsWith('http')) return event.request.url === asset;
+    const url = new URL(asset, self.location.origin + self.location.pathname);
+    return event.request.url === url.href;
+  });
+
+  if (!event.request.url.startsWith(self.location.origin) && !isAsset) {
     return;
   }
 
@@ -51,9 +57,8 @@ self.addEventListener('fetch', (event) => {
 
         return networkResponse;
       }).catch(() => {
-        // Fallback for offline if needed
         if (event.request.mode === 'navigate') {
-          return caches.match('/');
+          return caches.match('./index.html') || caches.match('./');
         }
       });
     })

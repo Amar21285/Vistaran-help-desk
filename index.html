@@ -17,11 +17,11 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="apple-touch-fullscreen" content="yes">
     
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/icons/icon-512x512.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-512x512.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-512x512.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-512x512.png">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="./icons/icon-512x512.png">
     
     <!-- Splash Screens for iOS -->
     <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
@@ -243,7 +243,7 @@
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW failed'));
+          navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW failed'));
         });
       }
     </script>
