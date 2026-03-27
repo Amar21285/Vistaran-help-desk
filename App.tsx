@@ -23,7 +23,7 @@ import InventoryManagement from './components/InventoryManagement';
 import AttendanceManagement from './components/AttendanceManagement';
 import ScannerModal from './components/modals/ScannerModal';
 import QuickTicketModal from './components/modals/QuickTicketModal';
-import { USERS, TICKETS, TECHNICIANS, SYMPTOMS, FILES, TICKET_TEMPLATES, INVENTORY, VENDORS } from './constants';
+import { USERS, TICKETS, TECHNICIANS, SYMPTOMS, FILES, TICKET_TEMPLATES, INVENTORY, VENDORS, INTERNET_VENDORS } from './constants';
 import { User, Ticket, ManagedFile, Technician, Symptom, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder, AppNotification, Permission, AttendanceRecord, ReimbursementRequest, InternetVendor } from './types';
 import { logUserAction } from './utils/auditLogger';
 
@@ -93,7 +93,7 @@ const AppContent: React.FC = () => {
     const [allPurchaseOrders, setAllPurchaseOrders] = useLocalStorage<PurchaseOrder[]>('vistaran-helpdesk-purchase-orders', []);
     const [allAttendance, setAllAttendance] = useLocalStorage<AttendanceRecord[]>('vistaran-helpdesk-attendance', []);
     const [allReimbursements, setAllReimbursements] = useLocalStorage<ReimbursementRequest[]>('vistaran-helpdesk-reimbursements', []);
-    const [allInternetVendors, setAllInternetVendors] = useLocalStorage<InternetVendor[]>('vistaran-internet-vendors', []);
+    const [allInternetVendors, setAllInternetVendors] = useLocalStorage<InternetVendor[]>('vistaran-internet-vendors', INTERNET_VENDORS);
     const [notifications, setNotifications] = useLocalStorage<AppNotification[]>('vistaran-helpdesk-notifications', []);
     
     const [allDepartments, setAllDepartments] = useLocalStorage<string[]>('vistaran-helpdesk-departments', ['IT', 'Operations', 'HR', 'Accounts', 'Staff']);

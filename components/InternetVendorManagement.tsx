@@ -10,29 +10,7 @@ interface InternetVendorManagementProps {
     setVendors?: React.Dispatch<React.SetStateAction<InternetVendor[]>>;
 }
 
-const INITIAL_DATA: InternetVendor[] = [
-    { id: 'IV-1', name: 'Blue Sky Net Service (DC03)', planName: '100Mbps Static IP', amount: 10580, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-08-12', customerID: 'N/A' },
-    { id: 'IV-2', name: 'TATA  Play Fibe (Vartak Nagar 022)', planName: '100Mbps Static IP', amount: 6726, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-05-08', customerID: 'C2400220443' },
-    { id: 'IV-3', name: 'Juweriyah Networks Pvt Ltd (Talao Pali - 021)', planName: '100Mbps Static IP', amount: 7777, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-08-08', customerID: '120205000692' },
-    { id: 'IV-4', name: 'Juweriyah Networks Pvt Ltd (Civil - 020)', planName: '100Mbps Static IP', amount: 7777, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-07-24', customerID: '120205000692' },
-    { id: 'IV-5', name: 'Intech Online Private Limited (Dhokali 023)', planName: '200Mbps Static IP', amount: 7420, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-04-29', customerID: '122526450664210' },
-    { id: 'IV-6', name: 'Intech Online Private Limited  (Lok Kesar 018)', planName: '200Mbps Static IP', amount: 7420, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-04-25', customerID: '122526450664210' },
-    { id: 'IV-7', name: 'Genstar Net Work Solution Pvt Ltd( Kailash 017+DC )', planName: '100Mbps Static IP', amount: 7950, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-11-21', customerID: '10169465664' },
-    { id: 'IV-8', name: 'Genstar Net Work Solution Pvt Ltd (Tagore Nagar 014)', planName: '100Mbps Static IP', amount: 11210, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-11-08', customerID: '10169465664' },
-    { id: 'IV-9', name: 'airtel xstream fiber ( Godrej - 013)', planName: '100Mbps Static IP', amount: 1296, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-02-16', customerID: '02212976291_dsl' },
-    { id: 'IV-10', name: 'Success Broadband Service (Sakinaka -012)', planName: '100Mbps Static IP', amount: 5900, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-07-15', customerID: '04128100005907' },
-    { id: 'IV-11', name: 'Vijay Network Services India Pvt Ltd ( Hindustan - 008)', planName: '50Mbps Static IP', amount: 11210, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-06-14', customerID: 'N/A' },
-    { id: 'IV-12', name: 'Antariksh Softtech Pvt. Ltd. (Romell - 010)', planName: '50Mbps Static IP', amount: 8615, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-07-23', customerID: '57500000539422' },
-    { id: 'IV-13', name: 'Antariksh Softtech Pvt. Ltd. (Veen - 015)', planName: '50Mbps Static IP', amount: 8615, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-07-25', customerID: '57500000539422' },
-    { id: 'IV-14', name: 'Antariksh Softtech Pvt. Ltd. (Veena - 006)', planName: '50Mbps Static IP', amount: 8615, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-09-04', customerID: '57500000539422' },
-    { id: 'IV-15', name: 'Antariksh Softtech Pvt. Ltd. (Sai dham 019)', planName: '50Mbps Static IP', amount: 8615, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-06-12', customerID: '57500000539422' },
-    { id: 'IV-16', name: 'Antariksh Softtech Pvt. Ltd. (Hanuman chowk 016)', planName: '50Mbps Static IP', amount: 8615, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-11-17', customerID: '57500000539422' },
-    { id: 'IV-17', name: 'Rajesh Digital & Datacom Pvt. Ltd. (004lake home) ', planName: '50Mbps Static IP', amount: 7080, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-01-23', customerID: '000912100022874' },
-    { id: 'IV-18', name: 'Satellite Netcom Pvt. Ltd. (003HIRANANDANI)', planName: '50Mbps Static IP', amount: 5115, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-07-27', customerID: '50200072382611' },
-    { id: 'IV-19', name: 'Juweriyah Networks Pvt Ltd (Vikhroli-002)', planName: '50Mbps Static IP', amount: 9809, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-09-05', customerID: '39675082091' },
-    { id: 'IV-20', name: 'Microscan Internet PVT.LTD (Bhandup -001(W) )', planName: '50Mbps Static IP', amount: 4241, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-07-03', customerID: '9240300051761161' },
-    { id: 'IV-21', name: 'Hathway Cable and Datacom Ltd (Tambe Nagar 009)', planName: '100Mbps Static IP', amount: 9425, billingCycle: 'Monthly', startDate: '2024-01-01', expiryDate: '2026-06-20', customerID: '1348072583' },
-];
+import { INTERNET_VENDORS } from '../constants';
 
 const InternetVendorManagement: React.FC<InternetVendorManagementProps> = ({ inventory = [], vendors = [], setVendors = () => {} }) => {
     const { user, realUser } = useAuth();
