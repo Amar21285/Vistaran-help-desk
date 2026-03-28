@@ -90,12 +90,16 @@ const Reports: React.FC<ReportsProps> = ({
             });
             const data = await res.json();
             if (data.success) {
-                alert(`DSR sent successfully to ${automationSettings.recipients.join(', ')}`);
+                const stats = data.stats || {};
+                const msg = data.simulated 
+                    ? `DSR generated locally but EMAIL SKIPPED (No SMTP Config).\n\nDetails:\n- Tickets: ${stats.ticketsToday}\n- Attendance: ${stats.attendanceToday}\n- Low Stock: ${stats.lowStockCount}\n\nFiles saved in data/reports/`
+                    : `DSR sent successfully to ${automationSettings.recipients.join(', ')}.\n\nStats:\n- Tickets: ${stats.ticketsToday}\n- Attendance: ${stats.attendanceToday}\n- Low Stock: ${stats.lowStockCount}`;
+                alert(msg);
             } else {
                 alert(`Failed: ${data.error}`);
             }
         } catch (err) {
-            alert('Error triggering report');
+            alert('Error triggering report. Check server logs.');
         } finally {
             setIsExporting(false);
         }

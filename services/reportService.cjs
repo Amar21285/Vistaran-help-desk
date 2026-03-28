@@ -89,41 +89,91 @@ class ReportService {
     }
 
     async generateAndSendReport(manualRecipients) {
-        const today = new Date().toISOString().split('T')[0];
+        // Use IST date if possible, but for UTC servers, we ensure local time is captured
+        const now = new Date();
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istDate = new Date(now.getTime() + istOffset);
+        const today = istDate.toISOString().split('T')[0];
+        
+        console.log(`[DSR] --- STARTING REPORT GENERATION (${today}) ---`);
         const settings = this.getSettings();
         const recipients = manualRecipients || settings.recipients;
 
         if (recipients.length === 0) {
-            console.error('No recipients defined for daily report.');
+            console.error('[DSR] No recipients found.');
             return { success: false, error: 'No recipients' };
         }
 
-        // 1. Collect Data
-        const tickets = this.getData('tickets').filter(t => t.dateCreated && t.dateCreated.startsWith(today));
-        const attendance = this.getData('attendance').filter(a => a.date === today);
-        const inventory = this.getData('inventory');
-        const lowStock = inventory.filter(i => i.quantity <= (i.minStock || 0));
+        try {
+            // 1. Collect Data
+            const allTickets = this.getData('tickets');
+            const tickets = allTickets.filter(t => {
+                const d = t.dateCreated || "";
+                return d.startsWith(today);
+            });
 
-        // 2. Generate Excel
-        const excelPath = path.join(reportDir, `DSR_${today}.xlsx`);
-        this.createExcelReport(excelPath, tickets, attendance, lowStock);
+            const allAttendance = this.getData('attendance');
+            const attendance = allAttendance.filter(a => a.date === today);
 
-        // 3. Generate PDF
-        const pdfPath = path.join(reportDir, `DSR_${today}.pdf`);
-        await this.createPDFReport(pdfPath, tickets, attendance, lowStock, today);
+            const inventory = this.getData('inventory');
+            const lowStock = inventory.filter(i => {
+                const q = Number(i.quantity) || 0;
+                const m = Number(i.minStock) || 0;
+                return m > 0 && q <= m;
+            });
 
-        // 4. Send Email
-        const mailResult = await this.sendEmail(recipients, today, [excelPath, pdfPath]);
+            console.log(`[DSR] Stats: Tickets=${tickets.length}, Attendance=${attendance.length}, LowStock=${lowStock.length}`);
 
-        return { 
-            success: mailResult.success, 
-            reportDate: today, 
-            stats: {
-                ticketsToday: tickets.length,
-                attendanceToday: attendance.length,
-                lowStockCount: lowStock.length
+            // 2. Generate Files
+            const excelPath = path.join(reportDir, `DSR_${today}.xlsx`);
+            this.createExcelReport(excelPath, tickets, attendance, lowStock);
+
+            const pdfPath = path.join(reportDir, `DSR_${today}.pdf`);
+            await this.createPDFReport(pdfPath, tickets, attendance, lowStock, today);
+
+            // 3. Send Email
+            const mailResult = await this.sendEmail(recipients, today, [excelPath, pdfPath]);
+            
+            // 4. Record in Audit Logs
+            this.recordAuditLog({
+                action: mailResult.simulated ? "DSR Generated (Simulated Email)" : "DSR Sent (Auto-Email)",
+                details: `Tickets: ${tickets.length}, Attendance: ${attendance.length}, Recipients: ${recipients.join(', ')}`,
+                status: mailResult.success ? "Success" : "Failed"
+            });
+
+            return { 
+                success: mailResult.success, 
+                simulated: mailResult.simulated,
+                reportDate: today, 
+                stats: { ticketsToday: tickets.length, attendanceToday: attendance.length, lowStockCount: lowStock.length }
+            };
+        } catch (error) {
+            console.error('[DSR] Fatal Error:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    recordAuditLog(logEntry) {
+        const auditLogPath = path.join(dataDir, 'audit-logs.json');
+        try {
+            let logs = [];
+            if (fs.existsSync(auditLogPath)) {
+                logs = JSON.parse(fs.readFileSync(auditLogPath, 'utf8'));
             }
-        };
+            const newLog = {
+                id: `DSR_${Date.now()}`,
+                userId: "SYSTEM",
+                userName: "DSR Automation",
+                action: logEntry.action,
+                details: logEntry.details,
+                timestamp: new Date().toISOString(),
+                status: logEntry.status
+            };
+            logs.unshift(newLog); // Add to beginning
+            fs.writeFileSync(auditLogPath, JSON.stringify(logs.slice(0, 1000), null, 2));
+        } catch (e) {
+            console.error('[DSR] Error recording audit log:', e);
+        }
     }
 
     createExcelReport(filePath, tickets, attendance, lowStock) {

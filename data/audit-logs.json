@@ -1,5 +1,14 @@
 [
   {
+    "id": "DSR_1774686254236",
+    "userId": "SYSTEM",
+    "userName": "DSR Automation",
+    "action": "DSR Generated (Simulated Email)",
+    "details": "Tickets: 0, Attendance: 0, Recipients: test@example.com",
+    "timestamp": "2026-03-28T08:24:14.236Z",
+    "status": "Success"
+  },
+  {
     "id": "LOG_1772861386129_7lmm0gc",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
