@@ -4,6 +4,7 @@ const fs = require('fs');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const { createClient } = require('@supabase/supabase-js');
+const { reportService } = require('./services/reportService.cjs');
 
 const app = express();
 const server = createServer(app);
@@ -91,6 +92,40 @@ app.post('/api/admin/restore-from-master', (req, res) => {
     res.json(result);
   } else {
     res.status(500).json(result);
+  }
+});
+
+// Daily Report Automation Endpoints
+app.get('/api/admin/report-settings', (req, res) => {
+  const settingsPath = path.join(dataDir, 'notification-settings.json');
+  try {
+      if (fs.existsSync(settingsPath)) {
+          const data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+          res.json(data.dailyReport || {});
+      } else {
+          res.json({});
+      }
+  } catch (e) {
+      res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/admin/report-settings', (req, res) => {
+  const result = reportService.updateSettings(req.body);
+  if (result.success) {
+      res.json(result);
+  } else {
+      res.status(500).json(result);
+  }
+});
+
+app.post('/api/admin/trigger-report', async (req, res) => {
+  const recipients = req.body.recipients;
+  const result = await reportService.generateAndSendReport(recipients);
+  if (result.success) {
+      res.json(result);
+  } else {
+      res.status(500).json(result);
   }
 });
 
