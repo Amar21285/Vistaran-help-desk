@@ -115,6 +115,7 @@ class ReportService {
 
         try {
             // 1. Collect Data
+            const allTickets = this.getData('tickets');
             const tickets = allTickets.filter(t => {
                 const ticketDate = t.dateCreated || t.createdAt || "";
                 const d = ticketDate.split('T')[0];
