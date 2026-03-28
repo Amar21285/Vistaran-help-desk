@@ -425,6 +425,21 @@ const AppContent: React.FC = () => {
         }
     };
 
+    // Sync the logged-in session data with the global users list (for real-time permission updates)
+    useEffect(() => {
+        if (!user) return;
+        const freshUserRecord = allUsers.find(u => u.id === user.id);
+        if (freshUserRecord) {
+            // Check for differences in role or permissions
+            const hasRoleChanged = freshUserRecord.role !== user.role;
+            const arePermissionsDifferent = JSON.stringify(freshUserRecord.permissions || []) !== JSON.stringify(user.permissions || []);
+            
+            if (hasRoleChanged || arePermissionsDifferent) {
+                updateUser(freshUserRecord);
+            }
+        }
+    }, [allUsers, user, updateUser]);
+
     const handleUpdateUser = (updatedUser: User) => {
         syncSetAllUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
         updateUser(updatedUser);

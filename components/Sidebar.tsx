@@ -145,24 +145,28 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
                         onClick={() => handleNavigation('help-center')}
                     />
 
-                    <div className="pt-6 pb-2 px-4 border-t border-slate-100 dark:border-slate-700/50 mt-4">
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Management & Control</span>
-                    </div>
-                    {can(Permission.MANAGE_USERS) && (
-                        <NavItem
-                            icon={<UsersIcon />}
-                            label="Personnel Control"
-                            isActive={currentView === 'users'}
-                            onClick={() => handleNavigation('users')}
-                        />
-                    )}
-                    {can(Permission.MANAGE_SETTINGS) && (
-                        <NavItem
-                            icon={<CogsIcon />}
-                            label="System Core"
-                            isActive={currentView === 'app-settings'}
-                            onClick={() => handleNavigation('app-settings')}
-                        />
+                    {(can(Permission.MANAGE_USERS) || can(Permission.MANAGE_SETTINGS)) && (
+                        <>
+                            <div className="pt-6 pb-2 px-4 border-t border-slate-100 dark:border-slate-700/50 mt-4">
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Management & Control</span>
+                            </div>
+                            {can(Permission.MANAGE_USERS) && (
+                                <NavItem
+                                    icon={<UsersIcon />}
+                                    label="Personnel Control"
+                                    isActive={currentView === 'users'}
+                                    onClick={() => handleNavigation('users')}
+                                />
+                            )}
+                            {can(Permission.MANAGE_SETTINGS) && (
+                                <NavItem
+                                    icon={<CogsIcon />}
+                                    label="System Core"
+                                    isActive={currentView === 'app-settings'}
+                                    onClick={() => handleNavigation('app-settings')}
+                                />
+                            )}
+                        </>
                     )}
                 </ul>
             </nav>

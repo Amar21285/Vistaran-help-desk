@@ -112,11 +112,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [user]);
 
   const updateUser = useCallback((updatedUserData: Partial<User> & { id: string }) => {
-    const isForRealUser = realUser?.id === updatedUserData.id;
-    const isForCurrentUser = user?.id === updatedUserData.id;
-    if (isForCurrentUser) setUser(currentUser => currentUser ? { ...currentUser, ...updatedUserData } : null);
-    if (isForRealUser) setRealUser(currentRealUser => currentRealUser ? { ...currentRealUser, ...updatedUserData } : null);
-  }, [user, realUser]);
+    const updateSession = (currentUser: User | null) => {
+      if (!currentUser || currentUser.id !== updatedUserData.id) return currentUser;
+      return { ...currentUser, ...updatedUserData };
+    };
+
+    setUser(prev => updateSession(prev));
+    setRealUser(prev => updateSession(prev));
+  }, []);
 
   const startImpersonation = useCallback((userId: string) => {
     if (realUser?.role !== Role.ADMIN) return;
