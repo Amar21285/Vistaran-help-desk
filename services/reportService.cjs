@@ -285,13 +285,16 @@ class ReportService {
             const transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 587,
-                secure: false, // true for 465, false for other ports
+                secure: false,
                 auth: {
                     user: user,
                     pass: pass
                 },
-                family: 4, // Force IPv4
-                connectionTimeout: 10000, // 10 seconds
+                // Force IPv4 lookup strictly
+                lookup: (hostname, options, callback) => {
+                    require('dns').lookup(hostname, { family: 4 }, callback);
+                },
+                connectionTimeout: 10000,
                 greetingTimeout: 10000,
                 socketTimeout: 10000
             });
