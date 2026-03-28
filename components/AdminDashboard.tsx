@@ -78,6 +78,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ tickets, users, setUser
             department: formData.get('department') as string,
             status: formData.get('status') as UserStatus,
             joinedDate: new Date().toISOString(),
+            permissions: [],
         };
         setUsers(prev => [...prev, newUser]);
         logUserAction(realUser, `Created new user from dashboard: ${newUser.name} (ID: ${newUser.id})`);

@@ -79,7 +79,15 @@ const AppContent: React.FC = () => {
     const { appName, notificationSettings } = useSettings();
     console.log(`App Name: ${appName}`);
     
-    const [allUsers, setAllUsers] = useLocalStorage<User[]>('vistaran-helpdesk-users', USERS);
+        const [allUsers, setAllUsers] = useLocalStorage<User[]>('vistaran-helpdesk-users', USERS.map(u => ({ ...u, permissions: u.permissions || [] })));
+
+    // Extra layer: Sanitize allUsers whenever it changes from external storage sync
+    useEffect(() => {
+        const needsSanitize = allUsers.some(u => !u.permissions);
+        if (needsSanitize) {
+            setAllUsers(prev => prev.map(u => ({ ...u, permissions: u.permissions || [] })));
+        }
+    }, [allUsers, setAllUsers]);
     const [allTickets, setAllTickets] = useLocalStorage<Ticket[]>('vistaran-helpdesk-tickets', TICKETS);
     const [allFiles, setAllFiles] = useLocalStorage<ManagedFile[]>('vistaran-helpdesk-files', FILES);
     const [allTechnicians, setAllTechnicians] = useLocalStorage<Technician[]>('vistaran-helpdesk-technicians', TECHNICIANS);

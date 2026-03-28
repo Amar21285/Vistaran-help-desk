@@ -208,7 +208,25 @@ const UserModal: React.FC<UserModalProps> = ({ userToEdit, currentUser, onClose,
 
                         {isAdmin && !isSelfEdit && (
                             <div className="pt-4 border-t border-slate-100 dark:border-slate-700">
-                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-4 uppercase tracking-widest text-[10px]">Explicitly Granted Rights</label>
+                                <div className="flex justify-between items-center mb-4">
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[10px]">Explicitly Granted Rights</label>
+                                    <div className="flex gap-2">
+                                        <button 
+                                            type="button" 
+                                            onClick={() => setPermissions(Object.values(Permission))} 
+                                            className="text-[9px] font-black uppercase tracking-wider text-primary hover:text-primary-hover px-2 py-1 bg-primary/5 rounded-md border border-primary/10 transition-all"
+                                        >
+                                            Grant All
+                                        </button>
+                                        <button 
+                                            type="button" 
+                                            onClick={() => setPermissions([])} 
+                                            className="text-[9px] font-black uppercase tracking-wider text-slate-400 hover:text-red-500 px-2 py-1 bg-slate-50 dark:bg-slate-800 rounded-md border border-slate-200 dark:border-slate-700 transition-all"
+                                        >
+                                            Clear All
+                                        </button>
+                                    </div>
+                                </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {Object.values(Permission).map((perm) => (
                                         <label key={perm} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group">

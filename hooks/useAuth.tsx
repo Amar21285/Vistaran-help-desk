@@ -23,9 +23,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const getCurrentUsers = (): User[] => {
     try {
         const stored = localStorage.getItem('vistaran-helpdesk-users');
-        return stored ? JSON.parse(stored) : USERS;
-    } catch {
-        return USERS;
+        const rawUsers: User[] = stored ? JSON.parse(stored) : USERS;
+        // Sanitize: Ensure every user has the permissions field
+        return rawUsers.map(u => ({
+            ...u,
+            permissions: u.permissions || []
+        }));
+    } catch (error) {
+        console.error("Error loading users for auth:", error);
+        return USERS.map(u => ({ ...u, permissions: u.permissions || [] }));
     }
 };
 
