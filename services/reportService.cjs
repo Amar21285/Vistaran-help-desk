@@ -155,6 +155,7 @@ class ReportService {
                 success: mailResult.success, 
                 simulated: mailResult.simulated,
                 reportDate: label,
+                error: mailResult.error,
                 stats: { ticketsToday: tickets.length, attendanceToday: attendance.length, lowStockCount: lowStock.length }
             };
         } catch (error) {
