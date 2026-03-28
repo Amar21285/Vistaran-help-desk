@@ -1,3 +1,10 @@
+const dns = require('dns');
+
+// Force IPv4 as the primary result order for all DNS lookups in this service
+if (dns.setDefaultResultOrder) {
+    dns.setDefaultResultOrder('ipv4first');
+}
+
 const fs = require('fs');
 const path = require('path');
 const cron = require('node-cron');
@@ -290,9 +297,13 @@ class ReportService {
                     user: user,
                     pass: pass
                 },
-                // Force IPv4 lookup strictly
+                tls: {
+                    servername: 'smtp.gmail.com',
+                    rejectUnauthorized: false
+                },
+                // Use a more standard lookup
                 lookup: (hostname, options, callback) => {
-                    require('dns').lookup(hostname, { family: 4 }, callback);
+                    dns.lookup(hostname, { family: 4 }, callback);
                 },
                 connectionTimeout: 10000,
                 greetingTimeout: 10000,
