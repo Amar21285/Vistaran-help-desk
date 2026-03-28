@@ -290,7 +290,7 @@ class ReportService {
 
         try {
             const transporter = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
+                host: '74.125.130.108', // Force use of smtp.gmail.com IPv4 address
                 port: 587,
                 secure: false,
                 auth: {
@@ -301,13 +301,9 @@ class ReportService {
                     servername: 'smtp.gmail.com',
                     rejectUnauthorized: false
                 },
-                // Use a more standard lookup
-                lookup: (hostname, options, callback) => {
-                    dns.lookup(hostname, { family: 4 }, callback);
-                },
-                connectionTimeout: 10000,
-                greetingTimeout: 10000,
-                socketTimeout: 10000
+                connectionTimeout: 15000,
+                greetingTimeout: 15000,
+                socketTimeout: 15000
             });
 
             const mailOptions = {
