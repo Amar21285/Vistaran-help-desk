@@ -243,7 +243,23 @@ function performSystemRestoration(masterData, sourceName) {
   for (const [collection, filePath] of Object.entries(dataFiles)) {
     const masterKey = storageKeyMap[collection] || `vistaran-helpdesk-${collection}`;
     if (masterData[masterKey]) {
-      const data = masterData[masterKey];
+      let data = masterData[masterKey];
+
+      // Special handling for notification settings to preserve DSR config
+      if (collection === 'notification-settings') {
+        try {
+          if (fs.existsSync(filePath)) {
+            const currentSettings = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            if (currentSettings.dailyReport) {
+              data = { ...data, dailyReport: currentSettings.dailyReport };
+              console.log('[Restore] Preserved existing DSR settings during restoration');
+            }
+          }
+        } catch (e) {
+          console.error('[Restore] Error merging notification settings:', e);
+        }
+      }
+
       fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
       dataStores.set(collection, data);
       results[collection] = Array.isArray(data) ? data.length : 'Object';
