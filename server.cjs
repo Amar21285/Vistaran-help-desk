@@ -96,18 +96,10 @@ app.post('/api/admin/restore-from-master', (req, res) => {
 });
 
 // Daily Report Automation Endpoints
+
 app.get('/api/admin/report-settings', (req, res) => {
-  const settingsPath = path.join(dataDir, 'notification-settings.json');
-  try {
-      if (fs.existsSync(settingsPath)) {
-          const data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-          res.json(data.dailyReport || {});
-      } else {
-          res.json({});
-      }
-  } catch (e) {
-      res.status(500).json({ error: e.message });
-  }
+  const settings = reportService.getSettings();
+  res.json(settings);
 });
 
 app.post('/api/admin/report-settings', (req, res) => {

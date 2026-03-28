@@ -29,31 +29,26 @@ class ReportService {
     }
 
     getSettings() {
-        const settingsPath = path.join(dataDir, 'notification-settings.json');
+        const settingsPath = path.join(dataDir, 'dsr-settings.json');
         try {
             if (fs.existsSync(settingsPath)) {
-                const data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-                return { ...defaultSettings, ...(data.dailyReport || {}) };
+                return JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
             }
         } catch (e) {
-            console.error('Error reading report settings:', e);
+            console.error('Error reading DSR settings:', e);
         }
         return defaultSettings;
     }
 
     updateSettings(newSettings) {
-        const settingsPath = path.join(dataDir, 'notification-settings.json');
+        const settingsPath = path.join(dataDir, 'dsr-settings.json');
         try {
-            let data = {};
-            if (fs.existsSync(settingsPath)) {
-                data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-            }
-            data.dailyReport = { ...(data.dailyReport || defaultSettings), ...newSettings };
+            const data = { ...this.getSettings(), ...newSettings };
             fs.writeFileSync(settingsPath, JSON.stringify(data, null, 2));
             this.initializeCron(); // Re-initialize cron with new time
-            return { success: true };
+            return { success: true, settings: data };
         } catch (e) {
-            console.error('Error saving report settings:', e);
+            console.error('Error saving DSR settings:', e);
             return { success: false, error: e.message };
         }
     }
