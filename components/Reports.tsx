@@ -49,6 +49,16 @@ const Reports: React.FC<ReportsProps> = ({
         recipients: ['ITsupport@vistaran.in']
     });
     const [isSavingSettings, setIsSavingSettings] = useState(false);
+    const [dsrLogs, setDsrLogs] = useState<any[]>([]);
+
+    const fetchDsrLogs = () => {
+        fetch('/api/admin/dsr-logs')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) setDsrLogs(data);
+            })
+            .catch(err => console.error('Failed to fetch DSR logs:', err));
+    };
 
     React.useEffect(() => {
         fetch('/api/admin/report-settings')
@@ -59,7 +69,11 @@ const Reports: React.FC<ReportsProps> = ({
                 }
             })
             .catch(err => console.error('Failed to fetch report settings:', err));
-    }, []);
+        
+        if (activeTab === 'automation') {
+            fetchDsrLogs();
+        }
+    }, [activeTab]);
 
     const saveAutomationSettings = async () => {
         setIsSavingSettings(true);
@@ -89,13 +103,14 @@ const Reports: React.FC<ReportsProps> = ({
                 body: JSON.stringify({ recipients: automationSettings.recipients })
             });
             const data = await res.json();
-            if (data.success) {
-                const stats = data.stats || {};
-                const msg = data.simulated 
-                    ? `DSR generated locally but EMAIL SKIPPED (No SMTP Config).\n\nDetails:\n- Tickets: ${stats.ticketsToday}\n- Attendance: ${stats.attendanceToday}\n- Low Stock: ${stats.lowStockCount}\n\nFiles saved in data/reports/`
-                    : `DSR sent successfully to ${automationSettings.recipients.join(', ')}.\n\nStats:\n- Tickets: ${stats.ticketsToday}\n- Attendance: ${stats.attendanceToday}\n- Low Stock: ${stats.lowStockCount}`;
-                alert(msg);
-            } else {
+                if (data.success) {
+                    const stats = data.stats || {};
+                    const msg = data.simulated 
+                        ? `DSR generated locally but EMAIL SKIPPED (No SMTP Config).\n\nDetails:\n- Tickets: ${stats.ticketsToday}\n- Attendance: ${stats.attendanceToday}\n- Low Stock: ${stats.lowStockCount}\n\nFiles saved in data/reports/`
+                        : `DSR sent successfully to ${automationSettings.recipients.join(', ')}.\n\nStats:\n- Tickets: ${stats.ticketsToday}\n- Attendance: ${stats.attendanceToday}\n- Low Stock: ${stats.lowStockCount}`;
+                    alert(msg);
+                    fetchDsrLogs();
+                } else {
                 alert(`Failed: ${data.error}`);
             }
         } catch (err) {
@@ -192,6 +207,12 @@ const Reports: React.FC<ReportsProps> = ({
             case 'receiving': return { total: filteredLogistics.length, label: 'Challans', secondary: (filteredLogistics as ReceivingChallan[]).reduce((acc, c) => acc + c.items.length, 0), sLabel: 'Inward Count' };
             case 'outward': return { total: filteredLogistics.length, label: 'Invoices', secondary: (filteredLogistics as Invoice[]).reduce((acc, i) => acc + i.items.length, 0), sLabel: 'Outward Count' };
             case 'purchase-orders': return { total: filteredLogistics.length, label: 'POs', secondary: (filteredLogistics as PurchaseOrder[]).filter(p => p.status === PurchaseOrderStatus.FULFILLED).length, sLabel: 'Completed' };
+            case 'automation': return { 
+                total: dsrLogs.length, 
+                label: 'Logs', 
+                secondary: dsrLogs.filter(l => l.status === 'Success').length, 
+                sLabel: 'Successful Runs' 
+            };
             default: return { total: 0, label: 'Entries', secondary: 0, sLabel: 'Metric' };
         }
     }, [activeTab, filteredTickets, filteredInventory, filteredAttendance, filteredPettyCash, filteredInternet, filteredLogistics, inventory, vendors]);
@@ -608,15 +629,17 @@ const Reports: React.FC<ReportsProps> = ({
                                 else if (activeTab === 'attendance') source = filteredAttendance;
                                 else if (activeTab === 'petty-cash') source = filteredPettyCash;
                                 else if (activeTab === 'internet') source = filteredInternet;
+                                else if (activeTab === 'automation') source = dsrLogs;
                                 else source = filteredLogistics as (ReceivingChallan | Invoice | PurchaseOrder)[];
 
-                                return source.slice(0, 100).map((r: Ticket | AttendanceRecord | InventoryItem | Vendor | ReceivingChallan | Invoice | PurchaseOrder | ReimbursementRequest | InternetVendor, idx: number) => {
+                                return source.slice(0, 100).map((r: any, idx: number) => {
                                     const qty = 'quantity' in r ? `${r.quantity} ${r.unit || 'Nos'}` : 
                                                 'items' in r ? `${r.items.length} Items` : 
                                                 'amount' in r ? `₹${r.amount}` : 'N/A';
                                     
                                     const dateStamp = 'dateCreated' in r ? r.dateCreated.split('T')[0] :
                                                       'date' in r ? r.date :
+                                                      'timestamp' in r ? r.timestamp.split('T')[0] :
                                                       'dateReceived' in r ? r.dateReceived.split('T')[0] :
                                                       'dateIssued' in r ? r.dateIssued.split('T')[0] : 'Historical';
 
@@ -624,10 +647,13 @@ const Reports: React.FC<ReportsProps> = ({
                                                    'assetStatus' in r ? r.assetStatus : 'Logged';
                                     
                                     let displayName = 'N/A';
-                                    if ('name' in r) displayName = 'planName' in r ? `${r.name} - ${r.planName}` : r.name;
+                                    if ('userName' in r && r.userName === 'DSR Automation') displayName = r.action;
+                                    else if ('name' in r) displayName = 'planName' in r ? `${r.name} - ${r.planName}` : r.name;
                                     else if ('description' in r) displayName = r.description;
                                     else if ('purpose' in r) displayName = r.purpose;
                                     else if ('date' in r) displayName = r.date;
+
+                                    const detailInfo = 'details' in r ? r.details : qty;
 
                                     return (
                                         <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors group">
@@ -639,7 +665,7 @@ const Reports: React.FC<ReportsProps> = ({
                                                 {displayName}
                                             </td>
                                             <td className="px-6 py-4 text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase">
-                                                {qty}
+                                                {detailInfo}
                                             </td>
                                             <td className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                                                 {dateStamp}
