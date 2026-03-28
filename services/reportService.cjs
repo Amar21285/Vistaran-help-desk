@@ -273,32 +273,41 @@ class ReportService {
     }
 
     async sendEmail(recipients, date, attachments) {
+        const user = process.env.EMAIL_USER;
+        const pass = process.env.EMAIL_PASS;
+
+        if (!user || !pass || pass === 'placeholder_pass') {
+            console.log('Skipping actual email send (no credentials). Report files generated in data/reports/');
+            return { success: true, simulated: true };
+        }
+
         try {
             const transporter = nodemailer.createTransport({
-                service: 'gmail',
+                host: 'smtp.gmail.com',
+                port: 587,
+                secure: false, // true for 465, false for other ports
                 auth: {
-                    user: process.env.EMAIL_USER || 'it.vistaran@gmail.com',
-                    pass: process.env.EMAIL_PASS || 'placeholder_pass'
-                }
+                    user: user,
+                    pass: pass
+                },
+                connectionTimeout: 10000, // 10 seconds
+                greetingTimeout: 10000,
+                socketTimeout: 10000
             });
 
             const mailOptions = {
-                from: '"Vistaran Auto Bot" <it.vistaran@gmail.com>',
+                from: `"Vistaran Auto Bot" <${user}>`,
                 to: recipients.join(', '),
                 subject: `IT Daily Status Report (DSR) - ${date}`,
                 text: `Please find attached the IT Daily Status Report for ${date}.\n\nThis is an automated message.`,
                 attachments: attachments.map(p => ({ filename: path.basename(p), path: p }))
             };
 
-            if (!process.env.EMAIL_USER || process.env.EMAIL_PASS === 'placeholder_pass') {
-                console.log('Skipping actual email send (no credentials). Report files generated in data/reports/');
-                return { success: true, simulated: true };
-            }
-
-            const info = await transporter.sendMail(mailOptions);
+            await transporter.sendMail(mailOptions);
+            console.log(`[DSR] Email sent successfully to ${recipients.join(', ')}`);
             return { success: true };
         } catch (e) {
-            console.error('Error sending email:', e);
+            console.error('[DSR] SMTP Error:', e.message);
             return { success: false, error: e.message };
         }
     }
