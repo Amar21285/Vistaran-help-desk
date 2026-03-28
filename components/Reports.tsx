@@ -46,7 +46,7 @@ const Reports: React.FC<ReportsProps> = ({
     const [automationSettings, setAutomationSettings] = useState({
         enabled: false,
         time: '20:00',
-        recipients: ['ITsupport@vistaran.in']
+        recipients: ['itsupport@vistaran.in']
     });
     const [isSavingSettings, setIsSavingSettings] = useState(false);
     const [dsrLogs, setDsrLogs] = useState<any[]>([]);
