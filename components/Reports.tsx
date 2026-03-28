@@ -212,10 +212,12 @@ const Reports: React.FC<ReportsProps> = ({
             case 'outward': return { total: filteredLogistics.length, label: 'Invoices', secondary: (filteredLogistics as Invoice[]).reduce((acc, i) => acc + i.items.length, 0), sLabel: 'Outward Count' };
             case 'purchase-orders': return { total: filteredLogistics.length, label: 'POs', secondary: (filteredLogistics as PurchaseOrder[]).filter(p => p.status === PurchaseOrderStatus.FULFILLED).length, sLabel: 'Completed' };
             case 'automation': return { 
-                total: dsrLogs.length, 
-                label: 'Logs', 
-                secondary: dsrLogs.filter(l => l.status === 'Success').length, 
-                sLabel: 'Successful Runs' 
+                total: filteredTickets.length, 
+                label: 'Tickets Today', 
+                secondary: filteredAttendance.length, 
+                sLabel: 'Punches Today',
+                additional: inventory.filter(p => p.quantity <= p.minStock).length,
+                aLabel: 'Critical Assets'
             };
             default: return { total: 0, label: 'Entries', secondary: 0, sLabel: 'Metric' };
         }
@@ -598,10 +600,30 @@ const Reports: React.FC<ReportsProps> = ({
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 no-print">
-                <MetricCard title={`Reported ${currentMetrics.label}`} value={currentMetrics.total} iconClass="fas fa-layer-group" colorClass="text-blue-500" />
-                <MetricCard title={currentMetrics.sLabel} value={currentMetrics.secondary} iconClass="fas fa-chart-line" colorClass="text-emerald-500" />
-                <MetricCard title="Compliance Score" value="100%" iconClass="fas fa-shield-check" colorClass="text-indigo-500" />
-                <MetricCard title="Time Window" value={`${Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / 86400000) + 1} Days`} iconClass="fas fa-calendar-range" colorClass="text-amber-500" />
+                <MetricCard 
+                    title={activeTab === 'automation' ? 'Live Tickets Today' : `Reported ${currentMetrics.label}`} 
+                    value={currentMetrics.total} 
+                    iconClass={activeTab === 'automation' ? 'fas fa-ticket' : 'fas fa-layer-group'} 
+                    colorClass="text-blue-500" 
+                />
+                <MetricCard 
+                    title={activeTab === 'automation' ? 'Staff Punches Today' : currentMetrics.sLabel} 
+                    value={currentMetrics.secondary} 
+                    iconClass={activeTab === 'automation' ? 'fas fa-user-clock' : 'fas fa-chart-line'} 
+                    colorClass="text-emerald-500" 
+                />
+                <MetricCard 
+                    title={activeTab === 'automation' ? 'Critical Assets' : "Compliance Score"} 
+                    value={activeTab === 'automation' ? (currentMetrics as any).additional : "100%"} 
+                    iconClass={activeTab === 'automation' ? 'fas fa-box-warning' : 'fas fa-shield-check'} 
+                    colorClass={activeTab === 'automation' ? 'text-rose-500' : 'text-indigo-500'} 
+                />
+                <MetricCard 
+                    title={activeTab === 'automation' ? 'Execution History' : "Time Window"} 
+                    value={activeTab === 'automation' ? dsrLogs.length : `${Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / 86400000) + 1} Days`} 
+                    iconClass={activeTab === 'automation' ? 'fas fa-history' : 'fas fa-calendar-range'} 
+                    colorClass="text-amber-500" 
+                />
             </div>
 
             <div className="bg-white dark:bg-slate-800 rounded-[40px] shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden no-print">

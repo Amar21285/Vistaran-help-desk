@@ -5,7 +5,7 @@ const xlsx = require('xlsx');
 const PDFDocument = require('pdfkit');
 
 // Paths to data files
-const dataDir = path.join(process.cwd(), 'data');
+const dataDir = path.join(__dirname, '..', 'data');
 const reportDir = path.join(dataDir, 'reports');
 
 // Ensure reports directory exists
@@ -115,14 +115,17 @@ class ReportService {
 
         try {
             // 1. Collect Data
-            const allTickets = this.getData('tickets');
             const tickets = allTickets.filter(t => {
-                const d = (t.dateCreated || "").split('T')[0];
+                const ticketDate = t.dateCreated || t.createdAt || "";
+                const d = ticketDate.split('T')[0];
                 return d >= startDate && d <= endDate;
             });
 
             const allAttendance = this.getData('attendance');
-            const attendance = allAttendance.filter(a => a.date >= startDate && a.date <= endDate);
+            const attendance = allAttendance.filter(a => {
+                const d = a.date || ""; 
+                return d >= startDate && d <= endDate;
+            });
 
             const inventory = this.getData('inventory');
             const lowStock = inventory.filter(i => {

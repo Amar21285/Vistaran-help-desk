@@ -119,6 +119,24 @@ app.post('/api/admin/report-settings', (req, res) => {
   }
 });
 
+app.get('/api/admin/sync-info', (req, res) => {
+  try {
+      const stats = {};
+      for (const [collection, file] of Object.entries(dataFiles)) {
+          if (fs.existsSync(file)) {
+              const content = fs.readFileSync(file, 'utf8');
+              const data = JSON.parse(content);
+              stats[collection] = Array.isArray(data) ? data.length : 1;
+          } else {
+              stats[collection] = 0;
+          }
+      }
+      res.json({ success: true, stats, timestamp: new Date().toISOString() });
+  } catch (e) {
+      res.status(500).json({ error: e.message });
+  }
+});
+
 app.get('/api/admin/dsr-logs', (req, res) => {
   const auditPath = path.join(dataDir, 'audit-logs.json');
   try {
@@ -340,6 +358,7 @@ function saveDataToFile(collection, data) {
   try {
     const filePath = dataFiles[collection];
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    console.log(`[Sync] Updated ${collection} on disk: ${data.length} records`);
 
     // Also update the master backup file in real-time
     consolidateToMaster();
