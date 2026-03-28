@@ -69,7 +69,9 @@ const Reports: React.FC<ReportsProps> = ({
                 }
             })
             .catch(err => console.error('Failed to fetch report settings:', err));
-        
+    }, []);
+
+    React.useEffect(() => {
         if (activeTab === 'automation') {
             fetchDsrLogs();
         }

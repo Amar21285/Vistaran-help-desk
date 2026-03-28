@@ -16,7 +16,7 @@ if (!fs.existsSync(reportDir)) {
 const defaultSettings = {
     enabled: false,
     time: "20:00",
-    recipients: ["ITsupport@vistaran.in"],
+    recipients: ["itsupport@vistaran.in"],
     includeTickets: true,
     includeAttendance: true,
     includeInventory: true
