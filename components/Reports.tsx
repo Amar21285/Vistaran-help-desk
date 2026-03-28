@@ -18,7 +18,7 @@ interface ReportsProps {
     internetVendors?: InternetVendor[];
 }
 
-type ReportTab = 'tickets' | 'attendance' | 'lowStock' | 'inventory' | 'vendors' | 'receiving' | 'outward' | 'purchase-orders' | 'petty-cash' | 'internet';
+type ReportTab = 'tickets' | 'attendance' | 'lowStock' | 'inventory' | 'vendors' | 'receiving' | 'outward' | 'purchase-orders' | 'petty-cash' | 'internet' | 'automation';
 
 const MetricCard: React.FC<{ title: string; value: string | number; iconClass: string; colorClass: string }> = ({ title, value, iconClass, colorClass }) => (
     <div className="bg-white dark:bg-slate-800 p-5 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center space-x-4 transition hover:-translate-y-1 hover:shadow-md">
@@ -43,6 +43,63 @@ const Reports: React.FC<ReportsProps> = ({
     // Component logic here
     
     const [activeTab, setActiveTab] = useState<ReportTab>('inventory');
+    const [automationSettings, setAutomationSettings] = useState({
+        enabled: false,
+        time: '20:00',
+        recipients: ['ITsupport@vistaran.in']
+    });
+    const [isSavingSettings, setIsSavingSettings] = useState(false);
+
+    React.useEffect(() => {
+        fetch('/api/admin/report-settings')
+            .then(res => res.json())
+            .then(data => {
+                if (data && Object.keys(data).length > 0) {
+                    setAutomationSettings(prev => ({ ...prev, ...data }));
+                }
+            })
+            .catch(err => console.error('Failed to fetch report settings:', err));
+    }, []);
+
+    const saveAutomationSettings = async () => {
+        setIsSavingSettings(true);
+        try {
+            const res = await fetch('/api/admin/report-settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(automationSettings)
+            });
+            if (res.ok) {
+                alert('DSR Automation settings saved successfully!');
+            }
+        } catch (err) {
+            alert('Failed to save settings');
+        } finally {
+            setIsSavingSettings(false);
+        }
+    };
+
+    const triggerManualReport = async () => {
+        if (!confirm('Are you sure you want to generate and email the Daily Status Report now?')) return;
+        setIsExporting(true);
+        try {
+            const res = await fetch('/api/admin/trigger-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recipients: automationSettings.recipients })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(`DSR sent successfully to ${automationSettings.recipients.join(', ')}`);
+            } else {
+                alert(`Failed: ${data.error}`);
+            }
+        } catch (err) {
+            alert('Error triggering report');
+        } finally {
+            setIsExporting(false);
+        }
+    };
     const [deptFilter, setDeptFilter] = useState('all');
     
     const [startDate, setStartDate] = useState(() => {
@@ -468,6 +525,7 @@ const Reports: React.FC<ReportsProps> = ({
                             <option value="purchase-orders">Purchase Order Archive</option>
                             <option value="vendors">Entity Directory</option>
                             <option value="lowStock">Low Stock Analytics</option>
+                            <option value="automation">DSR Automation (Auto-Email)</option>
                         </select>
                     </div>
 
@@ -599,6 +657,93 @@ const Reports: React.FC<ReportsProps> = ({
                         <div className="p-20 text-center text-slate-300 font-black uppercase tracking-widest opacity-20">Registry Empty for Selected Filters</div>
                     )}
                 </div>
+
+                {activeTab === 'automation' && (
+                    <div className="p-12 space-y-10 animate-fade-in">
+                        <div className="flex items-center justify-between border-b dark:border-slate-700 pb-6">
+                            <div>
+                                <h4 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Daily Status Report Automation</h4>
+                                <p className="text-slate-500 text-xs font-bold mt-1">Configure automatic daily data collection and email delivery.</p>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        className="sr-only peer" 
+                                        checked={automationSettings.enabled}
+                                        onChange={e => setAutomationSettings({...automationSettings, enabled: e.target.checked})}
+                                    />
+                                    <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+                                    <span className="ml-3 text-[10px] font-black uppercase text-slate-400 tracking-widest">{automationSettings.enabled ? 'ACTIVE' : 'DISABLED'}</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="text-[10px] font-black uppercase text-slate-400 block mb-2 tracking-widest">Scheduled Execution Time</label>
+                                    <input 
+                                        type="time" 
+                                        value={automationSettings.time}
+                                        onChange={e => setAutomationSettings({...automationSettings, time: e.target.value})}
+                                        className="w-full p-4 bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-700 rounded-2xl font-black text-xl outline-none focus:border-primary transition-all"
+                                    />
+                                    <p className="text-[9px] text-slate-400 mt-2 font-bold uppercase italic tracking-wider">Reports involve data from 00:00 to the current time of execution.</p>
+                                </div>
+
+                                <div>
+                                    <label className="text-[10px] font-black uppercase text-slate-400 block mb-2 tracking-widest">Recipient Emails (Comma Separated)</label>
+                                    <input 
+                                        type="text" 
+                                        value={automationSettings.recipients.join(', ')}
+                                        onChange={e => setAutomationSettings({...automationSettings, recipients: e.target.value.split(',').map(s => s.trim()).filter(s => s !== '')})}
+                                        className="w-full p-4 bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-700 rounded-2xl font-bold text-sm outline-none focus:border-primary transition-all"
+                                        placeholder="admin@vistaran.in, support@vistaran.in"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="bg-primary/5 dark:bg-primary/10 p-8 rounded-[30px] border border-primary/10 flex flex-col justify-between">
+                                <div className="space-y-4">
+                                    <h5 className="font-black text-primary uppercase tracking-widest text-xs flex items-center gap-2">
+                                        <i className="fas fa-info-circle"></i> System Intelligence
+                                    </h5>
+                                    <ul className="space-y-3">
+                                        {[
+                                            'Collecting all Support Tickets created today',
+                                            'Aggregating Staff Attendance logs with punch times',
+                                            'Identifying Inventory Assets below safety stock',
+                                            'Compiling Excel (.xlsx) & PDF high-resolution reports',
+                                            'Instant SMTP dispatch to configured administrative endpoints'
+                                        ].map((item, i) => (
+                                            <li key={i} className="flex items-start gap-3 text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase">
+                                                <i className="fas fa-check-circle text-primary mt-0.5"></i>
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div className="mt-8 flex gap-3">
+                                    <button 
+                                        onClick={saveAutomationSettings}
+                                        disabled={isSavingSettings}
+                                        className="flex-1 bg-primary hover:bg-primary-dark text-white p-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                                    >
+                                        <i className={isSavingSettings ? 'fas fa-spinner animate-spin' : 'fas fa-save'}></i>
+                                        {isSavingSettings ? 'SAVING...' : 'SAVE CONFIGURATION'}
+                                    </button>
+                                    <button 
+                                        onClick={triggerManualReport}
+                                        className="bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 p-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 flex items-center gap-2"
+                                    >
+                                        <i className="fas fa-paper-plane"></i> RUN NOW
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {isExporting && (
