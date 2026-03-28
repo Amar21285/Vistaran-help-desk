@@ -135,8 +135,9 @@ app.get('/api/admin/dsr-logs', (req, res) => {
 });
 
 app.post('/api/admin/trigger-report', async (req, res) => {
-  const recipients = req.body.recipients;
-  const result = await reportService.generateAndSendReport(recipients);
+  const { recipients, startDate, endDate } = req.body;
+  const range = (startDate && endDate) ? { start: startDate, end: endDate } : null;
+  const result = await reportService.generateAndSendReport(recipients, range);
   if (result.success) {
       res.json(result);
   } else {

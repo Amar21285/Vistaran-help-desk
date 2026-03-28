@@ -88,14 +88,24 @@ class ReportService {
         return [];
     }
 
-    async generateAndSendReport(manualRecipients) {
-        // Use IST date if possible, but for UTC servers, we ensure local time is captured
-        const now = new Date();
-        const istOffset = 5.5 * 60 * 60 * 1000;
-        const istDate = new Date(now.getTime() + istOffset);
-        const today = istDate.toISOString().split('T')[0];
+    async generateAndSendReport(manualRecipients, optionalRange = null) {
+        let startDate, endDate, label;
         
-        console.log(`[DSR] --- STARTING REPORT GENERATION (${today}) ---`);
+        if (optionalRange && optionalRange.start && optionalRange.end) {
+            startDate = optionalRange.start;
+            endDate = optionalRange.end;
+            label = `Range_${startDate}_to_${endDate}`;
+            console.log(`[DSR] --- STARTING CUSTOM RANGE REPORT (${label}) ---`);
+        } else {
+            const now = new Date();
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istDate = new Date(now.getTime() + istOffset);
+            startDate = istDate.toISOString().split('T')[0];
+            endDate = startDate;
+            label = startDate;
+            console.log(`[DSR] --- STARTING DAILY REPORT (${label}) ---`);
+        }
+
         const settings = this.getSettings();
         const recipients = manualRecipients || settings.recipients;
 
@@ -108,12 +118,12 @@ class ReportService {
             // 1. Collect Data
             const allTickets = this.getData('tickets');
             const tickets = allTickets.filter(t => {
-                const d = t.dateCreated || "";
-                return d.startsWith(today);
+                const d = (t.dateCreated || "").split('T')[0];
+                return d >= startDate && d <= endDate;
             });
 
             const allAttendance = this.getData('attendance');
-            const attendance = allAttendance.filter(a => a.date === today);
+            const attendance = allAttendance.filter(a => a.date >= startDate && a.date <= endDate);
 
             const inventory = this.getData('inventory');
             const lowStock = inventory.filter(i => {
@@ -122,29 +132,29 @@ class ReportService {
                 return m > 0 && q <= m;
             });
 
-            console.log(`[DSR] Stats: Tickets=${tickets.length}, Attendance=${attendance.length}, LowStock=${lowStock.length}`);
+            console.log(`[DSR] Stats for ${label}: Tickets=${tickets.length}, Attendance=${attendance.length}, LowStock=${lowStock.length}`);
 
             // 2. Generate Files
-            const excelPath = path.join(reportDir, `DSR_${today}.xlsx`);
+            const excelPath = path.join(reportDir, `DSR_${label}.xlsx`);
             this.createExcelReport(excelPath, tickets, attendance, lowStock);
 
-            const pdfPath = path.join(reportDir, `DSR_${today}.pdf`);
-            await this.createPDFReport(pdfPath, tickets, attendance, lowStock, today);
+            const pdfPath = path.join(reportDir, `DSR_${label}.pdf`);
+            await this.createPDFReport(pdfPath, tickets, attendance, lowStock, label);
 
             // 3. Send Email
-            const mailResult = await this.sendEmail(recipients, today, [excelPath, pdfPath]);
+            const mailResult = await this.sendEmail(recipients, label, [excelPath, pdfPath]);
             
             // 4. Record in Audit Logs
             this.recordAuditLog({
-                action: mailResult.simulated ? "DSR Generated (Simulated Email)" : "DSR Sent (Auto-Email)",
-                details: `Tickets: ${tickets.length}, Attendance: ${attendance.length}, Recipients: ${recipients.join(', ')}`,
+                action: mailResult.simulated ? `DSR Generated (Simulated) [${label}]` : `DSR Sent [${label}]`,
+                details: `Range: ${startDate} to ${endDate}, Tickets: ${tickets.length}, Attendance: ${attendance.length}`,
                 status: mailResult.success ? "Success" : "Failed"
             });
 
             return { 
                 success: mailResult.success, 
                 simulated: mailResult.simulated,
-                reportDate: today, 
+                reportDate: label,
                 stats: { ticketsToday: tickets.length, attendanceToday: attendance.length, lowStockCount: lowStock.length }
             };
         } catch (error) {

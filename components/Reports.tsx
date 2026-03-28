@@ -100,7 +100,11 @@ const Reports: React.FC<ReportsProps> = ({
             const res = await fetch('/api/admin/trigger-report', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ recipients: automationSettings.recipients })
+                body: JSON.stringify({ 
+                    recipients: automationSettings.recipients,
+                    startDate,
+                    endDate
+                })
             });
             const data = await res.json();
                 if (data.success) {
