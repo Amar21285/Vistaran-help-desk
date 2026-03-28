@@ -1,16 +1,8 @@
-const dns = require('dns');
-
-// Force IPv4 as the primary result order for all DNS lookups in this service
-if (dns.setDefaultResultOrder) {
-    dns.setDefaultResultOrder('ipv4first');
-}
-
 const fs = require('fs');
 const path = require('path');
 const cron = require('node-cron');
 const xlsx = require('xlsx');
 const PDFDocument = require('pdfkit');
-const nodemailer = require('nodemailer');
 
 // Paths to data files
 const dataDir = path.join(process.cwd(), 'data');
@@ -280,45 +272,45 @@ class ReportService {
     }
 
     async sendEmail(recipients, date, attachments) {
-        const user = process.env.EMAIL_USER;
-        const pass = process.env.EMAIL_PASS;
+        const apiKey = process.env.RESEND_API_KEY;
 
-        if (!user || !pass || pass === 'placeholder_pass') {
-            console.log('Skipping actual email send (no credentials). Report files generated in data/reports/');
+        if (!apiKey || apiKey === 'placeholder_key') {
+            console.log('Skipping actual email send (no RESEND_API_KEY). Report files generated in data/reports/');
             return { success: true, simulated: true };
         }
 
         try {
-            const transporter = nodemailer.createTransport({
-                host: '74.125.130.108', // Force use of smtp.gmail.com IPv4 address
-                port: 465,
-                secure: true, // Port 465 is secure by default
-                auth: {
-                    user: user,
-                    pass: pass
+            const resendAttachments = attachments.map(p => ({
+                filename: path.basename(p),
+                content: fs.readFileSync(p).toString('base64')
+            }));
+
+            const response = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
                 },
-                tls: {
-                    servername: 'smtp.gmail.com',
-                    rejectUnauthorized: false
-                },
-                connectionTimeout: 15000,
-                greetingTimeout: 15000,
-                socketTimeout: 15000
+                body: JSON.stringify({
+                    from: 'Vistaran Reports <onboarding@resend.dev>',
+                    to: recipients,
+                    subject: `IT Daily Status Report (DSR) - ${date}`,
+                    html: `<strong>Vistaran Help Desk</strong><br/><br/>Please find attached the IT Daily Status Report for ${date}.<br/><br/>This is an automated message.`,
+                    attachments: resendAttachments
+                })
             });
 
-            const mailOptions = {
-                from: `"Vistaran Auto Bot" <${user}>`,
-                to: recipients.join(', '),
-                subject: `IT Daily Status Report (DSR) - ${date}`,
-                text: `Please find attached the IT Daily Status Report for ${date}.\n\nThis is an automated message.`,
-                attachments: attachments.map(p => ({ filename: path.basename(p), path: p }))
-            };
+            const result = await response.json();
 
-            await transporter.sendMail(mailOptions);
-            console.log(`[DSR] Email sent successfully to ${recipients.join(', ')}`);
-            return { success: true };
+            if (response.ok) {
+                console.log(`[DSR] Email sent via Resend to ${recipients.join(', ')}`);
+                return { success: true };
+            } else {
+                console.error('[DSR] Resend API Error:', result);
+                return { success: false, error: result.message || 'API Error' };
+            }
         } catch (e) {
-            console.error('[DSR] SMTP Error:', e.message);
+            console.error('[DSR] Resend Fetch Error:', e.message);
             return { success: false, error: e.message };
         }
     }
