@@ -291,8 +291,8 @@ class ReportService {
         try {
             const transporter = nodemailer.createTransport({
                 host: '74.125.130.108', // Force use of smtp.gmail.com IPv4 address
-                port: 587,
-                secure: false,
+                port: 465,
+                secure: true, // Port 465 is secure by default
                 auth: {
                     user: user,
                     pass: pass
