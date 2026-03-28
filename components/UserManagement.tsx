@@ -98,6 +98,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
             employeeId: formData.get('employeeId') as string,
             designation: formData.get('designation') as string,
             joinedDate: new Date().toISOString(),
+            permissions: [],
         };
         setUsers(prev => [...prev, newUser]);
         logUserAction(realUser, `Created new user: ${newUser.name} (ID: ${newUser.id})`);

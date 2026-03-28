@@ -70,8 +70,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return true;
     }
 
-    // Check for explicitly granted permissions
-    return user.permissions?.includes(permission) || false;
+    // Check for explicitly granted permissions - safely handle undefined
+    return (user.permissions || []).includes(permission);
   }, [user]);
 
   const finalizeLogin = useCallback((foundUser: User) => {

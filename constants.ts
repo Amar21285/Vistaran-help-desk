@@ -1,12 +1,12 @@
 import { User, Role, UserStatus, Technician, Symptom, Ticket, Priority, TicketStatus, ManagedFile, FileType, TicketTemplate, InventoryItem, Vendor, FAQItem, AssetStatus, InternetVendor } from './types';
 
 export const USERS: User[] = [
-    { id: 'USR001', name: 'Amarjeet yadav', email: 'ITsupport@vistaran.in', password: '88283671', role: Role.ADMIN, department: 'IT', status: UserStatus.ACTIVE, joinedDate: '2023-01-15T10:00:00Z', photo: 'https://randomuser.me/api/portraits/men/1.jpg', phone: '+918828367178', whatsapp: '+918828367178' },
-    { id: 'USR002', name: 'BHANDUOP -001', email: 'purchasebhandup@vistaran.in', password: '10001', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR003', name: 'VIKHROLI -002', email: 'purchasevikhroli@vistaran.in', password: '10002', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR004', name: 'HIRANANDANI -003', email: 'purchasepowai@vistaran.in', password: '10003', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR026', name: 'Vistaran office Ho', email: 'purchase@vistaran.in', password: '776688', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
-    { id: 'USR027', name: 'Warehouse 501', email: 'purchasedc@vistaran.in', password: '50001', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z' },
+    { id: 'USR001', name: 'Amarjeet yadav', email: 'ITsupport@vistaran.in', password: '88283671', role: Role.ADMIN, department: 'IT', status: UserStatus.ACTIVE, joinedDate: '2023-01-15T10:00:00Z', photo: 'https://randomuser.me/api/portraits/men/1.jpg', phone: '+918828367178', whatsapp: '+918828367178', permissions: [] },
+    { id: 'USR002', name: 'BHANDUOP -001', email: 'purchasebhandup@vistaran.in', password: '10001', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z', permissions: [] },
+    { id: 'USR003', name: 'VIKHROLI -002', email: 'purchasevikhroli@vistaran.in', password: '10002', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z', permissions: [] },
+    { id: 'USR004', name: 'HIRANANDANI -003', email: 'purchasepowai@vistaran.in', password: '10003', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z', permissions: [] },
+    { id: 'USR026', name: 'Vistaran office Ho', email: 'purchase@vistaran.in', password: '776688', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z', permissions: [] },
+    { id: 'USR027', name: 'Warehouse 501', email: 'purchasedc@vistaran.in', password: '50001', role: Role.USER, department: 'Operations', status: UserStatus.ACTIVE, joinedDate: '2023-02-20T11:30:00Z', permissions: [] },
 ];
 
 export const TECHNICIANS: Technician[] = [
