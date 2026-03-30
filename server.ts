@@ -195,14 +195,9 @@ async function startServer() {
 
   // Daily Report Automation Endpoints
   app.get("/api/admin/report-settings", (req, res) => {
-    const settingsPath = path.join(dataDir, 'notification-settings.json');
     try {
-        if (fs.existsSync(settingsPath)) {
-            const data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-            res.json(data.dailyReport || {});
-        } else {
-            res.json({});
-        }
+        const settings = reportService.getSettings();
+        res.json(settings);
     } catch (e) {
         res.status(500).json({ error: (e as Error).message });
     }
@@ -214,6 +209,21 @@ async function startServer() {
         res.json(result);
     } else {
         res.status(500).json(result);
+    }
+  });
+
+  app.get("/api/admin/dsr-logs", (req, res) => {
+    const auditPath = path.join(dataDir, 'audit-logs.json');
+    try {
+        if (fs.existsSync(auditPath)) {
+            const logs = JSON.parse(fs.readFileSync(auditPath, 'utf8'));
+            const dsrLogs = logs.filter((l: any) => l.userName === "DSR Automation" || l.action.includes("DSR"));
+            res.json(dsrLogs.slice(0, 50));
+        } else {
+            res.json([]);
+        }
+    } catch (e) {
+        res.status(500).json({ error: (e as Error).message });
     }
   });
 

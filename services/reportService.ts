@@ -26,7 +26,7 @@ interface ReportSettings {
 const defaultSettings: ReportSettings = {
     enabled: false,
     time: "20:00",
-    recipients: ["ITsupport@vistaran.in"],
+    recipients: ["itsupport@vistaran.in"],
     includeTickets: true,
     includeAttendance: true,
     includeInventory: true
@@ -39,7 +39,7 @@ export class ReportService {
         this.initializeCron();
     }
 
-    private getSettings(): ReportSettings {
+    public getSettings(): ReportSettings {
         const settingsPath = path.join(dataDir, 'notification-settings.json');
         try {
             if (fs.existsSync(settingsPath)) {
@@ -47,7 +47,7 @@ export class ReportService {
                 return { ...defaultSettings, ...(data.dailyReport || {}) };
             }
         } catch (e) {
-            console.error('Error reading report settings:', e);
+            console.warn('Error reading report settings:', e);
         }
         return defaultSettings;
     }
@@ -62,7 +62,7 @@ export class ReportService {
             data.dailyReport = { ...(data.dailyReport || defaultSettings), ...newSettings };
             fs.writeFileSync(settingsPath, JSON.stringify(data, null, 2));
             this.initializeCron(); // Re-initialize cron with new time
-            return { success: true };
+            return { success: true, settings: data.dailyReport };
         } catch (e) {
             console.error('Error saving report settings:', e);
             return { success: false, error: (e as Error).message };
@@ -78,11 +78,36 @@ export class ReportService {
         if (settings.enabled && settings.time) {
             const [hour, minute] = settings.time.split(':');
             const cronTime = `${minute} ${hour} * * *`;
-            console.log(`Scheduling daily report for ${settings.time} (Cron: ${cronTime})`);
+            console.log(`[DSR] Automation Active: Scheduled for ${settings.time} Daily (Cron: ${cronTime})`);
             this.cronJob = cron.schedule(cronTime, () => {
-                console.log('Running scheduled daily report...');
+                console.log('[DSR] Running scheduled daily report trigger...');
                 this.generateAndSendReport();
             });
+        } else {
+            console.log('[DSR] Automation Disabled or No Time Set.');
+        }
+    }
+
+    public recordAuditLog(logEntry: { action: string, details: string, status: string }) {
+        const auditLogPath = path.join(dataDir, 'audit-logs.json');
+        try {
+            let logs: any[] = [];
+            if (fs.existsSync(auditLogPath)) {
+                logs = JSON.parse(fs.readFileSync(auditLogPath, 'utf8'));
+            }
+            const newLog = {
+                id: `DSR_${Date.now()}`,
+                userId: "SYSTEM",
+                userName: "DSR Automation",
+                action: logEntry.action,
+                details: logEntry.details,
+                timestamp: new Date().toISOString(),
+                status: logEntry.status
+            };
+            logs.unshift(newLog); // Add to beginning
+            fs.writeFileSync(auditLogPath, JSON.stringify(logs.slice(0, 1000), null, 2));
+        } catch (e) {
+            console.error('[DSR] Error recording audit log:', e);
         }
     }
 
@@ -98,42 +123,85 @@ export class ReportService {
         return [];
     }
 
-    public async generateAndSendReport(manualRecipients?: string[]) {
-        const today = new Date().toISOString().split('T')[0];
+    public async generateAndSendReport(manualRecipients?: string[], optionalRange?: { start: string, end: string }) {
+        let startDate: string, endDate: string, label: string;
+        
+        if (optionalRange && optionalRange.start && optionalRange.end) {
+            startDate = optionalRange.start;
+            endDate = optionalRange.end;
+            label = `Range_${startDate}_to_${endDate}`;
+        } else {
+            // Use IST (UTC+5:30) for date calculation
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istNow = new Date(Date.now() + istOffset);
+            startDate = istNow.toISOString().split('T')[0];
+            endDate = startDate;
+            label = startDate;
+        }
+
+        console.log(`[DSR] Triggered Report [${label}]`);
         const settings = this.getSettings();
         const recipients = manualRecipients || settings.recipients;
 
         if (recipients.length === 0) {
-            console.error('No recipients defined for daily report.');
+            console.error('[DSR] No recipients found.');
             return { success: false, error: 'No recipients' };
         }
 
-        // 1. Collect Data
-        const tickets = this.getData('tickets').filter(t => t.dateCreated.startsWith(today));
-        const attendance = this.getData('attendance').filter(a => a.date === today);
-        const inventory = this.getData('inventory');
-        const lowStock = inventory.filter(i => i.quantity <= (i.minStock || 0));
+        try {
+            // 1. Collect Data
+            const allTickets = this.getData('tickets');
+            const tickets = allTickets.filter(t => {
+                const ticketDate = (t.dateCreated || t.createdAt || "").split('T')[0];
+                return ticketDate >= startDate && ticketDate <= endDate;
+            });
 
-        // 2. Generate Excel
-        const excelPath = path.join(reportDir, `DSR_${today}.xlsx`);
-        this.createExcelReport(excelPath, tickets, attendance, lowStock);
+            const allAttendance = this.getData('attendance');
+            const attendance = allAttendance.filter(a => {
+                const punchDate = (a.date || "").split('T')[0];
+                return punchDate >= startDate && punchDate <= endDate;
+            });
 
-        // 3. Generate PDF
-        const pdfPath = path.join(reportDir, `DSR_${today}.pdf`);
-        await this.createPDFReport(pdfPath, tickets, attendance, lowStock, today);
+            const inventory = this.getData('inventory');
+            const lowStock = inventory.filter(i => {
+                const q = Number(i.quantity) || 0;
+                const m = Number(i.minStock) || 0;
+                return m > 0 && q <= m;
+            });
 
-        // 4. Send Email
-        const mailResult = await this.sendEmail(recipients, today, [excelPath, pdfPath]);
+            // 2. Generate Excel
+            const excelPath = path.join(reportDir, `DSR_${label}.xlsx`);
+            this.createExcelReport(excelPath, tickets, attendance, lowStock);
 
-        return { 
-            success: mailResult.success, 
-            reportDate: today, 
-            stats: {
-                ticketsToday: tickets.length,
-                attendanceToday: attendance.length,
-                lowStockCount: lowStock.length
-            }
-        };
+            // 3. Generate PDF
+            const pdfPath = path.join(reportDir, `DSR_${label}.pdf`);
+            await this.createPDFReport(pdfPath, tickets, attendance, lowStock, label);
+
+            // 4. Send Email
+            const mailResult = await this.sendEmail(recipients, label, [excelPath, pdfPath]);
+
+            // 5. Record Audit
+            this.recordAuditLog({
+                action: mailResult.simulated ? 'DSR Generated (Simulated Email)' : 'DSR Sent successfully',
+                details: `Range: ${startDate} to ${endDate}, Tickets: ${tickets.length}, Attendance: ${attendance.length}, Recipients: ${recipients.join(', ')}`,
+                status: mailResult.success ? "Success" : "Failed"
+            });
+
+            return { 
+                success: mailResult.success, 
+                simulated: mailResult.simulated,
+                reportDate: label,
+                error: mailResult.error,
+                stats: {
+                    ticketsToday: tickets.length,
+                    attendanceToday: attendance.length,
+                    lowStockCount: lowStock.length
+                }
+            };
+        } catch (e) {
+            console.error('[DSR] Fatal report generation error:', e);
+            return { success: false, error: (e as Error).message };
+        }
     }
 
     private createExcelReport(filePath: string, tickets: any[], attendance: any[], lowStock: any[]) {

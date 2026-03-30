@@ -29,24 +29,29 @@ class ReportService {
     }
 
     getSettings() {
-        const settingsPath = path.join(dataDir, 'dsr-settings.json');
+        const settingsPath = path.join(dataDir, 'notification-settings.json');
         try {
             if (fs.existsSync(settingsPath)) {
-                return JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+                const data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+                return { ...defaultSettings, ...(data.dailyReport || {}) };
             }
         } catch (e) {
-            console.error('Error reading DSR settings:', e);
+            console.warn('Error reading DSR settings:', e);
         }
         return defaultSettings;
     }
 
     updateSettings(newSettings) {
-        const settingsPath = path.join(dataDir, 'dsr-settings.json');
+        const settingsPath = path.join(dataDir, 'notification-settings.json');
         try {
-            const data = { ...this.getSettings(), ...newSettings };
+            let data = {};
+            if (fs.existsSync(settingsPath)) {
+                data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+            }
+            data.dailyReport = { ...(data.dailyReport || defaultSettings), ...newSettings };
             fs.writeFileSync(settingsPath, JSON.stringify(data, null, 2));
             this.initializeCron(); // Re-initialize cron with new time
-            return { success: true, settings: data };
+            return { success: true, settings: data.dailyReport };
         } catch (e) {
             console.error('Error saving DSR settings:', e);
             return { success: false, error: e.message };
@@ -62,9 +67,9 @@ class ReportService {
         if (settings.enabled && settings.time) {
             const [hour, minute] = settings.time.split(':');
             const cronTime = `${minute} ${hour} * * *`;
-            console.log(`Scheduling daily report for ${settings.time} (Cron: ${cronTime})`);
+            console.log(`[DSR] Automation Active (CJS): Scheduled for ${settings.time} Daily (Cron: ${cronTime})`);
             this.cronJob = cron.schedule(cronTime, () => {
-                console.log('Running scheduled daily report...');
+                console.log('[DSR] Running scheduled daily report trigger (CJS)...');
                 this.generateAndSendReport();
             });
         }
