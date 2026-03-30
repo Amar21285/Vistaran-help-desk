@@ -6,5 +6,16 @@
   "techOnTicketAssigned": true,
   "userOnTicketStatusChanged": true,
   "enableSMSWhatsApp": true,
-  "enableInAppNotifications": true
+  "enableInAppNotifications": true,
+  "dailyReport": {
+    "enabled": true,
+    "time": "09:00",
+    "recipients": [
+      "itsupport@vistaran.in"
+    ],
+    "includeTickets": true,
+    "includeAttendance": true,
+    "includeInventory": true,
+    "lastSentDate": "2026-03-30"
+  }
 }

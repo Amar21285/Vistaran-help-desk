@@ -21,6 +21,7 @@ interface ReportSettings {
     includeTickets: boolean;
     includeAttendance: boolean;
     includeInventory: boolean;
+    lastSentDate?: string; // YYYY-MM-DD (IST)
 }
 
 const defaultSettings: ReportSettings = {
@@ -29,7 +30,8 @@ const defaultSettings: ReportSettings = {
     recipients: ["itsupport@vistaran.in"],
     includeTickets: true,
     includeAttendance: true,
-    includeInventory: true
+    includeInventory: true,
+    lastSentDate: ""
 };
 
 export class ReportService {
@@ -79,10 +81,32 @@ export class ReportService {
             const [hour, minute] = settings.time.split(':');
             const cronTime = `${minute} ${hour} * * *`;
             console.log(`[DSR] Automation Active: Scheduled for ${settings.time} Daily (Cron: ${cronTime})`);
+            
+            // Scheduling next run
             this.cronJob = cron.schedule(cronTime, () => {
                 console.log('[DSR] Running scheduled daily report trigger...');
                 this.generateAndSendReport();
             });
+
+            // Missed Run Check (Catch-up)
+            setTimeout(() => {
+                const istOffset = 5.5 * 60 * 60 * 1000;
+                const istNow = new Date(Date.now() + istOffset);
+                const todayIST = istNow.toISOString().split('T')[0];
+                
+                const [targetHour, targetMinute] = settings.time.split(':').map(Number);
+                const currentHour = istNow.getUTCHours() + 5; // Simulating IST hour if needed, but getHours() is easier if server is set
+                const currentMinute = istNow.getUTCMinutes() + 30;
+                
+                // Let's use a simpler but more accurate check for target time
+                const nowMinutes = (istNow.getUTCHours() + 5) * 60 + (istNow.getUTCMinutes() + 30);
+                const targetMinutes = targetHour * 60 + targetMinute;
+
+                if (settings.lastSentDate !== todayIST && nowMinutes >= targetMinutes) {
+                    console.log(`[DSR] Missed Run Detected (Today: ${todayIST}, Scheduled: ${settings.time}). Initializing catch-up report...`);
+                    this.generateAndSendReport();
+                }
+            }, 5000); // Wait 5 seconds after startup to settle
         } else {
             console.log('[DSR] Automation Disabled or No Time Set.');
         }
@@ -126,20 +150,22 @@ export class ReportService {
     public async generateAndSendReport(manualRecipients?: string[], optionalRange?: { start: string, end: string }) {
         let startDate: string, endDate: string, label: string;
         
+        // IST date calculation
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istNow = new Date(Date.now() + istOffset);
+        const todayIST = istNow.toISOString().split('T')[0];
+
         if (optionalRange && optionalRange.start && optionalRange.end) {
             startDate = optionalRange.start;
             endDate = optionalRange.end;
             label = `Range_${startDate}_to_${endDate}`;
         } else {
-            // Use IST (UTC+5:30) for date calculation
-            const istOffset = 5.5 * 60 * 60 * 1000;
-            const istNow = new Date(Date.now() + istOffset);
-            startDate = istNow.toISOString().split('T')[0];
+            startDate = todayIST;
             endDate = startDate;
             label = startDate;
         }
 
-        console.log(`[DSR] Triggered Report [${label}]`);
+        console.log(`[DSR] Processing Report [${label}]`);
         const settings = this.getSettings();
         const recipients = manualRecipients || settings.recipients;
 
@@ -180,10 +206,15 @@ export class ReportService {
             // 4. Send Email
             const mailResult = await this.sendEmail(recipients, label, [excelPath, pdfPath]);
 
-            // 5. Record Audit
+            // 5. Update lastSentDate persistently
+            if (!manualRecipients) {
+                this.updateSettings({ lastSentDate: todayIST });
+            }
+
+            // 6. Record Audit
             this.recordAuditLog({
                 action: mailResult.simulated ? 'DSR Generated (Simulated Email)' : 'DSR Sent successfully',
-                details: `Range: ${startDate} to ${endDate}, Tickets: ${tickets.length}, Attendance: ${attendance.length}, Recipients: ${recipients.join(', ')}`,
+                details: `${manualRecipients ? 'MANUAL' : 'AUTOMATED'} | Range: ${startDate} to ${endDate}, Tickets: ${tickets.length}, Attendance: ${attendance.length}`,
                 status: mailResult.success ? "Success" : "Failed"
             });
 

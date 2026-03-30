@@ -19,7 +19,8 @@ const defaultSettings = {
     recipients: ["itsupport@vistaran.in"],
     includeTickets: true,
     includeAttendance: true,
-    includeInventory: true
+    includeInventory: true,
+    lastSentDate: ""
 };
 
 class ReportService {
@@ -68,10 +69,27 @@ class ReportService {
             const [hour, minute] = settings.time.split(':');
             const cronTime = `${minute} ${hour} * * *`;
             console.log(`[DSR] Automation Active (CJS): Scheduled for ${settings.time} Daily (Cron: ${cronTime})`);
+            
             this.cronJob = cron.schedule(cronTime, () => {
                 console.log('[DSR] Running scheduled daily report trigger (CJS)...');
                 this.generateAndSendReport();
             });
+
+            // Missed Run Check (Catch-up)
+            setTimeout(() => {
+                const istOffset = 5.5 * 60 * 60 * 1000;
+                const istNow = new Date(Date.now() + istOffset);
+                const todayIST = istNow.toISOString().split('T')[0];
+                
+                const [targetHour, targetMinute] = settings.time.split(':').map(Number);
+                const nowMinutes = (istNow.getUTCHours() + 5) * 60 + (istNow.getUTCMinutes() + 30);
+                const targetMinutes = targetHour * 60 + targetMinute;
+
+                if (settings.lastSentDate !== todayIST && nowMinutes >= targetMinutes) {
+                    console.log(`[DSR] Missed Run Detected (Today: ${todayIST}, Scheduled: ${settings.time}). Initializing catch-up report...`);
+                    this.generateAndSendReport();
+                }
+            }, 10000); // Wait 10 seconds after startup
         }
     }
 
@@ -87,28 +105,29 @@ class ReportService {
         return [];
     }
 
-    async generateAndSendReport(manualRecipients, optionalRange = null) {
+    async generateAndSendReport(manualRecipients = null, optionalRange = null) {
         let startDate, endDate, label;
         
+        // IST date calculation
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istNow = new Date(Date.now() + istOffset);
+        const todayIST = istNow.toISOString().split('T')[0];
+
         if (optionalRange && optionalRange.start && optionalRange.end) {
             startDate = optionalRange.start;
             endDate = optionalRange.end;
             label = `Range_${startDate}_to_${endDate}`;
-            console.log(`[DSR] --- STARTING CUSTOM RANGE REPORT (${label}) ---`);
         } else {
-            const now = new Date();
-            const istOffset = 5.5 * 60 * 60 * 1000;
-            const istDate = new Date(now.getTime() + istOffset);
-            startDate = istDate.toISOString().split('T')[0];
+            startDate = todayIST;
             endDate = startDate;
             label = startDate;
-            console.log(`[DSR] --- STARTING DAILY REPORT (${label}) ---`);
         }
 
+        console.log(`[DSR] Processing Report (CJS) [${label}]`);
         const settings = this.getSettings();
         const recipients = manualRecipients || settings.recipients;
 
-        if (recipients.length === 0) {
+        if (!recipients || recipients.length === 0) {
             console.error('[DSR] No recipients found.');
             return { success: false, error: 'No recipients' };
         }
@@ -117,15 +136,14 @@ class ReportService {
             // 1. Collect Data
             const allTickets = this.getData('tickets');
             const tickets = allTickets.filter(t => {
-                const ticketDate = t.dateCreated || t.createdAt || "";
-                const d = ticketDate.split('T')[0];
-                return d >= startDate && d <= endDate;
+                const ticketDate = (t.dateCreated || t.createdAt || "").split('T')[0];
+                return ticketDate >= startDate && ticketDate <= endDate;
             });
 
             const allAttendance = this.getData('attendance');
             const attendance = allAttendance.filter(a => {
-                const d = a.date || ""; 
-                return d >= startDate && d <= endDate;
+                const punchDate = (a.date || "").split('T')[0];
+                return punchDate >= startDate && punchDate <= endDate;
             });
 
             const inventory = this.getData('inventory');
@@ -134,8 +152,6 @@ class ReportService {
                 const m = Number(i.minStock) || 0;
                 return m > 0 && q <= m;
             });
-
-            console.log(`[DSR] Stats for ${label}: Tickets=${tickets.length}, Attendance=${attendance.length}, LowStock=${lowStock.length}`);
 
             // 2. Generate Files
             const excelPath = path.join(reportDir, `DSR_${label}.xlsx`);
@@ -146,11 +162,16 @@ class ReportService {
 
             // 3. Send Email
             const mailResult = await this.sendEmail(recipients, label, [excelPath, pdfPath]);
-            
-            // 4. Record in Audit Logs
+
+            // 4. Update lastSentDate persistently
+            if (!manualRecipients) {
+                this.updateSettings({ lastSentDate: todayIST });
+            }
+
+            // 5. Record Audit
             this.recordAuditLog({
-                action: mailResult.simulated ? `DSR Generated (Simulated) [${label}]` : `DSR Sent [${label}]`,
-                details: `Range: ${startDate} to ${endDate}, Tickets: ${tickets.length}, Attendance: ${attendance.length}`,
+                action: mailResult.simulated ? 'DSR Generated (Simulated Email)' : 'DSR Sent successfully',
+                details: `${manualRecipients ? 'MANUAL' : 'AUTOMATED'} | Range: ${startDate} to ${endDate}, Tickets: ${tickets.length}, Attendance: ${attendance.length}`,
                 status: mailResult.success ? "Success" : "Failed"
             });
 
@@ -159,11 +180,15 @@ class ReportService {
                 simulated: mailResult.simulated,
                 reportDate: label,
                 error: mailResult.error,
-                stats: { ticketsToday: tickets.length, attendanceToday: attendance.length, lowStockCount: lowStock.length }
+                stats: {
+                    ticketsToday: tickets.length,
+                    attendanceToday: attendance.length,
+                    lowStockCount: lowStock.length
+                }
             };
-        } catch (error) {
-            console.error('[DSR] Fatal Error:', error);
-            return { success: false, error: error.message };
+        } catch (e) {
+            console.error('[DSR] Fatal report generation error (CJS):', e);
+            return { success: false, error: e.message };
         }
     }
 
