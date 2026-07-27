@@ -335,14 +335,27 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                 const previewEl = document.getElementById('icard-preview-active-card');
                 if (previewEl) {
                     const pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', [cardW, cardH]);
-                    const canvas = await html2canvas(previewEl, {
-                        scale: 4,
-                        useCORS: true,
-                        logging: false,
-                        backgroundColor: '#ffffff'
-                    } as any);
-                    const imgData = canvas.toDataURL('image/jpeg', 0.98);
-                    pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
+                    const cardNodes = previewEl.querySelectorAll('.print-card-box');
+                    
+                    // Temporarily remove transform on parent just in case it leaks scaling to children
+                    const originalClassName = previewEl.className;
+                    previewEl.className = previewEl.className.replace('scale-125 transform', '');
+                    
+                    for (let i = 0; i < cardNodes.length; i++) {
+                        const node = cardNodes[i] as HTMLElement;
+                        if (i > 0) pdf.addPage([cardW, cardH], isLandscape ? 'l' : 'p');
+                        const canvas = await html2canvas(node, {
+                            scale: 4,
+                            useCORS: true,
+                            logging: false,
+                            backgroundColor: '#ffffff'
+                        } as any);
+                        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                        pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
+                    }
+                    
+                    previewEl.className = originalClassName;
+
                     const empId = getEmpId(activeUser);
                     const safeName = activeUser.name.replace(/\s+/g, '_');
                     pdf.save(`Vistaran_iCard_${empId}_${safeName}.pdf`);
@@ -359,6 +372,11 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const handleDownloadPNG = async () => {
         const previewEl = document.getElementById('icard-preview-active-card');
         if (!previewEl) return;
+        
+        // Temporarily remove scale class to prevent html2canvas stretching
+        const originalClassName = previewEl.className;
+        previewEl.className = previewEl.className.replace('scale-125 transform', '');
+        
         try {
             const canvas = await html2canvas(previewEl, {
                 scale: 4,
@@ -374,6 +392,8 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
             link.click();
         } catch (err) {
             console.error('PNG Generation Error:', err);
+        } finally {
+            previewEl.className = originalClassName;
         }
     };
 
