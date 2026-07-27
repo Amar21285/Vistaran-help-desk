@@ -5,7 +5,7 @@ import Logo from '../icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid';
+export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare';
 export type ThemeColor = 'blue' | 'emerald' | 'indigo' | 'charcoal' | 'amber' | 'crimson';
 
 export interface ThemeConfig {
@@ -839,6 +839,82 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
             );
         }
 
+        // Healthcare Distributor Format
+        if (format === 'healthcare') {
+            return (
+                <div
+                    className="print-card-box relative w-[53.98mm] h-[85.6mm] bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden flex flex-col justify-between"
+                    style={{ width: '53.98mm', height: '85.6mm' }}
+                >
+                    {/* Wavy side borders */}
+                    <svg className="absolute top-0 left-0 h-full w-[16mm] pointer-events-none" viewBox="0 0 100 400" preserveAspectRatio="none">
+                        <path d="M0 0 L0 400 L20 400 C80 300 -40 100 20 0 Z" fill={theme.primary} />
+                    </svg>
+                    <svg className="absolute top-0 right-0 h-full w-[20mm] pointer-events-none" viewBox="0 0 100 400" preserveAspectRatio="none">
+                        <path d="M100 0 L100 400 L60 400 C150 250 -20 150 60 0 Z" fill={theme.primary} />
+                        <path d="M70 400 C160 250 -10 150 70 0" fill="none" stroke={theme.primary} strokeWidth="0.5" strokeOpacity="0.5"/>
+                        <path d="M80 400 C170 250 0 150 80 0" fill="none" stroke={theme.primary} strokeWidth="0.5" strokeOpacity="0.3"/>
+                        <path d="M90 400 C180 250 10 150 90 0" fill="none" stroke={theme.primary} strokeWidth="0.5" strokeOpacity="0.1"/>
+                    </svg>
+
+                    {/* Top Content */}
+                    <div className="pt-6 pb-2 px-6 flex flex-col items-center z-10 text-center">
+                        <div className="flex justify-center mb-1" style={{ color: theme.primary }}>
+                            {renderLogo("w-20 h-auto fill-current")}
+                        </div>
+                        <h2 className="mt-2 font-black text-[11px] leading-tight uppercase" style={{ color: theme.dark }}>
+                            {companyName || 'VISTARAN HEALTH CARE SERVICES PVT LTD'}
+                        </h2>
+                        <div className="flex items-center justify-center gap-1 mt-1.5 w-full">
+                            <div className="h-[0.5px] bg-slate-300 flex-1" />
+                            <span className="text-[5.5px] font-bold tracking-widest uppercase" style={{ color: theme.primary }}>
+                                {tagline || 'COMPASSION | CARE | COMMITMENT'}
+                            </span>
+                            <div className="h-[0.5px] bg-slate-300 flex-1" />
+                        </div>
+                    </div>
+
+                    {/* Middle Content */}
+                    <div className="flex-1 flex flex-col items-center justify-center px-4 z-10">
+                        <div className="text-center w-full mb-2">
+                            <span className="inline-block border-b-2 pb-0.5 text-[8.5px] font-bold uppercase" style={{ color: theme.dark, borderColor: theme.dark }}>
+                                {user.designation || 'AUTHORISED DISTRIBUTOR'}
+                            </span>
+                        </div>
+                        <div
+                            className="relative w-16 h-16 rounded-xl shadow-sm border-2 mt-1 bg-white flex items-center justify-center overflow-hidden"
+                            style={{ borderColor: theme.primary }}
+                        >
+                            <img
+                                src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`}
+                                alt={user.name}
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                        <h3 className="font-extrabold text-[12px] tracking-tight text-center mt-2 leading-tight uppercase" style={{ color: theme.dark }}>
+                            {user.name}
+                        </h3>
+                    </div>
+
+                    {/* Bottom Footer Band */}
+                    <div className="w-full z-10">
+                        <div className="py-1.5 text-center" style={{ backgroundColor: theme.primary }}>
+                            <span className="text-white text-[8px] font-bold uppercase tracking-widest">
+                                {user.department || 'HINDUSTAN UNILEVER LIMITED'}
+                            </span>
+                        </div>
+                        <div className="bg-slate-50 py-1.5 px-3 text-center min-h-[14mm] flex items-center justify-center border-t border-slate-200">
+                            <p className="text-[5.5px] text-slate-800 font-bold leading-[1.3] uppercase">
+                                DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6<br/>
+                                LBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,<br/>
+                                MUMBAI, MAHARASHTRA 400078
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         return null;
     };
 
@@ -970,6 +1046,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     { id: 'cyber', label: 'Cyber Tech Dark', icon: 'fa-shield-halved' },
                                     { id: 'minimal', label: 'Minimal Corporate', icon: 'fa-square' },
                                     { id: 'rfid', label: 'RFID Smart Card', icon: 'fa-microchip' },
+                                    { id: 'healthcare', label: 'Distributor Card', icon: 'fa-id-card-clip' },
                                 ].map((item) => (
                                     <button
                                         key={item.id}
