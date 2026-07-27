@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { User, Role } from '../../types';
 import JsBarcode from 'jsbarcode';
 import Logo from '../icons/Logo';
@@ -219,12 +219,20 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     // Customization states
     const [customLogoUrl, setCustomLogoUrl] = useState<string>('');
     const [partnerLogoUrl, setPartnerLogoUrl] = useState<string>('');
+    const [companyLogoUrl, setCompanyLogoUrl] = useState<string>('');
+    const [customPrimaryColor, setCustomPrimaryColor] = useState<string>('');
+    const [customTextColor, setCustomTextColor] = useState<string>('');
     const [userOverrides, setUserOverrides] = useState<Record<string, Partial<User>>>({});
     const logoInputRef = useRef<HTMLInputElement>(null);
     const partnerLogoInputRef = useRef<HTMLInputElement>(null);
     const photoInputRef = useRef<HTMLInputElement>(null);
 
-    const theme = THEMES[themeKey] || THEMES.blue;
+    const theme = useMemo(() => {
+        const baseTheme = { ...THEMES[themeKey] };
+        if (customPrimaryColor) baseTheme.primary = customPrimaryColor;
+        if (customTextColor) baseTheme.dark = customTextColor;
+        return baseTheme;
+    }, [themeKey, customPrimaryColor, customTextColor]);
     
     // Effective user logic
     const getEffectiveUser = (u: User): User => ({ ...u, ...(userOverrides[u.id] || {}) });
@@ -463,7 +471,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     >
                         <div className="absolute -right-4 -top-4 w-14 h-14 rounded-full bg-white/10 blur-sm pointer-events-none" />
                         <div className="flex items-center gap-1.5 z-10">
-                            <Logo className="w-4 h-4 text-white fill-current" />
+                            {renderLogo("w-4 h-4 text-white fill-current")}
                             <span className="font-black text-[11px] tracking-wider uppercase leading-none">
                                 {companyName}
                             </span>
@@ -560,7 +568,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         style={{ backgroundColor: theme.primary }}
                     >
                         <div className="flex items-center gap-1.5">
-                            <Logo className="w-4 h-4 text-white fill-current" />
+                            {renderLogo("w-4 h-4 text-white fill-current")}
                             <span className="font-black text-[11px] tracking-wider uppercase">{companyName}</span>
                         </div>
                         <span className="text-[7.5px] font-bold tracking-wider uppercase opacity-90">
@@ -904,7 +912,11 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {/* Top Header Block */}
                     <div className={`pt-[8mm] pb-1 px-4 flex flex-col items-center z-10 text-center ${isF2 ? 'text-white' : ''}`}>
                         <div className={`flex justify-center mb-1 ${isF2 ? 'text-white' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
-                            {renderLogo("w-[18mm] h-auto fill-current")}
+                            {companyLogoUrl ? (
+                                <img src={companyLogoUrl} alt="Company Logo" className="w-[18mm] max-h-[14mm] object-contain drop-shadow-sm" />
+                            ) : (
+                                renderLogo("w-[18mm] h-auto fill-current")
+                            )}
                         </div>
                         <h2 className={`mt-2 font-black text-[10.5px] leading-[1.1] uppercase ${isF2 ? 'mt-4' : ''}`} style={isF2 ? { color: theme.dark } : { color: theme.dark }}>
                             {companyName || 'VISTARAN HEALTH CARE'}<br/>SERVICES PVT LTD
@@ -1199,32 +1211,76 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </label>
                             <div className="grid grid-cols-3 gap-2">
                                 {(Object.keys(THEMES) as ThemeColor[]).map((tKey) => {
-                                    const tObj = THEMES[tKey];
-                                    const isSelected = themeKey === tKey;
+                                    const t = THEMES[tKey];
                                     return (
                                         <button
                                             key={tKey}
-                                            onClick={() => setThemeKey(tKey)}
-                                            className={`p-2 rounded-xl border flex items-center gap-2 text-left transition ${
-                                                isSelected
-                                                    ? 'ring-2 ring-offset-1 ring-slate-800 border-transparent shadow-sm'
-                                                    : 'border-slate-200 dark:border-slate-700 hover:bg-white'
+                                            onClick={() => {
+                                                setThemeKey(tKey);
+                                                setCustomPrimaryColor(''); // Reset custom when selecting a preset
+                                                setCustomTextColor('');
+                                            }}
+                                            className={`p-2 rounded-xl border flex flex-col items-center transition ${
+                                                themeKey === tKey && !customPrimaryColor
+                                                    ? 'bg-slate-100 dark:bg-slate-700 border-slate-300 dark:border-slate-500 shadow-inner'
+                                                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300'
                                             }`}
                                         >
-                                            <span
-                                                className="w-4 h-4 rounded-full flex-shrink-0 shadow-inner"
-                                                style={{ backgroundColor: tObj.primary }}
+                                            <div
+                                                className="w-full h-4 rounded shadow-sm mb-1"
+                                                style={{ backgroundColor: t.primary }}
                                             />
-                                            <span className="text-[11px] font-semibold text-slate-800 dark:text-slate-200 truncate">
-                                                {tObj.name.split(' ')[0]}
+                                            <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                                                {t.name.replace('Vistaran ', '')}
                                             </span>
                                         </button>
                                     );
                                 })}
                             </div>
+                            
+                            <div className="mt-3 bg-slate-100 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                                        Custom Primary Color (Shapes)
+                                    </label>
+                                    <div className="flex items-center gap-2">
+                                        <input 
+                                            type="color" 
+                                            value={customPrimaryColor || THEMES[themeKey].primary}
+                                            onChange={(e) => setCustomPrimaryColor(e.target.value)}
+                                            className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                                        />
+                                        <input 
+                                            type="text" 
+                                            value={customPrimaryColor || THEMES[themeKey].primary}
+                                            onChange={(e) => setCustomPrimaryColor(e.target.value)}
+                                            className="w-full text-xs p-1.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                                        Custom Text Color
+                                    </label>
+                                    <div className="flex items-center gap-2">
+                                        <input 
+                                            type="color" 
+                                            value={customTextColor || THEMES[themeKey].dark}
+                                            onChange={(e) => setCustomTextColor(e.target.value)}
+                                            className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                                        />
+                                        <input 
+                                            type="text" 
+                                            value={customTextColor || THEMES[themeKey].dark}
+                                            onChange={(e) => setCustomTextColor(e.target.value)}
+                                            className="w-full text-xs p-1.5 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* 3. Branding & Customization */}
+                        {/* 3. Company Branding */}
                         <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-700">
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                                 3. Company Branding
@@ -1264,6 +1320,41 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 <div>
                                     <span className="text-slate-500 font-semibold block mb-1">Support Phone</span>
                                     <input type="text" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
+                                </div>
+                            </div>
+                            
+                            {/* Primary Company Logo Upload */}
+                            <div className="mt-4 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                                <span className="text-slate-500 font-semibold block text-[10px] uppercase mb-1">Company Logo (Top)</span>
+                                <div className="flex flex-wrap items-center gap-2 text-xs">
+                                    <label className="cursor-pointer bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 px-3 py-1.5 rounded transition font-medium flex items-center gap-1">
+                                        <i className="fas fa-upload"></i> Upload
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            accept="image/*"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = (e) => setCompanyLogoUrl(e.target?.result as string);
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }}
+                                        />
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Or paste image URL"
+                                        className="flex-1 p-1.5 min-w-[120px] text-xs border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700"
+                                        value={companyLogoUrl}
+                                        onChange={(e) => setCompanyLogoUrl(e.target.value)}
+                                    />
+                                    {companyLogoUrl && (
+                                        <button onClick={() => setCompanyLogoUrl('')} className="text-red-500 p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">
+                                            <i className="fas fa-trash"></i>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                             
