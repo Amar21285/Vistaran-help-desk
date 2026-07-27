@@ -850,88 +850,101 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     </div>
                 </div>
             );
-        }        // Healthcare Distributor Formats
+        }        // Healthcare Distributor Formats (3 Variants matching User Image)
         if (format === 'healthcare' || format === 'distributor2' || format === 'distributor3') {
-            const isV2 = format === 'distributor2';
-            const isV3 = format === 'distributor3';
+            const isF1 = format === 'healthcare';
+            const isF2 = format === 'distributor2';
+            const isF3 = format === 'distributor3';
             
             return (
                 <div
                     className="print-card-box relative bg-white rounded-xl shadow-md border border-slate-300 flex flex-col justify-between overflow-hidden"
                     style={{ width: '53.98mm', height: '85.6mm' }}
                 >
-                    {/* Background Accents based on Variant */}
-                    {isV2 ? (
+                    {/* Background SVG Accents */}
+                    {isF1 && (
                         <>
-                            <div className="absolute top-0 left-0 w-full h-[40%] bg-gradient-to-br from-slate-100 to-slate-200" />
-                            <div className="absolute top-0 left-0 w-full h-2" style={{ backgroundColor: theme.primary }} />
-                        </>
-                    ) : isV3 ? (
-                        <>
-                            <div className="absolute inset-0 opacity-5" style={{ backgroundImage: `radial-gradient(${theme.primary} 1px, transparent 1px)`, backgroundSize: '4mm 4mm' }} />
-                            <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: theme.primary }} />
-                        </>
-                    ) : (
-                        <>
-                            <div className="absolute top-0 left-0 w-12 h-full opacity-10" style={{ backgroundColor: theme.primary, borderBottomRightRadius: '100%', borderTopRightRadius: '30%' }} />
-                            <div className="absolute top-0 right-0 w-16 h-full opacity-[0.07]" style={{ backgroundColor: theme.primary, borderBottomLeftRadius: '100%', borderTopLeftRadius: '100%' }} />
+                            {/* Left thin wavy lines */}
+                            <svg className="absolute top-0 left-0 h-full w-[16mm] pointer-events-none" viewBox="0 0 100 400" preserveAspectRatio="none">
+                                <path d="M0 0 L0 400 L30 400 C80 300 -30 150 20 0 Z" fill={theme.primary} />
+                                <path d="M20 400 C70 300 -40 150 10 0" fill="none" stroke={theme.primary} strokeWidth="1" strokeOpacity="0.4"/>
+                                <path d="M10 400 C60 300 -50 150 0 0" fill="none" stroke={theme.primary} strokeWidth="1" strokeOpacity="0.2"/>
+                            </svg>
+                            {/* Right thin wavy lines */}
+                            <svg className="absolute top-0 right-0 h-full w-[20mm] pointer-events-none" viewBox="0 0 100 400" preserveAspectRatio="none">
+                                <path d="M100 0 L100 400 L70 400 C150 250 -20 150 70 0 Z" fill={theme.primary} opacity="0.1" />
+                                <path d="M100 200 C70 250 80 300 60 400" fill="none" stroke={theme.primary} strokeWidth="1" strokeOpacity="0.5"/>
+                                <path d="M100 150 C60 250 70 300 50 400" fill="none" stroke={theme.primary} strokeWidth="1" strokeOpacity="0.3"/>
+                            </svg>
                         </>
                     )}
-                    <svg className="absolute top-0 left-0 h-full w-[16mm] pointer-events-none" viewBox="0 0 100 400" preserveAspectRatio="none">
-                        <path d="M0 0 L0 400 L20 400 C80 300 -40 100 20 0 Z" fill={theme.primary} />
-                    </svg>
-                    <svg className="absolute top-0 right-0 h-full w-[20mm] pointer-events-none" viewBox="0 0 100 400" preserveAspectRatio="none">
-                        <path d="M100 0 L100 400 L60 400 C150 250 -20 150 60 0 Z" fill={theme.primary} />
-                        <path d="M70 400 C160 250 -10 150 70 0" fill="none" stroke={theme.primary} strokeWidth="0.5" strokeOpacity="0.5"/>
-                        <path d="M80 400 C170 250 0 150 80 0" fill="none" stroke={theme.primary} strokeWidth="0.5" strokeOpacity="0.3"/>
-                        <path d="M90 400 C180 250 10 150 90 0" fill="none" stroke={theme.primary} strokeWidth="0.5" strokeOpacity="0.1"/>
-                    </svg>
+
+                    {isF2 && (
+                        <>
+                            {/* Top massive curved wave */}
+                            <svg className="absolute top-0 left-0 w-full h-[30mm] pointer-events-none" viewBox="0 0 200 100" preserveAspectRatio="none">
+                                <path d="M0 0 L200 0 L200 60 C130 90 70 110 0 50 Z" fill={theme.primary} />
+                            </svg>
+                        </>
+                    )}
+
+                    {isF3 && (
+                        <>
+                            {/* Top left geometric triangle */}
+                            <div className="absolute top-0 left-0 w-[20mm] h-[20mm]" style={{ background: `linear-gradient(135deg, ${theme.primary} 50%, transparent 50%)` }} />
+                            {/* Bottom right geometric triangle block */}
+                            <div className="absolute bottom-[6mm] right-0 w-[30mm] h-[30mm]" style={{ background: `linear-gradient(-45deg, ${theme.primary} 50%, transparent 50%)`, opacity: 0.9 }} />
+                            <div className="absolute bottom-[6mm] right-[10mm] w-[15mm] h-[15mm]" style={{ background: `linear-gradient(-45deg, ${theme.primary} 50%, transparent 50%)`, opacity: 0.5 }} />
+                        </>
+                    )}
 
                     {/* Top Hole Punch (Lanyard Slot) */}
                     <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-[12mm] h-[2.5mm] border border-slate-300 rounded-full shadow-inner z-20 pointer-events-none bg-white/50 backdrop-blur-sm" />
 
-                    {/* Top Content */}
-                    <div className="pt-6 pb-2 px-6 flex flex-col items-center z-10 text-center">
-                        <div className="flex justify-center mb-1" style={{ color: theme.primary }}>
-                            {renderLogo("w-16 h-auto fill-current")}
+                    {/* Top Header Block */}
+                    <div className={`pt-[8mm] pb-1 px-4 flex flex-col items-center z-10 text-center ${isF2 ? 'text-white' : ''}`}>
+                        <div className={`flex justify-center mb-1 ${isF2 ? 'text-white' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
+                            {renderLogo("w-[18mm] h-auto fill-current")}
                         </div>
-                        <h2 className="mt-2 font-black text-[10.5px] leading-tight uppercase" style={{ color: theme.dark }}>
-                            VISTARAN HEALTH CARE<br/>SERVICES PVT LTD
+                        <h2 className={`mt-2 font-black text-[10.5px] leading-[1.1] uppercase ${isF2 ? 'mt-4' : ''}`} style={isF2 ? { color: theme.dark } : { color: theme.dark }}>
+                            {companyName || 'VISTARAN HEALTH CARE'}<br/>SERVICES PVT LTD
                         </h2>
-                        <div className="flex items-center justify-center gap-1 mt-1.5 w-full">
-                            <div className="h-[0.5px] bg-slate-400 flex-1" />
-                            <span className="text-[5px] font-bold tracking-widest uppercase" style={{ color: theme.primary }}>
+                        <div className="flex items-center justify-center gap-1 w-full mt-1 px-2">
+                            <div className="h-[0.5px] flex-1" style={{ backgroundColor: theme.primary }} />
+                            <span className="text-[5px] font-extrabold tracking-widest uppercase" style={{ color: theme.primary }}>
                                 COMPASSION | CARE | COMMITMENT
                             </span>
-                            <div className="h-[0.5px] bg-slate-400 flex-1" />
+                            <div className="h-[0.5px] flex-1" style={{ backgroundColor: theme.primary }} />
                         </div>
                     </div>
 
-                    {/* Middle Content (Partner Logo, Photo, & Details) */}
-                    <div className="flex-1 flex flex-col items-center justify-center px-2 z-10 w-full mt-2">
-                        <div className="text-center w-full mb-1.5">
-                            <span className="inline-block border-b-[1.5px] pb-0.5 text-[8.5px] font-black uppercase tracking-widest" style={{ color: theme.dark, borderColor: theme.dark }}>
+                    {/* AUTHORISED DISTRIBUTOR BAR */}
+                    <div className="w-full z-10 my-1">
+                        <div className="py-1 text-center" style={{ backgroundColor: theme.primary }}>
+                            <span className="text-white text-[9.5px] font-black uppercase tracking-widest drop-shadow-sm">
                                 {user.designation || 'AUTHORISED DISTRIBUTOR'}
                             </span>
                         </div>
-                        
+                    </div>
+
+                    {/* Middle Content (Partner Logo, Photo, & Name) */}
+                    <div className="flex-1 flex flex-col items-center justify-center px-2 z-10 w-full mt-1">
                         <div className="flex items-center gap-4 mb-2 w-full justify-center px-4">
                             {/* Partner Logo */}
-                            <div className="relative w-11 h-11 flex items-center justify-center flex-shrink-0 drop-shadow-sm">
+                            <div className="relative w-12 h-12 flex items-center justify-center flex-shrink-0 drop-shadow-sm">
                                 {partnerLogoUrl ? (
                                     <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" />
                                 ) : (
                                     <div className="text-center flex flex-col items-center">
-                                        <div className="text-[20px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
-                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[6px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                                        <div className="text-[24px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
+                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[7px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
                                     </div>
                                 )}
                             </div>
                             
                             {/* User Photo */}
                             <div
-                                className="relative w-12 h-12 rounded-full shadow-md border-2 overflow-hidden flex-shrink-0 bg-white"
-                                style={{ borderColor: theme.primary }}
+                                className="relative w-12 h-12 rounded-lg shadow-sm border border-slate-200 overflow-hidden flex-shrink-0 bg-white"
                             >
                                 <img
                                     src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`}
@@ -941,32 +954,89 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </div>
                         </div>
 
+                        {/* HUL Text Line */}
+                        {!isF1 && (
+                            <div className="w-full px-4 text-center mb-1">
+                                <div className="h-[0.5px] w-full mb-1" style={{ backgroundColor: theme.primary }} />
+                                <span className="text-[7.5px] font-black uppercase tracking-[0.1em]" style={{ color: theme.primary }}>
+                                    HINDUSTAN UNILEVER LIMITED
+                                </span>
+                            </div>
+                        )}
+
                         {/* User Details */}
-                        <div className="text-center w-full leading-tight bg-slate-50/60 backdrop-blur-sm rounded-lg p-1.5 border border-slate-100 shadow-sm mx-auto max-w-[42mm]">
+                        <div className="text-center w-full leading-tight mt-1">
                             <h3 className="font-black text-[12px] tracking-tight uppercase truncate" style={{ color: theme.dark }}>
                                 {user.name}
                             </h3>
-                            <p className="text-[7px] font-extrabold mt-0.5 uppercase tracking-wider" style={{ color: theme.primary }}>
+                            <p className="text-[6.5px] font-extrabold mt-0.5 uppercase tracking-wider" style={{ color: theme.primary }}>
                                 ID: {getEmpId(user)} | PH: {user.phone || contactPhone}
                             </p>
                         </div>
                     </div>
 
-                    {/* Bottom Footer Band */}
-                    <div className="w-full z-10 mt-auto">
-                        <div className="py-2 text-center shadow-[0_-2px_10px_rgba(0,0,0,0.1)]" style={{ backgroundColor: theme.primary }}>
-                            <span className="text-white text-[9.5px] font-black uppercase tracking-[0.2em] drop-shadow-sm">
-                                HINDUSTAN UNILEVER LIMITED
-                            </span>
+                    {/* Bottom Footer Blocks */}
+                    {isF1 && (
+                        <div className="w-full z-10 mt-auto">
+                            <div className="py-1.5 text-center" style={{ backgroundColor: theme.primary }}>
+                                <span className="text-white text-[8px] font-black uppercase tracking-[0.1em]">
+                                    HINDUSTAN UNILEVER LIMITED
+                                </span>
+                            </div>
+                            <div className="bg-white py-2 px-3 text-center min-h-[14mm] flex items-center justify-center border-t border-slate-200">
+                                <p className="text-[5.5px] text-slate-800 font-extrabold leading-[1.4] uppercase">
+                                    DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6<br/>
+                                    LBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,<br/>
+                                    MUMBAI, MAHARASHTRA 400078
+                                </p>
+                            </div>
                         </div>
-                        <div className="bg-slate-50 py-2.5 px-3 text-center min-h-[16mm] flex items-center justify-center border-t border-slate-200 shadow-inner">
-                            <p className="text-[6px] text-slate-800 font-extrabold leading-[1.4] uppercase tracking-wide">
-                                DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6<br/>
-                                LBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,<br/>
-                                MUMBAI, MAHARASHTRA 400078
-                            </p>
+                    )}
+
+                    {isF2 && (
+                        <div className="w-full z-10 mt-auto pt-3 px-4 pb-3" style={{ backgroundColor: theme.primary }}>
+                            <div className="flex items-start gap-1.5 mb-1.5">
+                                <i className="fas fa-location-dot text-white mt-[1px] text-[6px]"></i>
+                                <p className="text-white text-[5px] font-medium leading-[1.3] uppercase text-left">
+                                    DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR<br/>
+                                    GALA NO 4,5,6 LBS MARG JAYDEV SINGH NAGAR,<br/>
+                                    (ISHWAR NAGAR) BHANDUP WEST, MUMBAI 400078
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-1.5 mb-1">
+                                <i className="fas fa-phone text-white text-[6px]"></i>
+                                <p className="text-white text-[6px] font-medium">022-XXXX XXXX</p>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <i className="fas fa-envelope text-white text-[6px]"></i>
+                                <p className="text-white text-[6px] font-medium">info@vistaranhealthcare.com</p>
+                            </div>
                         </div>
-                    </div>
+                    )}
+
+                    {isF3 && (
+                        <div className="w-full z-10 mt-auto">
+                            <div className="bg-transparent py-2 px-4 text-left flex items-start gap-1.5 relative z-20">
+                                <i className="fas fa-location-dot mt-[1px] text-[7px]" style={{ color: theme.dark }}></i>
+                                <p className="text-[5.5px] font-extrabold leading-[1.4] uppercase" style={{ color: theme.dark }}>
+                                    DEVIDAYAL COMPOUND PANNA HOUSE<br/>
+                                    GROUND FLOOR GALA NO 4,5,6<br/>
+                                    LBS MARG JAYDEV SINGH NAGAR,<br/>
+                                    BHANDUP WEST, MUMBAI 400078
+                                </p>
+                            </div>
+                            <div className="py-1.5 px-4 text-center flex items-center justify-between relative z-20" style={{ backgroundColor: theme.primary }}>
+                                <div className="flex items-center gap-1">
+                                    <i className="fas fa-phone text-white text-[6px]"></i>
+                                    <span className="text-white text-[5.5px] font-medium">022-XXXX XXXX</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <i className="fas fa-globe text-white text-[6px]"></i>
+                                    <span className="text-white text-[5.5px] font-medium">www.vistaranhealthcare.com</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         }
