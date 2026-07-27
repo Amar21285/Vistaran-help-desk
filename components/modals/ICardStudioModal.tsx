@@ -218,8 +218,10 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
     // Customization states
     const [customLogoUrl, setCustomLogoUrl] = useState<string>('');
+    const [partnerLogoUrl, setPartnerLogoUrl] = useState<string>('');
     const [userOverrides, setUserOverrides] = useState<Record<string, Partial<User>>>({});
     const logoInputRef = useRef<HTMLInputElement>(null);
+    const partnerLogoInputRef = useRef<HTMLInputElement>(null);
     const photoInputRef = useRef<HTMLInputElement>(null);
 
     const theme = THEMES[themeKey] || THEMES.blue;
@@ -245,6 +247,17 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
             const reader = new FileReader();
             reader.onload = (event) => {
                 if (event.target?.result) setCustomLogoUrl(event.target.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handlePartnerLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (event.target?.result) setPartnerLogoUrl(event.target.result as string);
             };
             reader.readAsDataURL(file);
         }
@@ -877,28 +890,48 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         </div>
                     </div>
 
-                    {/* Middle Content (HUL Logo & Designation) */}
-                    <div className="flex-1 flex flex-col items-center justify-center px-4 z-10 w-full mt-2">
-                        <div className="text-center w-full mb-3">
-                            <span className="inline-block border-b-[0.5px] pb-0.5 text-[8.5px] font-bold uppercase tracking-wide" style={{ color: theme.dark, borderColor: theme.dark }}>
-                                AUTHORISED DISTRIBUTOR
+                    {/* Middle Content (Partner Logo, Photo, & Details) */}
+                    <div className="flex-1 flex flex-col items-center justify-center px-2 z-10 w-full mt-0.5">
+                        <div className="text-center w-full mb-1">
+                            <span className="inline-block border-b-[0.5px] pb-0.5 text-[7px] font-bold uppercase tracking-wide" style={{ color: theme.dark, borderColor: theme.dark }}>
+                                {user.designation || 'AUTHORISED DISTRIBUTOR'}
                             </span>
                         </div>
                         
-                        {/* HUL Logo Area - Users can upload the HUL logo via the Employee Photo uploader */}
-                        <div className="relative w-full max-w-[28mm] flex flex-col items-center justify-center flex-1">
-                            {user.photo ? (
+                        <div className="flex items-center gap-3 mb-1 w-full justify-center px-4">
+                            {/* Partner Logo */}
+                            <div className="relative w-9 h-9 flex items-center justify-center flex-shrink-0">
+                                {partnerLogoUrl ? (
+                                    <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" />
+                                ) : (
+                                    <div className="text-center flex flex-col items-center">
+                                        <div className="text-[16px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
+                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[5px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            {/* User Photo */}
+                            <div
+                                className="relative w-10 h-10 rounded-full shadow-sm border-[1.5px] overflow-hidden flex-shrink-0 bg-white"
+                                style={{ borderColor: theme.primary }}
+                            >
                                 <img
-                                    src={user.photo}
-                                    alt="Partner Logo"
-                                    className="w-full h-auto object-contain max-h-[22mm]"
+                                    src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`}
+                                    alt={user.name}
+                                    className="w-full h-full object-cover"
                                 />
-                            ) : (
-                                <div className="text-center flex flex-col items-center">
-                                    <div className="text-[32px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
-                                    <div className="font-['Brush_Script_MT',cursive,serif] text-[9px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
-                                </div>
-                            )}
+                            </div>
+                        </div>
+
+                        {/* User Details */}
+                        <div className="text-center w-full leading-tight">
+                            <h3 className="font-extrabold text-[11px] tracking-tight uppercase truncate" style={{ color: theme.dark }}>
+                                {user.name}
+                            </h3>
+                            <p className="text-[6.5px] font-bold mt-0.5" style={{ color: theme.primary }}>
+                                ID: {getEmpId(user)} | PH: {user.phone || contactPhone}
+                            </p>
                         </div>
                     </div>
 
@@ -1144,6 +1177,31 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     <input type="text" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
                                 </div>
                             </div>
+                            
+                            {/* Partner / Client Logo Upload */}
+                            {format === 'healthcare' && (
+                                <div className="mt-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                                    <span className="text-slate-500 font-semibold block text-[10px] uppercase mb-1">Partner Logo (Middle)</span>
+                                    <div className="flex flex-wrap items-center gap-2 text-xs">
+                                        <input type="file" accept="image/*" className="hidden" ref={partnerLogoInputRef} onChange={handlePartnerLogoUpload} />
+                                        <button onClick={() => partnerLogoInputRef.current?.click()} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                                            Upload Logo
+                                        </button>
+                                        <input 
+                                            type="text" 
+                                            placeholder="URL" 
+                                            value={partnerLogoUrl} 
+                                            onChange={(e) => setPartnerLogoUrl(e.target.value)} 
+                                            className="flex-1 min-w-[120px] px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary"
+                                        />
+                                        {partnerLogoUrl && (
+                                            <button onClick={() => setPartnerLogoUrl('')} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg font-bold hover:bg-red-100 transition" title="Reset">
+                                                Reset
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* 4. Employee Details Editor */}
