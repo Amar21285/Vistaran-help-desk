@@ -893,13 +893,13 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {isF1 && (
                         <>
                             {/* Left thin wavy lines */}
-                            <svg className="absolute top-0 left-0 h-full w-[16mm] pointer-events-none" viewBox="0 0 100 400" preserveAspectRatio="none">
+                            <svg className="absolute top-0 left-0 h-full w-[8mm] pointer-events-none z-0" viewBox="0 0 100 400" preserveAspectRatio="none">
                                 <path d="M0 0 L0 400 L30 400 C80 300 -30 150 20 0 Z" fill={theme.primary} />
                                 <path d="M20 400 C70 300 -40 150 10 0" fill="none" stroke={theme.primary} strokeWidth="1" strokeOpacity="0.4"/>
                                 <path d="M10 400 C60 300 -50 150 0 0" fill="none" stroke={theme.primary} strokeWidth="1" strokeOpacity="0.2"/>
                             </svg>
                             {/* Right thin wavy lines */}
-                            <svg className="absolute top-0 right-0 h-full w-[20mm] pointer-events-none" viewBox="0 0 100 400" preserveAspectRatio="none">
+                            <svg className="absolute top-0 right-0 h-full w-[10mm] pointer-events-none z-0" viewBox="0 0 100 400" preserveAspectRatio="none">
                                 <path d="M100 0 L100 400 L70 400 C150 250 -20 150 70 0 Z" fill={theme.primary} opacity="0.1" />
                                 <path d="M100 200 C70 250 80 300 60 400" fill="none" stroke={theme.primary} strokeWidth="1" strokeOpacity="0.5"/>
                                 <path d="M100 150 C60 250 70 300 50 400" fill="none" stroke={theme.primary} strokeWidth="1" strokeOpacity="0.3"/>
@@ -930,15 +930,15 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-[12mm] h-[2.5mm] border border-slate-300 rounded-full shadow-inner z-20 pointer-events-none bg-white/50 backdrop-blur-sm" />
 
                     {/* Top Header Block */}
-                    <div className={`pt-[8mm] pb-1 px-4 flex flex-col items-center z-10 text-center ${isF2 ? 'text-white' : ''}`}>
+                    <div className={`pt-[7.5mm] pb-0.5 px-4 flex flex-col items-center relative z-20 text-center ${isF2 ? 'text-white' : ''}`}>
                         <div className={`flex justify-center mb-1 ${isF2 ? 'text-white' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
                             {companyLogoUrl ? (
-                                <img src={companyLogoUrl} alt="Company Logo" className="w-[18mm] max-h-[14mm] object-contain drop-shadow-sm" />
+                                <img src={companyLogoUrl} alt="Company Logo" className="w-[18mm] max-h-[12mm] object-contain drop-shadow-sm" />
                             ) : (
                                 renderLogo("w-[18mm] h-auto fill-current")
                             )}
                         </div>
-                        <h2 className={`mt-2 font-black text-[10.5px] leading-[1.1] uppercase ${isF2 ? 'mt-4' : ''}`} style={isF2 ? { color: theme.dark } : { color: theme.dark }}>
+                        <h2 className={`mt-1 font-black text-[10px] leading-[1.1] uppercase ${isF2 ? 'mt-2' : ''}`} style={isF2 ? { color: theme.dark } : { color: theme.dark }}>
                             {companyName || 'VISTARAN HEALTH CARE'}<br/>SERVICES PVT LTD
                         </h2>
                         <div className="flex items-center justify-center gap-1 w-full mt-1 px-2">
@@ -960,23 +960,23 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     </div>
 
                     {/* Middle Content (Partner Logo, Photo, & Name) */}
-                    <div className="flex-1 flex flex-col items-center justify-center px-2 z-10 w-full mt-1">
-                        <div className="flex items-center gap-4 mb-2 w-full justify-center px-4">
+                    <div className="flex-1 flex flex-col items-center justify-center px-2 relative z-20 w-full mt-1">
+                        <div className="flex items-center gap-3 mb-1.5 w-full justify-center px-4">
                             {/* Partner Logo */}
-                            <div className="relative w-12 h-12 flex items-center justify-center flex-shrink-0 drop-shadow-sm">
+                            <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm bg-white rounded p-0.5">
                                 {partnerLogoUrl ? (
                                     <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" />
                                 ) : (
                                     <div className="text-center flex flex-col items-center">
-                                        <div className="text-[24px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
-                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[7px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                                        <div className="text-[20px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
+                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[6px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
                                     </div>
                                 )}
                             </div>
                             
                             {/* User Photo */}
                             <div
-                                className="relative w-12 h-12 rounded-lg shadow-sm border border-slate-200 overflow-hidden flex-shrink-0 bg-white"
+                                className="relative w-10 h-10 rounded-lg shadow-sm border border-slate-200 overflow-hidden flex-shrink-0 bg-white"
                             >
                                 <img
                                     src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`}
@@ -990,18 +990,18 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {!isF1 && (
                             <div className="w-full px-4 text-center mb-1">
                                 <div className="h-[0.5px] w-full mb-1" style={{ backgroundColor: theme.primary }} />
-                                <span className="text-[7.5px] font-black uppercase tracking-[0.1em]" style={{ color: theme.primary }}>
+                                <span className="text-[6.5px] font-black uppercase tracking-[0.1em]" style={{ color: theme.primary }}>
                                     HINDUSTAN UNILEVER LIMITED
                                 </span>
                             </div>
                         )}
 
                         {/* User Details */}
-                        <div className="text-center w-full leading-tight mt-1">
-                            <h3 className="font-black text-[12px] tracking-tight uppercase truncate" style={{ color: theme.dark }}>
+                        <div className="text-center w-full leading-tight mt-0.5">
+                            <h3 className="font-black text-[11px] tracking-tight uppercase truncate" style={{ color: theme.dark }}>
                                 {user.name}
                             </h3>
-                            <p className="text-[6.5px] font-extrabold mt-0.5 uppercase tracking-wider" style={{ color: theme.primary }}>
+                            <p className="text-[6px] font-extrabold mt-0.5 uppercase tracking-wider" style={{ color: theme.primary }}>
                                 ID: {getEmpId(user)} | PH: {user.phone || contactPhone}
                             </p>
                         </div>
@@ -1009,14 +1009,14 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
                     {/* Bottom Footer Blocks */}
                     {isF1 && (
-                        <div className="w-full z-10 mt-auto">
-                            <div className="py-1.5 text-center" style={{ backgroundColor: theme.primary }}>
-                                <span className="text-white text-[8px] font-black uppercase tracking-[0.1em]">
+                        <div className="w-full relative z-20 mt-auto bg-white">
+                            <div className="py-1 text-center" style={{ backgroundColor: theme.primary }}>
+                                <span className="text-white text-[7.5px] font-black uppercase tracking-[0.1em]">
                                     HINDUSTAN UNILEVER LIMITED
                                 </span>
                             </div>
-                            <div className="bg-white py-2 px-3 text-center min-h-[14mm] flex items-center justify-center border-t border-slate-200">
-                                <p className="text-[5.5px] text-slate-800 font-extrabold leading-[1.4] uppercase">
+                            <div className="py-1.5 px-2 text-center min-h-[12mm] flex items-center justify-center border-t border-slate-200">
+                                <p className="text-[5px] text-slate-800 font-extrabold leading-[1.3] uppercase break-words w-full px-1">
                                     DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6<br/>
                                     LBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,<br/>
                                     MUMBAI, MAHARASHTRA 400078
