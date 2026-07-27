@@ -52,6 +52,7 @@ export interface User {
     permissions?: Permission[];
     bloodGroup?: string;
     accessLevel?: string;
+    emergencyContact?: string;
 }
 
 export enum TicketStatus {

@@ -216,10 +216,57 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
     const [pdfProgress, setPdfProgress] = useState<number>(0);
 
-    const theme = THEMES[themeKey] || THEMES.blue;
-    const activeUser = users.find((u) => u.id === selectedUserId) || users[0];
+    // Customization states
+    const [customLogoUrl, setCustomLogoUrl] = useState<string>('');
+    const [userOverrides, setUserOverrides] = useState<Record<string, Partial<User>>>({});
+    const logoInputRef = useRef<HTMLInputElement>(null);
+    const photoInputRef = useRef<HTMLInputElement>(null);
 
-    const getEmpId = (u: User) => u.employeeId || `EMP-${u.id.replace(/\D/g, '').slice(-4) || '101'}`;
+    const theme = THEMES[themeKey] || THEMES.blue;
+    
+    // Effective user logic
+    const getEffectiveUser = (u: User): User => ({ ...u, ...(userOverrides[u.id] || {}) });
+    const baseActiveUser = users.find((u) => u.id === selectedUserId) || users[0];
+    const activeUser = getEffectiveUser(baseActiveUser);
+
+    const handleUpdateActiveUser = (field: keyof User, value: any) => {
+        setUserOverrides(prev => ({
+            ...prev,
+            [activeUser.id]: {
+                ...(prev[activeUser.id] || {}),
+                [field]: value
+            }
+        }));
+    };
+
+    const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (event.target?.result) setCustomLogoUrl(event.target.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (event.target?.result) handleUpdateActiveUser('photo', event.target.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const renderLogo = (className = 'w-4 h-4 text-white fill-current') => {
+        if (customLogoUrl) return <img src={customLogoUrl} alt="Logo" className={`${className} object-contain`} />;
+        return <Logo className={className} />;
+    };
+
+    const getEmpId = (u: User) => getEffectiveUser(u).employeeId || `EMP-${u.id.replace(/\D/g, '').slice(-4) || '101'}`;
     const getVerificationUrl = (u: User) => `https://vistaran.com/verify?id=${getEmpId(u)}&name=${encodeURIComponent(u.name)}`;
 
     const handleDownloadPDF = async () => {
@@ -972,57 +1019,112 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </div>
                         </div>
 
-                        {/* 3. Branding & Metadata Inputs */}
-                        <div className="space-y-3 pt-1">
+                        {/* 3. Branding & Customization */}
+                        <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-700">
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                                3. Branding & Customization
+                                3. Company Branding
                             </label>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            
+                            <div className="flex flex-col gap-2 mb-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                                <span className="text-slate-500 font-semibold block text-[10px] uppercase">Custom Logo</span>
+                                <div className="flex flex-wrap items-center gap-2 text-xs">
+                                    <input type="file" accept="image/*" className="hidden" ref={logoInputRef} onChange={handleLogoUpload} />
+                                    <button onClick={() => logoInputRef.current?.click()} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                                        Upload Logo
+                                    </button>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Or paste image URL" 
+                                        value={customLogoUrl} 
+                                        onChange={(e) => setCustomLogoUrl(e.target.value)} 
+                                        className="flex-1 min-w-[120px] px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary"
+                                    />
+                                    {customLogoUrl && (
+                                        <button onClick={() => setCustomLogoUrl('')} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg font-bold hover:bg-red-100 transition">
+                                            Reset
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                                 <div>
                                     <span className="text-slate-500 font-semibold block mb-1">Company Name</span>
-                                    <input
-                                        type="text"
-                                        value={companyName}
-                                        onChange={(e) => setCompanyName(e.target.value)}
-                                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100"
-                                    />
+                                    <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
                                 </div>
                                 <div>
                                     <span className="text-slate-500 font-semibold block mb-1">Tagline</span>
-                                    <input
-                                        type="text"
-                                        value={tagline}
-                                        onChange={(e) => setTagline(e.target.value)}
-                                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100"
-                                    />
+                                    <input type="text" value={tagline} onChange={(e) => setTagline(e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
                                 </div>
                                 <div>
-                                    <span className="text-slate-500 font-semibold block mb-1">Emergency Phone</span>
-                                    <input
-                                        type="text"
-                                        value={contactPhone}
-                                        onChange={(e) => setContactPhone(e.target.value)}
-                                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100"
-                                    />
-                                </div>
-                                <div>
-                                    <span className="text-slate-500 font-semibold block mb-1">Blood Group</span>
-                                    <select
-                                        value={bloodGroup}
-                                        onChange={(e) => setBloodGroup(e.target.value)}
-                                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-semibold"
-                                    >
-                                        {['O+', 'A+', 'B+', 'AB+', 'O-', 'A-', 'B-', 'AB-'].map((bg) => (
-                                            <option key={bg} value={bg}>
-                                                {bg}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <span className="text-slate-500 font-semibold block mb-1">Support Phone</span>
+                                    <input type="text" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
                                 </div>
                             </div>
                         </div>
 
-                        {/* 4. Display Toggles */}
+                        {/* 4. Employee Details Editor */}
+                        <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center justify-between">
+                                4. Employee Details Editor
+                                {Object.keys(userOverrides[activeUser.id] || {}).length > 0 && (
+                                    <span className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">Modified</span>
+                                )}
+                            </label>
+                            
+                            <div className="flex flex-col gap-2 mb-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                                <span className="text-slate-500 font-semibold block text-[10px] uppercase">Employee Photo</span>
+                                <div className="flex flex-wrap items-center gap-2 text-xs">
+                                    <input type="file" accept="image/*" className="hidden" ref={photoInputRef} onChange={handlePhotoUpload} />
+                                    <button onClick={() => photoInputRef.current?.click()} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition">
+                                        Upload Photo
+                                    </button>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Or paste image URL" 
+                                        value={activeUser.photo || ''} 
+                                        onChange={(e) => handleUpdateActiveUser('photo', e.target.value)} 
+                                        className="flex-1 min-w-[120px] px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary"
+                                    />
+                                    {activeUser.photo !== baseActiveUser.photo && (
+                                        <button onClick={() => handleUpdateActiveUser('photo', baseActiveUser.photo)} className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg font-bold hover:bg-red-100 transition" title="Revert to original">
+                                            Revert
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div>
+                                    <span className="text-slate-500 font-semibold block mb-1">Employee Name</span>
+                                    <input type="text" value={activeUser.name} onChange={(e) => handleUpdateActiveUser('name', e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
+                                </div>
+                                <div>
+                                    <span className="text-slate-500 font-semibold block mb-1">Employee ID</span>
+                                    <input type="text" value={activeUser.employeeId || getEmpId(activeUser)} onChange={(e) => handleUpdateActiveUser('employeeId', e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
+                                </div>
+                                <div>
+                                    <span className="text-slate-500 font-semibold block mb-1">Designation</span>
+                                    <input type="text" value={activeUser.designation || ''} onChange={(e) => handleUpdateActiveUser('designation', e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" placeholder="e.g. Specialist" />
+                                </div>
+                                <div>
+                                    <span className="text-slate-500 font-semibold block mb-1">Department</span>
+                                    <input type="text" value={activeUser.department} onChange={(e) => handleUpdateActiveUser('department', e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
+                                </div>
+                                <div>
+                                    <span className="text-slate-500 font-semibold block mb-1">Blood Group</span>
+                                    <select value={activeUser.bloodGroup || bloodGroup} onChange={(e) => handleUpdateActiveUser('bloodGroup', e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary">
+                                        {['O+', 'A+', 'B+', 'AB+', 'O-', 'A-', 'B-', 'AB-'].map(bg => <option key={bg} value={bg}>{bg}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <span className="text-slate-500 font-semibold block mb-1">Emergency Contact</span>
+                                    <input type="text" value={activeUser.emergencyContact || ''} onChange={(e) => handleUpdateActiveUser('emergencyContact', e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" placeholder="e.g. +91 98765..." />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 5. Display Toggles */}
                         <div className="pt-2 border-t border-slate-200 dark:border-slate-700 space-y-2">
                             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                                 4. Element Toggles
@@ -1108,12 +1210,15 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             <div id="icard-printable-container" className="hidden">
                                 {isBatchMode ? (
                                     <div className="batch-grid">
-                                        {users.map((u) => (
-                                            <div key={u.id} className="batch-pdf-card-node flex flex-col gap-2">
-                                                {(activeSide === 'front' || activeSide === 'both') && renderFrontCard(u)}
-                                                {(activeSide === 'back' || activeSide === 'both') && renderBackCard(u)}
-                                            </div>
-                                        ))}
+                                        {users.map((baseU) => {
+                                            const u = getEffectiveUser(baseU);
+                                            return (
+                                                <div key={u.id} className="batch-pdf-card-node flex flex-col gap-2">
+                                                    {(activeSide === 'front' || activeSide === 'both') && renderFrontCard(u)}
+                                                    {(activeSide === 'back' || activeSide === 'both') && renderBackCard(u)}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 ) : (
                                     <div className="flex flex-col gap-4 items-center">
