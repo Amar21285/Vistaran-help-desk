@@ -857,50 +857,56 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         <path d="M90 400 C180 250 10 150 90 0" fill="none" stroke={theme.primary} strokeWidth="0.5" strokeOpacity="0.1"/>
                     </svg>
 
+                    {/* Top Hole Punch (Lanyard Slot) */}
+                    <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-[12mm] h-[2.5mm] border border-slate-300 rounded-full shadow-inner z-20 pointer-events-none bg-white/50 backdrop-blur-sm" />
+
                     {/* Top Content */}
                     <div className="pt-6 pb-2 px-6 flex flex-col items-center z-10 text-center">
                         <div className="flex justify-center mb-1" style={{ color: theme.primary }}>
-                            {renderLogo("w-20 h-auto fill-current")}
+                            {renderLogo("w-16 h-auto fill-current")}
                         </div>
-                        <h2 className="mt-2 font-black text-[11px] leading-tight uppercase" style={{ color: theme.dark }}>
-                            {companyName || 'VISTARAN HEALTH CARE SERVICES PVT LTD'}
+                        <h2 className="mt-2 font-black text-[10.5px] leading-tight uppercase" style={{ color: theme.dark }}>
+                            VISTARAN HEALTH CARE<br/>SERVICES PVT LTD
                         </h2>
                         <div className="flex items-center justify-center gap-1 mt-1.5 w-full">
-                            <div className="h-[0.5px] bg-slate-300 flex-1" />
-                            <span className="text-[5.5px] font-bold tracking-widest uppercase" style={{ color: theme.primary }}>
-                                {tagline || 'COMPASSION | CARE | COMMITMENT'}
+                            <div className="h-[0.5px] bg-slate-400 flex-1" />
+                            <span className="text-[5px] font-bold tracking-widest uppercase" style={{ color: theme.primary }}>
+                                COMPASSION | CARE | COMMITMENT
                             </span>
-                            <div className="h-[0.5px] bg-slate-300 flex-1" />
+                            <div className="h-[0.5px] bg-slate-400 flex-1" />
                         </div>
                     </div>
 
-                    {/* Middle Content */}
-                    <div className="flex-1 flex flex-col items-center justify-center px-4 z-10">
-                        <div className="text-center w-full mb-2">
-                            <span className="inline-block border-b-2 pb-0.5 text-[8.5px] font-bold uppercase" style={{ color: theme.dark, borderColor: theme.dark }}>
-                                {user.designation || 'AUTHORISED DISTRIBUTOR'}
+                    {/* Middle Content (HUL Logo & Designation) */}
+                    <div className="flex-1 flex flex-col items-center justify-center px-4 z-10 w-full mt-2">
+                        <div className="text-center w-full mb-3">
+                            <span className="inline-block border-b-[0.5px] pb-0.5 text-[8.5px] font-bold uppercase tracking-wide" style={{ color: theme.dark, borderColor: theme.dark }}>
+                                AUTHORISED DISTRIBUTOR
                             </span>
                         </div>
-                        <div
-                            className="relative w-16 h-16 rounded-xl shadow-sm border-2 mt-1 bg-white flex items-center justify-center overflow-hidden"
-                            style={{ borderColor: theme.primary }}
-                        >
-                            <img
-                                src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`}
-                                alt={user.name}
-                                className="w-full h-full object-cover"
-                            />
+                        
+                        {/* HUL Logo Area - Users can upload the HUL logo via the Employee Photo uploader */}
+                        <div className="relative w-full max-w-[28mm] flex flex-col items-center justify-center flex-1">
+                            {user.photo ? (
+                                <img
+                                    src={user.photo}
+                                    alt="Partner Logo"
+                                    className="w-full h-auto object-contain max-h-[22mm]"
+                                />
+                            ) : (
+                                <div className="text-center flex flex-col items-center">
+                                    <div className="text-[32px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
+                                    <div className="font-['Brush_Script_MT',cursive,serif] text-[9px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                                </div>
+                            )}
                         </div>
-                        <h3 className="font-extrabold text-[12px] tracking-tight text-center mt-2 leading-tight uppercase" style={{ color: theme.dark }}>
-                            {user.name}
-                        </h3>
                     </div>
 
                     {/* Bottom Footer Band */}
-                    <div className="w-full z-10">
+                    <div className="w-full z-10 mt-2">
                         <div className="py-1.5 text-center" style={{ backgroundColor: theme.primary }}>
                             <span className="text-white text-[8px] font-bold uppercase tracking-widest">
-                                {user.department || 'HINDUSTAN UNILEVER LIMITED'}
+                                HINDUSTAN UNILEVER LIMITED
                             </span>
                         </div>
                         <div className="bg-slate-50 py-1.5 px-3 text-center min-h-[14mm] flex items-center justify-center border-t border-slate-200">
