@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { AttendanceRecord, AttendanceStatus, Role, User, SalaryStructure, MonthlySalarySlip } from '../types';
+import { AttendanceRecord, AttendanceStatus, Role, User, SalaryStructure, MonthlySalarySlip, Permission } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { useSettings } from '../hooks/useSettings';
 import { usePayroll } from '../hooks/usePayroll';
@@ -12,6 +12,7 @@ interface AttendanceManagementProps {
     users?: User[];
     attendance?: AttendanceRecord[];
     setAttendance?: React.Dispatch<React.SetStateAction<AttendanceRecord[]>>;
+    onAddStaff?: () => void;
 }
 
 const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: () => void; isOut?: boolean }> = ({ onCapture, onCancel, isOut }) => {
@@ -83,8 +84,8 @@ const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: 
     );
 };
 
-const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [], attendance = [], setAttendance = () => {} }) => {
-    const { user, realUser } = useAuth();
+const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [], attendance = [], setAttendance = () => {}, onAddStaff }) => {
+    const { user, realUser, can } = useAuth();
     const [activeSubTab, setActiveSubTab] = useState<'live' | 'history' | 'register'>('live');
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
@@ -965,6 +966,22 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
     return (
         <div className="space-y-10 max-w-6xl mx-auto pb-24">
             {showCamera && <CameraCapture isOut={isOutMode} onCapture={photo => { setCapturedPhoto(photo); setShowCamera(false); fetchLocation(); }} onCancel={() => setShowCamera(false)} />}
+            
+            <div className="flex justify-between items-end mb-6 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                <div>
+                    <h2 className="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-3">
+                        <i className="fas fa-calendar-check text-primary"></i> Attendance Registry
+                    </h2>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">Manage staff presence, leaves, and salary structures.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                    {onAddStaff && can(Permission.MANAGE_USERS) && (
+                        <button onClick={onAddStaff} className="px-4 py-2 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:hover:bg-emerald-800/50 rounded-xl font-bold transition flex items-center gap-2">
+                            <i className="fas fa-user-plus"></i> Add New Staff
+                        </button>
+                    )}
+                </div>
+            </div>
             
             <header className="flex flex-col md:flex-row justify-between md:items-end gap-6 no-print">
                 <div>

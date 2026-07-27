@@ -480,6 +480,7 @@ const AppContent: React.FC = () => {
                 return <CreateTicket templates={allTemplates} symptoms={allSymptoms} setTickets={handleTicketsUpdate} setCurrentView={setCurrentView} setInfoModalContent={setInfoModalContent} departments={allDepartments} />;
             case 'inventory':
                 return <InventoryManagement 
+                    onEditUser={setEditingUser}
                     inventory={allInventory} 
                     setInventory={syncSetAllInventory} 
                     vendors={allVendors} 

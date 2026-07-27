@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Vistaran Help Desk</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vistaran">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <link rel="manifest" href="./assets/manifest-DR57TOuk.json">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192/3b82f6/ffffff?text=V">
+
+    <!-- Tailwind Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['var(--font-family)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+              serif: ['var(--font-family)', 'ui-serif', 'Georgia', 'serif'],
+              mono: ['var(--font-family)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+            },
+          },
+        },
+      }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+    
+    <style>
+      :root {
+        --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        --safe-area-inset-bottom: env(safe-area-inset-bottom);
+      }
+      
+      html, body {
+        font-family: var(--font-family) !important;
+        overscroll-behavior-y: none;
+        min-height: 100%;
+        width: 100%;
+      }
+
+      /* Desktop app feel remains locked, but allows login scroll */
+      .app-is-logged-in {
+        overflow: hidden;
+        position: fixed;
+        inset: 0;
+      }
+
+      .custom-scrollbar {
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .font-bold-app {
+        font-weight: 600 !important;
+      }
+      .font-bold-app h1, .font-bold-app h2, .font-bold-app h3, .font-bold-app p, .font-bold-app span, .font-bold-app div {
+        font-weight: 700 !important;
+      }
+
+      @media print {
+        .no-print { display: none !important; }
+        body { background-color: white !important; color: black !important; }
+      }
+
+      @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+      .mobile-modal { animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+      
+      :root, :root[data-theme='default'] {
+        --color-primary-rgb: 59 130 246; 
+        --color-primary-hover-rgb: 37 99 235;
+      }
+      
+      .bg-primary { background-color: rgb(var(--color-primary-rgb)); }
+      .text-primary { color: rgb(var(--color-primary-rgb)); }
+      .border-primary { border-color: rgb(var(--color-primary-rgb)); }
+
+      button { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
+    </style>
+
+
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.21.0",
+    "@emailjs/browser": "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/+esm",
+    "html2canvas": "https://esm.sh/html2canvas@1.4.1",
+    "jspdf": "https://esm.sh/jspdf@2.5.1",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "jsbarcode": "https://esm.sh/jsbarcode@3.11.6",
+    "html5-qrcode": "https://esm.sh/html5-qrcode@2.3.8"
+  }
+}
+</script>
+  <script type="module" crossorigin src="./assets/index-D2uCPcRv.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-C9k05rzb.css">
+</head>
+  <body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-200">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root" class="min-h-screen w-full"></div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW failed'));
+        });
+      }
+    </script>
+</body>
+</html>

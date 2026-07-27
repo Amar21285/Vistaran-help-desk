@@ -35,6 +35,7 @@ interface InventoryManagementProps {
     setReimbursements?: React.Dispatch<React.SetStateAction<ReimbursementRequest[]>>;
     internetVendors?: InternetVendor[];
     setInternetVendors?: React.Dispatch<React.SetStateAction<InternetVendor[]>>;
+    onEditUser?: (user: User) => void;
 }
 
 type TabType = 'stock' | 'assets' | 'vendors' | 'receiving' | 'outward' | 'purchase-orders' | 'attendance' | 'petty-cash' | 'internet';
@@ -45,13 +46,11 @@ const ASSET_TYPES = [
     "Server", "Switch", "Router", "CCTV", "Biometric", "UPS"
 ];
 
-const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
-    const { 
-        inventory, setInventory, vendors, setVendors, globalFilter, setGlobalFilter, 
-        challans, setChallans, invoices, setInvoices, purchaseOrders, setPurchaseOrders, 
-        users, setInfoModalContent, attendance, setAttendance, reimbursements, 
-        setReimbursements, internetVendors, setInternetVendors 
-    } = props;
+const InventoryManagement: React.FC<InventoryManagementProps> = ({ 
+    inventory, setInventory, vendors, setVendors, globalFilter, setGlobalFilter, challans, setChallans, invoices, setInvoices, purchaseOrders, setPurchaseOrders,
+    users, setInfoModalContent, attendance, setAttendance, reimbursements, 
+    setReimbursements, internetVendors, setInternetVendors, onEditUser
+}) => {
     const { user, realUser } = useAuth();
     const [activeTab, setActiveTab] = useState<TabType>('assets');
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
@@ -1329,7 +1328,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                 {activeTab === 'petty-cash' && <ReimbursementManagement users={users} requests={reimbursements} setRequests={setReimbursements} />}
                 {activeTab === 'internet' && <InternetVendorManagement inventory={inventory} vendors={internetVendors} setVendors={setInternetVendors} />}
                 {activeTab === 'purchase-orders' && <PurchaseOrderManagement purchaseOrders={purchaseOrders} setPurchaseOrders={setPurchaseOrders} vendors={vendors} inventory={inventory} globalFilter={globalFilter} users={users} />}
-                {activeTab === 'attendance' && <AttendanceManagement users={users} attendance={attendance} setAttendance={setAttendance} />}
+                {activeTab === 'attendance' && <AttendanceManagement users={users} attendance={attendance} setAttendance={setAttendance} onAddStaff={onEditUser ? () => onEditUser({ id: Date.now().toString(), name: '', email: '', role: Role.STAFF, department: '', phone: '', address: '', joinedDate: new Date().toISOString().split('T')[0], status: 'Active' as any } as User) : undefined} />}
             </div>
 
             {/* ALLOCATION MODAL (Stock Out) */}

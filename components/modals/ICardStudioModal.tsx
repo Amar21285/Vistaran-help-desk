@@ -5,7 +5,7 @@ import Logo from '../icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare';
+export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare' | 'distributor2' | 'distributor3';
 export type ThemeColor = 'blue' | 'emerald' | 'indigo' | 'charcoal' | 'amber' | 'crimson';
 
 export interface ThemeConfig {
@@ -850,16 +850,33 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     </div>
                 </div>
             );
-        }
-
-        // Healthcare Distributor Format
-        if (format === 'healthcare') {
+        }        // Healthcare Distributor Formats
+        if (format === 'healthcare' || format === 'distributor2' || format === 'distributor3') {
+            const isV2 = format === 'distributor2';
+            const isV3 = format === 'distributor3';
+            
             return (
                 <div
-                    className="print-card-box relative w-[53.98mm] h-[85.6mm] bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden flex flex-col justify-between"
+                    className="print-card-box relative bg-white rounded-xl shadow-md border border-slate-300 flex flex-col justify-between overflow-hidden"
                     style={{ width: '53.98mm', height: '85.6mm' }}
                 >
-                    {/* Wavy side borders */}
+                    {/* Background Accents based on Variant */}
+                    {isV2 ? (
+                        <>
+                            <div className="absolute top-0 left-0 w-full h-[40%] bg-gradient-to-br from-slate-100 to-slate-200" />
+                            <div className="absolute top-0 left-0 w-full h-2" style={{ backgroundColor: theme.primary }} />
+                        </>
+                    ) : isV3 ? (
+                        <>
+                            <div className="absolute inset-0 opacity-5" style={{ backgroundImage: `radial-gradient(${theme.primary} 1px, transparent 1px)`, backgroundSize: '4mm 4mm' }} />
+                            <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: theme.primary }} />
+                        </>
+                    ) : (
+                        <>
+                            <div className="absolute top-0 left-0 w-12 h-full opacity-10" style={{ backgroundColor: theme.primary, borderBottomRightRadius: '100%', borderTopRightRadius: '30%' }} />
+                            <div className="absolute top-0 right-0 w-16 h-full opacity-[0.07]" style={{ backgroundColor: theme.primary, borderBottomLeftRadius: '100%', borderTopLeftRadius: '100%' }} />
+                        </>
+                    )}
                     <svg className="absolute top-0 left-0 h-full w-[16mm] pointer-events-none" viewBox="0 0 100 400" preserveAspectRatio="none">
                         <path d="M0 0 L0 400 L20 400 C80 300 -40 100 20 0 Z" fill={theme.primary} />
                     </svg>
@@ -1085,7 +1102,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     { id: 'cyber', label: 'Cyber Tech Dark', icon: 'fa-shield-halved' },
                                     { id: 'minimal', label: 'Minimal Corporate', icon: 'fa-square' },
                                     { id: 'rfid', label: 'RFID Smart Card', icon: 'fa-microchip' },
-                                    { id: 'healthcare', label: 'Distributor Card', icon: 'fa-id-card-clip' },
+                                    { id: 'healthcare', label: 'Distributor Card 1', icon: 'fa-id-card-clip' },
+                                    { id: 'distributor2', label: 'Distributor Card 2', icon: 'fa-address-card' },
+                                    { id: 'distributor3', label: 'Distributor Card 3', icon: 'fa-contact-card' },
                                 ].map((item) => (
                                     <button
                                         key={item.id}
@@ -1179,7 +1198,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </div>
                             
                             {/* Partner / Client Logo Upload */}
-                            {format === 'healthcare' && (
+                            {(format === 'healthcare' || format === 'distributor2' || format === 'distributor3') && (
                                 <div className="mt-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                                     <span className="text-slate-500 font-semibold block text-[10px] uppercase mb-1">Partner Logo (Middle)</span>
                                     <div className="flex flex-wrap items-center gap-2 text-xs">
