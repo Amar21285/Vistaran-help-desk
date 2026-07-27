@@ -55,6 +55,8 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
     const { user, realUser } = useAuth();
     const [activeTab, setActiveTab] = useState<TabType>('assets');
     const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
+    const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('all');
+    const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
     const isAdmin = user?.role === Role.ADMIN || realUser?.role === Role.ADMIN;
     
     const [isItemModalOpen, setIsItemModalOpen] = useState(false);
@@ -110,6 +112,68 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
         });
         return counts;
     }, [inventory]);
+
+    const statusCounts = useMemo(() => {
+        return {
+            all: inventory.length,
+            spare: inventory.filter(i => (i.assetStatus || AssetStatus.SPARE) === AssetStatus.SPARE).length,
+            inUse: inventory.filter(i => i.assetStatus === AssetStatus.IN_USE).length,
+            repair: inventory.filter(i => i.assetStatus === AssetStatus.REPAIR).length,
+            scrapped: inventory.filter(i => i.assetStatus === AssetStatus.SCRAPPED).length,
+        };
+    }, [inventory]);
+
+    const handleToggleSelectAsset = (id: string) => {
+        setSelectedAssetIds(prev =>
+            prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+        );
+    };
+
+    const handleSelectAllAssets = () => {
+        if (selectedAssetIds.length === filteredInventory.length && filteredInventory.length > 0) {
+            setSelectedAssetIds([]);
+        } else {
+            setSelectedAssetIds(filteredInventory.map(i => i.id));
+        }
+    };
+
+    const renderStatusBadge = (status?: string | AssetStatus) => {
+        const s = status || AssetStatus.SPARE;
+
+        if (s === AssetStatus.IN_USE) {
+            return (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800 shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    In Use
+                </span>
+            );
+        }
+
+        if (s === AssetStatus.REPAIR) {
+            return (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-red-50 text-red-700 border border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800 shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                    Under Repair
+                </span>
+            );
+        }
+
+        if (s === AssetStatus.SCRAPPED) {
+            return (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                    Scrapped
+                </span>
+            );
+        }
+
+        return (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Available / Spare
+            </span>
+        );
+    };
 
     // aggregated Stock View for the 'General Stock' tab
     const groupedStock = useMemo(() => {
@@ -182,9 +246,12 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             
             const matchesCategory = selectedCategoryFilter === 'all' || i.category === selectedCategoryFilter;
             
-            return matchesText && matchesCategory;
+            const currentStatus = i.assetStatus || AssetStatus.SPARE;
+            const matchesStatus = selectedStatusFilter === 'all' || currentStatus === selectedStatusFilter;
+            
+            return matchesText && matchesCategory && matchesStatus;
         });
-    }, [inventory, globalFilter, vendors, selectedCategoryFilter]);
+    }, [inventory, globalFilter, vendors, selectedCategoryFilter, selectedStatusFilter]);
 
     const handleSaveVendor = (v: Vendor) => {
         if (editingVendor) {
@@ -830,6 +897,73 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                 </div>
             )}
 
+            {/* STATUS QUICK-FILTER BAR & BATCH ACTIONS */}
+            {activeTab === 'assets' && (
+                <div className="no-print bg-white dark:bg-slate-800 p-3 rounded-2xl border border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+                    {/* Quick Status Filter Pills */}
+                    <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+                        <span className="text-[9px] font-black uppercase text-slate-400 tracking-wider mr-1">Status:</span>
+                        {[
+                            { id: 'all', label: 'All Statuses', count: statusCounts.all },
+                            { id: AssetStatus.SPARE, label: 'Available', count: statusCounts.spare, dot: 'bg-emerald-500' },
+                            { id: AssetStatus.IN_USE, label: 'In Use', count: statusCounts.inUse, dot: 'bg-amber-500' },
+                            { id: AssetStatus.REPAIR, label: 'Under Repair', count: statusCounts.repair, dot: 'bg-red-500' },
+                            { id: AssetStatus.SCRAPPED, label: 'Scrapped', count: statusCounts.scrapped, dot: 'bg-slate-400' },
+                        ].map(f => {
+                            const isActive = selectedStatusFilter === f.id;
+                            return (
+                                <button
+                                    key={f.id}
+                                    onClick={() => setSelectedStatusFilter(f.id)}
+                                    className={`px-3.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center gap-1.5 shrink-0 ${
+                                        isActive
+                                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-md'
+                                            : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100'
+                                    }`}
+                                >
+                                    {f.dot && <span className={`w-1.5 h-1.5 rounded-full ${f.dot}`} />}
+                                    <span>{f.label}</span>
+                                    <span className={`px-1.5 py-0.2 rounded-full text-[8px] ${isActive ? 'bg-white/20 text-white dark:bg-slate-900/20 dark:text-slate-900' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
+                                        {f.count}
+                                    </span>
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Batch Selection Action Buttons */}
+                    <div className="flex items-center gap-2">
+                        {selectedAssetIds.length > 0 ? (
+                            <div className="flex items-center gap-2 bg-indigo-50 dark:bg-indigo-950/40 p-1.5 px-3 rounded-xl border border-indigo-200 dark:border-indigo-800">
+                                <span className="text-[10px] font-black text-indigo-700 dark:text-indigo-300 uppercase">
+                                    {selectedAssetIds.length} Selected
+                                </span>
+                                <button
+                                    onClick={() => setIsBatchLabelModalOpen(true)}
+                                    className="bg-indigo-600 text-white px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-indigo-700 transition flex items-center gap-1 shadow-sm"
+                                >
+                                    <i className="fas fa-barcode"></i> Print Tags ({selectedAssetIds.length})
+                                </button>
+                                <button
+                                    onClick={() => setSelectedAssetIds([])}
+                                    className="text-slate-400 hover:text-slate-600 text-xs px-1 font-bold"
+                                    title="Clear selection"
+                                >
+                                    &times;
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => setIsBatchLabelModalOpen(true)}
+                                className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-3.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider hover:bg-slate-200 transition flex items-center gap-1.5"
+                            >
+                                <i className="fas fa-layer-group"></i> Batch Print Tags
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
+
             <div className="space-y-4">
                 {activeTab === 'assets' && (
                     <div className="space-y-4">
@@ -864,10 +998,19 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                                 <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
                                     <thead className="bg-slate-50 dark:bg-slate-900/50">
                                         <tr>
+                                            <th className="px-4 py-4 w-10 text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={filteredInventory.length > 0 && selectedAssetIds.length === filteredInventory.length}
+                                                    onChange={handleSelectAllAssets}
+                                                    className="w-4 h-4 rounded text-primary border-slate-300 focus:ring-primary cursor-pointer"
+                                                    title="Select All Assets"
+                                                />
+                                            </th>
                                             <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Asset Identity</th>
                                             <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Specifications</th>
                                             <th className="px-6 py-4 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Custodian Hub</th>
-                                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest">Distribution</th>
+                                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest">Status / Logistics</th>
                                             <th className="px-6 py-4 text-right text-[10px] font-black uppercase text-slate-400 tracking-widest">Registry</th>
                                         </tr>
                                     </thead>
@@ -878,9 +1021,18 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                                                          (i.assetStatus === AssetStatus.SPARE || !i.assignedToUserId);
                                             const rowInDC = isDC ? i.quantity : 0;
                                             const rowInBR = !isDC ? i.quantity : 0;
+                                            const isSelected = selectedAssetIds.includes(i.id);
                                             
                                             return (
-                                                <tr key={i.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors group">
+                                                <tr key={i.id} className={`hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors group ${isSelected ? 'bg-indigo-50/40 dark:bg-indigo-950/20' : ''}`}>
+                                                    <td className="px-4 py-4 text-center">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isSelected}
+                                                            onChange={() => handleToggleSelectAsset(i.id)}
+                                                            className="w-4 h-4 rounded text-primary border-slate-300 focus:ring-primary cursor-pointer"
+                                                        />
+                                                    </td>
                                                     <td className="px-6 py-4">
                                                         <div className="flex flex-col">
                                                             <span className="text-[10px] font-black text-primary uppercase tracking-tighter">{i.brand}</span>
@@ -914,13 +1066,8 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                                                         )}
                                                     </td>
                                                     <td className="px-6 py-4 text-center">
-                                                        <div className="flex flex-col gap-1 items-center">
-                                                            <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${
-                                                                i.assetStatus === AssetStatus.IN_USE ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                                                                'bg-emerald-50 text-emerald-600 border-emerald-200'
-                                                            }`}>
-                                                                {i.assetStatus || AssetStatus.SPARE}
-                                                            </span>
+                                                        <div className="flex flex-col gap-1.5 items-center">
+                                                            {renderStatusBadge(i.assetStatus)}
                                                             <div className="flex gap-1">
                                                                 <span title="Quantity in DC" className="text-[7px] font-bold bg-slate-100 dark:bg-slate-700 px-1 rounded text-slate-500">{rowInDC} DC</span>
                                                                 <span title="Quantity in Branches" className="text-[7px] font-bold bg-indigo-50 text-indigo-500 px-1 rounded">{rowInBR} BR</span>
@@ -953,23 +1100,29 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
                         <div className="md:hidden space-y-4">
                             {filteredInventory.map(i => {
                                 const custodian = users.find(u => u.id === i.assignedToUserId);
+                                const isSelected = selectedAssetIds.includes(i.id);
                                 return (
-                                    <div key={i.id} className="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
-                                        <div className="flex justify-between items-start">
-                                            <div>
-                                                <span className="text-[10px] font-black text-primary uppercase tracking-tighter">{i.brand}</span>
-                                                <h4 className="font-black text-slate-800 dark:text-white uppercase text-base leading-tight">{i.name}</h4>
-                                                <div className="flex gap-2 mt-1">
-                                                    <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[8px] font-black uppercase text-slate-500 tracking-widest">{i.category}</span>
-                                                    <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[8px] font-mono font-bold tracking-tighter">TAG: {i.id}</span>
+                                    <div key={i.id} className={`bg-white dark:bg-slate-800 rounded-3xl p-5 border shadow-sm space-y-4 ${isSelected ? 'border-indigo-500 ring-2 ring-indigo-500/20' : 'border-slate-100 dark:border-slate-700'}`}>
+                                        <div className="flex justify-between items-start gap-2">
+                                            <div className="flex items-start gap-3">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isSelected}
+                                                    onChange={() => handleToggleSelectAsset(i.id)}
+                                                    className="w-4 h-4 mt-1 rounded text-primary border-slate-300 focus:ring-primary cursor-pointer shrink-0"
+                                                />
+                                                <div>
+                                                    <span className="text-[10px] font-black text-primary uppercase tracking-tighter">{i.brand}</span>
+                                                    <h4 className="font-black text-slate-800 dark:text-white uppercase text-base leading-tight">{i.name}</h4>
+                                                    <div className="flex gap-2 mt-1">
+                                                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[8px] font-black uppercase text-slate-500 tracking-widest">{i.category}</span>
+                                                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[8px] font-mono font-bold tracking-tighter">TAG: {i.id}</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border ${
-                                                i.assetStatus === AssetStatus.IN_USE ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                                                'bg-emerald-50 text-emerald-600 border-emerald-200'
-                                            }`}>
-                                                {i.assetStatus || AssetStatus.SPARE}
-                                            </span>
+                                            <div className="shrink-0">
+                                                {renderStatusBadge(i.assetStatus)}
+                                            </div>
                                         </div>
 
                                         <div className="flex flex-wrap gap-1">
@@ -1623,7 +1776,7 @@ const InventoryManagement: React.FC<InventoryManagementProps> = (props) => {
             
             {/* LABEL MODALS */}
             {isLabelModalOpen && viewingLabelItem && <AssetLabelModal item={viewingLabelItem} onClose={() => setIsLabelModalOpen(false)} />}
-            {isBatchLabelModalOpen && <BatchAssetLabelModal items={filteredInventory} onClose={() => setIsBatchLabelModalOpen(false)} />}
+            {isBatchLabelModalOpen && <BatchAssetLabelModal items={selectedAssetIds.length > 0 ? inventory.filter(i => selectedAssetIds.includes(i.id)) : filteredInventory} onClose={() => setIsBatchLabelModalOpen(false)} />}
             
             {/* SCANNER MODAL */}
             {isScannerOpen && <ScannerModal onClose={() => setIsScannerOpen(false)} onResult={handleScanResult} />}
