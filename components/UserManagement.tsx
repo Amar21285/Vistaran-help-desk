@@ -3,6 +3,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { User, Role, UserStatus } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { logUserAction } from '../utils/auditLogger';
+import ICardStudioModal from './modals/ICardStudioModal';
 
 interface UserManagementProps {
     users: User[];
@@ -21,6 +22,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
     const [userToImpersonate, setUserToImpersonate] = useState<User | null>(null);
     const [isConfirmingBulkDelete, setIsConfirmingBulkDelete] = useState(false);
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+    const [isICardStudioOpen, setIsICardStudioOpen] = useState(false);
+    const [iCardTargetUsers, setICardTargetUsers] = useState<User[]>([]);
     
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [editingPhotoForUserId, setEditingPhotoForUserId] = useState<string | null>(null);
@@ -150,6 +153,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                     <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Users Management</h2>
                 </div>
                 <div className="flex items-center gap-2">
+                    <button onClick={() => { setICardTargetUsers(users); setIsICardStudioOpen(true); }} className="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm">
+                        <i className="fas fa-id-card"></i> iCard Studio
+                    </button>
                     <button onClick={() => setCreateFormVisible(true)} className="bg-primary text-white font-semibold px-4 py-2 rounded-lg hover:bg-primary-hover transition flex items-center gap-2">
                         <i className="fas fa-user-plus"></i> Create New User
                     </button>
@@ -224,6 +230,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                 <div className="bg-slate-100 dark:bg-slate-900/50 p-4 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-4 border dark:border-slate-700">
                     <span className="font-semibold text-slate-700 dark:text-slate-200">{selectedUserIds.length} user(s) selected</span>
                     <div className="flex items-center gap-2 flex-wrap">
+                        <button onClick={() => { const selected = users.filter(u => selectedUserIds.includes(u.id)); setICardTargetUsers(selected); setIsICardStudioOpen(true); }} className="bg-indigo-100 text-indigo-700 font-semibold px-3 py-1 rounded-md hover:bg-indigo-200 transition text-sm flex items-center gap-1.5">
+                            <i className="fas fa-address-card"></i> Generate iCards
+                        </button>
                         <button onClick={() => handleBulkStatusChange(UserStatus.ACTIVE)} className="bg-green-100 text-green-700 font-semibold px-3 py-1 rounded-md hover:bg-green-200 transition text-sm">Activate</button>
                         <button onClick={() => handleBulkStatusChange(UserStatus.INACTIVE)} className="bg-yellow-100 text-yellow-700 font-semibold px-3 py-1 rounded-md hover:bg-yellow-200 transition text-sm">Deactivate</button>
                         <button onClick={() => setIsConfirmingBulkDelete(true)} className="bg-red-100 text-red-700 font-semibold px-3 py-1 rounded-md hover:bg-red-200 transition text-sm">Delete</button>
@@ -362,6 +371,13 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                                     <button 
+                                        onClick={() => { setICardTargetUsers([user]); setIsICardStudioOpen(true); }}
+                                        className="p-2 text-indigo-600 hover:text-indigo-900 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition" 
+                                        title="Generate iCard"
+                                    >
+                                        <i className="fas fa-id-card"></i>
+                                    </button>
+                                    <button 
                                         onClick={() => setUserToImpersonate(user)} 
                                         className="p-2 text-yellow-600 hover:text-yellow-900 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg transition" 
                                         title="Impersonate User" 
@@ -437,6 +453,13 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                         </div>
                     </div>
                 </div>
+            )}
+            
+            {isICardStudioOpen && (
+                <ICardStudioModal 
+                    users={iCardTargetUsers.length > 0 ? iCardTargetUsers : users} 
+                    onClose={() => setIsICardStudioOpen(false)} 
+                />
             )}
         </div>
     );

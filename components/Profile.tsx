@@ -1,7 +1,8 @@
 
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { User, Ticket, TicketStatus } from '../types';
 import { useAuth } from '../hooks/useAuth';
+import ICardStudioModal from './modals/ICardStudioModal';
 
 interface ProfileProps {
     tickets: Ticket[];
@@ -22,6 +23,7 @@ const StatItem: React.FC<{ iconClass: string; value: string | number; label: str
 
 const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser, isInstallAvailable, onInstallApp }) => {
     const { user } = useAuth();
+    const [isICardModalOpen, setIsICardModalOpen] = useState(false);
     
     const userStats = useMemo(() => {
         if (!user) return { total: 0, pending: 0, resolved: 0, lastActivity: 'Never' };
@@ -53,6 +55,12 @@ const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser, isInstallAvailab
                             <i className="fas fa-download"></i> Install App
                         </button>
                     )}
+                    <button 
+                        onClick={() => setIsICardModalOpen(true)} 
+                        className="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm"
+                    >
+                        <i className="fas fa-id-card"></i> Digital iCard
+                    </button>
                     <button 
                         onClick={() => onEditUser(user)} 
                         className="bg-primary text-white font-semibold px-4 py-2 rounded-lg hover:bg-primary-hover transition flex items-center gap-2"
@@ -124,6 +132,13 @@ const Profile: React.FC<ProfileProps> = ({ tickets, onEditUser, isInstallAvailab
                     <StatItem iconClass="fas fa-calendar" value={userStats.lastActivity} label="Last Activity" />
                 </div>
             </div>
+
+            {isICardModalOpen && (
+                <ICardStudioModal 
+                    users={[user]} 
+                    onClose={() => setIsICardModalOpen(false)} 
+                />
+            )}
         </div>
     );
 };

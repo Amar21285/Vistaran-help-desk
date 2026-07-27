@@ -50,6 +50,8 @@ export interface User {
     employeeId?: string;
     designation?: string;
     permissions?: Permission[];
+    bloodGroup?: string;
+    accessLevel?: string;
 }
 
 export enum TicketStatus {
