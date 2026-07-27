@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { User, Role } from '../../types';
 import JsBarcode from 'jsbarcode';
 import Logo from '../icons/Logo';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid';
 export type ThemeColor = 'blue' | 'emerald' | 'indigo' | 'charcoal' | 'amber' | 'crimson';
@@ -211,12 +213,101 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const [showBarcode, setShowBarcode] = useState<boolean>(true);
     const [activeSide, setActiveSide] = useState<'front' | 'back' | 'both'>('front');
     const [isBatchMode, setIsBatchMode] = useState<boolean>(users.length > 1);
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
+    const [pdfProgress, setPdfProgress] = useState<number>(0);
 
     const theme = THEMES[themeKey] || THEMES.blue;
     const activeUser = users.find((u) => u.id === selectedUserId) || users[0];
 
     const getEmpId = (u: User) => u.employeeId || `EMP-${u.id.replace(/\D/g, '').slice(-4) || '101'}`;
     const getVerificationUrl = (u: User) => `https://vistaran.com/verify?id=${getEmpId(u)}&name=${encodeURIComponent(u.name)}`;
+
+    const handleDownloadPDF = async () => {
+        setIsGeneratingPDF(true);
+        setPdfProgress(0);
+        try {
+            const isLandscape = format === 'executive' || format === 'rfid' || format === 'minimal';
+            const cardW = isLandscape ? 85.6 : 53.98;
+            const cardH = isLandscape ? 53.98 : 85.6;
+
+            if (isBatchMode) {
+                const pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', [cardW, cardH]);
+                const cardNodes = document.querySelectorAll('.batch-pdf-card-node');
+                
+                if (cardNodes.length > 0) {
+                    for (let i = 0; i < cardNodes.length; i++) {
+                        const node = cardNodes[i] as HTMLElement;
+                        setPdfProgress(i + 1);
+                        if (i > 0) pdf.addPage([cardW, cardH], isLandscape ? 'l' : 'p');
+
+                        const canvas = await html2canvas(node, {
+                            scale: 3,
+                            useCORS: true,
+                            logging: false,
+                            backgroundColor: '#ffffff'
+                        } as any);
+                        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                        pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
+                    }
+                } else {
+                    const printEl = document.getElementById('icard-printable-container');
+                    if (printEl) {
+                        const canvas = await html2canvas(printEl, {
+                            scale: 3,
+                            useCORS: true,
+                            logging: false,
+                            backgroundColor: '#ffffff'
+                        } as any);
+                        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                        pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
+                    }
+                }
+                pdf.save(`Vistaran_iCards_Batch_${users.length}_Users_${Date.now()}.pdf`);
+            } else {
+                const previewEl = document.getElementById('icard-preview-active-card');
+                if (previewEl) {
+                    const pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', [cardW, cardH]);
+                    const canvas = await html2canvas(previewEl, {
+                        scale: 4,
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#ffffff'
+                    } as any);
+                    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
+                    const empId = getEmpId(activeUser);
+                    const safeName = activeUser.name.replace(/\s+/g, '_');
+                    pdf.save(`Vistaran_iCard_${empId}_${safeName}.pdf`);
+                }
+            }
+        } catch (err) {
+            console.error('PDF Generation Error:', err);
+            alert('Failed to generate PDF. Please try again.');
+        } finally {
+            setIsGeneratingPDF(false);
+        }
+    };
+
+    const handleDownloadPNG = async () => {
+        const previewEl = document.getElementById('icard-preview-active-card');
+        if (!previewEl) return;
+        try {
+            const canvas = await html2canvas(previewEl, {
+                scale: 4,
+                useCORS: true,
+                logging: false,
+                backgroundColor: null
+            } as any);
+            const link = document.createElement('a');
+            const empId = getEmpId(activeUser);
+            const safeName = activeUser.name.replace(/\s+/g, '_');
+            link.download = `Vistaran_iCard_${empId}_${safeName}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (err) {
+            console.error('PNG Generation Error:', err);
+        }
+    };
 
     // Handler for isolated window print
     const handlePrint = () => {
@@ -1013,15 +1104,15 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
                         {/* Interactive Live Render Container */}
                         <div className="flex-1 w-full flex items-center justify-center py-4 min-h-[360px]">
-                            {/* Hidden printable container formatted for isolated iframe print */}
+                            {/* Hidden printable container formatted for isolated iframe print & PDF export */}
                             <div id="icard-printable-container" className="hidden">
                                 {isBatchMode ? (
                                     <div className="batch-grid">
                                         {users.map((u) => (
-                                            <React.Fragment key={u.id}>
+                                            <div key={u.id} className="batch-pdf-card-node flex flex-col gap-2">
                                                 {(activeSide === 'front' || activeSide === 'both') && renderFrontCard(u)}
                                                 {(activeSide === 'back' || activeSide === 'both') && renderBackCard(u)}
-                                            </React.Fragment>
+                                            </div>
                                         ))}
                                     </div>
                                 ) : (
@@ -1033,20 +1124,22 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </div>
 
                             {/* Visible Interactive Preview Screen */}
-                            <div className="scale-125 transform transition-transform duration-300 flex flex-wrap gap-6 justify-center items-center">
+                            <div id="icard-preview-active-card" className="scale-125 transform transition-transform duration-300 flex flex-wrap gap-6 justify-center items-center">
                                 {(activeSide === 'front' || activeSide === 'both') && renderFrontCard(activeUser)}
                                 {(activeSide === 'back' || activeSide === 'both') && renderBackCard(activeUser)}
                             </div>
                         </div>
 
                         {/* Bottom Studio Action Footer */}
-                        <div className="w-full pt-4 border-t border-slate-300 dark:border-slate-700 flex justify-between items-center">
+                        <div className="w-full pt-4 border-t border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-center gap-3">
                             <span className="text-xs text-slate-500 font-semibold">
-                                {isBatchMode
-                                    ? `Ready to print ${users.length} card(s) in Grid Layout`
+                                {isGeneratingPDF
+                                    ? `Generating PDF... (${pdfProgress}/${users.length})`
+                                    : isBatchMode
+                                    ? `Ready to print/download ${users.length} card(s)`
                                     : `Single Card Mode: ${activeUser?.name}`}
                             </span>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 flex-wrap">
                                 <button
                                     onClick={onClose}
                                     className="px-4 py-2 bg-slate-300 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs hover:bg-slate-400 transition"
@@ -1054,11 +1147,30 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     Cancel
                                 </button>
                                 <button
+                                    onClick={handleDownloadPNG}
+                                    disabled={isGeneratingPDF}
+                                    className="px-4 py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs hover:bg-emerald-700 transition shadow-md flex items-center gap-1.5"
+                                    title="Download HD PNG Image"
+                                >
+                                    <i className="fas fa-image"></i>
+                                    PNG
+                                </button>
+                                <button
+                                    onClick={handleDownloadPDF}
+                                    disabled={isGeneratingPDF}
+                                    className="px-4 py-2 bg-red-600 text-white font-bold rounded-xl text-xs hover:bg-red-700 transition shadow-md flex items-center gap-1.5 disabled:opacity-50"
+                                    title="Download printable PDF file"
+                                >
+                                    <i className="fas fa-file-pdf"></i>
+                                    {isGeneratingPDF ? 'Generating...' : isBatchMode ? `Download Batch PDF (${users.length})` : 'Download PDF'}
+                                </button>
+                                <button
                                     onClick={handlePrint}
+                                    disabled={isGeneratingPDF}
                                     className="px-5 py-2 bg-primary text-white font-bold rounded-xl text-xs hover:bg-primary-hover transition shadow-lg flex items-center gap-2"
                                 >
                                     <i className="fas fa-print"></i>
-                                    {isBatchMode ? `Print Batch (${users.length} Cards)` : 'Print iCard Now'}
+                                    {isBatchMode ? `Print Batch (${users.length})` : 'Print iCard Now'}
                                 </button>
                             </div>
                         </div>
