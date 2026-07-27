@@ -891,29 +891,29 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     </div>
 
                     {/* Middle Content (Partner Logo, Photo, & Details) */}
-                    <div className="flex-1 flex flex-col items-center justify-center px-2 z-10 w-full mt-0.5">
-                        <div className="text-center w-full mb-1">
-                            <span className="inline-block border-b-[0.5px] pb-0.5 text-[7px] font-bold uppercase tracking-wide" style={{ color: theme.dark, borderColor: theme.dark }}>
+                    <div className="flex-1 flex flex-col items-center justify-center px-2 z-10 w-full mt-2">
+                        <div className="text-center w-full mb-1.5">
+                            <span className="inline-block border-b-[1.5px] pb-0.5 text-[8.5px] font-black uppercase tracking-widest" style={{ color: theme.dark, borderColor: theme.dark }}>
                                 {user.designation || 'AUTHORISED DISTRIBUTOR'}
                             </span>
                         </div>
                         
-                        <div className="flex items-center gap-3 mb-1 w-full justify-center px-4">
+                        <div className="flex items-center gap-4 mb-2 w-full justify-center px-4">
                             {/* Partner Logo */}
-                            <div className="relative w-9 h-9 flex items-center justify-center flex-shrink-0">
+                            <div className="relative w-11 h-11 flex items-center justify-center flex-shrink-0 drop-shadow-sm">
                                 {partnerLogoUrl ? (
                                     <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" />
                                 ) : (
                                     <div className="text-center flex flex-col items-center">
-                                        <div className="text-[16px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
-                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[5px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                                        <div className="text-[20px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
+                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[6px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
                                     </div>
                                 )}
                             </div>
                             
                             {/* User Photo */}
                             <div
-                                className="relative w-10 h-10 rounded-full shadow-sm border-[1.5px] overflow-hidden flex-shrink-0 bg-white"
+                                className="relative w-12 h-12 rounded-full shadow-md border-2 overflow-hidden flex-shrink-0 bg-white"
                                 style={{ borderColor: theme.primary }}
                             >
                                 <img
@@ -925,25 +925,25 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         </div>
 
                         {/* User Details */}
-                        <div className="text-center w-full leading-tight">
-                            <h3 className="font-extrabold text-[11px] tracking-tight uppercase truncate" style={{ color: theme.dark }}>
+                        <div className="text-center w-full leading-tight bg-slate-50/60 backdrop-blur-sm rounded-lg p-1.5 border border-slate-100 shadow-sm mx-auto max-w-[42mm]">
+                            <h3 className="font-black text-[12px] tracking-tight uppercase truncate" style={{ color: theme.dark }}>
                                 {user.name}
                             </h3>
-                            <p className="text-[6.5px] font-bold mt-0.5" style={{ color: theme.primary }}>
+                            <p className="text-[7px] font-extrabold mt-0.5 uppercase tracking-wider" style={{ color: theme.primary }}>
                                 ID: {getEmpId(user)} | PH: {user.phone || contactPhone}
                             </p>
                         </div>
                     </div>
 
                     {/* Bottom Footer Band */}
-                    <div className="w-full z-10 mt-2">
-                        <div className="py-1.5 text-center" style={{ backgroundColor: theme.primary }}>
-                            <span className="text-white text-[8px] font-bold uppercase tracking-widest">
+                    <div className="w-full z-10 mt-auto">
+                        <div className="py-2 text-center shadow-[0_-2px_10px_rgba(0,0,0,0.1)]" style={{ backgroundColor: theme.primary }}>
+                            <span className="text-white text-[9.5px] font-black uppercase tracking-[0.2em] drop-shadow-sm">
                                 HINDUSTAN UNILEVER LIMITED
                             </span>
                         </div>
-                        <div className="bg-slate-50 py-1.5 px-3 text-center min-h-[14mm] flex items-center justify-center border-t border-slate-200">
-                            <p className="text-[5.5px] text-slate-800 font-bold leading-[1.3] uppercase">
+                        <div className="bg-slate-50 py-2.5 px-3 text-center min-h-[16mm] flex items-center justify-center border-t border-slate-200 shadow-inner">
+                            <p className="text-[6px] text-slate-800 font-extrabold leading-[1.4] uppercase tracking-wide">
                                 DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6<br/>
                                 LBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,<br/>
                                 MUMBAI, MAHARASHTRA 400078
