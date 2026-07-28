@@ -206,7 +206,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const [themeKey, setThemeKey] = useState<ThemeColor>('blue');
     const [companyName, setCompanyName] = useState<string>('VISTARAN INFOTECH');
     const [tagline, setTagline] = useState<string>('Empowering Digital Infrastructure');
-    const [contactPhone, setContactPhone] = useState<string>('+91 (080) 4567-8900');
+    const [contactPhone, setContactPhone] = useState<string>('022-XXXX XXXX');
+    const [companyEmail, setCompanyEmail] = useState<string>('info@vistaranhealthcare.com');
+    const [companyAddress, setCompanyAddress] = useState<string>('DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6\nLBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,\nMUMBAI, MAHARASHTRA 400078');
     const [bloodGroup, setBloodGroup] = useState<string>('O+');
     const [accessLevel, setAccessLevel] = useState<string>('LEVEL 4 - FULL ACCESS');
     const [showQRCode, setShowQRCode] = useState<boolean>(true);
@@ -1031,10 +1033,8 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 </span>
                             </div>
                             <div className="py-1.5 px-2 text-center min-h-[12mm] flex items-center justify-center border-t border-slate-200">
-                                <p className="text-[5px] text-slate-800 font-extrabold leading-[1.3] uppercase break-words w-full px-1">
-                                    DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6<br/>
-                                    LBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,<br/>
-                                    MUMBAI, MAHARASHTRA 400078
+                                <p className="text-[5px] text-slate-800 font-extrabold leading-[1.3] uppercase break-words w-full px-1 whitespace-pre-line">
+                                    {companyAddress}
                                 </p>
                             </div>
                         </div>
@@ -1043,21 +1043,19 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {(isF2 || isF4) && (
                         <div className="w-full z-10 mt-auto pt-2 px-3 pb-2" style={isF4 ? { backgroundColor: 'white', borderTop: `1.5px solid ${theme.primary}` } : { backgroundColor: theme.primary }}>
                             <div className="flex items-start gap-1.5 mb-1.5 justify-center">
-                                <p className={`text-[5.5px] font-black leading-[1.3] uppercase text-center ${isF4 ? 'text-black' : 'text-white'}`}>
-                                    DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6<br/>
-                                    LBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,<br/>
-                                    MUMBAI, MAHARASHTRA 400078
+                                <p className={`text-[5.5px] font-black leading-[1.3] uppercase text-center whitespace-pre-line ${isF4 ? 'text-black' : 'text-white'}`}>
+                                    {companyAddress}
                                 </p>
                             </div>
                             {!isF4 && (
                                 <>
                                     <div className="flex items-center gap-1.5 mb-1">
                                         <i className="fas fa-phone text-white text-[6px]"></i>
-                                        <p className="text-white text-[6px] font-medium">022-XXXX XXXX</p>
+                                        <p className="text-white text-[6px] font-medium">{contactPhone}</p>
                                     </div>
                                     <div className="flex items-center gap-1.5">
                                         <i className="fas fa-envelope text-white text-[6px]"></i>
-                                        <p className="text-white text-[6px] font-medium">info@vistaranhealthcare.com</p>
+                                        <p className="text-white text-[6px] font-medium">{companyEmail}</p>
                                     </div>
                                 </>
                             )}
@@ -1068,21 +1066,18 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         <div className="w-full z-10 mt-auto">
                             <div className="bg-transparent py-2 px-4 text-left flex items-start gap-1.5 relative z-20">
                                 <i className="fas fa-location-dot mt-[1px] text-[7px]" style={{ color: theme.dark }}></i>
-                                <p className="text-[5.5px] font-extrabold leading-[1.4] uppercase" style={{ color: theme.dark }}>
-                                    DEVIDAYAL COMPOUND PANNA HOUSE<br/>
-                                    GROUND FLOOR GALA NO 4,5,6<br/>
-                                    LBS MARG JAYDEV SINGH NAGAR,<br/>
-                                    BHANDUP WEST, MUMBAI 400078
+                                <p className="text-[5.5px] font-extrabold leading-[1.4] uppercase whitespace-pre-line" style={{ color: theme.dark }}>
+                                    {companyAddress}
                                 </p>
                             </div>
                             <div className="py-1.5 px-4 text-center flex items-center justify-between relative z-20" style={{ backgroundColor: theme.primary }}>
                                 <div className="flex items-center gap-1">
                                     <i className="fas fa-phone text-white text-[6px]"></i>
-                                    <span className="text-white text-[5.5px] font-medium">022-XXXX XXXX</span>
+                                    <span className="text-white text-[5.5px] font-medium">{contactPhone}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <i className="fas fa-globe text-white text-[6px]"></i>
-                                    <span className="text-white text-[5.5px] font-medium">www.vistaranhealthcare.com</span>
+                                    <i className="fas fa-envelope text-white text-[6px]"></i>
+                                    <span className="text-white text-[5.5px] font-medium">{companyEmail}</span>
                                 </div>
                             </div>
                         </div>
@@ -1359,6 +1354,14 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 <div>
                                     <span className="text-slate-500 font-semibold block mb-1">Support Phone</span>
                                     <input type="text" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
+                                </div>
+                                <div>
+                                    <span className="text-slate-500 font-semibold block mb-1">Support Email</span>
+                                    <input type="text" value={companyEmail} onChange={(e) => setCompanyEmail(e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" />
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <span className="text-slate-500 font-semibold block mb-1">Company Address</span>
+                                    <textarea value={companyAddress} onChange={(e) => setCompanyAddress(e.target.value)} rows={3} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary resize-y" />
                                 </div>
                             </div>
                             
