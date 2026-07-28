@@ -952,9 +952,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     </div>
 
                     {/* AUTHORISED DISTRIBUTOR BAR */}
-                    <div className="w-full z-10 my-1">
-                        <div className="py-1 text-center" style={{ backgroundColor: theme.primary }}>
-                            <span className="text-white text-[9.5px] font-black uppercase tracking-widest drop-shadow-sm">
+                    <div className="w-full z-10 my-0.5">
+                        <div className="py-0.5 text-center" style={{ backgroundColor: theme.primary }}>
+                            <span className="text-white text-[10px] font-black uppercase tracking-widest drop-shadow-sm">
                                 {user.designation || 'AUTHORISED DISTRIBUTOR'}
                             </span>
                         </div>
@@ -964,13 +964,13 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     <div className="flex-1 flex flex-col items-center justify-center px-2 relative z-20 w-full mt-1">
                         <div className="flex items-center gap-3 mb-1.5 w-full justify-center px-4">
                             {/* Partner Logo */}
-                            <div className={`relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm bg-white rounded p-0.5 ${isF4 ? 'scale-150 my-2' : ''}`}>
+                            <div className={`relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm bg-white rounded p-0.5 ${isF4 ? 'scale-125 my-1' : ''}`}>
                                 {partnerLogoUrl ? (
                                     <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" />
                                 ) : (
                                     <div className="text-center flex flex-col items-center">
                                         <div className="text-[20px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
-                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[6px] font-medium" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[6px] font-bold" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
                                     </div>
                                 )}
                             </div>
@@ -991,10 +991,10 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
                         {/* HUL Text Line */}
                         {!isF1 && (
-                            <div className="w-full text-center mb-1 bg-white relative z-30">
-                                <div className="py-1 w-full" style={isF4 ? { backgroundColor: theme.primary } : {}}>
+                            <div className="w-full text-center mb-0.5 bg-white relative z-30">
+                                <div className="py-0.5 w-full" style={isF4 ? { backgroundColor: theme.primary } : {}}>
                                     {!isF4 && <div className="h-[0.5px] w-full mb-1" style={{ backgroundColor: theme.primary }} />}
-                                    <span className={`text-[7px] font-black uppercase tracking-[0.1em] ${isF4 ? 'text-white' : ''}`} style={!isF4 ? { color: theme.primary } : {}}>
+                                    <span className={`text-[7.5px] font-black uppercase tracking-[0.1em] ${isF4 ? 'text-white' : ''}`} style={!isF4 ? { color: theme.primary } : {}}>
                                         HINDUSTAN UNILEVER LIMITED
                                     </span>
                                 </div>
@@ -1033,9 +1033,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     )}
 
                     {(isF2 || isF4) && (
-                        <div className="w-full z-10 mt-auto pt-2 px-3 pb-2" style={isF4 ? { backgroundColor: 'white', borderTop: `1px solid ${theme.primary}` } : { backgroundColor: theme.primary }}>
+                        <div className="w-full z-10 mt-auto pt-2 px-3 pb-2" style={isF4 ? { backgroundColor: 'white', borderTop: `1.5px solid ${theme.primary}` } : { backgroundColor: theme.primary }}>
                             <div className="flex items-start gap-1.5 mb-1.5 justify-center">
-                                <p className={`text-[5px] font-extrabold leading-[1.3] uppercase text-center ${isF4 ? 'text-black' : 'text-white'}`}>
+                                <p className={`text-[5.5px] font-black leading-[1.3] uppercase text-center ${isF4 ? 'text-black' : 'text-white'}`}>
                                     DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6<br/>
                                     LBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,<br/>
                                     MUMBAI, MAHARASHTRA 400078
