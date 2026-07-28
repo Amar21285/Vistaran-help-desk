@@ -513,7 +513,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 className="w-full h-full rounded-full object-cover"
                             />
                             <div
-                                className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded-full text-[6.5px] font-bold text-white uppercase whitespace-nowrap shadow-sm"
+                                className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[6.5px] font-bold text-white uppercase whitespace-nowrap shadow-sm leading-none flex items-center justify-center"
                                 style={{ backgroundColor: theme.dark }}
                             >
                                 {user.role}
@@ -563,9 +563,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </div>
                         )}
                         {showBarcode && (
-                            <div className="flex-1 flex flex-col items-end overflow-hidden">
-                                <BarcodeSVG value={empId} lineColor={theme.dark} width={0.9} height={20} />
-                                <span className="font-mono text-[7px] font-extrabold text-slate-700 tracking-tighter mt-0.5">
+                            <div className="flex-1 flex flex-col items-end">
+                                <BarcodeSVG value={empId} lineColor={theme.dark} width={0.9} height={16} />
+                                <span className="font-mono text-[7px] font-extrabold text-slate-700 tracking-tighter mt-0.5 leading-none">
                                     {empId}
                                 </span>
                             </div>
@@ -991,10 +991,10 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
                         {/* HUL Text Line */}
                         {!isF1 && (
-                            <div className="w-full text-center mb-0.5 bg-white relative z-30">
+                            <div className="w-full text-center mb-0.5">
                                 <div className="py-0.5 w-full" style={isF4 ? { backgroundColor: theme.primary } : {}}>
                                     {!isF4 && <div className="h-[0.5px] w-full mb-1" style={{ backgroundColor: theme.primary }} />}
-                                    <span className={`text-[7.5px] font-black uppercase tracking-[0.1em] ${isF4 ? 'text-white' : ''}`} style={!isF4 ? { color: theme.primary } : {}}>
+                                    <span className={`text-[7.5px] font-black uppercase tracking-[0.1em] leading-none ${isF4 ? 'text-white' : ''}`} style={!isF4 ? { color: theme.primary } : {}}>
                                         HINDUSTAN UNILEVER LIMITED
                                     </span>
                                 </div>
@@ -1003,11 +1003,11 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
                         {/* User Details */}
                         {!isF4 && (
-                            <div className="text-center w-full leading-tight mt-0.5">
-                                <h3 className="font-black text-[11px] tracking-tight uppercase truncate" style={{ color: theme.dark }}>
+                            <div className="text-center w-full leading-tight mt-1 relative z-40">
+                                <h3 className="font-black text-[11px] tracking-tight uppercase leading-none pb-0.5" style={{ color: theme.dark }}>
                                     {user.name}
                                 </h3>
-                                <p className="text-[6px] font-extrabold mt-0.5 uppercase tracking-wider" style={{ color: theme.primary }}>
+                                <p className="text-[6px] font-extrabold mt-0.5 uppercase tracking-wider leading-none" style={{ color: theme.primary }}>
                                     ID: {getEmpId(user)} | PH: {user.phone || contactPhone}
                                 </p>
                             </div>
