@@ -1273,51 +1273,51 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
         return (
             <div
-                className="print-card-box relative bg-white rounded-xl shadow-md border border-slate-300 p-3 flex flex-col justify-between overflow-hidden text-slate-800"
-                style={{ width: cardW, height: cardH }}
+                className="print-card-box relative rounded-xl shadow-md border p-3 flex flex-col justify-between overflow-hidden"
+                style={{ width: cardW, height: cardH, borderColor: theme.primary, backgroundColor: theme.light }}
             >
                 {/* Magnetic Stripe if RFID or Executive */}
                 {(format === 'rfid' || format === 'executive') && (
-                    <div className="-mx-3 -mt-3 mb-2 h-7 bg-slate-900 border-b border-slate-800 flex items-center justify-end px-4">
-                        <span className="text-[6px] font-mono text-slate-400 tracking-widest uppercase">
+                    <div className="-mx-3 -mt-3 mb-2 h-7 flex items-center justify-end px-4" style={{ backgroundColor: theme.dark }}>
+                        <span className="text-[6px] font-mono tracking-widest uppercase text-white/80">
                             MAGNETIC STRIPE TRACK 1/2
                         </span>
                     </div>
                 )}
 
                 {/* Header Back */}
-                <div className="flex justify-between items-center border-b border-slate-100 pb-1">
-                    <span className="font-bold text-[9px] uppercase tracking-wider text-slate-800">
+                <div className="flex justify-between items-center border-b pb-1" style={{ borderColor: theme.border }}>
+                    <span className="font-bold text-[9px] uppercase tracking-wider" style={{ color: theme.dark }}>
                         TERMS & CONDITIONS
                     </span>
-                    <span className="text-[7.5px] font-mono font-bold text-slate-400">{empId}</span>
+                    <span className="text-[7.5px] font-mono font-bold" style={{ color: theme.primary }}>{empId}</span>
                 </div>
 
                 {/* Terms text */}
-                <p className="text-[7px] text-slate-500 leading-snug my-1">
-                    This identity card is non-transferable and remains property of <strong>{companyName}</strong>. If
+                <p className="text-[7px] leading-snug my-1" style={{ color: theme.primary }}>
+                    This identity card is non-transferable and remains property of <strong style={{ color: theme.dark }}>{companyName}</strong>. If
                     found, please return to nearest HR office or contact emergency helpline immediately.
                 </p>
 
                 {/* Emergency Contact & Signature Row */}
                 <div className="grid grid-cols-2 gap-2 text-[7.5px] my-1">
-                    <div className="bg-slate-50 p-1.5 rounded border border-slate-100">
-                        <span className="text-slate-400 font-bold block text-[6px] uppercase">EMERGENCY HELPLINE</span>
-                        <span className="font-bold text-slate-800">{contactPhone}</span>
+                    <div className="p-1.5 rounded border" style={{ backgroundColor: theme.badgeBg, borderColor: theme.border }}>
+                        <span className="font-bold block text-[6px] uppercase" style={{ color: theme.primary }}>EMERGENCY HELPLINE</span>
+                        <span className="font-bold" style={{ color: theme.dark }}>{contactPhone}</span>
                     </div>
-                    <div className="bg-slate-50 p-1.5 rounded border border-slate-100 flex flex-col justify-between">
-                        <span className="text-slate-400 font-bold block text-[6px] uppercase">
+                    <div className="p-1.5 rounded border flex flex-col justify-between" style={{ backgroundColor: theme.badgeBg, borderColor: theme.border }}>
+                        <span className="font-bold block text-[6px] uppercase" style={{ color: theme.primary }}>
                             AUTHORIZED SIGNATURE
                         </span>
-                        <div className="border-b border-dashed border-slate-400 w-full my-0.5" />
-                        <span className="text-[6px] text-slate-400 italic">Chief Security Officer</span>
+                        <div className="border-b border-dashed w-full my-0.5" style={{ borderColor: theme.primary }} />
+                        <span className="text-[6px] italic" style={{ color: theme.primary }}>Chief Security Officer</span>
                     </div>
                 </div>
 
                 {/* Address & Return footer */}
-                <div className="border-t border-slate-100 pt-1 flex justify-between items-center text-[6.5px] text-slate-400">
-                    <span>Vistaran Corporate Tower, Cyber City</span>
-                    <span className="font-bold text-slate-600">www.vistaran.com</span>
+                <div className="border-t pt-1 flex justify-between items-center text-[6.5px]" style={{ borderColor: theme.border }}>
+                    <span style={{ color: theme.primary }}>{companyAddress.split('\n')[0].substring(0, 35)}...</span>
+                    <span className="font-bold" style={{ color: theme.dark }}>www.vistaran.com</span>
                 </div>
             </div>
         );
