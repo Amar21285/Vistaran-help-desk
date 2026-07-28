@@ -301,38 +301,27 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
             const cardH = isLandscape ? 53.98 : 85.6;
 
             if (isBatchMode) {
-                const pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', [cardW, cardH]);
-                const cardNodes = document.querySelectorAll('.batch-pdf-card-node');
-                
-                if (cardNodes.length > 0) {
+                const printEl = document.getElementById('icard-printable-container');
+                if (printEl) {
+                    const pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', [cardW, cardH]);
+                    const cardNodes = printEl.querySelectorAll('.print-card-box');
+                    
                     for (let i = 0; i < cardNodes.length; i++) {
                         const node = cardNodes[i] as HTMLElement;
                         setPdfProgress(i + 1);
                         if (i > 0) pdf.addPage([cardW, cardH], isLandscape ? 'l' : 'p');
 
                         const canvas = await html2canvas(node, {
-                            scale: 3,
+                            scale: 4,
                             useCORS: true,
                             logging: false,
                             backgroundColor: '#ffffff'
                         } as any);
-                        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                        const imgData = canvas.toDataURL('image/jpeg', 0.98);
                         pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
                     }
-                } else {
-                    const printEl = document.getElementById('icard-printable-container');
-                    if (printEl) {
-                        const canvas = await html2canvas(printEl, {
-                            scale: 3,
-                            useCORS: true,
-                            logging: false,
-                            backgroundColor: '#ffffff'
-                        } as any);
-                        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                        pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
-                    }
+                    pdf.save(`Vistaran_iCards_Batch_${users.length}_Users_${Date.now()}.pdf`);
                 }
-                pdf.save(`Vistaran_iCards_Batch_${users.length}_Users_${Date.now()}.pdf`);
             } else {
                 const previewEl = document.getElementById('icard-preview-active-card');
                 if (previewEl) {
@@ -1747,7 +1736,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {/* Interactive Live Render Container */}
                         <div className="flex-1 w-full flex items-center justify-center py-4 min-h-[360px]">
                             {/* Hidden printable container formatted for isolated iframe print & PDF export */}
-                            <div id="icard-printable-container" className="hidden">
+                            <div id="icard-printable-container" className="fixed -top-[9999px] -left-[9999px]">
                                 {isBatchMode ? (
                                     <div className="batch-grid">
                                         {users.map((baseU) => {
