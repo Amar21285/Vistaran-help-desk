@@ -5,7 +5,7 @@ import Logo from '../icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare' | 'distributor2' | 'distributor3' | 'distributor4' | 'pills-and-more';
+export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare' | 'distributor2' | 'distributor3' | 'distributor4' | 'pills-and-more' | 'pills-and-more-2';
 export type ThemeColor = 'blue' | 'emerald' | 'indigo' | 'charcoal' | 'amber' | 'crimson';
 
 export interface ThemeConfig {
@@ -1142,6 +1142,80 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
             );
         }
 
+        // Pills & More Layout 2
+        if (format === 'pills-and-more-2') {
+            const empId = getEmpId(user);
+            return (
+                <div
+                    className="print-card-box relative w-[53.98mm] h-[85.6mm] bg-white rounded-xl shadow-md border overflow-hidden flex flex-col"
+                    style={{ width: '53.98mm', height: '85.6mm', borderColor: theme.primary }}
+                >
+                    {/* Top Header with Wave */}
+                    <div className="relative w-full h-[22mm] flex justify-center items-center" style={{ backgroundColor: theme.primary }}>
+                        <svg className="absolute -bottom-[1px] left-0 w-full h-[5mm] text-white pointer-events-none" viewBox="0 0 100 20" preserveAspectRatio="none">
+                            <path d="M0,0 C30,20 70,20 100,0 L100,20 L0,20 Z" fill="currentColor"></path>
+                        </svg>
+                        
+                        {companyLogoUrl ? (
+                            <img src={companyLogoUrl} alt="Pills and More" className="w-[35mm] max-h-[14mm] object-contain drop-shadow-md z-10" />
+                        ) : (
+                            <div className="flex flex-col items-center z-10">
+                                <span className="font-black text-[16px] text-white drop-shadow-md">Pills <span className="text-green-300">& More</span></span>
+                                <span className="text-[5.5px] font-bold text-slate-800 bg-white/90 px-2 py-0.5 rounded-full mt-1 tracking-wider uppercase">
+                                    Chemist & Health Style Supermarket
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Body */}
+                    <div className="flex-1 flex flex-col items-center px-4 pt-1 z-10">
+                        {/* Profile Photo */}
+                        <div className="relative w-[22mm] h-[22mm] rounded-2xl p-1 shadow-md bg-white -mt-4 mb-2 z-20" style={{ border: `2px solid ${theme.primary}` }}>
+                            <img src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`} alt={user.name} className="w-full h-full rounded-xl object-cover" />
+                        </div>
+                        
+                        <h3 className="font-black text-[15px] text-slate-900 tracking-tight text-center uppercase leading-none">
+                            {user.name}
+                        </h3>
+                        <p className="text-[8.5px] font-extrabold uppercase mt-1 mb-2 tracking-widest rounded px-2 py-0.5" style={{ color: theme.primary, backgroundColor: theme.light }}>
+                            {user.designation || 'Staff'}
+                        </p>
+                        
+                        {/* Info Grid */}
+                        <div className="w-full grid grid-cols-2 gap-x-2 gap-y-1.5 mt-1 text-[7px] font-bold text-slate-800 border-t border-b border-slate-100 py-2">
+                            <div className="flex flex-col">
+                                <span className="text-slate-400 uppercase tracking-wider text-[5.5px]">Employee ID</span>
+                                <span className="text-[8.5px]">{empId}</span>
+                            </div>
+                            <div className="flex flex-col items-end text-right">
+                                <span className="text-slate-400 uppercase tracking-wider text-[5.5px]">Blood Group</span>
+                                <span className="text-[8.5px] text-red-600">{user.bloodGroup || bloodGroup}</span>
+                            </div>
+                            <div className="flex flex-col col-span-2 text-center mt-0.5">
+                                <span className="text-slate-400 uppercase tracking-wider text-[5.5px]">Department</span>
+                                <span className="text-[8.5px]">{user.department}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="w-full mt-auto flex flex-col items-center pb-2 bg-slate-50">
+                        {showBarcode && (
+                            <div className="w-full flex justify-center pt-2 pb-1 bg-white">
+                                <BarcodeSVG value={empId} lineColor={theme.dark} width={1.2} height={16} />
+                            </div>
+                        )}
+                        <div className="w-full py-1 text-center">
+                            <span className="text-[5.5px] font-bold uppercase tracking-widest text-slate-400">
+                                {companyName || 'Units of Vistaran Health Care Services Pvt. Ltd.'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         return null;
     };
 
@@ -1151,6 +1225,51 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
         const cardW = isLandscape ? '85.6mm' : '53.98mm';
         const cardH = isLandscape ? '53.98mm' : '85.6mm';
         const empId = getEmpId(user);
+
+        if (format === 'pills-and-more' || format === 'pills-and-more-2') {
+            return (
+                <div
+                    className="print-card-box relative rounded-xl shadow-md border overflow-hidden flex flex-col text-slate-800"
+                    style={{ width: cardW, height: cardH, borderColor: theme.primary, backgroundColor: theme.light }}
+                >
+                    {/* Header with primary color */}
+                    <div className="w-full py-2.5 flex justify-center items-center" style={{ backgroundColor: theme.primary }}>
+                        <span className="font-black text-[10px] text-white uppercase tracking-widest">
+                            TERMS & CONDITIONS
+                        </span>
+                    </div>
+
+                    {/* Content area */}
+                    <div className="flex-1 px-3 py-2 flex flex-col">
+                        <ul className="text-[6.5px] text-slate-700 leading-snug space-y-1.5 list-disc pl-2 font-medium">
+                            <li>This identity card is non-transferable and remains the property of <strong style={{ color: theme.dark }}>{companyName}</strong>.</li>
+                            <li>It must be worn visibly at all times while on duty.</li>
+                            <li>Loss of this card must be reported immediately to the issuing authority.</li>
+                            <li>If found, please return to the address mentioned below.</li>
+                        </ul>
+                        
+                        <div className="mt-auto grid grid-cols-2 gap-2 text-[7px] border-t pt-2" style={{ borderColor: theme.border }}>
+                            <div className="flex flex-col">
+                                <span className="font-bold uppercase mb-0.5" style={{ color: theme.primary }}>Emergency Contact</span>
+                                <span className="font-black text-slate-800">{contactPhone}</span>
+                            </div>
+                            <div className="flex flex-col justify-end text-right">
+                                <div className="border-b border-dashed w-full mb-1" style={{ borderColor: theme.primary }} />
+                                <span className="italic" style={{ color: theme.primary }}>Authorized Signatory</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Footer Address */}
+                    <div className="w-full py-2 px-3 text-center" style={{ backgroundColor: theme.primary }}>
+                        <p className="text-[5.5px] text-white/90 font-bold uppercase leading-tight whitespace-pre-line">
+                            {companyAddress}
+                        </p>
+                        <p className="text-[5.5px] text-white font-black mt-0.5">{companyEmail}</p>
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <div
@@ -1278,6 +1397,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     { id: 'distributor3', label: 'Distributor Card 3', icon: 'fa-contact-card' },
                                     { id: 'distributor4', label: 'Distributor Blank', icon: 'fa-id-badge' },
                                     { id: 'pills-and-more', label: 'Pills & More Retail', icon: 'fa-capsules' },
+                                    { id: 'pills-and-more-2', label: 'Pills & More Layout 2', icon: 'fa-pills' },
                                 ].map((item) => (
                                     <button
                                         key={item.id}
