@@ -492,11 +492,11 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         <div className="absolute -right-4 -top-4 w-14 h-14 rounded-full bg-white/10 blur-sm pointer-events-none" />
                         <div className="flex items-center gap-1.5 z-10">
                             {companyLogoUrl ? (
-                                <div className="bg-white p-1.5 rounded-lg flex items-center justify-center h-8">
+                                <div className="bg-white p-1 rounded-md flex items-center justify-center h-7">
                                     <img src={companyLogoUrl} alt="Company Logo" className="h-full w-auto object-contain" />
                                 </div>
                             ) : (
-                                <div className="bg-white p-1.5 rounded-lg flex items-center justify-center h-8 px-2.5">
+                                <div className="bg-white p-1 rounded-md flex items-center justify-center h-7 px-2">
                                     {renderLogo("h-full w-auto object-contain")}
                                 </div>
                             )}
@@ -919,7 +919,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {isF2 && (
                         <>
                             {/* Top massive curved wave */}
-                            <svg className="absolute top-0 left-0 w-full h-[30mm] pointer-events-none" viewBox="0 0 200 100" preserveAspectRatio="none">
+                            <svg className="absolute top-0 left-0 w-full h-[33mm] pointer-events-none z-0" viewBox="0 0 200 100" preserveAspectRatio="none">
                                 <path d="M0 0 L200 0 L200 60 C130 90 70 110 0 50 Z" fill={theme.primary} />
                             </svg>
                         </>
@@ -940,22 +940,22 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
                     {/* Top Header Block */}
                     <div className={`pt-[7.5mm] pb-0.5 px-4 flex flex-col items-center relative z-20 text-center ${isF2 ? 'text-white' : ''}`}>
-                        <div className={`flex justify-center mb-1 ${isF2 ? 'text-white' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
+                        <div className={`flex justify-center mb-1 z-10 ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
                             {companyLogoUrl ? (
                                 <img src={companyLogoUrl} alt="Company Logo" className="w-[18mm] max-h-[12mm] object-contain drop-shadow-sm" />
                             ) : (
                                 renderLogo("w-[18mm] h-auto fill-current")
                             )}
                         </div>
-                        <h2 className={`mt-1 font-black text-[10px] leading-[1.1] uppercase ${isF2 ? 'mt-2' : ''}`} style={isF2 ? { color: theme.dark } : { color: theme.dark }}>
+                        <h2 className={`mt-0.5 font-black text-[10px] leading-[1.1] uppercase z-10 ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.dark } : {}}>
                             {companyName || 'VISTARAN HEALTH CARE'}<br/>SERVICES PVT LTD
                         </h2>
-                        <div className="flex items-center justify-center gap-1 w-full mt-1 px-2">
-                            <div className="h-[0.5px] flex-1" style={{ backgroundColor: theme.primary }} />
-                            <span className="text-[5px] font-extrabold tracking-widest uppercase" style={{ color: theme.primary }}>
+                        <div className="flex items-center justify-center gap-1 w-full mt-1 px-2 z-10">
+                            <div className="h-[0.5px] flex-1" style={isF2 ? { backgroundColor: 'white' } : { backgroundColor: theme.primary }} />
+                            <span className="text-[5px] font-extrabold tracking-widest uppercase" style={isF2 ? { color: 'white' } : { color: theme.primary }}>
                                 COMPASSION | CARE | COMMITMENT
                             </span>
-                            <div className="h-[0.5px] flex-1" style={{ backgroundColor: theme.primary }} />
+                            <div className="h-[0.5px] flex-1" style={isF2 ? { backgroundColor: 'white' } : { backgroundColor: theme.primary }} />
                         </div>
                     </div>
 
