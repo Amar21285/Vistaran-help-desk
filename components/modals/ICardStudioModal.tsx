@@ -5,7 +5,7 @@ import Logo from '../icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare' | 'distributor2' | 'distributor3' | 'distributor4';
+export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare' | 'distributor2' | 'distributor3' | 'distributor4' | 'pills-and-more';
 export type ThemeColor = 'blue' | 'emerald' | 'indigo' | 'charcoal' | 'amber' | 'crimson';
 
 export interface ThemeConfig {
@@ -1086,6 +1086,62 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
             );
         }
 
+        // Pills & More Retail Format
+        if (format === 'pills-and-more') {
+            const empId = getEmpId(user);
+            return (
+                <div
+                    className="print-card-box relative w-[53.98mm] h-[85.6mm] bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden flex flex-col justify-between"
+                    style={{ width: '53.98mm', height: '85.6mm' }}
+                >
+                    {/* Top Logo Area (Prominent) */}
+                    <div className="w-full pt-4 pb-2 px-3 flex justify-center items-center bg-white border-b-2" style={{ borderColor: theme.primary }}>
+                        {companyLogoUrl ? (
+                            <img src={companyLogoUrl} alt="Pills and More" className="w-full max-h-[16mm] object-contain" />
+                        ) : (
+                            <div className="flex flex-col items-center">
+                                <span className="font-black text-[15px] text-red-600">Pills <span className="text-green-600">& More</span></span>
+                                <span className="text-[6.5px] font-bold text-white bg-green-600 px-2.5 py-0.5 rounded-full mt-0.5 tracking-wide">Chemist & Health Style Supermarket</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Employee Photo & Details */}
+                    <div className="flex-1 flex flex-col items-center px-4 pt-3">
+                        <div className="relative w-20 h-20 rounded-full p-1 border-[2.5px] shadow-sm" style={{ borderColor: theme.primary }}>
+                            <img src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`} alt={user.name} className="w-full h-full rounded-full object-cover" />
+                        </div>
+                        <h3 className="font-black text-[14px] text-slate-800 tracking-tight text-center mt-2.5 leading-tight uppercase">
+                            {user.name}
+                        </h3>
+                        <p className="text-[9px] font-bold text-center uppercase mt-0.5" style={{ color: theme.primary }}>
+                            {user.designation || 'Staff'}
+                        </p>
+                        
+                        <div className="w-full mt-3 bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex flex-col gap-1.5 text-[7.5px] font-bold text-slate-700">
+                            <div className="flex justify-between"><span className="text-slate-400 uppercase tracking-wider">Emp ID:</span> <span className="font-black" style={{ color: theme.dark }}>{empId}</span></div>
+                            <div className="flex justify-between"><span className="text-slate-400 uppercase tracking-wider">Blood:</span> <span className="text-red-600 font-black">{user.bloodGroup || bloodGroup}</span></div>
+                            <div className="flex justify-between"><span className="text-slate-400 uppercase tracking-wider">Dept:</span> <span className="font-black">{user.department}</span></div>
+                        </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="w-full mt-auto">
+                        {showBarcode && (
+                            <div className="w-full flex justify-center py-1.5 bg-white">
+                                <BarcodeSVG value={empId} lineColor="#1f2937" width={1.1} height={18} />
+                            </div>
+                        )}
+                        <div className="w-full py-2 px-2 flex items-center justify-center text-center" style={{ backgroundColor: theme.primary }}>
+                            <span className="text-white text-[6.5px] font-bold uppercase tracking-widest leading-none drop-shadow-sm">
+                                {companyName || 'Units of Vistaran Health Care Services Pvt. Ltd.'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         return null;
     };
 
@@ -1221,6 +1277,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     { id: 'distributor2', label: 'Distributor Card 2', icon: 'fa-address-card' },
                                     { id: 'distributor3', label: 'Distributor Card 3', icon: 'fa-contact-card' },
                                     { id: 'distributor4', label: 'Distributor Blank', icon: 'fa-id-badge' },
+                                    { id: 'pills-and-more', label: 'Pills & More Retail', icon: 'fa-capsules' },
                                 ].map((item) => (
                                     <button
                                         key={item.id}
