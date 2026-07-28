@@ -491,7 +491,15 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     >
                         <div className="absolute -right-4 -top-4 w-14 h-14 rounded-full bg-white/10 blur-sm pointer-events-none" />
                         <div className="flex items-center gap-1.5 z-10">
-                            {renderLogo("w-4 h-4 text-white fill-current")}
+                            {companyLogoUrl ? (
+                                <div className="bg-white/90 p-0.5 rounded flex items-center justify-center h-5">
+                                    <img src={companyLogoUrl} alt="Company Logo" className="h-full w-auto object-contain" />
+                                </div>
+                            ) : (
+                                <div className="bg-white/90 p-0.5 rounded flex items-center justify-center h-5 w-5">
+                                    {renderLogo("w-full h-full object-contain")}
+                                </div>
+                            )}
                             <span className="font-black text-[11px] tracking-wider uppercase leading-none">
                                 {companyName}
                             </span>
@@ -513,7 +521,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 className="w-full h-full rounded-full object-cover"
                             />
                             <div
-                                className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[6.5px] font-bold text-white uppercase whitespace-nowrap shadow-sm leading-none flex items-center justify-center"
+                                className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 py-1 rounded-full text-[6px] font-extrabold text-white uppercase whitespace-nowrap shadow-sm text-center"
                                 style={{ backgroundColor: theme.dark }}
                             >
                                 {user.role}
