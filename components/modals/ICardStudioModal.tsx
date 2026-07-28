@@ -5,7 +5,7 @@ import Logo from '../icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare' | 'distributor2' | 'distributor3';
+export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare' | 'distributor2' | 'distributor3' | 'distributor4';
 export type ThemeColor = 'blue' | 'emerald' | 'indigo' | 'charcoal' | 'amber' | 'crimson';
 
 export interface ThemeConfig {
@@ -878,11 +878,12 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     </div>
                 </div>
             );
-        }        // Healthcare Distributor Formats (3 Variants matching User Image)
-        if (format === 'healthcare' || format === 'distributor2' || format === 'distributor3') {
+        }        // Healthcare Distributor Formats (4 Variants matching User Image)
+        if (format === 'healthcare' || format === 'distributor2' || format === 'distributor3' || format === 'distributor4') {
             const isF1 = format === 'healthcare';
             const isF2 = format === 'distributor2';
             const isF3 = format === 'distributor3';
+            const isF4 = format === 'distributor4';
             
             return (
                 <div
@@ -963,7 +964,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     <div className="flex-1 flex flex-col items-center justify-center px-2 relative z-20 w-full mt-1">
                         <div className="flex items-center gap-3 mb-1.5 w-full justify-center px-4">
                             {/* Partner Logo */}
-                            <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm bg-white rounded p-0.5">
+                            <div className={`relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm bg-white rounded p-0.5 ${isF4 ? 'scale-150 my-2' : ''}`}>
                                 {partnerLogoUrl ? (
                                     <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" />
                                 ) : (
@@ -975,36 +976,42 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </div>
                             
                             {/* User Photo */}
-                            <div
-                                className="relative w-10 h-10 rounded-lg shadow-sm border border-slate-200 overflow-hidden flex-shrink-0 bg-white"
-                            >
-                                <img
-                                    src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`}
-                                    alt={user.name}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
+                            {!isF4 && (
+                                <div
+                                    className="relative w-10 h-10 rounded-lg shadow-sm border border-slate-200 overflow-hidden flex-shrink-0 bg-white"
+                                >
+                                    <img
+                                        src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`}
+                                        alt={user.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            )}
                         </div>
 
                         {/* HUL Text Line */}
                         {!isF1 && (
-                            <div className="w-full px-4 text-center mb-1">
-                                <div className="h-[0.5px] w-full mb-1" style={{ backgroundColor: theme.primary }} />
-                                <span className="text-[6.5px] font-black uppercase tracking-[0.1em]" style={{ color: theme.primary }}>
-                                    HINDUSTAN UNILEVER LIMITED
-                                </span>
+                            <div className="w-full text-center mb-1 bg-white relative z-30">
+                                <div className="py-1 w-full" style={isF4 ? { backgroundColor: theme.primary } : {}}>
+                                    {!isF4 && <div className="h-[0.5px] w-full mb-1" style={{ backgroundColor: theme.primary }} />}
+                                    <span className={`text-[7px] font-black uppercase tracking-[0.1em] ${isF4 ? 'text-white' : ''}`} style={!isF4 ? { color: theme.primary } : {}}>
+                                        HINDUSTAN UNILEVER LIMITED
+                                    </span>
+                                </div>
                             </div>
                         )}
 
                         {/* User Details */}
-                        <div className="text-center w-full leading-tight mt-0.5">
-                            <h3 className="font-black text-[11px] tracking-tight uppercase truncate" style={{ color: theme.dark }}>
-                                {user.name}
-                            </h3>
-                            <p className="text-[6px] font-extrabold mt-0.5 uppercase tracking-wider" style={{ color: theme.primary }}>
-                                ID: {getEmpId(user)} | PH: {user.phone || contactPhone}
-                            </p>
-                        </div>
+                        {!isF4 && (
+                            <div className="text-center w-full leading-tight mt-0.5">
+                                <h3 className="font-black text-[11px] tracking-tight uppercase truncate" style={{ color: theme.dark }}>
+                                    {user.name}
+                                </h3>
+                                <p className="text-[6px] font-extrabold mt-0.5 uppercase tracking-wider" style={{ color: theme.primary }}>
+                                    ID: {getEmpId(user)} | PH: {user.phone || contactPhone}
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Bottom Footer Blocks */}
@@ -1025,24 +1032,27 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         </div>
                     )}
 
-                    {isF2 && (
-                        <div className="w-full z-10 mt-auto pt-3 px-4 pb-3" style={{ backgroundColor: theme.primary }}>
-                            <div className="flex items-start gap-1.5 mb-1.5">
-                                <i className="fas fa-location-dot text-white mt-[1px] text-[6px]"></i>
-                                <p className="text-white text-[5px] font-medium leading-[1.3] uppercase text-left">
-                                    DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR<br/>
-                                    GALA NO 4,5,6 LBS MARG JAYDEV SINGH NAGAR,<br/>
-                                    (ISHWAR NAGAR) BHANDUP WEST, MUMBAI 400078
+                    {(isF2 || isF4) && (
+                        <div className="w-full z-10 mt-auto pt-2 px-3 pb-2" style={isF4 ? { backgroundColor: 'white', borderTop: `1px solid ${theme.primary}` } : { backgroundColor: theme.primary }}>
+                            <div className="flex items-start gap-1.5 mb-1.5 justify-center">
+                                <p className={`text-[5px] font-extrabold leading-[1.3] uppercase text-center ${isF4 ? 'text-black' : 'text-white'}`}>
+                                    DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6<br/>
+                                    LBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,<br/>
+                                    MUMBAI, MAHARASHTRA 400078
                                 </p>
                             </div>
-                            <div className="flex items-center gap-1.5 mb-1">
-                                <i className="fas fa-phone text-white text-[6px]"></i>
-                                <p className="text-white text-[6px] font-medium">022-XXXX XXXX</p>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <i className="fas fa-envelope text-white text-[6px]"></i>
-                                <p className="text-white text-[6px] font-medium">info@vistaranhealthcare.com</p>
-                            </div>
+                            {!isF4 && (
+                                <>
+                                    <div className="flex items-center gap-1.5 mb-1">
+                                        <i className="fas fa-phone text-white text-[6px]"></i>
+                                        <p className="text-white text-[6px] font-medium">022-XXXX XXXX</p>
+                                    </div>
+                                    <div className="flex items-center gap-1.5">
+                                        <i className="fas fa-envelope text-white text-[6px]"></i>
+                                        <p className="text-white text-[6px] font-medium">info@vistaranhealthcare.com</p>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     )}
 
@@ -1207,6 +1217,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     { id: 'healthcare', label: 'Distributor Card 1', icon: 'fa-id-card-clip' },
                                     { id: 'distributor2', label: 'Distributor Card 2', icon: 'fa-address-card' },
                                     { id: 'distributor3', label: 'Distributor Card 3', icon: 'fa-contact-card' },
+                                    { id: 'distributor4', label: 'Distributor Blank', icon: 'fa-id-badge' },
                                 ].map((item) => (
                                     <button
                                         key={item.id}
