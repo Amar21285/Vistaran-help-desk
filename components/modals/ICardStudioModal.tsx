@@ -217,6 +217,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const [isBatchMode, setIsBatchMode] = useState<boolean>(users.length > 1);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
     const [pdfProgress, setPdfProgress] = useState<number>(0);
+    const [previewScale, setPreviewScale] = useState<number>(1.25);
 
     // Customization states
     const [customLogoUrl, setCustomLogoUrl] = useState<string>('');
@@ -330,7 +331,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     
                     // Temporarily remove transform on parent just in case it leaks scaling to children
                     const originalClassName = previewEl.className;
+                    const originalTransform = previewEl.style.transform;
                     previewEl.className = previewEl.className.replace('scale-125 transform', '');
+                    previewEl.style.transform = 'none';
                     
                     for (let i = 0; i < cardNodes.length; i++) {
                         const node = cardNodes[i] as HTMLElement;
@@ -346,6 +349,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     }
                     
                     previewEl.className = originalClassName;
+                    previewEl.style.transform = originalTransform;
 
                     const empId = getEmpId(activeUser);
                     const safeName = activeUser.name.replace(/\s+/g, '_');
@@ -366,7 +370,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
         
         // Temporarily remove scale class to prevent html2canvas stretching
         const originalClassName = previewEl.className;
+        const originalTransform = previewEl.style.transform;
         previewEl.className = previewEl.className.replace('scale-125 transform', '');
+        previewEl.style.transform = 'none';
         
         try {
             const canvas = await html2canvas(previewEl, {
@@ -385,6 +391,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
             console.error('PNG Generation Error:', err);
         } finally {
             previewEl.className = originalClassName;
+            previewEl.style.transform = originalTransform;
         }
     };
 
@@ -1084,30 +1091,30 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     style={{ width: '53.98mm', height: '85.6mm' }}
                 >
                     {/* Top Logo Area (Prominent) */}
-                    <div className="w-full pt-4 pb-2 px-3 flex justify-center items-center bg-white border-b-2" style={{ borderColor: theme.primary }}>
+                    <div className="w-full pt-3 pb-1.5 px-3 flex justify-center items-center bg-white border-b-2" style={{ borderColor: theme.primary }}>
                         {companyLogoUrl ? (
-                            <img src={companyLogoUrl} alt="Pills and More" className="w-full max-h-[16mm] object-contain" />
+                            <img src={companyLogoUrl} alt="Pills and More" className="w-full max-h-[14mm] object-contain" />
                         ) : (
                             <div className="flex flex-col items-center">
-                                <span className="font-black text-[15px] text-red-600">Pills <span className="text-green-600">& More</span></span>
-                                <span className="text-[6.5px] font-bold text-white bg-green-600 px-2.5 py-0.5 rounded-full mt-0.5 tracking-wide">Chemist & Health Style Supermarket</span>
+                                <span className="font-black text-[14px] text-red-600">Pills <span className="text-green-600">& More</span></span>
+                                <span className="text-[6px] font-bold text-white bg-green-600 px-2.5 py-0.5 rounded-full mt-0.5 tracking-wide">Chemist & Health Style Supermarket</span>
                             </div>
                         )}
                     </div>
 
                     {/* Employee Photo & Details */}
-                    <div className="flex-1 flex flex-col items-center px-4 pt-3">
-                        <div className="relative w-20 h-20 rounded-full p-1 border-[2.5px] shadow-sm" style={{ borderColor: theme.primary }}>
+                    <div className="flex-1 flex flex-col items-center px-4 pt-2">
+                        <div className="relative w-16 h-16 rounded-full p-1 border-[2px] shadow-sm" style={{ borderColor: theme.primary }}>
                             <img src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`} alt={user.name} className="w-full h-full rounded-full object-cover" />
                         </div>
-                        <h3 className="font-black text-[14px] text-slate-800 tracking-tight text-center mt-2.5 leading-tight uppercase">
+                        <h3 className="font-black text-[12px] text-slate-800 tracking-tight text-center mt-1.5 leading-tight uppercase">
                             {user.name}
                         </h3>
-                        <p className="text-[9px] font-bold text-center uppercase mt-0.5" style={{ color: theme.primary }}>
+                        <p className="text-[8px] font-bold text-center uppercase mt-0.5" style={{ color: theme.primary }}>
                             {user.designation || 'Staff'}
                         </p>
                         
-                        <div className="w-full mt-3 bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex flex-col gap-1.5 text-[7.5px] font-bold text-slate-700">
+                        <div className="w-full mt-2 bg-slate-50 p-2 rounded-lg border border-slate-100 flex flex-col gap-1 text-[7px] font-bold text-slate-700">
                             <div className="flex justify-between"><span className="text-slate-400 uppercase tracking-wider">Emp ID:</span> <span className="font-black" style={{ color: theme.dark }}>{empId}</span></div>
                             <div className="flex justify-between"><span className="text-slate-400 uppercase tracking-wider">Blood:</span> <span className="text-red-600 font-black">{user.bloodGroup || bloodGroup}</span></div>
                             <div className="flex justify-between"><span className="text-slate-400 uppercase tracking-wider">Dept:</span> <span className="font-black">{user.department}</span></div>
@@ -1117,12 +1124,12 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {/* Footer */}
                     <div className="w-full mt-auto">
                         {showBarcode && (
-                            <div className="w-full flex justify-center py-1.5 bg-white">
-                                <BarcodeSVG value={empId} lineColor="#1f2937" width={1.1} height={18} />
+                            <div className="w-full flex justify-center py-1 bg-white">
+                                <BarcodeSVG value={empId} lineColor="#1f2937" width={1.1} height={16} />
                             </div>
                         )}
-                        <div className="w-full py-2 px-2 flex items-center justify-center text-center" style={{ backgroundColor: theme.primary }}>
-                            <span className="text-white text-[6.5px] font-bold uppercase tracking-widest leading-none drop-shadow-sm">
+                        <div className="w-full py-1.5 px-2 flex items-center justify-center text-center" style={{ backgroundColor: theme.primary }}>
+                            <span className="text-white text-[6px] font-bold uppercase tracking-widest leading-none drop-shadow-sm">
                                 {companyName || 'Units of Vistaran Health Care Services Pvt. Ltd.'}
                             </span>
                         </div>
@@ -1679,6 +1686,28 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 </label>
                             </div>
                         </div>
+
+                        {/* 6. Preview Settings */}
+                        <div className="pt-2 border-t border-slate-200 dark:border-slate-700 space-y-2">
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                                5. Preview Settings
+                            </label>
+                            <div className="flex flex-col gap-1">
+                                <div className="flex justify-between items-center text-xs font-semibold text-slate-700 dark:text-slate-200">
+                                    <span>Card Display Size</span>
+                                    <span>{Math.round(previewScale * 100)}%</span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    min="0.5" 
+                                    max="2.5" 
+                                    step="0.05" 
+                                    value={previewScale} 
+                                    onChange={(e) => setPreviewScale(parseFloat(e.target.value))}
+                                    className="w-full accent-primary"
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     {/* Preview Screen (Right) */}
@@ -1758,7 +1787,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </div>
 
                             {/* Visible Interactive Preview Screen */}
-                            <div id="icard-preview-active-card" className="scale-125 transform transition-transform duration-300 flex flex-wrap gap-6 justify-center items-center">
+                            <div id="icard-preview-active-card" className="transform transition-transform duration-300 flex flex-wrap gap-6 justify-center items-center" style={{ transform: `scale(${previewScale})`, transformOrigin: 'top center' }}>
                                 {(activeSide === 'front' || activeSide === 'both') && renderFrontCard(activeUser)}
                                 {(activeSide === 'back' || activeSide === 'both') && renderBackCard(activeUser)}
                             </div>
