@@ -218,6 +218,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
     const [pdfProgress, setPdfProgress] = useState<number>(0);
     const [previewScale, setPreviewScale] = useState<number>(1.25);
+    const [userSearchTerm, setUserSearchTerm] = useState<string>('');
 
     // Customization states
     const [customLogoUrl, setCustomLogoUrl] = useState<string>('');
@@ -1362,17 +1363,29 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                                     Active Preview User ({users.length} Selected)
                                 </label>
-                                <select
-                                    value={selectedUserId}
-                                    onChange={(e) => setSelectedUserId(e.target.value)}
-                                    className="w-full p-2.5 text-sm border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-semibold focus:ring-2 focus:ring-primary"
-                                >
-                                    {users.map((u) => (
-                                        <option key={u.id} value={u.id}>
-                                            {u.name} — ({u.department} | #{getEmpId(u)})
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className="space-y-2">
+                                    <input 
+                                        type="text"
+                                        placeholder="Search user by name or ID..."
+                                        value={userSearchTerm}
+                                        onChange={(e) => setUserSearchTerm(e.target.value)}
+                                        className="w-full p-2 text-xs border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400"
+                                    />
+                                    <select
+                                        value={selectedUserId}
+                                        onChange={(e) => setSelectedUserId(e.target.value)}
+                                        className="w-full p-2.5 text-sm border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-semibold focus:ring-2 focus:ring-primary"
+                                    >
+                                        {users.filter(u => 
+                                            u.name.toLowerCase().includes(userSearchTerm.toLowerCase()) || 
+                                            getEmpId(u).toLowerCase().includes(userSearchTerm.toLowerCase())
+                                        ).map((u) => (
+                                            <option key={u.id} value={u.id}>
+                                                {u.name} — ({u.department} | #{getEmpId(u)})
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         )}
 
