@@ -201,10 +201,23 @@ const RFIDChipGraphic: React.FC<{ className?: string }> = ({ className = 'w-10 h
 );
 
 export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClose, initialSelectedUserId }) => {
+    const [roleFilter, setRoleFilter] = useState<string>('All');
+    
+    const printTargetUsers = useMemo(() => {
+        if (roleFilter === 'All') return users;
+        return users.filter(u => u.role === roleFilter);
+    }, [users, roleFilter]);
+
     const [selectedUserId, setSelectedUserId] = useState<string>(initialSelectedUserId || users[0]?.id || '');
     const [format, setFormat] = useState<ICardFormat>('vertical');
     const [themeKey, setThemeKey] = useState<ThemeColor>('blue');
     const [companyName, setCompanyName] = useState<string>('VISTARAN INFOTECH');
+
+    useEffect(() => {
+        if (printTargetUsers.length > 0 && !printTargetUsers.find(u => u.id === selectedUserId)) {
+            setSelectedUserId(printTargetUsers[0].id);
+        }
+    }, [printTargetUsers, selectedUserId]);
     const [tagline, setTagline] = useState<string>('Empowering Digital Infrastructure');
     const [contactPhone, setContactPhone] = useState<string>('022-XXXX XXXX');
     const [companyEmail, setCompanyEmail] = useState<string>('info@vistaranhealthcare.com');
@@ -214,7 +227,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const [showQRCode, setShowQRCode] = useState<boolean>(true);
     const [showBarcode, setShowBarcode] = useState<boolean>(true);
     const [activeSide, setActiveSide] = useState<'front' | 'back' | 'both'>('front');
-    const [isBatchMode, setIsBatchMode] = useState<boolean>(users.length > 1);
+    const [isBatchMode, setIsBatchMode] = useState<boolean>(printTargetUsers.length > 1);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
     const [pdfProgress, setPdfProgress] = useState<number>(0);
     const [previewScale, setPreviewScale] = useState<number>(1.25);
@@ -240,7 +253,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     
     // Effective user logic
     const getEffectiveUser = (u: User): User => ({ ...u, ...(userOverrides[u.id] || {}) });
-    const baseActiveUser = users.find((u) => u.id === selectedUserId) || users[0];
+    const baseActiveUser = printTargetUsers.find((u) => u.id === selectedUserId) || printTargetUsers[0] || users[0];
     const activeUser = getEffectiveUser(baseActiveUser);
 
     const handleUpdateActiveUser = (field: keyof User, value: any) => {
@@ -322,7 +335,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         const imgData = canvas.toDataURL('image/jpeg', 0.98);
                         pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
                     }
-                    pdf.save(`Vistaran_iCards_Batch_${users.length}_Users_${Date.now()}.pdf`);
+                    pdf.save(`Vistaran_iCards_Batch_${printTargetUsers.length}_Users_${Date.now()}.pdf`);
                 }
             } else {
                 const previewEl = document.getElementById('icard-preview-active-card');
@@ -1361,7 +1374,23 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {users.length > 1 && (
                             <div>
                                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    Active Preview User ({users.length} Selected)
+                                    Filter by Role
+                                </label>
+                                <select
+                                    value={roleFilter}
+                                    onChange={(e) => setRoleFilter(e.target.value)}
+                                    className="w-full mb-4 p-2.5 text-sm border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-semibold focus:ring-2 focus:ring-primary"
+                                >
+                                    <option value="All">All Roles</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="User">User</option>
+                                    <option value="Staff">Staff</option>
+                                    <option value="Technician">Technician</option>
+                                    <option value="Read-Only">Read-Only</option>
+                                </select>
+
+                                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                                    Active Preview User ({printTargetUsers.length} Selected)
                                 </label>
                                 <div className="space-y-2">
                                     <input 
@@ -1376,7 +1405,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                         onChange={(e) => setSelectedUserId(e.target.value)}
                                         className="w-full p-2.5 text-sm border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-semibold focus:ring-2 focus:ring-primary"
                                     >
-                                        {users.filter(u => 
+                                        {printTargetUsers.filter(u => 
                                             u.name.toLowerCase().includes(userSearchTerm.toLowerCase()) || 
                                             getEmpId(u).toLowerCase().includes(userSearchTerm.toLowerCase())
                                         ).map((u) => (
@@ -1760,7 +1789,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 </button>
                             </div>
 
-                            {users.length > 1 && (
+                            {printTargetUsers.length > 1 && (
                                 <div className="flex items-center gap-2">
                                     <label className="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5 cursor-pointer">
                                         <input
@@ -1769,7 +1798,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                             onChange={(e) => setIsBatchMode(e.target.checked)}
                                             className="w-4 h-4 rounded text-primary"
                                         />
-                                        <span>Batch Print Grid ({users.length} Cards)</span>
+                                        <span>Batch Print Grid ({printTargetUsers.length} Cards)</span>
                                     </label>
                                 </div>
                             )}
@@ -1781,7 +1810,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             <div id="icard-printable-container" className="fixed -top-[9999px] -left-[9999px]">
                                 {isBatchMode ? (
                                     <div className="batch-grid">
-                                        {users.map((baseU) => {
+                                        {printTargetUsers.map((baseU) => {
                                             const u = getEffectiveUser(baseU);
                                             return (
                                                 <div key={u.id} className="batch-pdf-card-node flex flex-col gap-2">
@@ -1810,9 +1839,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         <div className="w-full pt-4 border-t border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-center gap-3">
                             <span className="text-xs text-slate-500 font-semibold">
                                 {isGeneratingPDF
-                                    ? `Generating PDF... (${pdfProgress}/${users.length})`
+                                    ? `Generating PDF... (${pdfProgress}/${printTargetUsers.length})`
                                     : isBatchMode
-                                    ? `Ready to print/download ${users.length} card(s)`
+                                    ? `Ready to print/download ${printTargetUsers.length} card(s)`
                                     : `Single Card Mode: ${activeUser?.name}`}
                             </span>
                             <div className="flex gap-2 flex-wrap">
@@ -1838,7 +1867,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     title="Download printable PDF file"
                                 >
                                     <i className="fas fa-file-pdf"></i>
-                                    {isGeneratingPDF ? 'Generating...' : isBatchMode ? `Download Batch PDF (${users.length})` : 'Download PDF'}
+                                    {isGeneratingPDF ? 'Generating...' : isBatchMode ? `Download Batch PDF (${printTargetUsers.length})` : 'Download PDF'}
                                 </button>
                                 <button
                                     onClick={handlePrint}
@@ -1846,7 +1875,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     className="px-5 py-2 bg-primary text-white font-bold rounded-xl text-xs hover:bg-primary-hover transition shadow-lg flex items-center gap-2"
                                 >
                                     <i className="fas fa-print"></i>
-                                    {isBatchMode ? `Print Batch (${users.length})` : 'Print iCard Now'}
+                                    {isBatchMode ? `Print Batch (${printTargetUsers.length})` : 'Print iCard Now'}
                                 </button>
                             </div>
                         </div>
