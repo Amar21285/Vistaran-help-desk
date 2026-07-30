@@ -24,6 +24,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
     const [isICardStudioOpen, setIsICardStudioOpen] = useState(false);
     const [iCardTargetUsers, setICardTargetUsers] = useState<User[]>([]);
+    const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
     
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [editingPhotoForUserId, setEditingPhotoForUserId] = useState<string | null>(null);
@@ -353,10 +354,23 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, setUsers, global
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                                     <div className="flex items-center space-x-2">
-                                        <span className="font-mono text-slate-700 dark:text-slate-200">{user.password}</span>
-                                        <button onClick={() => user.password && navigator.clipboard.writeText(user.password).then(() => alert(`Password for ${user.name} copied.`))} className="text-slate-400 hover:text-primary transition" title="Copy password">
-                                            <i className="fas fa-copy"></i>
-                                        </button>
+                                        <span className="font-mono text-slate-700 dark:text-slate-200">
+                                            {visiblePasswords[user.id] ? user.password : '••••••••'}
+                                        </span>
+                                        {realUser?.role === Role.ADMIN && (
+                                            <>
+                                                <button 
+                                                    onClick={() => setVisiblePasswords(prev => ({ ...prev, [user.id]: !prev[user.id] }))}
+                                                    className="text-slate-400 hover:text-primary transition" 
+                                                    title={visiblePasswords[user.id] ? "Hide password" : "Show password"}
+                                                >
+                                                    <i className={`fas ${visiblePasswords[user.id] ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                                                </button>
+                                                <button onClick={() => user.password && navigator.clipboard.writeText(user.password).then(() => alert(`Password for ${user.name} copied.`))} className="text-slate-400 hover:text-primary transition" title="Copy password">
+                                                    <i className="fas fa-copy"></i>
+                                                </button>
+                                            </>
+                                        )}
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
