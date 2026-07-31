@@ -1106,13 +1106,13 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     style={{ width: '53.98mm', height: '85.6mm' }}
                 >
                     {/* Top Logo Area (Prominent) */}
-                    <div className="w-full pt-3 pb-1.5 px-3 flex justify-center items-center bg-white border-b-2" style={{ borderColor: theme.primary }}>
+                    <div className="w-full pt-2 pb-2 px-3 flex justify-center items-center bg-white border-b-2" style={{ borderColor: theme.primary }}>
                         {companyLogoUrl ? (
                             <img src={companyLogoUrl} alt="Pills and More" className="w-full max-h-[14mm] object-contain" />
                         ) : (
                             <div className="flex flex-col items-center w-full px-1">
-                                <span className="font-black text-[14px] text-red-600">Pills <span className="text-green-600">& More</span></span>
-                                <span className="text-[4.5px] font-bold text-white bg-green-600 px-2 py-0.5 rounded-full mt-0.5 tracking-tighter text-center max-w-[95%] leading-tight whitespace-normal break-words">Chemist & Health Style Supermarket</span>
+                                <span className="font-black text-[14px] text-red-600 leading-tight">Pills <span className="text-green-600">& More</span></span>
+                                <span className="text-[4px] font-bold text-white bg-green-600 px-2 py-0.5 rounded-full mt-0.5 tracking-normal text-center leading-tight">Chemist & Health Style Supermarket</span>
                             </div>
                         )}
                     </div>
@@ -1162,7 +1162,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     style={{ width: '53.98mm', height: '85.6mm', borderColor: theme.primary }}
                 >
                     {/* Top Header with Wave */}
-                    <div className="relative w-full h-[25mm] flex justify-center items-start pt-3" style={{ backgroundColor: theme.primary }}>
+                    <div className="relative w-full h-[28mm] flex justify-center items-start pt-1.5" style={{ backgroundColor: theme.primary }}>
                         <svg className="absolute -bottom-[1px] left-0 w-full h-[5mm] text-white pointer-events-none" viewBox="0 0 100 20" preserveAspectRatio="none">
                             <path d="M0,0 C30,20 70,20 100,0 L100,20 L0,20 Z" fill="currentColor"></path>
                         </svg>
@@ -1172,7 +1172,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         ) : (
                             <div className="flex flex-col items-center z-10 w-full px-1">
                                 <span className="font-black text-[16px] text-white drop-shadow-md leading-none">Pills <span className="text-green-300">& More</span></span>
-                                <span className="text-[4.5px] font-bold text-slate-800 bg-white/90 px-2 py-0.5 rounded-full mt-1.5 tracking-tighter uppercase text-center max-w-[95%] leading-tight whitespace-normal break-words shadow-sm">
+                                <span className="text-[4px] font-bold text-slate-800 bg-white/90 px-2 py-0.5 rounded-full mt-1 tracking-normal uppercase text-center leading-tight shadow-sm">
                                     Chemist & Health Style Supermarket
                                 </span>
                             </div>
