@@ -488,6 +488,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const renderFrontCard = (user: User) => {
         const empId = getEmpId(user);
         const qrData = getVerificationUrl(user);
+        const effectiveAccessLevel = user.accessLevel || accessLevel;
 
         // Modern Vertical Format
         if (format === 'vertical') {
@@ -668,7 +669,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     <span className="text-slate-400 block text-[6.5px] uppercase font-bold">
                                         ACCESS CLEARANCE
                                     </span>
-                                    <span className="font-bold text-emerald-600">{accessLevel.split('-')[0]}</span>
+                                    <span className="font-bold text-emerald-600">{effectiveAccessLevel.split('-')[0]}</span>
                                 </div>
                             </div>
                         </div>
@@ -753,7 +754,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         <div className="w-full my-2 bg-slate-900/80 border border-slate-800 rounded p-1.5 font-mono text-[7.5px] space-y-1">
                             <div className="flex justify-between">
                                 <span className="text-slate-400">CLEARANCE:</span>
-                                <span className="font-bold text-cyan-400">{accessLevel}</span>
+                                <span className="font-bold text-cyan-400">{effectiveAccessLevel}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-400">NODE/DEPT:</span>
@@ -892,7 +893,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     <div className="flex justify-between items-end z-10 pt-1 border-t border-slate-700/80">
                         <div className="flex flex-col">
                             <span className="text-[5.5px] text-slate-400 font-mono">CSN: 04:A2:B8:31:9C</span>
-                            <span className="text-[6.5px] font-bold text-amber-400 uppercase">{accessLevel}</span>
+                            <span className="text-[6.5px] font-bold text-amber-400 uppercase">{effectiveAccessLevel}</span>
                         </div>
                         {showBarcode && <BarcodeSVG value={empId} lineColor="#ffffff" width={0.85} height={14} />}
                     </div>
@@ -1698,6 +1699,10 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 <div>
                                     <span className="text-slate-500 font-semibold block mb-1">Emergency Contact</span>
                                     <input type="text" value={activeUser.emergencyContact || ''} onChange={(e) => handleUpdateActiveUser('emergencyContact', e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" placeholder="e.g. +91 98765..." />
+                                </div>
+                                <div>
+                                    <span className="text-slate-500 font-semibold block mb-1">Access Clearance</span>
+                                    <input type="text" value={activeUser.accessLevel || accessLevel} onChange={(e) => handleUpdateActiveUser('accessLevel', e.target.value)} className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary" placeholder="LEVEL 4 - FULL ACCESS" />
                                 </div>
                             </div>
                         </div>
