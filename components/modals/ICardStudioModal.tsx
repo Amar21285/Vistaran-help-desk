@@ -1110,9 +1110,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {companyLogoUrl ? (
                             <img src={companyLogoUrl} alt="Pills and More" className="w-full max-h-[14mm] object-contain" />
                         ) : (
-                            <div className="flex flex-col items-center">
+                            <div className="flex flex-col items-center w-full px-2">
                                 <span className="font-black text-[14px] text-red-600">Pills <span className="text-green-600">& More</span></span>
-                                <span className="text-[6px] font-bold text-white bg-green-600 px-2.5 py-0.5 rounded-full mt-0.5 tracking-wide">Chemist & Health Style Supermarket</span>
+                                <span className="text-[5px] font-bold text-white bg-green-600 px-1.5 py-0.5 rounded-full mt-0.5 tracking-normal text-center w-max max-w-full overflow-hidden text-ellipsis whitespace-nowrap">Chemist & Health Style Supermarket</span>
                             </div>
                         )}
                     </div>
@@ -1122,7 +1122,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         <div className="relative w-16 h-16 rounded-full p-1 border-[2px] shadow-sm" style={{ borderColor: theme.primary }}>
                             <img src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`} alt={user.name} className="w-full h-full rounded-full object-cover" />
                         </div>
-                        <h3 className="font-black text-[12px] text-slate-800 tracking-tight text-center mt-1.5 leading-tight uppercase">
+                        <h3 className="font-black text-[11px] text-slate-800 tracking-tight text-center mt-1.5 leading-tight uppercase w-full">
                             {user.name}
                         </h3>
                         <p className="text-[8px] font-bold text-center uppercase mt-0.5" style={{ color: theme.primary }}>
@@ -1170,9 +1170,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {companyLogoUrl ? (
                             <img src={companyLogoUrl} alt="Pills and More" className="w-[35mm] max-h-[14mm] object-contain drop-shadow-md z-10" />
                         ) : (
-                            <div className="flex flex-col items-center z-10">
+                            <div className="flex flex-col items-center z-10 w-full px-1">
                                 <span className="font-black text-[16px] text-white drop-shadow-md leading-none">Pills <span className="text-green-300">& More</span></span>
-                                <span className="text-[5.5px] font-bold text-slate-800 bg-white/90 px-2 py-0.5 rounded-full mt-1.5 tracking-wider uppercase whitespace-nowrap shadow-sm">
+                                <span className="text-[5px] font-bold text-slate-800 bg-white/90 px-1.5 py-0.5 rounded-full mt-1.5 tracking-tight uppercase whitespace-nowrap shadow-sm text-center w-max max-w-full overflow-hidden text-ellipsis">
                                     Chemist & Health Style Supermarket
                                 </span>
                             </div>
@@ -1186,10 +1186,10 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             <img src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`} alt={user.name} className="w-full h-full rounded-xl object-cover" />
                         </div>
                         
-                        <h3 className="font-black text-[15px] text-slate-900 tracking-tight text-center uppercase leading-tight mt-1">
+                        <h3 className="font-black text-[13px] text-slate-900 tracking-tight text-center uppercase leading-tight mt-1 w-full px-1">
                             {user.name}
                         </h3>
-                        <p className="text-[8.5px] font-extrabold uppercase mt-1.5 mb-2 tracking-widest rounded px-2 py-0.5" style={{ color: theme.primary, backgroundColor: theme.light }}>
+                        <p className="text-[8.5px] font-extrabold uppercase mt-2 mb-2 tracking-widest rounded px-2 py-0.5" style={{ color: theme.primary, backgroundColor: theme.light }}>
                             {user.designation || 'Staff'}
                         </p>
                         
