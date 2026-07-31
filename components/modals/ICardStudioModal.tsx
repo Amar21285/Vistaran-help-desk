@@ -1110,9 +1110,13 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {companyLogoUrl ? (
                             <img src={companyLogoUrl} alt="Pills and More" className="w-full max-h-[14mm] object-contain" />
                         ) : (
-                            <div className="flex flex-col items-center w-full px-1">
+                            <div className="flex flex-col items-center w-full px-2">
                                 <span className="font-black text-[14px] text-red-600 leading-tight">Pills <span className="text-green-600">& More</span></span>
-                                <span className="text-[4px] font-bold text-white bg-green-600 px-2 py-0.5 rounded-full mt-0.5 tracking-normal text-center leading-tight">Chemist & Health Style Supermarket</span>
+                                <div className="flex items-center justify-center bg-green-600 px-2 py-0.5 rounded-full mt-0.5 w-[90%]">
+                                    <span className="text-[5px] font-bold text-white text-center leading-[1.2] whitespace-normal break-words">
+                                        Chemist & Health Style Supermarket
+                                    </span>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -1170,11 +1174,13 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {companyLogoUrl ? (
                             <img src={companyLogoUrl} alt="Pills and More" className="w-[35mm] max-h-[14mm] object-contain drop-shadow-md z-10" />
                         ) : (
-                            <div className="flex flex-col items-center z-10 w-full px-1">
+                            <div className="flex flex-col items-center z-10 w-full px-2">
                                 <span className="font-black text-[16px] text-white drop-shadow-md leading-none">Pills <span className="text-green-300">& More</span></span>
-                                <span className="text-[4px] font-bold text-slate-800 bg-white/90 px-2 py-0.5 rounded-full mt-1 tracking-normal uppercase text-center leading-tight shadow-sm">
-                                    Chemist & Health Style Supermarket
-                                </span>
+                                <div className="flex items-center justify-center bg-white/95 shadow-sm px-2 py-0.5 rounded-full mt-1.5 w-[92%]">
+                                    <span className="text-[5px] font-bold text-slate-800 text-center uppercase leading-[1.2] whitespace-normal break-words">
+                                        Chemist & Health Style Supermarket
+                                    </span>
+                                </div>
                             </div>
                         )}
                     </div>
