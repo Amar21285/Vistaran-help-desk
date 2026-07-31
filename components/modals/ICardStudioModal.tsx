@@ -1162,7 +1162,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     style={{ width: '53.98mm', height: '85.6mm', borderColor: theme.primary }}
                 >
                     {/* Top Header with Wave */}
-                    <div className="relative w-full h-[22mm] flex justify-center items-center" style={{ backgroundColor: theme.primary }}>
+                    <div className="relative w-full h-[25mm] flex justify-center items-start pt-3" style={{ backgroundColor: theme.primary }}>
                         <svg className="absolute -bottom-[1px] left-0 w-full h-[5mm] text-white pointer-events-none" viewBox="0 0 100 20" preserveAspectRatio="none">
                             <path d="M0,0 C30,20 70,20 100,0 L100,20 L0,20 Z" fill="currentColor"></path>
                         </svg>
@@ -1171,8 +1171,8 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             <img src={companyLogoUrl} alt="Pills and More" className="w-[35mm] max-h-[14mm] object-contain drop-shadow-md z-10" />
                         ) : (
                             <div className="flex flex-col items-center z-10">
-                                <span className="font-black text-[16px] text-white drop-shadow-md">Pills <span className="text-green-300">& More</span></span>
-                                <span className="text-[5.5px] font-bold text-slate-800 bg-white/90 px-2 py-0.5 rounded-full mt-1 tracking-wider uppercase">
+                                <span className="font-black text-[16px] text-white drop-shadow-md leading-none">Pills <span className="text-green-300">& More</span></span>
+                                <span className="text-[5.5px] font-bold text-slate-800 bg-white/90 px-2 py-0.5 rounded-full mt-1.5 tracking-wider uppercase whitespace-nowrap shadow-sm">
                                     Chemist & Health Style Supermarket
                                 </span>
                             </div>
@@ -1182,14 +1182,14 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {/* Body */}
                     <div className="flex-1 flex flex-col items-center px-4 pt-1 z-10">
                         {/* Profile Photo */}
-                        <div className="relative w-[22mm] h-[22mm] rounded-2xl p-1 shadow-md bg-white -mt-4 mb-2 z-20" style={{ border: `2px solid ${theme.primary}` }}>
+                        <div className="relative w-[22mm] h-[22mm] rounded-2xl p-1 shadow-md bg-white -mt-3 mb-2 z-20" style={{ border: `2px solid ${theme.primary}` }}>
                             <img src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`} alt={user.name} className="w-full h-full rounded-xl object-cover" />
                         </div>
                         
-                        <h3 className="font-black text-[15px] text-slate-900 tracking-tight text-center uppercase leading-none">
+                        <h3 className="font-black text-[15px] text-slate-900 tracking-tight text-center uppercase leading-tight mt-1">
                             {user.name}
                         </h3>
-                        <p className="text-[8.5px] font-extrabold uppercase mt-1 mb-2 tracking-widest rounded px-2 py-0.5" style={{ color: theme.primary, backgroundColor: theme.light }}>
+                        <p className="text-[8.5px] font-extrabold uppercase mt-1.5 mb-2 tracking-widest rounded px-2 py-0.5" style={{ color: theme.primary, backgroundColor: theme.light }}>
                             {user.designation || 'Staff'}
                         </p>
                         
