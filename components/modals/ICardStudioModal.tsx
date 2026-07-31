@@ -1110,12 +1110,12 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {companyLogoUrl ? (
                             <img src={companyLogoUrl} alt="Pills and More" className="w-full max-h-[14mm] object-contain" />
                         ) : (
-                            <div className="flex flex-col items-center w-full px-2">
+                            <div className="flex flex-col items-center w-full px-1">
                                 <span className="font-black text-[14px] text-red-600 leading-tight">Pills <span className="text-green-600">& More</span></span>
-                                <div className="flex items-center justify-center bg-green-600 px-2 py-0.5 rounded-full mt-0.5 w-[90%]">
-                                    <span className="text-[5px] font-bold text-white text-center leading-[1.2] whitespace-normal break-words">
+                                <div className="bg-green-600 rounded-full mt-0.5 w-[94%] px-2 py-[2px] mx-auto">
+                                    <p className="text-[5.5px] font-bold text-white text-center leading-[1.2] whitespace-normal break-words m-0 p-0">
                                         Chemist & Health Style Supermarket
-                                    </span>
+                                    </p>
                                 </div>
                             </div>
                         )}
@@ -1166,7 +1166,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     style={{ width: '53.98mm', height: '85.6mm', borderColor: theme.primary }}
                 >
                     {/* Top Header with Wave */}
-                    <div className="relative w-full h-[28mm] flex justify-center items-start pt-1.5" style={{ backgroundColor: theme.primary }}>
+                    <div className="relative w-full h-[32mm] flex justify-center items-start pt-1.5" style={{ backgroundColor: theme.primary }}>
                         <svg className="absolute -bottom-[1px] left-0 w-full h-[5mm] text-white pointer-events-none" viewBox="0 0 100 20" preserveAspectRatio="none">
                             <path d="M0,0 C30,20 70,20 100,0 L100,20 L0,20 Z" fill="currentColor"></path>
                         </svg>
@@ -1174,12 +1174,12 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {companyLogoUrl ? (
                             <img src={companyLogoUrl} alt="Pills and More" className="w-[35mm] max-h-[14mm] object-contain drop-shadow-md z-10" />
                         ) : (
-                            <div className="flex flex-col items-center z-10 w-full px-2">
+                            <div className="flex flex-col items-center z-10 w-full px-1">
                                 <span className="font-black text-[16px] text-white drop-shadow-md leading-none">Pills <span className="text-green-300">& More</span></span>
-                                <div className="flex items-center justify-center bg-white/95 shadow-sm px-2 py-0.5 rounded-full mt-1.5 w-[92%]">
-                                    <span className="text-[5px] font-bold text-slate-800 text-center uppercase leading-[1.2] whitespace-normal break-words">
+                                <div className="bg-white/95 shadow-sm rounded-full mt-1 w-[94%] px-2 py-[2px] mx-auto">
+                                    <p className="text-[5.5px] font-bold text-slate-800 text-center uppercase leading-[1.2] whitespace-normal break-words m-0 p-0">
                                         Chemist & Health Style Supermarket
-                                    </span>
+                                    </p>
                                 </div>
                             </div>
                         )}
@@ -1188,7 +1188,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {/* Body */}
                     <div className="flex-1 flex flex-col items-center px-4 pt-1 z-10">
                         {/* Profile Photo */}
-                        <div className="relative w-[22mm] h-[22mm] rounded-2xl p-1 shadow-md bg-white -mt-3 mb-2 z-20" style={{ border: `2px solid ${theme.primary}` }}>
+                        <div className="relative w-[22mm] h-[22mm] rounded-2xl p-1 shadow-md bg-white -mt-1 mb-2 z-20" style={{ border: `2px solid ${theme.primary}` }}>
                             <img src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`} alt={user.name} className="w-full h-full rounded-xl object-cover" />
                         </div>
                         
