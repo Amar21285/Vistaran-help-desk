@@ -184,6 +184,10 @@ const GeneralSettings: React.FC = () => {
                                     <input type="text" value={localCompany.stateCode} onChange={e => setLocalCompany({...localCompany, stateCode: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all"/>
                                 </div>
                             </div>
+                            <div>
+                                <label className="block text-[10px] font-black uppercase text-slate-400 mb-1">ID Card Back Side Terms & Conditions</label>
+                                <textarea value={localCompany.idCardTermsAndConditions || ''} onChange={e => setLocalCompany({...localCompany, idCardTermsAndConditions: e.target.value})} className="w-full p-3 border-2 border-slate-100 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-700 font-bold text-sm focus:border-primary outline-none transition-all h-28 resize-none" placeholder="Enter the terms to be printed on the back of ID cards..."/>
+                            </div>
                         </div>
 
                         <div className="space-y-4">

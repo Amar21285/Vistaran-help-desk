@@ -4,6 +4,7 @@ import JsBarcode from 'jsbarcode';
 import Logo from '../icons/Logo';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { useSettings } from '../../hooks/useSettings';
 
 export type ICardFormat = 'vertical' | 'executive' | 'cyber' | 'minimal' | 'rfid' | 'healthcare' | 'distributor2' | 'distributor3' | 'distributor4' | 'pills-and-more' | 'pills-and-more-2';
 export type ThemeColor = 'blue' | 'emerald' | 'indigo' | 'charcoal' | 'amber' | 'crimson';
@@ -218,10 +219,14 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
             setSelectedUserId(printTargetUsers[0].id);
         }
     }, [printTargetUsers, selectedUserId]);
+    const { companyDetails } = useSettings();
+    
     const [tagline, setTagline] = useState<string>('Empowering Digital Infrastructure');
     const [contactPhone, setContactPhone] = useState<string>('022-XXXX XXXX');
     const [companyEmail, setCompanyEmail] = useState<string>('info@vistaranhealthcare.com');
     const [companyAddress, setCompanyAddress] = useState<string>('DEVIDAYAL COMPOUND PANNA HOUSE GROUND FLOOR GALA NO 4,5,6\nLBS MARG JAYDEV SINGH NAGAR, (ISHWAR NAGAR) BHANDUP WEST,\nMUMBAI, MAHARASHTRA 400078');
+    const [termsText, setTermsText] = useState<string>(companyDetails.idCardTermsAndConditions || "1. This ID card is the property of Vistaran.\n2. It must be worn and clearly displayed at all times while on company premises.\n3. If found, please return to the registered office address.\n4. Misuse of this card may result in disciplinary action.");
+    
     const [bloodGroup, setBloodGroup] = useState<string>('O+');
     const [accessLevel, setAccessLevel] = useState<string>('LEVEL 4 - FULL ACCESS');
     const [showQRCode, setShowQRCode] = useState<boolean>(true);
@@ -1294,6 +1299,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
         const cardW = isLandscape ? '85.6mm' : '53.98mm';
         const cardH = isLandscape ? '53.98mm' : '85.6mm';
         const empId = getEmpId(user);
+        const termsLines = termsText.split('\n').filter(t => t.trim() !== '');
 
         if (format === 'pills-and-more' || format === 'pills-and-more-2') {
             return (
@@ -1310,11 +1316,10 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
                     {/* Content area */}
                     <div className="flex-1 px-3 py-2 flex flex-col">
-                        <ul className="text-[6.5px] text-slate-700 leading-snug space-y-1.5 list-disc pl-2 font-medium">
-                            <li>This identity card is non-transferable and remains the property of <strong style={{ color: theme.dark }}>{companyName}</strong>.</li>
-                            <li>It must be worn visibly at all times while on duty.</li>
-                            <li>Loss of this card must be reported immediately to the issuing authority.</li>
-                            <li>If found, please return to the address mentioned below.</li>
+                        <ul className="text-[6.5px] text-slate-700 leading-snug space-y-1.5 list-disc pl-2 font-medium pr-2">
+                            {termsLines.map((line, i) => (
+                                <li key={i}>{line}</li>
+                            ))}
                         </ul>
                         
                         <div className="mt-auto grid grid-cols-2 gap-2 text-[7px] border-t pt-2" style={{ borderColor: theme.border }}>
@@ -1363,10 +1368,13 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                 </div>
 
                 {/* Terms text */}
-                <p className="text-[7px] leading-snug my-1" style={{ color: theme.primary }}>
-                    This identity card is non-transferable and remains property of <strong style={{ color: theme.dark }}>{companyName}</strong>. If
-                    found, please return to nearest HR office or contact emergency helpline immediately.
-                </p>
+                <div className="text-[6.5px] leading-snug my-1 pr-1 flex-1 overflow-hidden" style={{ color: theme.primary }}>
+                    <ul className="list-disc pl-3 space-y-0.5">
+                        {termsLines.map((line, i) => (
+                            <li key={i}>{line}</li>
+                        ))}
+                    </ul>
+                </div>
 
                 {/* Emergency Contact & Signature Row */}
                 <div className="grid grid-cols-2 gap-2 text-[7.5px] my-1">

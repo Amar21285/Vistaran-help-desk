@@ -30,6 +30,7 @@ export interface CompanyDetails {
   accountNumber: string;
   ifscCode: string;
   branch: string;
+  idCardTermsAndConditions?: string;
 }
 
 const DEFAULT_COMPANY_DETAILS: CompanyDetails = {
@@ -41,7 +42,8 @@ const DEFAULT_COMPANY_DETAILS: CompanyDetails = {
   bankName: 'HDFC Bank',
   accountNumber: '50100XXXXXXXXX',
   ifscCode: 'HDFC0001234',
-  branch: 'Main Branch'
+  branch: 'Main Branch',
+  idCardTermsAndConditions: "1. This ID card is the property of Vistaran.\n2. It must be worn and clearly displayed at all times while on company premises.\n3. If found, please return to the registered office address.\n4. Misuse of this card may result in disciplinary action."
 };
 
 const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
