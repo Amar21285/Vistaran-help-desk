@@ -510,7 +510,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 </div>
                             ) : (
                                 <div className="bg-white p-1 rounded-md flex items-center justify-center h-7 px-2">
-                                    {renderLogo("h-full w-auto object-contain")}
+                                    {renderLogo("text-[24px] fill-current")}
                                 </div>
                             )}
                             <span className="font-black text-[11px] tracking-wider uppercase leading-none">
@@ -609,7 +609,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         style={{ backgroundColor: theme.primary }}
                     >
                         <div className="flex items-center gap-1.5">
-                            {renderLogo("w-4 h-4 text-white fill-current")}
+                            {renderLogo("text-[14px] text-white fill-current")}
                             <span className="font-black text-[11px] tracking-wider uppercase">{companyName}</span>
                         </div>
                         <span className="text-[7.5px] font-bold tracking-wider uppercase opacity-90">
@@ -963,7 +963,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             {companyLogoUrl ? (
                                 <img src={companyLogoUrl} alt="Company Logo" className="w-[18mm] max-h-[12mm] object-contain drop-shadow-sm" crossOrigin="anonymous" />
                             ) : (
-                                renderLogo("w-[18mm] h-auto fill-current mx-auto")
+                                renderLogo("text-[22px] fill-current mx-auto")
                             )}
                         </div>
                         <h2 className={`mt-0.5 font-black text-[10px] flex flex-col items-center justify-center text-center leading-[1.1] uppercase z-10 w-full ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.dark } : {}}>
