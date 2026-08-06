@@ -1119,14 +1119,14 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </div>
                             
                             {/* Partner Logo */}
-                            <div className="w-full flex items-center justify-center pt-1 pb-1 bg-white">
-                                <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm scale-[1.15]">
+                            <div className="w-full flex items-center justify-center pt-2 pb-3 bg-white">
+                                <div className="relative flex items-center justify-center flex-shrink-0 drop-shadow-sm">
                                     {partnerLogoUrl ? (
-                                        <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" crossOrigin="anonymous" />
+                                        <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-[14mm] object-contain" crossOrigin="anonymous" />
                                     ) : (
                                         <div className="text-center flex flex-col items-center">
-                                            <div className="text-[20px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
-                                            <div className="font-['Brush_Script_MT',cursive,serif] text-[6px] font-bold" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                                            <div className="text-[24px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
+                                            <div className="font-['Brush_Script_MT',cursive,serif] text-[7.5px] font-bold" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
                                         </div>
                                     )}
                                 </div>
