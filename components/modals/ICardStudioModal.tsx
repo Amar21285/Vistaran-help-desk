@@ -958,12 +958,12 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-[12mm] h-[2.5mm] border border-slate-300 rounded-full shadow-inner z-20 pointer-events-none bg-white/50 backdrop-blur-sm" />
 
                     {/* Top Header Block */}
-                    <div className={`pt-[7.5mm] pb-0.5 px-3 flex flex-col items-center relative z-20 text-center ${isF2 ? 'text-white' : ''}`}>
+                    <div className={`pt-[2mm] pb-0.5 px-3 flex flex-col items-center relative z-20 text-center ${isF2 ? 'text-white' : ''}`}>
                         <div className={`flex justify-center mb-1 w-full z-10 ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
                             {companyLogoUrl ? (
-                                <img src={companyLogoUrl} alt="Company Logo" className="object-contain drop-shadow-sm" style={{ width: '42mm', maxHeight: '20mm' }} crossOrigin="anonymous" />
+                                <img src={companyLogoUrl} alt="Company Logo" className="object-contain drop-shadow-sm" style={{ width: '38mm', maxHeight: '14mm' }} crossOrigin="anonymous" />
                             ) : (
-                                renderLogo("h-[50px] w-auto object-contain mx-auto")
+                                renderLogo("h-[30px] w-auto object-contain mx-auto")
                             )}
                         </div>
                         <h2 className={`mt-0.5 font-black text-[10px] flex flex-col items-center justify-center text-center leading-[1.1] uppercase z-10 w-full ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.dark } : {}}>
