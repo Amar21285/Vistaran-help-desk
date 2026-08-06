@@ -989,60 +989,60 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
                     {/* Middle Content (Partner Logo, Photo, & Name) */}
                     <div className="flex-1 flex flex-col items-center justify-center px-2 relative z-20 w-full mt-1">
-                        <div className="flex items-center gap-3 mb-1.5 w-full justify-center px-4">
-                            {/* Partner Logo */}
-                            <div className={`relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm bg-white rounded p-0.5 ${isF4 ? 'scale-125 my-1' : ''}`}>
-                                {partnerLogoUrl ? (
-                                    <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" crossOrigin="anonymous" />
-                                ) : (
-                                    <div className="text-center flex flex-col items-center">
-                                        <div className="text-[20px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
-                                        <div className="font-['Brush_Script_MT',cursive,serif] text-[6px] font-bold" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                        {!isF4 && (
+                            <>
+                                <div className="flex items-center gap-3 mb-1.5 w-full justify-center px-4">
+                                    {/* Partner Logo */}
+                                    <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm bg-white rounded p-0.5">
+                                        {partnerLogoUrl ? (
+                                            <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" crossOrigin="anonymous" />
+                                        ) : (
+                                            <div className="text-center flex flex-col items-center">
+                                                <div className="text-[20px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
+                                                <div className="font-['Brush_Script_MT',cursive,serif] text-[6px] font-bold" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    {/* User Photo */}
+                                    <div
+                                        className="relative w-10 h-10 rounded-lg border border-slate-200 overflow-hidden flex-shrink-0 bg-white flex justify-center items-center"
+                                    >
+                                        {user.photo ? (
+                                            <img
+                                                crossOrigin="anonymous"
+                                                src={user.photo}
+                                                alt={user.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <i className="fas fa-user text-slate-300 text-3xl"></i>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* HUL Text Line */}
+                                {!isF1 && (
+                                    <div className="w-full text-center mb-0.5">
+                                        <div className="py-0.5 w-full">
+                                            <div className="h-[0.5px] w-full mb-1" style={{ backgroundColor: theme.primary }} />
+                                            <span className="text-[7.5px] font-black uppercase tracking-[0.1em] leading-none" style={{ color: theme.primary }}>
+                                                HINDUSTAN UNILEVER LIMITED
+                                            </span>
+                                        </div>
                                     </div>
                                 )}
-                            </div>
-                            
-                            {/* User Photo */}
-                            {!isF4 && (
-                                <div
-                                    className="relative w-10 h-10 rounded-lg border border-slate-200 overflow-hidden flex-shrink-0 bg-white flex justify-center items-center"
-                                >
-                                    {user.photo ? (
-                                        <img
-                                            crossOrigin="anonymous"
-                                            src={user.photo}
-                                            alt={user.name}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <i className="fas fa-user text-slate-300 text-3xl"></i>
-                                    )}
-                                </div>
-                            )}
-                        </div>
 
-                        {/* HUL Text Line */}
-                        {!isF1 && (
-                            <div className="w-full text-center mb-0.5">
-                                <div className="py-0.5 w-full" style={isF4 ? { backgroundColor: theme.primary } : {}}>
-                                    {!isF4 && <div className="h-[0.5px] w-full mb-1" style={{ backgroundColor: theme.primary }} />}
-                                    <span className={`text-[7.5px] font-black uppercase tracking-[0.1em] leading-none ${isF4 ? 'text-white' : ''}`} style={!isF4 ? { color: theme.primary } : {}}>
-                                        HINDUSTAN UNILEVER LIMITED
-                                    </span>
+                                {/* User Details */}
+                                <div className="text-center w-full leading-tight mt-1 relative z-40">
+                                    <h3 className="font-black text-[11px] tracking-tight uppercase leading-none pb-0.5" style={{ color: theme.dark }}>
+                                        {user.name}
+                                    </h3>
+                                    <p className="text-[6px] font-extrabold mt-0.5 uppercase tracking-wider leading-none" style={{ color: theme.primary }}>
+                                        ID: {getEmpId(user)} | PH: {user.phone || contactPhone}
+                                    </p>
                                 </div>
-                            </div>
-                        )}
-
-                        {/* User Details */}
-                        {!isF4 && (
-                            <div className="text-center w-full leading-tight mt-1 relative z-40">
-                                <h3 className="font-black text-[11px] tracking-tight uppercase leading-none pb-0.5" style={{ color: theme.dark }}>
-                                    {user.name}
-                                </h3>
-                                <p className="text-[6px] font-extrabold mt-0.5 uppercase tracking-wider leading-none" style={{ color: theme.primary }}>
-                                    ID: {getEmpId(user)} | PH: {user.phone || contactPhone}
-                                </p>
-                            </div>
+                            </>
                         )}
                     </div>
 
@@ -1062,25 +1062,21 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         </div>
                     )}
 
-                    {(isF2 || isF4) && (
-                        <div className="w-full z-10 mt-auto pt-2 px-3 pb-2" style={isF4 ? { backgroundColor: 'white', borderTop: `1.5px solid ${theme.primary}` } : { backgroundColor: theme.primary }}>
+                    {isF2 && (
+                        <div className="w-full z-10 mt-auto pt-2 px-3 pb-2" style={{ backgroundColor: theme.primary }}>
                             <div className="flex items-start gap-1.5 mb-1.5 justify-center">
-                                <p className={`text-[5.5px] font-black leading-[1.3] uppercase text-center whitespace-pre-line ${isF4 ? 'text-black' : 'text-white'}`}>
+                                <p className="text-[5.5px] font-black leading-[1.3] uppercase text-center whitespace-pre-line text-white">
                                     {companyAddress}
                                 </p>
                             </div>
-                            {!isF4 && (
-                                <>
-                                    <div className="flex items-center gap-1.5 mb-1">
-                                        <i className="fas fa-phone text-white text-[6px]"></i>
-                                        <p className="text-white text-[6px] font-medium">{contactPhone}</p>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <i className="fas fa-envelope text-white text-[6px]"></i>
-                                        <p className="text-white text-[6px] font-medium">{companyEmail}</p>
-                                    </div>
-                                </>
-                            )}
+                            <div className="flex items-center gap-1.5 mb-1">
+                                <i className="fas fa-phone text-white text-[6px]"></i>
+                                <p className="text-white text-[6px] font-medium">{contactPhone}</p>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <i className="fas fa-envelope text-white text-[6px]"></i>
+                                <p className="text-white text-[6px] font-medium">{companyEmail}</p>
+                            </div>
                         </div>
                     )}
 
@@ -1110,6 +1106,43 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             </div>
                         </div>
                     )}
+                    
+                    {isF4 && (
+                        <div className="w-full z-10 mt-auto flex flex-col">
+                            {/* Address Block */}
+                            <div className="w-full pt-2 px-3 pb-2 bg-white" style={{ borderTop: `1.5px solid ${theme.primary}` }}>
+                                <div className="flex items-start gap-1.5 justify-center">
+                                    <p className="text-[5.5px] font-black leading-[1.3] uppercase text-center whitespace-pre-line text-black">
+                                        {companyAddress}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            {/* Partner Logo */}
+                            <div className="w-full flex items-center justify-center pt-1 pb-1 bg-white">
+                                <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm scale-[1.15]">
+                                    {partnerLogoUrl ? (
+                                        <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" crossOrigin="anonymous" />
+                                    ) : (
+                                        <div className="text-center flex flex-col items-center">
+                                            <div className="text-[20px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
+                                            <div className="font-['Brush_Script_MT',cursive,serif] text-[6px] font-bold" style={{ color: theme.primary }}>Hindustan Unilever Limited</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            {/* HUL Text Line */}
+                            <div className="w-full text-center">
+                                <div className="py-1.5 w-full" style={{ backgroundColor: theme.primary }}>
+                                    <span className="text-[7.5px] font-black uppercase tracking-[0.1em] leading-none text-white">
+                                        HINDUSTAN UNILEVER LIMITED
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             );
         }
