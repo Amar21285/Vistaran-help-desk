@@ -952,23 +952,24 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-[12mm] h-[2.5mm] border border-slate-300 rounded-full shadow-inner z-20 pointer-events-none bg-white/50 backdrop-blur-sm" />
 
                     {/* Top Header Block */}
-                    <div className={`pt-[7.5mm] pb-0.5 px-4 flex flex-col items-center relative z-20 text-center ${isF2 ? 'text-white' : ''}`}>
-                        <div className={`flex justify-center mb-1 z-10 ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
+                    <div className={`pt-[7.5mm] pb-0.5 px-3 flex flex-col items-center relative z-20 text-center ${isF2 ? 'text-white' : ''}`}>
+                        <div className={`flex justify-center mb-1 w-full z-10 ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
                             {companyLogoUrl ? (
-                                <img src={companyLogoUrl} alt="Company Logo" className="w-[18mm] max-h-[12mm] object-contain drop-shadow-sm" />
+                                <img src={companyLogoUrl} alt="Company Logo" className="w-[18mm] max-h-[12mm] object-contain drop-shadow-sm" crossOrigin="anonymous" />
                             ) : (
-                                renderLogo("w-[18mm] h-auto fill-current")
+                                renderLogo("w-[18mm] h-auto fill-current mx-auto")
                             )}
                         </div>
-                        <h2 className={`mt-0.5 font-black text-[10px] leading-[1.1] uppercase z-10 ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.dark } : {}}>
-                            {companyName || 'VISTARAN HEALTH CARE'}<br/>SERVICES PVT LTD
+                        <h2 className={`mt-0.5 font-black text-[10px] flex flex-col items-center justify-center leading-[1.1] uppercase z-10 w-full ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.dark } : {}}>
+                            <span>{companyName || 'VISTARAN HEALTH CARE'}</span>
+                            <span>SERVICES PVT LTD</span>
                         </h2>
-                        <div className="flex items-center justify-center gap-1 w-full mt-1 px-2 z-10">
-                            <div className="h-[0.5px] flex-1" style={isF2 ? { backgroundColor: 'white' } : { backgroundColor: theme.primary }} />
-                            <span className="text-[5px] font-extrabold tracking-widest uppercase" style={isF2 ? { color: 'white' } : { color: theme.primary }}>
+                        <div className="flex items-center justify-center gap-1 w-full mt-1 z-10">
+                            <div className="h-[0.5px] flex-grow" style={isF2 ? { backgroundColor: 'white' } : { backgroundColor: theme.primary }} />
+                            <span className="text-[4.5px] font-extrabold tracking-widest uppercase flex-shrink-0" style={isF2 ? { color: 'white' } : { color: theme.primary }}>
                                 COMPASSION | CARE | COMMITMENT
                             </span>
-                            <div className="h-[0.5px] flex-1" style={isF2 ? { backgroundColor: 'white' } : { backgroundColor: theme.primary }} />
+                            <div className="h-[0.5px] flex-grow" style={isF2 ? { backgroundColor: 'white' } : { backgroundColor: theme.primary }} />
                         </div>
                     </div>
 
@@ -987,7 +988,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             {/* Partner Logo */}
                             <div className={`relative w-10 h-10 flex items-center justify-center flex-shrink-0 drop-shadow-sm bg-white rounded p-0.5 ${isF4 ? 'scale-125 my-1' : ''}`}>
                                 {partnerLogoUrl ? (
-                                    <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" />
+                                    <img src={partnerLogoUrl} alt="Partner Logo" className="max-w-full max-h-full object-contain" crossOrigin="anonymous" />
                                 ) : (
                                     <div className="text-center flex flex-col items-center">
                                         <div className="text-[20px] font-black leading-none mb-0.5" style={{ color: theme.primary }}>U</div>
@@ -1002,6 +1003,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     className="relative w-10 h-10 rounded-lg shadow-sm border border-slate-200 overflow-hidden flex-shrink-0 bg-white"
                                 >
                                     <img
+                                        crossOrigin="anonymous"
                                         src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`}
                                         alt={user.name}
                                         className="w-full h-full object-cover"
@@ -1075,20 +1077,26 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
 
                     {isF3 && (
                         <div className="w-full z-10 mt-auto">
-                            <div className="bg-transparent py-2 px-4 text-left flex items-start gap-1.5 relative z-20">
-                                <i className="fas fa-location-dot mt-[1px] text-[7px]" style={{ color: theme.dark }}></i>
-                                <p className="text-[5.5px] font-extrabold leading-[1.4] uppercase whitespace-pre-line" style={{ color: theme.dark }}>
+                            {showBarcode && (
+                                <div className="w-full flex flex-col items-center justify-center mb-1 relative z-20">
+                                    <BarcodeSVG value={empId} lineColor={theme.dark} width={0.8} height={10} />
+                                    <span className="text-[4.5px] font-bold mt-0.5 tracking-wider" style={{ color: theme.dark }}>{empId}</span>
+                                </div>
+                            )}
+                            <div className="bg-transparent pb-1 px-4 text-left flex items-start gap-1 relative z-20 pr-6">
+                                <i className="fas fa-location-dot mt-[1.5px] text-[6px]" style={{ color: theme.dark }}></i>
+                                <p className="text-[5px] font-extrabold leading-[1.3] uppercase whitespace-pre-line" style={{ color: theme.dark }}>
                                     {companyAddress}
                                 </p>
                             </div>
                             <div className="py-1.5 px-4 text-center flex items-center justify-between relative z-20" style={{ backgroundColor: theme.primary }}>
                                 <div className="flex items-center gap-1">
-                                    <i className="fas fa-phone text-white text-[6px]"></i>
-                                    <span className="text-white text-[5.5px] font-medium">{contactPhone}</span>
+                                    <i className="fas fa-phone text-white text-[5.5px]"></i>
+                                    <span className="text-white text-[5px] font-medium">{contactPhone}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <i className="fas fa-envelope text-white text-[6px]"></i>
-                                    <span className="text-white text-[5.5px] font-medium">{companyEmail}</span>
+                                    <i className="fas fa-envelope text-white text-[5.5px]"></i>
+                                    <span className="text-white text-[5px] font-medium">{companyEmail}</span>
                                 </div>
                             </div>
                         </div>
