@@ -1127,10 +1127,12 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         {companyLogoUrl ? (
                             <img src={companyLogoUrl} alt="Pills and More" className="w-full object-contain" style={{ maxHeight: '14mm' }} />
                         ) : (
-                            <div className="flex flex-col items-center w-full px-1">
-                                <span className="font-black text-[14px] text-red-600 leading-tight">Pills <span className="text-green-600">& More</span></span>
-                                <div className="bg-green-600 rounded-full mt-0.5 w-[94%] px-2 py-0.5 mx-auto flex items-center justify-center min-h-[10px]">
-                                    <p className="text-[5.5px] font-bold text-white text-center leading-none whitespace-normal break-words m-0 p-0">
+                            <div className="text-center w-full px-1">
+                                <div className="font-black text-[15px] text-red-600 leading-none mb-1">
+                                    Pills <span className="text-green-600">& More</span>
+                                </div>
+                                <div className="bg-green-600 rounded-full w-[96%] mx-auto pt-[2.5px] pb-[2px] px-2 block">
+                                    <p className="text-[5px] font-bold text-white text-center leading-none uppercase tracking-wide m-0 p-0">
                                         Chemist & Health Style Supermarket
                                     </p>
                                 </div>
