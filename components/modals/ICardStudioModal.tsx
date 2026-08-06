@@ -211,7 +211,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const [selectedUserId, setSelectedUserId] = useState<string>(initialSelectedUserId || users[0]?.id || '');
     const [format, setFormat] = useState<ICardFormat>('vertical');
     const [themeKey, setThemeKey] = useState<ThemeColor>('blue');
-    const [companyName, setCompanyName] = useState<string>('VISTARAN INFOTECH');
+    const [companyName, setCompanyName] = useState<string>('VISTARAN HEALTH CARE SERVICES PVT LTD');
 
     useEffect(() => {
         if (printTargetUsers.length > 0 && !printTargetUsers.find(u => u.id === selectedUserId)) {
@@ -941,10 +941,16 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {isF3 && (
                         <>
                             {/* Top left geometric triangle */}
-                            <div className="absolute top-0 left-0 w-[20mm] h-[20mm]" style={{ background: `linear-gradient(135deg, ${theme.primary} 50%, transparent 50%)` }} />
+                            <svg className="absolute top-0 left-0 w-[20mm] h-[20mm] pointer-events-none z-0" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                <polygon points="0,0 100,0 0,100" fill={theme.primary} />
+                            </svg>
                             {/* Bottom right geometric triangle block */}
-                            <div className="absolute bottom-[6mm] right-0 w-[30mm] h-[30mm]" style={{ background: `linear-gradient(-45deg, ${theme.primary} 50%, transparent 50%)`, opacity: 0.9 }} />
-                            <div className="absolute bottom-[6mm] right-[10mm] w-[15mm] h-[15mm]" style={{ background: `linear-gradient(-45deg, ${theme.primary} 50%, transparent 50%)`, opacity: 0.5 }} />
+                            <svg className="absolute bottom-[6mm] right-0 w-[30mm] h-[30mm] pointer-events-none z-0" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ opacity: 0.9 }}>
+                                <polygon points="100,0 100,100 0,100" fill={theme.primary} />
+                            </svg>
+                            <svg className="absolute bottom-[6mm] right-[10mm] w-[15mm] h-[15mm] pointer-events-none z-0" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ opacity: 0.5 }}>
+                                <polygon points="100,0 100,100 0,100" fill={theme.primary} />
+                            </svg>
                         </>
                     )}
 
@@ -960,9 +966,8 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                 renderLogo("w-[18mm] h-auto fill-current mx-auto")
                             )}
                         </div>
-                        <h2 className={`mt-0.5 font-black text-[10px] flex flex-col items-center justify-center leading-[1.1] uppercase z-10 w-full ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.dark } : {}}>
-                            <span>{companyName || 'VISTARAN HEALTH CARE'}</span>
-                            <span>SERVICES PVT LTD</span>
+                        <h2 className={`mt-0.5 font-black text-[10px] flex flex-col items-center justify-center text-center leading-[1.1] uppercase z-10 w-full ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.dark } : {}}>
+                            <span>{companyName || 'VISTARAN HEALTH CARE SERVICES PVT LTD'}</span>
                         </h2>
                         <div className="flex items-center justify-center gap-1 w-full mt-1 z-10">
                             <div className="h-[0.5px] flex-grow" style={isF2 ? { backgroundColor: 'white' } : { backgroundColor: theme.primary }} />
@@ -1000,14 +1005,18 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                             {/* User Photo */}
                             {!isF4 && (
                                 <div
-                                    className="relative w-10 h-10 rounded-lg shadow-sm border border-slate-200 overflow-hidden flex-shrink-0 bg-white"
+                                    className="relative w-10 h-10 rounded-lg border border-slate-200 overflow-hidden flex-shrink-0 bg-white flex justify-center items-center"
                                 >
-                                    <img
-                                        crossOrigin="anonymous"
-                                        src={user.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=ffffff&color=${theme.primary.replace('#', '')}`}
-                                        alt={user.name}
-                                        className="w-full h-full object-cover"
-                                    />
+                                    {user.photo ? (
+                                        <img
+                                            crossOrigin="anonymous"
+                                            src={user.photo}
+                                            alt={user.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <i className="fas fa-user text-slate-300 text-3xl"></i>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -1401,6 +1410,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     <option value="User">User</option>
                                     <option value="Staff">Staff</option>
                                     <option value="Technician">Technician</option>
+                                    <option value="Distributor">Distributor</option>
                                     <option value="Read-Only">Read-Only</option>
                                 </select>
 

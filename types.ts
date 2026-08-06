@@ -4,6 +4,7 @@ export enum Role {
     USER = 'User',
     TECHNICIAN = 'Technician',
     READ_ONLY = 'Read-Only',
+    DISTRIBUTOR = 'Distributor',
 }
 
 export enum Permission {
