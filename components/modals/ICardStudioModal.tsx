@@ -932,7 +932,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {isF2 && (
                         <>
                             {/* Top massive curved wave */}
-                            <svg className="absolute top-0 left-0 w-full h-[33mm] pointer-events-none z-0" viewBox="0 0 200 100" preserveAspectRatio="none">
+                            <svg className="absolute top-0 left-0 w-full h-[24mm] pointer-events-none z-0" viewBox="0 0 200 100" preserveAspectRatio="none">
                                 <path d="M0 0 L200 0 L200 60 C130 90 70 110 0 50 Z" fill={theme.primary} />
                             </svg>
                         </>
