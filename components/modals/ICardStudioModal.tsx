@@ -505,12 +505,12 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         <div className="absolute -right-4 -top-4 w-14 h-14 rounded-full bg-white/10 blur-sm pointer-events-none" />
                         <div className="flex items-center gap-1.5 z-10">
                             {companyLogoUrl ? (
-                                <div className="bg-white p-1 rounded-md flex items-center justify-center h-7">
+                                <div className="bg-white p-1.5 rounded-md flex items-center justify-center h-10 px-2">
                                     <img src={companyLogoUrl} alt="Company Logo" className="h-full w-auto object-contain" />
                                 </div>
                             ) : (
-                                <div className="bg-white p-1 rounded-md flex items-center justify-center h-7 px-2">
-                                    {renderLogo("h-[24px] w-auto object-contain")}
+                                <div className="bg-white p-1.5 rounded-md flex items-center justify-center h-10 px-3">
+                                    {renderLogo("h-[32px] w-auto object-contain")}
                                 </div>
                             )}
                             <span className="font-black text-[11px] tracking-wider uppercase leading-none">
@@ -609,7 +609,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                         style={{ backgroundColor: theme.primary }}
                     >
                         <div className="flex items-center gap-1.5">
-                            {renderLogo("h-[14px] w-auto object-contain")}
+                            {renderLogo("h-[20px] w-auto object-contain")}
                             <span className="font-black text-[11px] tracking-wider uppercase">{companyName}</span>
                         </div>
                         <span className="text-[7.5px] font-bold tracking-wider uppercase opacity-90">
@@ -961,9 +961,9 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     <div className={`pt-[7.5mm] pb-0.5 px-3 flex flex-col items-center relative z-20 text-center ${isF2 ? 'text-white' : ''}`}>
                         <div className={`flex justify-center mb-1 w-full z-10 ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
                             {companyLogoUrl ? (
-                                <img src={companyLogoUrl} alt="Company Logo" className="object-contain drop-shadow-sm" style={{ width: '18mm', maxHeight: '12mm' }} crossOrigin="anonymous" />
+                                <img src={companyLogoUrl} alt="Company Logo" className="object-contain drop-shadow-sm" style={{ width: '42mm', maxHeight: '20mm' }} crossOrigin="anonymous" />
                             ) : (
-                                renderLogo("h-[22px] w-auto object-contain mx-auto")
+                                renderLogo("h-[50px] w-auto object-contain mx-auto")
                             )}
                         </div>
                         <h2 className={`mt-0.5 font-black text-[10px] flex flex-col items-center justify-center text-center leading-[1.1] uppercase z-10 w-full ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.dark } : {}}>
