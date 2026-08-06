@@ -193,6 +193,9 @@ export const DEFAULT_ROLE_PERMISSIONS: RolePermissions = {
         Permission.VIEW_DASHBOARD,
         Permission.VIEW_INVENTORY
     ],
+    [Role.DISTRIBUTOR]: [
+        Permission.VIEW_DASHBOARD
+    ],
 };
 
 interface SettingsContextType {
