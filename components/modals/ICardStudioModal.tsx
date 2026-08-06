@@ -961,7 +961,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     <div className={`pt-[7.5mm] pb-0.5 px-3 flex flex-col items-center relative z-20 text-center ${isF2 ? 'text-white' : ''}`}>
                         <div className={`flex justify-center mb-1 w-full z-10 ${isF2 ? 'text-white drop-shadow-sm' : ''}`} style={!isF2 ? { color: theme.primary } : {}}>
                             {companyLogoUrl ? (
-                                <img src={companyLogoUrl} alt="Company Logo" className="w-[18mm] max-h-[12mm] object-contain drop-shadow-sm" crossOrigin="anonymous" />
+                                <img src={companyLogoUrl} alt="Company Logo" className="object-contain drop-shadow-sm" style={{ width: '18mm', maxHeight: '12mm' }} crossOrigin="anonymous" />
                             ) : (
                                 renderLogo("text-[22px] fill-current mx-auto")
                             )}
@@ -1125,12 +1125,12 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                     {/* Top Logo Area (Prominent) */}
                     <div className="w-full pt-2 pb-2 px-3 flex justify-center items-center bg-white border-b-2" style={{ borderColor: theme.primary }}>
                         {companyLogoUrl ? (
-                            <img src={companyLogoUrl} alt="Pills and More" className="w-full max-h-[14mm] object-contain" />
+                            <img src={companyLogoUrl} alt="Pills and More" className="w-full object-contain" style={{ maxHeight: '14mm' }} />
                         ) : (
                             <div className="flex flex-col items-center w-full px-1">
                                 <span className="font-black text-[14px] text-red-600 leading-tight">Pills <span className="text-green-600">& More</span></span>
-                                <div className="bg-green-600 rounded-full mt-0.5 w-[94%] px-2 py-[2px] mx-auto">
-                                    <p className="text-[5.5px] font-bold text-white text-center leading-[1.2] whitespace-normal break-words m-0 p-0">
+                                <div className="bg-green-600 rounded-full mt-0.5 w-[94%] px-2 py-0.5 mx-auto flex items-center justify-center min-h-[10px]">
+                                    <p className="text-[5.5px] font-bold text-white text-center leading-none whitespace-normal break-words m-0 p-0">
                                         Chemist & Health Style Supermarket
                                     </p>
                                 </div>
