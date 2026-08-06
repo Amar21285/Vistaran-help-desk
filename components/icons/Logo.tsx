@@ -8,7 +8,7 @@ const Logo: React.FC<{ className?: string; style?: React.CSSProperties }> = ({ c
         width="100%"
         height="100%"
         xmlns="http://www.w3.org/2000/svg" 
-        preserveAspectRatio="xMinYMid meet"
+        preserveAspectRatio="xMidYMid meet"
     >
         <g id="VistaranLogo">
             {/* The Stylized 'V' strokes */}
@@ -16,10 +16,10 @@ const Logo: React.FC<{ className?: string; style?: React.CSSProperties }> = ({ c
             <path d="M58,25 C48,15 38,25 38,45 C38,75 58,85 78,85 C68,75 58,65 58,25" fill="#2c3e50" />
             
             {/* The 'v' part that blends with strokes */}
-            <text x="75" y="85" style={{fontSize: "72px", fill: "#2c3e50", fontFamily: "Georgia, serif", fontWeight: "bold"}}>v</text>
+            <text x="75" y="85" fontSize="72px" fill="#2c3e50" fontFamily="Georgia, serif" fontWeight="bold">v</text>
             
             {/* Remaining text 'istaran' */}
-            <text x="110" y="85" style={{fontSize: "64px", fill: "#2c3e50", fontFamily: "Georgia, serif", fontWeight: "bold"}}>istaran</text>
+            <text x="110" y="85" fontSize="64px" fill="#2c3e50" fontFamily="Georgia, serif" fontWeight="bold">istaran</text>
             
             {/* The Teal Swoosh */}
             <path d="M15,95 C100,135 250,75 340,45 C280,65 150,115 15,95" fill="#4fa3b4" />
