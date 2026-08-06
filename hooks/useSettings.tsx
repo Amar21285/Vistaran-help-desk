@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
 import { Role, Permission } from '../types';
 
-const DEFAULT_LOGO_URL = ''; // Default to icon
+const DEFAULT_LOGO_URL = '/vistaran-logo.png'; // Use new PNG logo by default
 const DEFAULT_APP_NAME = 'Vistaran Help Desk';
 const DEFAULT_EMAILJS_SERVICE_ID = 'service_ee55frm';
 const DEFAULT_EMAILJS_PUBLIC_KEY = 'Askap9zd4U9UO242i';
