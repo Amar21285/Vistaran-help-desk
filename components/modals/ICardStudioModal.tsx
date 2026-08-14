@@ -235,6 +235,7 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
     const [isBatchMode, setIsBatchMode] = useState<boolean>(printTargetUsers.length > 1);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
     const [pdfProgress, setPdfProgress] = useState<number>(0);
+    const [pdfPaperSize, setPdfPaperSize] = useState<'card' | 'a4' | 'letter' | 'legal'>('a4');
     const [previewScale, setPreviewScale] = useState<number>(1.25);
     const [userSearchTerm, setUserSearchTerm] = useState<string>('');
 
@@ -320,56 +321,89 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
             const cardW = isLandscape ? 85.6 : 53.98;
             const cardH = isLandscape ? 53.98 : 85.6;
 
-            if (isBatchMode) {
-                const printEl = document.getElementById('icard-printable-container');
-                if (printEl) {
-                    const pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', [cardW, cardH]);
-                    const cardNodes = printEl.querySelectorAll('.print-card-box');
-                    
-                    for (let i = 0; i < cardNodes.length; i++) {
-                        const node = cardNodes[i] as HTMLElement;
-                        setPdfProgress(i + 1);
-                        if (i > 0) pdf.addPage([cardW, cardH], isLandscape ? 'l' : 'p');
+            const pdfPaperSizeInfo: Record<string, [number, number]> = {
+                a4: [210, 297],
+                letter: [215.9, 279.4],
+                legal: [215.9, 355.6]
+            };
 
-                        const canvas = await html2canvas(node, {
-                            scale: 4,
-                            useCORS: true,
-                            logging: false,
-                            backgroundColor: '#ffffff'
-                        } as any);
-                        const imgData = canvas.toDataURL('image/jpeg', 0.98);
-                        pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
-                    }
-                    pdf.save(`Vistaran_iCards_Batch_${printTargetUsers.length}_Users_${Date.now()}.pdf`);
+            const printEl = isBatchMode 
+                ? document.getElementById('icard-printable-container') 
+                : document.getElementById('icard-preview-active-card');
+            
+            if (printEl) {
+                let pdf: jsPDF;
+                let printW = cardW;
+                let printH = cardH;
+                let currentX = 0;
+                let currentY = 0;
+                let margin = 0;
+                let spacingX = 0;
+                let spacingY = 0;
+
+                if (pdfPaperSize !== 'card') {
+                    const dims = pdfPaperSizeInfo[pdfPaperSize] || [210, 297];
+                    pdf = new jsPDF('p', 'mm', dims);
+                    printW = dims[0];
+                    printH = dims[1];
+                    margin = 10;
+                    spacingX = 5;
+                    spacingY = 5;
+                    currentX = margin;
+                    currentY = margin;
+                } else {
+                    pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', [cardW, cardH]);
                 }
-            } else {
-                const previewEl = document.getElementById('icard-preview-active-card');
-                if (previewEl) {
-                    const pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', [cardW, cardH]);
-                    const cardNodes = previewEl.querySelectorAll('.print-card-box');
-                    
-                    // Temporarily remove transform on parent just in case it leaks scaling to children
-                    const originalClassName = previewEl.className;
-                    const originalTransform = previewEl.style.transform;
-                    previewEl.className = previewEl.className.replace('scale-125 transform', '');
-                    previewEl.style.transform = 'none';
-                    
-                    for (let i = 0; i < cardNodes.length; i++) {
-                        const node = cardNodes[i] as HTMLElement;
+
+                const cardNodes = printEl.querySelectorAll('.print-card-box');
+                
+                let originalClassName = '';
+                let originalTransform = '';
+                if (!isBatchMode) {
+                    originalClassName = printEl.className;
+                    originalTransform = printEl.style.transform;
+                    printEl.className = printEl.className.replace('scale-125 transform', '');
+                    printEl.style.transform = 'none';
+                }
+                
+                for (let i = 0; i < cardNodes.length; i++) {
+                    const node = cardNodes[i] as HTMLElement;
+                    setPdfProgress(i + 1);
+
+                    const canvas = await html2canvas(node, {
+                        scale: 4,
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#ffffff'
+                    } as any);
+                    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+
+                    if (pdfPaperSize !== 'card') {
+                        if (currentX + cardW > printW - margin) {
+                            currentX = margin;
+                            currentY += cardH + spacingY;
+                        }
+                        if (currentY + cardH > printH - margin) {
+                            pdf.addPage();
+                            currentX = margin;
+                            currentY = margin;
+                        }
+                        pdf.addImage(imgData, 'JPEG', currentX, currentY, cardW, cardH);
+                        currentX += cardW + spacingX;
+                    } else {
                         if (i > 0) pdf.addPage([cardW, cardH], isLandscape ? 'l' : 'p');
-                        const canvas = await html2canvas(node, {
-                            scale: 4,
-                            useCORS: true,
-                            logging: false,
-                            backgroundColor: '#ffffff'
-                        } as any);
-                        const imgData = canvas.toDataURL('image/jpeg', 0.98);
                         pdf.addImage(imgData, 'JPEG', 0, 0, cardW, cardH);
                     }
-                    
-                    previewEl.className = originalClassName;
-                    previewEl.style.transform = originalTransform;
+                }
+                
+                if (!isBatchMode) {
+                    printEl.className = originalClassName;
+                    printEl.style.transform = originalTransform;
+                }
 
+                if (isBatchMode) {
+                    pdf.save(`Vistaran_iCards_Batch_${printTargetUsers.length}_Users_${Date.now()}.pdf`);
+                } else {
                     const empId = getEmpId(activeUser);
                     const safeName = activeUser.name.replace(/\s+/g, '_');
                     pdf.save(`Vistaran_iCard_${empId}_${safeName}.pdf`);
@@ -1820,6 +1854,22 @@ export const ICardStudioModal: React.FC<ICardStudioModalProps> = ({ users, onClo
                                     onChange={(e) => setPreviewScale(parseFloat(e.target.value))}
                                     className="w-full accent-primary"
                                 />
+                            </div>
+                            
+                            <div className="flex flex-col gap-1 mt-3">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-200">
+                                    PDF Paper Layout
+                                </label>
+                                <select
+                                    value={pdfPaperSize}
+                                    onChange={(e) => setPdfPaperSize(e.target.value as any)}
+                                    className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-primary"
+                                >
+                                    <option value="card">Standard iCard Size (54x86mm)</option>
+                                    <option value="a4">A4 (Multiple Cards Layout)</option>
+                                    <option value="letter">Letter (Multiple Cards Layout)</option>
+                                    <option value="legal">Legal (Multiple Cards Layout)</option>
+                                </select>
                             </div>
                         </div>
                     </div>
