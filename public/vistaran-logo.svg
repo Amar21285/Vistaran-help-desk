@@ -1,0 +1,10 @@
+<svg viewBox="0 0 350 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <g id="VistaranLogoPaths">
+        <path d="M45,45 C35,25 25,35 25,55 C25,85 45,95 65,95 C55,85 45,75 45,45" fill="#2c3e50" />
+        <path d="M58,25 C48,15 38,25 38,45 C38,75 58,85 78,85 C68,75 58,65 58,25" fill="#2c3e50" />
+        <path d="M15,95 C100,135 250,75 340,45 C280,65 150,115 15,95" fill="#4fa3b4" />
+        <circle cx="325" cy="110" r="3" fill="#2c3e50" />
+    </g>
+    <text x="75" y="85" font-size="72px" fill="#2c3e50" font-family="Georgia, serif" font-weight="bold">v</text>
+    <text x="110" y="85" font-size="64px" fill="#2c3e50" font-family="Georgia, serif" font-weight="bold">istaran</text>
+</svg>
