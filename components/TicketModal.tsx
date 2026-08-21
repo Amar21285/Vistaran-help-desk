@@ -35,6 +35,9 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
     const [assignedTechId, setAssignedTechId] = useState(ticket.assignedTechId);
     const [notes, setNotes] = useState(ticket.notes || '');
     const [cc, setCc] = useState(ticket.cc || '');
+    const [escalationLevel, setEscalationLevel] = useState(ticket.escalationLevel || 0);
+    const [feedbackRating, setFeedbackRating] = useState(ticket.feedbackRating || 0);
+    const [feedbackComment, setFeedbackComment] = useState(ticket.feedbackComment || '');
     const history = ticket.history || [];
     
     const [summary, setSummary] = useState('Generating summary...');
@@ -147,6 +150,26 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
         setSuggestedReply(null);
     };
 
+    const handleEscalate = () => {
+        if (!user || user.role === Role.USER) return;
+        const newLevel = escalationLevel + 1;
+        setEscalationLevel(newLevel);
+        const newHistoryEntry: TicketHistory = {
+            id: `HIST${Date.now()}`,
+            ticketId: ticket.id,
+            userId: user.id,
+            change: `Ticket escalated to Level ${newLevel}`,
+            timestamp: new Date().toISOString()
+        };
+        onSave({ ...ticket, escalationLevel: newLevel, history: [...history, newHistoryEntry] }, false);
+    };
+
+    const handleFeedbackSubmit = () => {
+        if (!user || user.id !== ticket.userId) return;
+        onSave({ ...ticket, feedbackRating, feedbackComment }, false);
+        alert('Thank you for your feedback!');
+    };
+
     const handleSubmitWorkflow = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isUpdating || !user) return;
@@ -190,7 +213,7 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
 
         const finalTicket: Ticket = { 
             ...ticket, 
-            status, priority, assignedTechId, notes, cc,
+            status, priority, assignedTechId, notes, cc, escalationLevel,
             history: newHistoryEntry ? [...history, newHistoryEntry] : history,
             chatHistory: [...(ticket.chatHistory || []), ...systemChatMessages],
             dateResolved: isResolving ? new Date().toISOString() : ticket.dateResolved
@@ -372,9 +395,39 @@ const TicketModal: React.FC<TicketModalProps> = ({ ticket, onClose, onSave, tech
                                     </div>
                                     <p className="text-sm font-bold text-indigo-50 italic leading-relaxed">"{summary}"</p>
                                 </section>
+
+                                {ticket.status === TicketStatus.RESOLVED && user?.id === ticket.userId && (
+                                    <section className="p-8 bg-green-50 dark:bg-green-900/10 rounded-[32px] border border-green-200 dark:border-green-800 shadow-xl">
+                                        <h3 className="text-[10px] font-black text-green-600 dark:text-green-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><i className="fas fa-star"></i> User Feedback</h3>
+                                        <div className="flex gap-2 mb-4">
+                                            {[1, 2, 3, 4, 5].map(star => (
+                                                <button key={star} onClick={() => setFeedbackRating(star)} className={`text-2xl ${feedbackRating >= star ? 'text-yellow-400' : 'text-slate-300 dark:text-slate-700'} hover:scale-110 transition-transform`}>
+                                                    <i className="fas fa-star"></i>
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <textarea 
+                                            value={feedbackComment} 
+                                            onChange={e => setFeedbackComment(e.target.value)} 
+                                            placeholder="Tell us how we did..." 
+                                            className="w-full p-4 text-xs font-bold border-2 border-green-200 dark:border-green-800 rounded-2xl bg-white dark:bg-slate-900 focus:ring-4 focus:ring-green-500/10 outline-none transition-all resize-none mb-4" 
+                                        />
+                                        <button onClick={handleFeedbackSubmit} className="bg-green-600 hover:bg-green-700 text-white text-[10px] font-black uppercase tracking-[0.2em] py-3 px-6 rounded-xl shadow-lg shadow-green-500/20 transition-all active:scale-95">Submit Feedback</button>
+                                    </section>
+                                )}
                             </div>
 
                             <div className="space-y-8">
+                                {user?.role !== Role.USER && (
+                                    <section className="p-8 bg-amber-50 dark:bg-amber-900/10 rounded-[32px] border border-amber-200 dark:border-amber-800 shadow-xl flex justify-between items-center">
+                                        <div>
+                                            <h3 className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-[0.2em] mb-1 flex items-center gap-2"><i className="fas fa-level-up-alt"></i> Escalation</h3>
+                                            <p className="text-xs text-amber-700 dark:text-amber-300 font-bold">Current Level: {escalationLevel}</p>
+                                        </div>
+                                        <button onClick={handleEscalate} className="bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-amber-500/20 active:scale-95 transition-all">Escalate</button>
+                                    </section>
+                                )}
+
                                 <section className="p-8 bg-white dark:bg-slate-800/50 rounded-[32px] border dark:border-slate-800 shadow-xl">
                                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2"><i className="fas fa-sliders-h"></i> Operational Overrides</h3>
                                     <form onSubmit={handleSubmitWorkflow} className="space-y-6">

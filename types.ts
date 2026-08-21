@@ -209,6 +209,9 @@ export interface Ticket {
     notes?: string;
     cc?: string;
     chatHistory?: ChatMessage[];
+    escalationLevel?: number;
+    feedbackRating?: number;
+    feedbackComment?: string;
 }
 
 export interface ManagedFile {

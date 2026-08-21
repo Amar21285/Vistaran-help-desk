@@ -9,7 +9,7 @@ import {
 import { useSettings } from '../hooks/useSettings';
 import { USERS } from '../constants';
 import { GENERIC_EMAIL_TEMPLATE_ID } from '../utils/email';
-import { suggestTicketCategory } from '../utils/genai';
+import { suggestTicketCategory, classifyTicket } from '../utils/genai';
 import { logUserAction } from '../utils/auditLogger';
 import TextToolbar from './TextToolbar';
 
@@ -155,21 +155,17 @@ const CreateTicket: React.FC<CreateTicketProps> = ({ symptoms, setTickets, setCu
 
         setIsSuggesting(true);
         try {
-            const suggestedSymptomId = await suggestTicketCategory(description, symptoms);
-
-            if (suggestedSymptomId) {
-                const suggestedSymptom = symptoms.find(s => s.id === suggestedSymptomId);
-                if (suggestedSymptom) {
-                    setDepartment(suggestedSymptom.department);
-                    setSymptomId(suggestedSymptom.id);
-                    setIsCustomSymptom(false);
-                    
-                    setInfoModalContent({
-                       title: "AI Suggestion Applied",
-                       message: `We've automatically selected the "${suggestedSymptom.department}" department and "${suggestedSymptom.name}" issue based on your description.`
-                    });
-                }
-            }
+            const { department: suggestedDept, priority: suggestedPriority } = await classifyTicket(description, departments);
+            
+            setDepartment(suggestedDept);
+            setPriority(suggestedPriority);
+            setSymptomId(''); // Reset symptom to force user to pick one in the new department, or they can use custom.
+            setIsCustomSymptom(false);
+            
+            setInfoModalContent({
+                title: "AI Ticket Classification",
+                message: `Based on your description, we've routed this to the "${suggestedDept}" department with "${suggestedPriority}" priority.`
+            });
         } finally {
             setIsSuggesting(false);
         }
@@ -190,6 +186,13 @@ const CreateTicket: React.FC<CreateTicketProps> = ({ symptoms, setTickets, setCu
 
         const finalSymptomId = isCustomSymptom ? `CUSTOM_${Date.now()}` : symptomId;
 
+        const eligibleTechs = USERS.filter(u => u.role === Role.TECHNICIAN && u.department === department && u.status === 'Active');
+        let autoAssignedTechId = null;
+        if (eligibleTechs.length > 0) {
+            // Very simple auto-assignment: pick randomly or the first one. (In a real app, query active tickets per tech)
+            autoAssignedTechId = eligibleTechs[Math.floor(Math.random() * eligibleTechs.length)].id;
+        }
+
         const newTicket: Ticket = {
             id: `TKT${Date.now()}`,
             userId: user.id,
@@ -199,10 +202,10 @@ const CreateTicket: React.FC<CreateTicketProps> = ({ symptoms, setTickets, setCu
             priority,
             description: isCustomSymptom ? `[Custom Issue: ${customSymptom}]\n\n${description}` : description,
             cc,
-            status: TicketStatus.OPEN,
+            status: autoAssignedTechId ? TicketStatus.IN_PROGRESS : TicketStatus.OPEN,
             dateCreated: new Date().toISOString(),
             dateResolved: null,
-            assignedTechId: null,
+            assignedTechId: autoAssignedTechId,
             photoUrl: attachment ? attachmentPreviewUrl : undefined,
         };
 

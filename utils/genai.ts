@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { Ticket, User, Symptom } from '../types';
+import { Ticket, User, Symptom, Priority } from '../types';
 
 // Using recommended models for basic and complex tasks
 const BASIC_MODEL = 'gemini-2.5-flash';
@@ -89,6 +89,49 @@ export const suggestTicketReply = async (ticket: Ticket, symptomName?: string): 
     } catch (error) {
         console.error("Error suggesting ticket reply:", error);
         return "An error occurred while generating a reply suggestion.";
+    }
+};
+
+/**
+ * Classifies a ticket description to suggest Department and Priority.
+ */
+export const classifyTicket = async (description: string, departments: string[]): Promise<{ department: string, priority: Priority }> => {
+    const prompt = `
+        You are an AI Help Desk Router. Given the user's issue description, determine the most appropriate department and priority level.
+        
+        **Available Departments:** ${departments.join(', ')}
+        **Available Priorities:** Urgent, High, Medium, Low
+        
+        **Issue Description:** "${description}"
+        
+        Return ONLY a JSON object with this exact structure, nothing else:
+        {
+            "department": "selected department",
+            "priority": "selected priority"
+        }
+    `;
+
+    try {
+        const ai = new GoogleGenAI({ apiKey: (import.meta as any).env.VITE_API_KEY as string });
+        const response = await ai.models.generateContent({
+            model: BASIC_MODEL,
+            contents: prompt,
+        });
+        
+        let text = response.text || "{}";
+        // Clean markdown JSON formatting if present
+        text = text.replace(/```json/gi, '').replace(/```/gi, '').trim();
+        
+        const result = JSON.parse(text);
+        // Validate Priority
+        const validPriorities = ['Urgent', 'High', 'Medium', 'Low'];
+        const priority = validPriorities.includes(result.priority) ? result.priority as Priority : Priority.MEDIUM;
+        const department = departments.includes(result.department) ? result.department : (departments[0] || 'IT');
+        
+        return { department, priority };
+    } catch (error) {
+        console.error("Error classifying ticket:", error);
+        return { department: departments[0] || 'IT', priority: Priority.MEDIUM };
     }
 };
 

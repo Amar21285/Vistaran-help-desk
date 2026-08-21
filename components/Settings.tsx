@@ -11,6 +11,7 @@ import DepartmentSettings from './settings/DepartmentSettings';
 import NetworkSettings from './settings/NetworkSettings';
 import PermissionSettings from './settings/PermissionSettings';
 import MasterSyncSettings from './settings/MasterSyncSettings';
+import AuditLogView from './settings/AuditLogView';
 import { TicketTemplate, Symptom, User, Ticket } from '../types';
 
 interface SettingsProps {
@@ -67,6 +68,8 @@ const Settings: React.FC<SettingsProps> = (props) => {
                 return <PermissionSettings />;
             case 'sync':
                 return <MasterSyncSettings />;
+            case 'audit-logs':
+                return <AuditLogView />;
             default:
                 return <GeneralSettings />;
         }
@@ -90,6 +93,7 @@ const Settings: React.FC<SettingsProps> = (props) => {
                     <TabButton label="Email Templates" iconClass="fas fa-paint-brush" isActive={activeTab === 'email-templates'} onClick={() => setActiveTab('email-templates')} />
                     <TabButton label="Network" iconClass="fas fa-network-wired" isActive={activeTab === 'network'} onClick={() => setActiveTab('network')} />
                     <TabButton label="Security" iconClass="fas fa-shield-alt" isActive={activeTab === 'security'} onClick={() => setActiveTab('security')} />
+                    <TabButton label="Audit Logs" iconClass="fas fa-clipboard-list" isActive={activeTab === 'audit-logs'} onClick={() => setActiveTab('audit-logs')} />
                     <TabButton label="System" iconClass="fas fa-hdd" isActive={activeTab === 'system'} onClick={() => setActiveTab('system')} />
                     <TabButton label="Email" iconClass="fas fa-envelope" isActive={activeTab === 'email'} onClick={() => setActiveTab('email')} />
                 </nav>
