@@ -1,41 +1,5 @@
 [
   {
-    "id": "DSR_1774858746410",
-    "userId": "SYSTEM",
-    "userName": "DSR Automation",
-    "action": "DSR Generated (Simulated Email)",
-    "details": "AUTOMATED | Range: 2026-03-30 to 2026-03-30, Tickets: 0, Attendance: 0",
-    "timestamp": "2026-03-30T08:19:06.410Z",
-    "status": "Success"
-  },
-  {
-    "id": "DSR_1774857600080",
-    "userId": "SYSTEM",
-    "userName": "DSR Automation",
-    "action": "DSR Generated (Simulated Email)",
-    "details": "Range: 2026-03-30 to 2026-03-30, Tickets: 0, Attendance: 0, Recipients: itsupport@vistaran.in",
-    "timestamp": "2026-03-30T08:00:00.080Z",
-    "status": "Success"
-  },
-  {
-    "id": "DSR_1774857574812",
-    "userId": "SYSTEM",
-    "userName": "DSR Automation",
-    "action": "DSR Generated (Simulated Email)",
-    "details": "Range: 2026-03-30 to 2026-03-30, Tickets: 0, Attendance: 0, Recipients: itsupport@vistaran.in",
-    "timestamp": "2026-03-30T07:59:34.812Z",
-    "status": "Success"
-  },
-  {
-    "id": "DSR_1774686254236",
-    "userId": "SYSTEM",
-    "userName": "DSR Automation",
-    "action": "DSR Generated (Simulated Email)",
-    "details": "Tickets: 0, Attendance: 0, Recipients: test@example.com",
-    "timestamp": "2026-03-28T08:24:14.236Z",
-    "status": "Success"
-  },
-  {
     "id": "LOG_1772861386129_7lmm0gc",
     "userId": "USR001",
     "userName": "Amarjeet yadav",
