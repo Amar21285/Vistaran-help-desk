@@ -23,6 +23,8 @@ import InventoryManagement from './components/InventoryManagement';
 import AttendanceManagement from './components/AttendanceManagement';
 import ScannerModal from './components/modals/ScannerModal';
 import QuickTicketModal from './components/modals/QuickTicketModal';
+import { PwaInstallPrompt } from './components/PwaInstallPrompt';
+import { PwaUpdateReload } from './components/PwaUpdateReload';
 import { USERS, TICKETS, TECHNICIANS, SYMPTOMS, FILES, TICKET_TEMPLATES, INVENTORY, VENDORS, INTERNET_VENDORS } from './constants';
 import { User, Ticket, ManagedFile, Technician, Symptom, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder, AppNotification, Permission, AttendanceRecord, ReimbursementRequest, InternetVendor } from './types';
 import { logUserAction } from './utils/auditLogger';
@@ -598,6 +600,8 @@ const AppContent: React.FC = () => {
                 />
             )}
             <Chatbot currentView={currentView} activeTicket={editingTicket} />
+            <PwaInstallPrompt />
+            <PwaUpdateReload />
         </div>
     );
 };

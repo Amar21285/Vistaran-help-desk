@@ -20,11 +20,10 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="apple-touch-fullscreen" content="yes">
     
-    <link rel="manifest" href="./manifest.json">
-    <link rel="apple-touch-icon" href="./icons/icon-512x512.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="./icons/icon-512x512.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-512x512.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="./icons/icon-512x512.png">
+    <link rel="apple-touch-icon" href="/icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-512x512.png">
     
     <!-- Splash Screens for iOS -->
     <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
@@ -235,21 +234,6 @@
   <body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-200">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root" class="min-h-screen w-full"></div>
-    <script>
-      window.deferredPrompt = null;
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        window.deferredPrompt = e;
-        console.log('beforeinstallprompt event fired');
-        window.dispatchEvent(new CustomEvent('pwa-installavailable'));
-      });
-
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW failed'));
-        });
-      }
-    </script>
     <script type="module" src="/index.tsx"></script>
 </body>
 </html>
