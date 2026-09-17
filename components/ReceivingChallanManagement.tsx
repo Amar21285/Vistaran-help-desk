@@ -4,8 +4,8 @@ import { ReceivingChallan, Vendor, InventoryItem, ReceivingChallanItem, Role, Us
 import { useAuth } from '../hooks/useAuth';
 import { logUserAction } from '../utils/auditLogger';
 import Logo from './icons/Logo';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+// @ts-ignore
+import html2pdf from 'html2pdf.js';
 import { useSettings } from '../hooks/useSettings';
 
 const TRANSACTION_PURPOSES = [
@@ -138,35 +138,16 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
         setIsGeneratingPDF(true);
         try {
             const element = printableRef.current;
-            const canvas = await html2canvas(element, { 
-                scale: 2, 
-                useCORS: true, 
-                backgroundColor: '#ffffff',
-                logging: false
-            });
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-            const imgWidth = pageWidth;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const opt = {
+                margin:       10, // mm
+                filename:     `Receipt-${viewingChallan.id}.pdf`,
+                image:        { type: 'jpeg' as const, quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+                jsPDF:        { unit: 'mm' as const, format: 'a4', orientation: 'portrait' as const },
+                pagebreak:    { mode: 'css', avoid: 'tr' }
+            };
             
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            // First page
-            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            // Subsequent pages
-            while (heightLeft > 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-            
-            pdf.save(`Receipt-${viewingChallan.id}.pdf`);
+            await html2pdf().set(opt).from(element).save();
         } catch (error) {
             console.error("PDF Generation Error:", error);
             alert("Failed to generate PDF. Please try printing (Ctrl+P) and saving as PDF instead.");

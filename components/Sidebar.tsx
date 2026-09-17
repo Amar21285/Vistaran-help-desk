@@ -121,6 +121,14 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
                             onClick={() => handleNavigation('inventory')}
                         />
                     )}
+                    {(can(Permission.MANAGE_INVENTORY) || can(Permission.VIEW_INVENTORY)) && (
+                        <NavItem
+                            icon={<i className="fas fa-network-wired w-6 text-center text-lg"></i>}
+                            label="Network Hub"
+                            isActive={currentView === 'network-hub'}
+                            onClick={() => handleNavigation('network-hub')}
+                        />
+                    )}
                     {can(Permission.VIEW_REPORTS) && (
                         <NavItem
                             icon={<ChartBarIcon />}

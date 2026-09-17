@@ -23,6 +23,7 @@ import InventoryManagement from './components/InventoryManagement';
 import AttendanceManagement from './components/AttendanceManagement';
 import ScannerModal from './components/modals/ScannerModal';
 import QuickTicketModal from './components/modals/QuickTicketModal';
+import InternetVendorManagement from './components/InternetVendorManagement';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 import { PwaUpdateReload } from './components/PwaUpdateReload';
 import { USERS, TICKETS, TECHNICIANS, SYMPTOMS, FILES, TICKET_TEMPLATES, INVENTORY, VENDORS, INTERNET_VENDORS } from './constants';
@@ -338,6 +339,7 @@ const AppContent: React.FC = () => {
             'reports': Permission.VIEW_REPORTS,
             'attendance': Permission.MARK_ATTENDANCE,
             'file-manager': Permission.ACCESS_FILE_MANAGER,
+            'network-hub': Permission.MANAGE_INVENTORY, // Assuming same permission as inventory
         };
 
         const requiredPermission = viewPermissions[currentView];
@@ -503,6 +505,12 @@ const AppContent: React.FC = () => {
                     setReimbursements={syncSetAllReimbursements}
                     internetVendors={allInternetVendors}
                     setInternetVendors={syncSetAllInternetVendors}
+                />;
+            case 'network-hub':
+                return <InternetVendorManagement 
+                    inventory={allInventory} 
+                    vendors={allInternetVendors} 
+                    setVendors={syncSetAllInternetVendors} 
                 />;
             case 'attendance':
                 return <AttendanceManagement users={allUsers} attendance={allAttendance} setAttendance={syncSetAllAttendance} />;

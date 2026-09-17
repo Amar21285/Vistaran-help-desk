@@ -24,6 +24,7 @@
     "@types/pdfkit": "^0.17.5",
     "express": "^4.19.2",
     "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.14.0",
     "html5-qrcode": "^2.3.8",
     "jsbarcode": "^3.12.3",
     "jspdf": "^4.2.0",
