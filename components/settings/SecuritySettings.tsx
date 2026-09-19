@@ -66,13 +66,63 @@ const SecuritySettings: React.FC<SecuritySettingsProps> = ({ users, tickets }) =
                     try { backupData[key] = JSON.parse(item); } catch (e) { backupData[key] = item; }
                 }
             });
-            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const backupJSON = JSON.stringify(backupData, null, 2);
+            const blob = new Blob([backupJSON], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Vistaran_Security_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            const date = new Date().toISOString().split('T')[0];
+            const fileName = `Vistaran_Security_Backup_${date}.json`;
+            a.download = fileName;
             a.click();
+            URL.revokeObjectURL(url);
             logUserAction(realUser, "Generated system data backup.");
+
+            // Generate Report
+            let reportContent = "VISTARAN SECURITY DATA BACKUP REPORT\n";
+            reportContent += "Date: " + new Date().toLocaleString() + "\n";
+            reportContent += "=================================================\n\n";
+            
+            const moduleMap: Record<string, string> = {
+                'vistaran-helpdesk-inventory': 'Asset Master & General Stock',
+                'vistaran-helpdesk-branches': 'Entities',
+                'vistaran-helpdesk-vendors': 'Vendors',
+                'vistaran-helpdesk-challans': 'Vendor Receiving',
+                'vistaran-helpdesk-outward-invoices': 'Invoicing',
+                'vistaran-helpdesk-pos': 'POS',
+                'vistaran-helpdesk-reimbursements': 'Petty Cash',
+                'vistaran-helpdesk-network': 'Network',
+                'vistaran-helpdesk-attendance': 'Attendance',
+                'vistaran-helpdesk-tickets': 'Tickets',
+                'vistaran-helpdesk-users': 'Users',
+            };
+
+            for (const key in backupData) {
+                const readableName = moduleMap[key] || key.replace('vistaran-helpdesk-', '').toUpperCase();
+                let count = 0;
+                if (Array.isArray(backupData[key])) {
+                    count = backupData[key].length;
+                } else if (typeof backupData[key] === 'object' && backupData[key] !== null) {
+                    count = Object.keys(backupData[key]).length;
+                } else {
+                    count = 1;
+                }
+                reportContent += `${readableName}: ${count} records\n`;
+            }
+            
+            reportContent += "\n=================================================\n";
+            reportContent += "All modules backed up successfully.\n";
+
+            const reportBlob = new Blob([reportContent], { type: 'text/plain' });
+            const reportFileName = `Vistaran_Backup_Report_${date}.txt`;
+            const reportUrl = URL.createObjectURL(reportBlob);
+            const reportA = document.createElement('a');
+            reportA.href = reportUrl;
+            reportA.download = reportFileName;
+            reportA.click();
+            URL.revokeObjectURL(reportUrl);
+            
+            alert(`Backup successful!\nFiles saved:\n- ${fileName}\n- ${reportFileName}`);
         } catch (err) {
             alert('Backup failed.');
         }

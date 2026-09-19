@@ -186,7 +186,54 @@ const SystemSettings: React.FC = () => {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            if(!quiet) alert(`Backup successful! File saved as ${fileName}.`);
+
+            const parsedData = JSON.parse(backupJSON);
+            let reportContent = "VISTARAN DATA BACKUP REPORT\n";
+            reportContent += "Date: " + new Date().toLocaleString() + "\n";
+            reportContent += "=================================================\n\n";
+            
+            const moduleMap: Record<string, string> = {
+                'vistaran-helpdesk-inventory': 'Asset Master & General Stock',
+                'vistaran-helpdesk-branches': 'Entities',
+                'vistaran-helpdesk-vendors': 'Vendors',
+                'vistaran-helpdesk-challans': 'Vendor Receiving',
+                'vistaran-helpdesk-outward-invoices': 'Invoicing',
+                'vistaran-helpdesk-pos': 'POS',
+                'vistaran-helpdesk-reimbursements': 'Petty Cash',
+                'vistaran-helpdesk-network': 'Network',
+                'vistaran-helpdesk-attendance': 'Attendance',
+                'vistaran-helpdesk-tickets': 'Tickets',
+                'vistaran-helpdesk-users': 'Users',
+            };
+
+            for (const key in parsedData) {
+                const readableName = moduleMap[key] || key.replace('vistaran-helpdesk-', '').toUpperCase();
+                let count = 0;
+                if (Array.isArray(parsedData[key])) {
+                    count = parsedData[key].length;
+                } else if (typeof parsedData[key] === 'object' && parsedData[key] !== null) {
+                    count = Object.keys(parsedData[key]).length;
+                } else {
+                    count = 1;
+                }
+                reportContent += `${readableName}: ${count} records\n`;
+            }
+            
+            reportContent += "\n=================================================\n";
+            reportContent += "All modules backed up successfully.\n";
+
+            const reportBlob = new Blob([reportContent], { type: 'text/plain' });
+            const reportFileName = `Vistaran_Backup_Report_${date}.txt`;
+            const reportUrl = URL.createObjectURL(reportBlob);
+            const reportA = document.createElement('a');
+            reportA.href = reportUrl;
+            reportA.download = reportFileName;
+            document.body.appendChild(reportA);
+            reportA.click();
+            document.body.removeChild(reportA);
+            URL.revokeObjectURL(reportUrl);
+
+            if(!quiet) alert(`Backup successful!\nFiles saved:\n- ${fileName}\n- ${reportFileName}`);
             return true;
         } catch (err) {
             console.error('Backup failed:', err);
