@@ -204,21 +204,21 @@ const Reports: React.FC<ReportsProps> = ({
     const currentMetrics = useMemo(() => {
         switch(activeTab) {
             case 'tickets': return { total: filteredTickets.length, label: 'Tickets', secondary: filteredTickets.filter(t => t.status === TicketStatus.RESOLVED).length, sLabel: 'Resolved' };
-            case 'inventory': return { total: filteredInventory.length, label: 'Assets', secondary: filteredInventory.reduce((acc, i) => acc + i.quantity, 0), sLabel: 'Total Units' };
-            case 'lowStock': return { total: inventory.filter(i => i.quantity <= i.minStock).length, label: 'Critical', secondary: inventory.length, sLabel: 'SKU Count' };
+            case 'inventory': return { total: filteredInventory.length, label: 'Assets', secondary: filteredInventory.reduce((acc, i) => acc + (Number(i.quantity) || 0), 0), sLabel: 'Total Units' };
+            case 'lowStock': return { total: inventory.filter(i => (Number(i.quantity) || 0) <= (Number(i.minStock) || 0)).length, label: 'Critical', secondary: inventory.length, sLabel: 'SKU Count' };
             case 'vendors': return { total: vendors.length, label: 'Entities', secondary: vendors.filter(v => !!v.gstin).length, sLabel: 'GST Registered' };
             case 'attendance': return { total: filteredAttendance.length, label: 'Punches', secondary: filteredAttendance.filter(r => r.status === AttendanceStatus.PRESENT).length, sLabel: 'Present' };
-            case 'petty-cash': return { total: filteredPettyCash.length, label: 'Claims', secondary: `₹${filteredPettyCash.reduce((acc, r) => acc + r.amount, 0).toLocaleString()}`, sLabel: 'Expenditure' };
-            case 'internet': return { total: filteredInternet.length, label: 'Links', secondary: `₹${filteredInternet.reduce((acc, v) => acc + v.amount, 0).toLocaleString()}`, sLabel: 'Sub Cost' };
-            case 'receiving': return { total: filteredLogistics.length, label: 'Challans', secondary: (filteredLogistics as ReceivingChallan[]).reduce((acc, c) => acc + c.items.length, 0), sLabel: 'Inward Count' };
-            case 'outward': return { total: filteredLogistics.length, label: 'Invoices', secondary: (filteredLogistics as Invoice[]).reduce((acc, i) => acc + i.items.length, 0), sLabel: 'Outward Count' };
+            case 'petty-cash': return { total: filteredPettyCash.length, label: 'Claims', secondary: `₹${filteredPettyCash.reduce((acc, r) => acc + (Number(r.amount) || 0), 0).toLocaleString()}`, sLabel: 'Expenditure' };
+            case 'internet': return { total: filteredInternet.length, label: 'Links', secondary: `₹${filteredInternet.reduce((acc, v) => acc + (Number(v.amount) || 0), 0).toLocaleString()}`, sLabel: 'Sub Cost' };
+            case 'receiving': return { total: filteredLogistics.length, label: 'Challans', secondary: (filteredLogistics as ReceivingChallan[]).reduce((acc, c) => acc + (c.items?.length || 0), 0), sLabel: 'Inward Count' };
+            case 'outward': return { total: filteredLogistics.length, label: 'Invoices', secondary: (filteredLogistics as Invoice[]).reduce((acc, i) => acc + (i.items?.length || 0), 0), sLabel: 'Outward Count' };
             case 'purchase-orders': return { total: filteredLogistics.length, label: 'POs', secondary: (filteredLogistics as PurchaseOrder[]).filter(p => p.status === PurchaseOrderStatus.FULFILLED).length, sLabel: 'Completed' };
             case 'automation': return { 
                 total: filteredTickets.length, 
                 label: 'Tickets Today', 
                 secondary: filteredAttendance.length, 
                 sLabel: 'Punches Today',
-                additional: inventory.filter(p => p.quantity <= p.minStock).length,
+                additional: inventory.filter(p => (Number(p.quantity) || 0) <= (Number(p.minStock) || 0)).length,
                 aLabel: 'Critical Assets'
             };
             default: return { total: 0, label: 'Entries', secondary: 0, sLabel: 'Metric' };
@@ -286,7 +286,7 @@ const Reports: React.FC<ReportsProps> = ({
                     });
                     break;
                 case 'lowStock':
-                    rows = inventory.filter(i => i.quantity <= i.minStock).map((i, idx) => [idx + 1, i.id, i.name, `${i.quantity} ${i.unit}`, i.lastUpdated.split('T')[0], 'Critical']);
+                    rows = inventory.filter(i => (Number(i.quantity) || 0) <= (Number(i.minStock) || 0)).map((i, idx) => [idx + 1, i.id, i.name, `${i.quantity} ${i.unit}`, i.lastUpdated.split('T')[0], 'Critical']);
                     break;
                 case 'vendors':
                     rows = vendors.map((v, idx) => [idx + 1, v.id, v.name, 'N/A', 'N/A', 'Active']);
@@ -462,7 +462,7 @@ const Reports: React.FC<ReportsProps> = ({
                         ]);
                         break;
                     case 'lowStock':
-                        reportRows = inventory.filter(i => i.quantity <= i.minStock).map((i, idx) => [idx + 1, i.id, i.name, `${i.quantity} ${i.unit}`, i.lastUpdated.split('T')[0], 'Critical']);
+                        reportRows = inventory.filter(i => (Number(i.quantity) || 0) <= (Number(i.minStock) || 0)).map((i, idx) => [idx + 1, i.id, i.name, `${i.quantity} ${i.unit}`, i.lastUpdated.split('T')[0], 'Critical']);
                         break;
                     case 'petty-cash':
                         reportRows = filteredPettyCash.map((r, idx) => [idx + 1, r.id, r.userName, `₹${r.amount}`, r.date.split('T')[0], r.status]);
@@ -651,7 +651,7 @@ const Reports: React.FC<ReportsProps> = ({
                             {(() => {
                                 let source: (Ticket | AttendanceRecord | InventoryItem | Vendor | ReceivingChallan | Invoice | PurchaseOrder | ReimbursementRequest | InternetVendor)[] = [];
                                 if (activeTab === 'inventory') source = filteredInventory;
-                                else if (activeTab === 'lowStock') source = inventory.filter(i => i.quantity <= i.minStock);
+                                else if (activeTab === 'lowStock') source = inventory.filter(i => (Number(i.quantity) || 0) <= (Number(i.minStock) || 0));
                                 else if (activeTab === 'vendors') source = vendors;
                                 else if (activeTab === 'tickets') source = filteredTickets;
                                 else if (activeTab === 'attendance') source = filteredAttendance;
