@@ -42,6 +42,8 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
 
     const [selectedVendorId, setSelectedVendorId] = useState('');
     const [selectedPurpose, setSelectedPurpose] = useState(TRANSACTION_PURPOSES[3]); 
+    const [isCustomPurpose, setIsCustomPurpose] = useState(false);
+    const [customPurposeName, setCustomPurposeName] = useState('');
     const [paymentMode, setPaymentMode] = useState<'Cash' | 'UPI' | 'Bank Transfer'>('UPI');
     const [items, setItems] = useState<InvoiceItem[]>([]);
     const [dueDate, setDueDate] = useState('');
@@ -85,7 +87,19 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
     const handleOpenEdit = (inv: Invoice) => {
         setEditingInvoice(inv);
         setSelectedVendorId(inv.vendorId);
-        setSelectedPurpose(inv.purpose || TRANSACTION_PURPOSES[3]);
+        if (inv.purpose && TRANSACTION_PURPOSES.includes(inv.purpose)) {
+            setSelectedPurpose(inv.purpose);
+            setIsCustomPurpose(false);
+            setCustomPurposeName('');
+        } else if (inv.purpose) {
+            setSelectedPurpose('OTHER');
+            setIsCustomPurpose(true);
+            setCustomPurposeName(inv.purpose);
+        } else {
+            setSelectedPurpose(TRANSACTION_PURPOSES[3]);
+            setIsCustomPurpose(false);
+            setCustomPurposeName('');
+        }
         setItems([...inv.items]);
         setDueDate(inv.dueDate.split('T')[0]);
         setPaymentMode(inv.paymentMode);
@@ -100,6 +114,8 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
         setEditingInvoice(null);
         setSelectedVendorId('');
         setSelectedPurpose(TRANSACTION_PURPOSES[3]);
+        setIsCustomPurpose(false);
+        setCustomPurposeName('');
         setItems([]);
         setDueDate(new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]);
         setPaymentMode('UPI');
@@ -169,7 +185,7 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
             departmentName: deptName, 
             ticketId, 
             engineerName,
-            purpose: selectedPurpose,
+            purpose: isCustomPurpose ? customPurposeName : selectedPurpose,
             notes
         };
 
@@ -312,9 +328,28 @@ const InvoiceManagement: React.FC<InvoiceManagementProps> = ({ invoices, setInvo
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Transaction Purpose</label>
-                                    <select value={selectedPurpose} onChange={e => setSelectedPurpose(e.target.value)} className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none">
+                                    <select value={isCustomPurpose ? 'OTHER' : selectedPurpose} onChange={e => {
+                                        if (e.target.value === 'OTHER') {
+                                            setIsCustomPurpose(true);
+                                            setSelectedPurpose('OTHER');
+                                        } else {
+                                            setIsCustomPurpose(false);
+                                            setSelectedPurpose(e.target.value);
+                                        }
+                                    }} className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm outline-none">
                                         {TRANSACTION_PURPOSES.map(p => <option key={p} value={p}>{p}</option>)}
+                                        <option value="OTHER">➕ Other / Custom...</option>
                                     </select>
+                                    {isCustomPurpose && (
+                                        <input 
+                                            type="text" 
+                                            value={customPurposeName} 
+                                            onChange={e => setCustomPurposeName(e.target.value)} 
+                                            placeholder="Enter Custom Purpose..."
+                                            className="w-full p-4 mt-3 border-2 border-primary/20 dark:border-primary/50 rounded-2xl bg-primary/5 font-bold text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all" 
+                                            required
+                                        />
+                                    )}
                                 </div>
                             </div>
 

@@ -41,6 +41,8 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
 
     const [selectedVendorId, setSelectedVendorId] = useState('');
     const [selectedPurpose, setSelectedPurpose] = useState(TRANSACTION_PURPOSES[3]); 
+    const [isCustomPurpose, setIsCustomPurpose] = useState(false);
+    const [customPurposeName, setCustomPurposeName] = useState('');
     const [receivedByUserId, setReceivedByUserId] = useState(user?.id || '');
     const [notes, setNotes] = useState('');
     const [items, setItems] = useState<ReceivingChallanItem[]>([]);
@@ -77,7 +79,19 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
     const handleOpenEdit = (challan: ReceivingChallan) => {
         setEditingChallan(challan);
         setSelectedVendorId(challan.vendorId);
-        setSelectedPurpose(challan.purpose || TRANSACTION_PURPOSES[3]);
+        if (challan.purpose && TRANSACTION_PURPOSES.includes(challan.purpose)) {
+            setSelectedPurpose(challan.purpose);
+            setIsCustomPurpose(false);
+            setCustomPurposeName('');
+        } else if (challan.purpose) {
+            setSelectedPurpose('OTHER');
+            setIsCustomPurpose(true);
+            setCustomPurposeName(challan.purpose);
+        } else {
+            setSelectedPurpose(TRANSACTION_PURPOSES[3]);
+            setIsCustomPurpose(false);
+            setCustomPurposeName('');
+        }
         setReceivedByUserId(challan.receivedByUserId);
         setNotes(challan.notes || '');
         setItems([...challan.items]);
@@ -114,7 +128,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
         if (!isAdmin || !selectedVendorId || items.length === 0 || !user) return;
 
         if (editingChallan) {
-            const updated = { ...editingChallan, vendorId: selectedVendorId, purpose: selectedPurpose, receivedByUserId, items, notes };
+            const updated = { ...editingChallan, vendorId: selectedVendorId, purpose: isCustomPurpose ? customPurposeName : selectedPurpose, receivedByUserId, items, notes };
             setChallans(prev => prev.map(c => c.id === editingChallan.id ? updated : c));
             logUserAction(realUser || user, `Updated Receipt ${editingChallan.id}`);
         } else {
@@ -122,7 +136,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
             setChallans(prev => [{ 
                 id, 
                 vendorId: selectedVendorId, 
-                purpose: selectedPurpose, 
+                purpose: isCustomPurpose ? customPurposeName : selectedPurpose, 
                 dateReceived: new Date().toISOString(), 
                 receivedByUserId: receivedByUserId, 
                 items, 
@@ -166,7 +180,7 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                             <i className="fas fa-file-csv"></i> CSV Export
                         </button>
                     )}
-                    <button onClick={() => { setEditingChallan(null); setSelectedVendorId(''); setReceivedByUserId(user?.id || ''); setItems([]); setIsCreateModalOpen(true); }} className="bg-primary text-white font-black px-6 py-3 rounded-2xl shadow-xl hover:bg-primary-hover active:scale-95 text-xs uppercase tracking-widest flex items-center gap-2"><i className="fas fa-plus"></i> New Receipt</button>
+                    <button onClick={() => { setEditingChallan(null); setSelectedVendorId(''); setSelectedPurpose(TRANSACTION_PURPOSES[3]); setIsCustomPurpose(false); setCustomPurposeName(''); setReceivedByUserId(user?.id || ''); setItems([]); setIsCreateModalOpen(true); }} className="bg-primary text-white font-black px-6 py-3 rounded-2xl shadow-xl hover:bg-primary-hover active:scale-95 text-xs uppercase tracking-widest flex items-center gap-2"><i className="fas fa-plus"></i> New Receipt</button>
                 </div>
             </header>
 
@@ -238,9 +252,28 @@ const ReceivingChallanManagement: React.FC<ReceivingChallanManagementProps> = ({
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Purpose of Challan</label>
-                                    <select value={selectedPurpose} onChange={e => setSelectedPurpose(e.target.value)} className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm focus:ring-4 focus:ring-primary/10 transition-all outline-none">
+                                    <select value={isCustomPurpose ? 'OTHER' : selectedPurpose} onChange={e => {
+                                        if (e.target.value === 'OTHER') {
+                                            setIsCustomPurpose(true);
+                                            setSelectedPurpose('OTHER');
+                                        } else {
+                                            setIsCustomPurpose(false);
+                                            setSelectedPurpose(e.target.value);
+                                        }
+                                    }} className="w-full p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900 font-bold text-sm focus:ring-4 focus:ring-primary/10 transition-all outline-none">
                                         {TRANSACTION_PURPOSES.map(p => <option key={p} value={p}>{p}</option>)}
+                                        <option value="OTHER">➕ Other / Custom...</option>
                                     </select>
+                                    {isCustomPurpose && (
+                                        <input 
+                                            type="text" 
+                                            value={customPurposeName} 
+                                            onChange={e => setCustomPurposeName(e.target.value)} 
+                                            placeholder="Enter Custom Purpose..."
+                                            className="w-full p-4 mt-3 border-2 border-primary/20 dark:border-primary/50 rounded-2xl bg-primary/5 font-bold text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all" 
+                                            required
+                                        />
+                                    )}
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Received By (Staff)</label>
