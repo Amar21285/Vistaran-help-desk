@@ -108,7 +108,7 @@ const SystemSettings: React.FC = () => {
 
     const getAllAppData = () => {
         const backupData: { [key: string]: any } = {};
-        const keysToBackup = Object.keys(localStorage).filter(key => key.startsWith('vistaran-helpdesk-'));
+        const keysToBackup = Object.keys(localStorage).filter(key => key.startsWith('vistaran-'));
         keysToBackup.forEach(key => {
             const item = localStorage.getItem(key);
             if (item) {
@@ -263,9 +263,9 @@ const SystemSettings: React.FC = () => {
                 alert("Data Recovery Successful on Server! Synchronizing local state...");
                 
                 // Update local storage as well for immediate effect
-                Object.keys(localStorage).forEach(key => { if (key.startsWith('vistaran-helpdesk-')) localStorage.removeItem(key); });
+                Object.keys(localStorage).forEach(key => { if (key.startsWith('vistaran-')) localStorage.removeItem(key); });
                 for (const key in backupData) {
-                    if (key.startsWith('vistaran-helpdesk-')) {
+                    if (key.startsWith('vistaran-')) {
                         const value = backupData[key];
                         localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
                     }
@@ -328,7 +328,7 @@ const SystemSettings: React.FC = () => {
             title: "Factory Data Reset",
             body: "CRITICAL: This will permanently delete ALL tickets, users, and inventory from this browser. Use only if you have a backup or want to start fresh.",
             onConfirm: () => {
-                Object.keys(localStorage).forEach(key => { if(key.startsWith('vistaran-helpdesk-')) localStorage.removeItem(key); });
+                Object.keys(localStorage).forEach(key => { if(key.startsWith('vistaran-')) localStorage.removeItem(key); });
                 setModalContent(null);
                 window.location.reload();
             }
