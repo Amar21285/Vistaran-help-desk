@@ -850,9 +850,29 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             const date = new Date(selectedYear, selectedMonth, d);
             // Fix: Use direct string construction to avoid timezone shifts from toISOString()
             const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-            const record = attendance.find(r => r.userId === selectedEmployeeId && r.date === dateStr);
+            let record = attendance.find(r => r.userId === selectedEmployeeId && r.date === dateStr);
             const isPast = date < new Date(now.getFullYear(), now.getMonth(), now.getDate());
             
+            if (!record) {
+                const leaveForDay = leaves.find(l => 
+                    l.userId === selectedEmployeeId && 
+                    l.status !== LeaveStatus.REJECTED && 
+                    dateStr >= l.startDate && 
+                    dateStr <= l.endDate
+                );
+                if (leaveForDay) {
+                     record = {
+                         id: `dummy-leave-${selectedEmployeeId}-${dateStr}`,
+                         userId: selectedEmployeeId,
+                         userName: "", 
+                         date: dateStr,
+                         checkIn: "",
+                         status: AttendanceStatus.ON_LEAVE,
+                         notes: `${leaveForDay.status === LeaveStatus.PENDING ? '(Pending) ' : ''}${leaveForDay.type}: ${leaveForDay.reason}`
+                     };
+                }
+            }
+
             data.push({
                 date: dateStr,
                 record,
@@ -860,7 +880,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             });
         }
         return data;
-    }, [attendance, selectedEmployeeId, selectedMonth, selectedYear]);
+    }, [attendance, leaves, selectedEmployeeId, selectedMonth, selectedYear]);
 
     const matrixData = useMemo(() => {
         if (selectedEmployeeId !== '') return [];
@@ -879,9 +899,29 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         return sortedStaff.map(staff => {
             const row = days.map(d => {
                 const dateStr = `${selectedYear}-${String(selectedMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const record = attendance.find(r => r.userId === staff.id && r.date === dateStr);
+                let record = attendance.find(r => r.userId === staff.id && r.date === dateStr);
                 const isPast = new Date(selectedYear, selectedMonth, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 
+                if (!record) {
+                    const leaveForDay = leaves.find(l => 
+                        l.userId === staff.id && 
+                        l.status !== LeaveStatus.REJECTED && 
+                        dateStr >= l.startDate && 
+                        dateStr <= l.endDate
+                    );
+                    if (leaveForDay) {
+                         record = {
+                             id: `dummy-leave-${staff.id}-${dateStr}`,
+                             userId: staff.id,
+                             userName: staff.name,
+                             date: dateStr,
+                             checkIn: "",
+                             status: AttendanceStatus.ON_LEAVE,
+                             notes: leaveForDay.type
+                         };
+                    }
+                }
+
                 return {
                     date: d,
                     status: record ? record.status : (isPast ? 'ABSENT' : 'PENDING'),
@@ -895,11 +935,12 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                     else if (day.record.status === AttendanceStatus.LATE) acc.late++;
                     else if (day.record.status === AttendanceStatus.ABSENT) acc.absent++;
                     else if (day.record.status === AttendanceStatus.HOLIDAY) acc.holiday++;
+                    else if (day.record.status === AttendanceStatus.ON_LEAVE) acc.leave = (acc.leave || 0) + 1;
                 } else if (day.status === 'ABSENT') {
                     acc.absent++;
                 }
                 return acc;
-            }, { present: 0, late: 0, absent: 0, holiday: 0 });
+            }, { present: 0, late: 0, absent: 0, holiday: 0, leave: 0 });
 
             return {
                 staff,
@@ -907,7 +948,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                 summary
             };
         });
-    }, [attendance, staffMembers, selectedMonth, selectedYear, selectedEmployeeId, matrixSortOrder]);
+    }, [attendance, leaves, staffMembers, selectedMonth, selectedYear, selectedEmployeeId, matrixSortOrder]);
 
     const handleExportMatrixPDF = async () => {
         if (!matrixData.length) return;
@@ -1108,15 +1149,18 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                 <div className="space-y-10 animate-in fade-in duration-500">
                     {isAdmin ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {staffMembers.map(staff => {
+                                {staffMembers.map(staff => {
                                 const record = attendance.find(r => r.userId === staff.id && r.date === todayStr);
+                                const todayLeave = leaves.find(l => l.userId === staff.id && l.status !== LeaveStatus.REJECTED && todayStr >= l.startDate && todayStr <= l.endDate);
+                                
                                 return (
-                                    <div key={staff.id} className={`bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border-2 transition-all group ${record ? 'border-emerald-500/20' : 'border-slate-50 dark:border-slate-800'}`}>
+                                    <div key={staff.id} className={`bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border-2 transition-all group ${record ? 'border-emerald-500/20' : todayLeave ? 'border-cyan-500/20' : 'border-slate-50 dark:border-slate-800'}`}>
                                         <div className="flex items-center gap-4 mb-6">
                                             <div className="relative">
                                                 <img src={staff.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(staff.name)}&background=random`} className="w-14 h-14 rounded-2xl object-cover border-2 dark:border-slate-600 shadow-lg" alt="" />
                                                 {record?.checkOut && <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-indigo-500 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] text-white shadow-lg"><i className="fas fa-home"></i></div>}
                                                 {record && !record.checkOut && <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] text-white shadow-lg"><i className="fas fa-check"></i></div>}
+                                                {!record && todayLeave && <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-cyan-500 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] text-white shadow-lg"><i className="fas fa-plane-departure"></i></div>}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <h4 className="font-black text-slate-800 dark:text-white uppercase tracking-tighter truncate leading-tight">{staff.name}</h4>
@@ -1173,6 +1217,21 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                     <button 
                                                         onClick={() => setSalaryUser(staff)}
                                                         className="w-full py-2.5 mt-1 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-black text-[9px] uppercase hover:bg-indigo-600 hover:text-white transition-all tracking-widest flex items-center justify-center gap-2 border border-indigo-100 dark:border-indigo-900/50"
+                                                    >
+                                                        <i className="fas fa-coins"></i> Salary Structure
+                                                    </button>
+                                                </div>
+                                            ) : todayLeave ? (
+                                                <div className="space-y-2">
+                                                    <div className="py-5 rounded-xl bg-cyan-50 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-800 text-center">
+                                                        <p className="font-black text-[10px] uppercase tracking-widest mb-1"><i className="fas fa-plane-departure"></i> On Leave</p>
+                                                        <p className="text-[8px] font-bold text-cyan-500/70 uppercase">
+                                                            {todayLeave.status === LeaveStatus.PENDING ? '(Pending) ' : ''}{todayLeave.type}
+                                                        </p>
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => setSalaryUser(staff)}
+                                                        className="w-full py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 font-black text-[9px] uppercase hover:bg-indigo-600 hover:text-white transition-all tracking-widest flex items-center justify-center gap-2 border border-slate-100 dark:border-slate-700"
                                                     >
                                                         <i className="fas fa-coins"></i> Salary Structure
                                                     </button>
@@ -1421,14 +1480,15 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                             else if (day.record.status === AttendanceStatus.LATE) acc.late++;
                                             else if (day.record.status === AttendanceStatus.ABSENT) acc.absent++;
                                             else if (day.record.status === AttendanceStatus.HOLIDAY) acc.holiday++;
+                                            else if (day.record.status === AttendanceStatus.ON_LEAVE) acc.leave = (acc.leave || 0) + 1;
                                         } else if (day.isPast) {
                                             acc.absent++;
                                         }
                                         return acc;
-                                    }, { present: 0, late: 0, absent: 0, holiday: 0 });
+                                    }, { present: 0, late: 0, absent: 0, holiday: 0, leave: 0 });
 
                                     return (
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                                             <div className="bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border border-emerald-500/10 text-center">
                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Present Days</p>
                                                 <p className="text-3xl font-black text-emerald-500">{summary.present}</p>
@@ -1444,6 +1504,10 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                             <div className="bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border-indigo-500/10 text-center">
                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Holidays</p>
                                                 <p className="text-3xl font-black text-indigo-500">{summary.holiday}</p>
+                                            </div>
+                                            <div className="bg-white dark:bg-slate-800 p-6 rounded-[35px] shadow-xl border-cyan-500/10 text-center">
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">On Leave</p>
+                                                <p className="text-3xl font-black text-cyan-500">{summary.leave}</p>
                                             </div>
                                         </div>
                                     );
@@ -1477,6 +1541,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                                 day.record.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' :
                                                                 day.record.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' :
                                                                 day.record.status === AttendanceStatus.HOLIDAY ? 'bg-indigo-100 text-indigo-600' :
+                                                                day.record.status === AttendanceStatus.ON_LEAVE ? 'bg-cyan-100 text-cyan-600' :
                                                                 'bg-rose-100 text-rose-600'
                                                             }`}>{day.record.status}</span>
                                                         ) : day.isPast ? (
@@ -1568,6 +1633,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                 <th className="px-6 py-4 text-center text-[10px] font-black text-emerald-500 uppercase tracking-widest">P</th>
                                                 <th className="px-6 py-4 text-center text-[10px] font-black text-amber-500 uppercase tracking-widest">L</th>
                                                 <th className="px-6 py-4 text-center text-[10px] font-black text-rose-500 uppercase tracking-widest">A</th>
+                                                <th className="px-6 py-4 text-center text-[10px] font-black text-cyan-500 uppercase tracking-widest">LV</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -1588,12 +1654,14 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                                 day.status === AttendanceStatus.PRESENT ? 'bg-emerald-100 text-emerald-600' :
                                                                 day.status === AttendanceStatus.LATE ? 'bg-amber-100 text-amber-600' :
                                                                 day.status === AttendanceStatus.HOLIDAY ? 'bg-indigo-100 text-indigo-600' :
+                                                                day.status === AttendanceStatus.ON_LEAVE ? 'bg-cyan-100 text-cyan-600' :
                                                                 day.status === 'PENDING' ? 'text-slate-300' :
                                                                 'bg-rose-100 text-rose-600'
                                                             }`}>
                                                                 {day.status === AttendanceStatus.PRESENT ? 'P' : 
                                                                  day.status === AttendanceStatus.LATE ? 'L' : 
                                                                  day.status === AttendanceStatus.HOLIDAY ? 'H' : 
+                                                                 day.status === AttendanceStatus.ON_LEAVE ? 'LV' : 
                                                                  day.status === 'PENDING' ? '-' : 'A'}
                                                             </span>
                                                         </td>
@@ -1601,6 +1669,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                     <td className="px-6 py-3 text-center font-black text-emerald-500 text-[11px] bg-emerald-50/30 dark:bg-emerald-900/10 border-l dark:border-slate-700">{row.summary.present}</td>
                                                     <td className="px-6 py-3 text-center font-black text-amber-500 text-[11px] bg-amber-50/30 dark:bg-amber-900/10 border-l dark:border-slate-700">{row.summary.late}</td>
                                                     <td className="px-6 py-3 text-center font-black text-rose-500 text-[11px] bg-rose-50/30 dark:bg-rose-900/10 border-l dark:border-slate-700">{row.summary.absent}</td>
+                                                    <td className="px-6 py-3 text-center font-black text-cyan-500 text-[11px] bg-cyan-50/30 dark:bg-cyan-900/10 border-l dark:border-slate-700">{row.summary.leave || 0}</td>
                                                 </tr>
                                             ))}
                                             {matrixData.length === 0 && (
