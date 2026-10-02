@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { AttendanceRecord, AttendanceStatus, Role, User, SalaryStructure, MonthlySalarySlip, Permission } from '../types';
+import { AttendanceRecord, AttendanceStatus, Role, User, SalaryStructure, MonthlySalarySlip, Permission, LeaveRequest, LeaveStatus, LeaveType } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { useSettings } from '../hooks/useSettings';
 import { usePayroll } from '../hooks/usePayroll';
@@ -12,6 +12,8 @@ interface AttendanceManagementProps {
     users?: User[];
     attendance?: AttendanceRecord[];
     setAttendance?: React.Dispatch<React.SetStateAction<AttendanceRecord[]>>;
+    leaves?: LeaveRequest[];
+    setLeaves?: React.Dispatch<React.SetStateAction<LeaveRequest[]>>;
     onAddStaff?: () => void;
 }
 
@@ -84,9 +86,9 @@ const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: 
     );
 };
 
-const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [], attendance = [], setAttendance = () => {}, onAddStaff }) => {
+const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [], attendance = [], setAttendance = () => {}, leaves = [], setLeaves = () => {}, onAddStaff }) => {
     const { user, realUser, can } = useAuth();
-    const [activeSubTab, setActiveSubTab] = useState<'live' | 'history' | 'register'>('live');
+    const [activeSubTab, setActiveSubTab] = useState<'live' | 'history' | 'register' | 'leaves'>('live');
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
     const [nameSortOrder, setNameSortOrder] = useState<'asc' | 'desc' | 'none'>('none');
@@ -105,6 +107,12 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
     const [locationStatus, setLocationStatus] = useState<'idle' | 'fetching' | 'success' | 'failed'>('idle');
     const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null);
     const [salaryUser, setSalaryUser] = useState<User | null>(null);
+    
+    // Leaves State
+    const [leaveType, setLeaveType] = useState<LeaveType>(LeaveType.CASUAL_LEAVE);
+    const [leaveReason, setLeaveReason] = useState('');
+    const [leaveStartDate, setLeaveStartDate] = useState(new Date().toISOString().split('T')[0]);
+    const [leaveEndDate, setLeaveEndDate] = useState(new Date().toISOString().split('T')[0]);
     
     const { companyDetails } = useSettings();
     const { getSalaryStructure, updateSalaryStructure } = usePayroll();
@@ -137,6 +145,31 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             },
             { enableHighAccuracy: true, timeout: 15000 }
         );
+    };
+
+    const handleApplyLeave = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user) return;
+        const newLeave: LeaveRequest = {
+            id: `LV-${Date.now()}`,
+            userId: user.id,
+            userName: user.name,
+            startDate: leaveStartDate,
+            endDate: leaveEndDate,
+            type: leaveType,
+            reason: leaveReason,
+            status: LeaveStatus.PENDING,
+            appliedOn: new Date().toISOString()
+        };
+        setLeaves(prev => [newLeave, ...prev]);
+        setLeaveReason('');
+        logUserAction(realUser || user, `Leave Application: Applied for ${leaveType} from ${leaveStartDate} to ${leaveEndDate}`);
+        alert('Leave application submitted successfully.');
+    };
+
+    const handleLeaveAction = (leaveId: string, status: LeaveStatus) => {
+        setLeaves(prev => prev.map(l => l.id === leaveId ? { ...l, status, actionBy: user?.name, actionReason: '' } : l));
+        logUserAction(realUser || user, `Leave Management: Marked leave ${leaveId} as ${status}`);
     };
 
     const handleSelfPunch = async () => {
@@ -992,13 +1025,12 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                     </p>
                 </div>
                 
-                {isAdmin && (
-                    <nav className="flex p-1 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-700">
-                        <button onClick={() => setActiveSubTab('live')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'live' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Punch Monitor</button>
-                        <button onClick={() => setActiveSubTab('history')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'history' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Ledger History</button>
-                        <button onClick={() => setActiveSubTab('register')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'register' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Register</button>
-                    </nav>
-                )}
+                <nav className="flex p-1 bg-white dark:bg-slate-800 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-700">
+                    <button onClick={() => setActiveSubTab('live')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'live' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>{isAdmin ? 'Punch Monitor' : 'My Punch'}</button>
+                    {isAdmin && <button onClick={() => setActiveSubTab('history')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'history' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Ledger History</button>}
+                    {isAdmin && <button onClick={() => setActiveSubTab('register')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'register' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Register</button>}
+                    <button onClick={() => setActiveSubTab('leaves')} className={`px-6 py-3.5 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all ${activeSubTab === 'leaves' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Leaves</button>
+                </nav>
             </header>
 
             {activeSubTab === 'live' ? (
@@ -1263,7 +1295,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                         </div>
                     </div>
                 </div>
-            ) : (
+            ) : activeSubTab === 'register' ? (
                 <div className="space-y-10 animate-in fade-in duration-500 pb-20">
                     <div className="bg-white dark:bg-slate-800 p-10 rounded-[45px] shadow-2xl border border-slate-100 dark:border-slate-700">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
@@ -1401,7 +1433,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                                                         <td className="px-8 py-4 text-right">
                                                             {day.record ? (
                                                                 <button 
-                                                                    onClick={() => setEditingRecord(day.record)} 
+                                                                    onClick={() => setEditingRecord(day.record || null)} 
                                                                     className="p-2 text-primary hover:bg-primary/10 rounded-lg transition"
                                                                     title="Edit Record"
                                                                 >
@@ -1512,7 +1544,8 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                         </div>
                     )}
                 </div>
-            )}
+            ) : null}
+
 
             {/* Admin Modification Hub */}
             {editingRecord && (
@@ -1571,6 +1604,112 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                         logUserAction(realUser || user, `Payroll: Modified salary structure for ${salaryUser.name}.`);
                     }}
                 />
+            )}
+
+            {activeSubTab === 'leaves' && (
+                <div className="space-y-10 animate-in fade-in duration-500 pb-20">
+                    <div className="bg-white dark:bg-slate-800 p-8 rounded-[45px] shadow-2xl border border-slate-100 dark:border-slate-700 flex flex-col md:flex-row gap-10">
+                        <div className="md:w-1/3 flex flex-col justify-center">
+                            <h3 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">Apply for Leave</h3>
+                            <p className="text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest text-xs">Submit a formal request for time off</p>
+                        </div>
+                        <form onSubmit={handleApplyLeave} className="flex-1 space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Leave Type</label>
+                                    <select value={leaveType} onChange={(e) => setLeaveType(e.target.value as LeaveType)} className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm">
+                                        {Object.values(LeaveType).map(lt => <option key={lt} value={lt}>{lt}</option>)}
+                                    </select>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Start Date</label>
+                                    <input type="date" value={leaveStartDate} onChange={e => setLeaveStartDate(e.target.value)} required className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm" />
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">End Date</label>
+                                    <input type="date" value={leaveEndDate} onChange={e => setLeaveEndDate(e.target.value)} required className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-black outline-none focus:border-primary transition-all text-sm" />
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-4 mb-1">Reason</label>
+                                <textarea value={leaveReason} onChange={e => setLeaveReason(e.target.value)} required placeholder="Provide a brief explanation..." className="p-4 border-2 border-slate-100 dark:border-slate-700 rounded-2xl dark:bg-slate-900 font-bold outline-none focus:border-primary transition-all text-sm min-h-[100px] resize-none" />
+                            </div>
+                            <div className="flex justify-end">
+                                <button type="submit" className="bg-primary text-white font-black px-10 py-4 rounded-2xl shadow-xl hover:bg-primary-hover transition-all flex items-center justify-center gap-2 uppercase tracking-[0.2em] text-xs h-[58px]">
+                                    <i className="fas fa-paper-plane"></i> Submit Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="bg-white dark:bg-slate-800 rounded-[45px] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                        <div className="p-6 md:p-10 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900">
+                            <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter flex items-center gap-3">
+                                <i className="fas fa-history text-primary"></i> 
+                                {isAdmin ? 'All Leave Requests' : 'My Leave History'}
+                            </h3>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
+                                <thead className="bg-slate-50/50 dark:bg-slate-900/50">
+                                    <tr>
+                                        {isAdmin && <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Employee</th>}
+                                        <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Leave Details</th>
+                                        <th className="px-8 py-6 text-left text-[10px] font-black uppercase text-slate-400 tracking-widest">Reason</th>
+                                        <th className="px-8 py-6 text-center text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</th>
+                                        {isAdmin && <th className="px-8 py-6 text-right text-[10px] font-black uppercase text-slate-400 tracking-widest">Actions</th>}
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                                    {leaves.filter(l => isAdmin || l.userId === user?.id).map(leave => (
+                                        <tr key={leave.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                                            {isAdmin && (
+                                                <td className="px-8 py-6">
+                                                    <p className="font-black text-slate-800 dark:text-white uppercase text-xs tracking-tight">{leave.userName}</p>
+                                                    <p className="text-[9px] font-bold text-slate-400 uppercase mt-0.5">Applied: {new Date(leave.appliedOn).toLocaleDateString()}</p>
+                                                </td>
+                                            )}
+                                            <td className="px-8 py-6">
+                                                <p className="font-bold text-primary text-xs uppercase mb-1"><span className="bg-primary/10 px-2 py-1 rounded">{leave.type}</span></p>
+                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{leave.startDate} to {leave.endDate}</p>
+                                            </td>
+                                            <td className="px-8 py-6 max-w-[200px] truncate" title={leave.reason}>
+                                                <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">{leave.reason}</p>
+                                            </td>
+                                            <td className="px-8 py-6 text-center">
+                                                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                                                    leave.status === LeaveStatus.APPROVED ? 'bg-emerald-100 text-emerald-600' :
+                                                    leave.status === LeaveStatus.PENDING ? 'bg-amber-100 text-amber-600' :
+                                                    'bg-rose-100 text-rose-600'
+                                                }`}>
+                                                    {leave.status}
+                                                </span>
+                                            </td>
+                                            {isAdmin && (
+                                                <td className="px-8 py-6 text-right">
+                                                    {leave.status === LeaveStatus.PENDING && (
+                                                        <div className="flex justify-end gap-2">
+                                                            <button onClick={() => handleLeaveAction(leave.id, LeaveStatus.APPROVED)} className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">Approve</button>
+                                                            <button onClick={() => handleLeaveAction(leave.id, LeaveStatus.REJECTED)} className="bg-rose-100 text-rose-700 hover:bg-rose-200 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">Reject</button>
+                                                        </div>
+                                                    )}
+                                                </td>
+                                            )}
+                                        </tr>
+                                    ))}
+                                    {leaves.filter(l => isAdmin || l.userId === user?.id).length === 0 && (
+                                        <tr>
+                                            <td colSpan={isAdmin ? 5 : 4} className="px-8 py-16 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">
+                                                <i className="fas fa-folder-open text-4xl mb-4 opacity-50 block"></i>
+                                                No Leave Records Found
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             )}
 
             {/* Compiled PDF Generator Overlay */}

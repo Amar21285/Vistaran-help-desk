@@ -405,6 +405,34 @@ export interface InternetVendor {
     customerID?: string;
 }
 
+export enum LeaveStatus {
+    PENDING = 'Pending',
+    APPROVED = 'Approved',
+    REJECTED = 'Rejected'
+}
+
+export enum LeaveType {
+    SICK_LEAVE = 'Sick Leave',
+    CASUAL_LEAVE = 'Casual Leave',
+    EARNED_LEAVE = 'Earned Leave',
+    UNPAID_LEAVE = 'Unpaid Leave'
+}
+
+export interface LeaveRequest {
+    id: string;
+    userId: string;
+    userName: string;
+    startDate: string;
+    endDate: string;
+    type: LeaveType;
+    reason: string;
+    status: LeaveStatus;
+    appliedOn: string;
+    actionBy?: string;
+    actionReason?: string;
+}
+
+
 export interface SalaryStructure {
     userId: string;
     basic: number;

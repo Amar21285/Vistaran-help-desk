@@ -27,7 +27,7 @@ import InternetVendorManagement from './components/InternetVendorManagement';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 import { PwaUpdateReload } from './components/PwaUpdateReload';
 import { USERS, TICKETS, TECHNICIANS, SYMPTOMS, FILES, TICKET_TEMPLATES, INVENTORY, VENDORS, INTERNET_VENDORS } from './constants';
-import { User, Ticket, ManagedFile, Technician, Symptom, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder, AppNotification, Permission, AttendanceRecord, ReimbursementRequest, InternetVendor } from './types';
+import { User, Ticket, ManagedFile, Technician, Symptom, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder, AppNotification, Permission, AttendanceRecord, ReimbursementRequest, InternetVendor, LeaveRequest } from './types';
 import { logUserAction } from './utils/auditLogger';
 
 interface ModalAction {
@@ -104,6 +104,7 @@ const AppContent: React.FC = () => {
     const [allPurchaseOrders, setAllPurchaseOrders] = useLocalStorage<PurchaseOrder[]>('vistaran-helpdesk-purchase-orders', []);
     const [allAttendance, setAllAttendance] = useLocalStorage<AttendanceRecord[]>('vistaran-helpdesk-attendance', []);
     const [allReimbursements, setAllReimbursements] = useLocalStorage<ReimbursementRequest[]>('vistaran-helpdesk-reimbursements', []);
+    const [allLeaves, setAllLeaves] = useLocalStorage<LeaveRequest[]>('vistaran-helpdesk-leaves', []);
     const [allInternetVendors, setAllInternetVendors] = useLocalStorage<InternetVendor[]>('vistaran-internet-vendors', INTERNET_VENDORS);
     const [notifications, setNotifications] = useLocalStorage<AppNotification[]>('vistaran-helpdesk-notifications', []);
     
@@ -140,6 +141,7 @@ const AppContent: React.FC = () => {
                         if (payload.symptoms) setAllSymptoms(payload.symptoms);
                         if (payload.templates) setAllTemplates(payload.templates);
                         if (payload.attendance) setAllAttendance(payload.attendance);
+                        if (payload.leaves) setAllLeaves(payload.leaves);
                         if (payload.reimbursements) setAllReimbursements(payload.reimbursements);
                         if (payload['internet-vendors']) setAllInternetVendors(payload['internet-vendors']);
                     }
@@ -158,6 +160,7 @@ const AppContent: React.FC = () => {
                 case 'symptoms': setAllSymptoms(payload); break;
                 case 'templates': setAllTemplates(payload); break;
                 case 'attendance': setAllAttendance(payload); break;
+                case 'leaves': setAllLeaves(payload); break;
                 case 'reimbursements': setAllReimbursements(payload); break;
                 case 'internet-vendors': setAllInternetVendors(payload); break;
             }
@@ -175,7 +178,7 @@ const AppContent: React.FC = () => {
         setAllTickets, setAllUsers, setAllInventory, setAllVendors, 
         setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllTechnicians, 
         setAllDepartments, setNotifications, setAllFiles, setAllSymptoms, 
-        setAllTemplates, setAllAttendance, setAllReimbursements, setAllInternetVendors
+        setAllTemplates, setAllAttendance, setAllLeaves, setAllReimbursements, setAllInternetVendors
     ]);
 
     // Wrapped setters to emit updates
@@ -274,6 +277,14 @@ const AppContent: React.FC = () => {
             return next;
         });
     }, [setAllAttendance]);
+
+    const syncSetAllLeaves = useCallback((val: LeaveRequest[] | ((prev: LeaveRequest[]) => LeaveRequest[])) => {
+        setAllLeaves(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('leaves', next);
+            return next;
+        });
+    }, [setAllLeaves]);
 
     const syncSetAllReimbursements = useCallback((val: ReimbursementRequest[] | ((prev: ReimbursementRequest[]) => ReimbursementRequest[])) => {
         setAllReimbursements(prev => {
@@ -513,7 +524,7 @@ const AppContent: React.FC = () => {
                     setVendors={syncSetAllInternetVendors} 
                 />;
             case 'attendance':
-                return <AttendanceManagement users={allUsers} attendance={allAttendance} setAttendance={syncSetAllAttendance} />;
+                return <AttendanceManagement users={allUsers} attendance={allAttendance} setAttendance={syncSetAllAttendance} leaves={allLeaves} setLeaves={syncSetAllLeaves} />;
             case 'users':
                 return <UserManagement users={allUsers} setUsers={syncSetAllUsers} globalFilter={globalFilter} onImpersonate={startImpersonation} onEditUser={setEditingUser} onPhotoUpdate={(uid, p) => syncSetAllUsers(prev => prev.map(u => u.id === uid ? {...u, photo: p} : u))} departments={allDepartments} />;
             case 'app-settings':
