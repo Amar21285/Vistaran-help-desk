@@ -104,6 +104,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
     const [showCamera, setShowCamera] = useState(false);
     const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
     const [capturedLocation, setCapturedLocation] = useState<{lat: number, lng: number} | null>(null);
+    const [capturedLocationName, setCapturedLocationName] = useState<string>('');
     const [locationStatus, setLocationStatus] = useState<'idle' | 'fetching' | 'success' | 'failed'>('idle');
     const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null);
     const [salaryUser, setSalaryUser] = useState<User | null>(null);
@@ -135,8 +136,21 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             return;
         }
         navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                setCapturedLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+            async (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                setCapturedLocation({ lat, lng });
+                
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+                    const data = await response.json();
+                    if (data && data.display_name) {
+                        setCapturedLocationName(data.display_name);
+                    }
+                } catch (e) {
+                    console.error("Geocoding failed", e);
+                }
+                
                 setLocationStatus('success');
             },
             (err) => {
@@ -185,6 +199,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                         checkOut: new Date().toISOString(), 
                         checkOutPhoto: capturedPhoto, 
                         checkOutLocation: capturedLocation ? { lat: capturedLocation.lat, lng: capturedLocation.lng } : undefined,
+                        checkOutLocationName: capturedLocationName || undefined,
                         lastUpdated: new Date().toISOString()
                     } 
                     : r
@@ -200,7 +215,8 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                 checkIn: new Date().toISOString(), 
                 status: AttendanceStatus.PRESENT, 
                 photo: capturedPhoto,
-                location: capturedLocation ? { lat: capturedLocation.lat, lng: capturedLocation.lng } : undefined
+                location: capturedLocation ? { lat: capturedLocation.lat, lng: capturedLocation.lng } : undefined,
+                locationName: capturedLocationName || undefined
             };
             setAttendance(prev => [newRecord, ...prev]);
             logUserAction(realUser || user, `Secure Selfie Check-In: Logged arrival successfully.`);
@@ -209,6 +225,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         setIsPunching(false);
         setCapturedPhoto(null);
         setCapturedLocation(null);
+        setCapturedLocationName('');
         setLocationStatus('idle');
     };
 
@@ -313,8 +330,8 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             new Date(r.checkIn).toLocaleTimeString(), 
             r.checkOut ? new Date(r.checkOut).toLocaleTimeString() : 'N/A',
             r.status, 
-            r.location ? `${r.location.lat};${r.location.lng}` : '', 
-            r.checkOutLocation ? `${r.checkOutLocation.lat};${r.checkOutLocation.lng}` : '',
+            r.locationName || (r.location ? `${r.location.lat};${r.location.lng}` : ''), 
+            r.checkOutLocationName || (r.checkOutLocation ? `${r.checkOutLocation.lat};${r.checkOutLocation.lng}` : ''),
             r.notes || ''
         ]);
         const csvContent = [headers.join(","), ...rows.map(row => row.join(","))].join("\n");
@@ -398,10 +415,15 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                 pdf.text(`Time: ${new Date(record.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`, margin + 55, currentY + 8);
                 pdf.text(`Exit: ${record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : 'ACTIVE'}`, margin + 55, currentY + 13);
                 
+                const formatLoc = (name?: string, loc?: {lat: number, lng: number}) => {
+                    if (name) return name.length > 25 ? name.substring(0, 25) + '...' : name;
+                    return loc ? `${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}` : 'N/A';
+                };
+
                 pdf.setFontSize(6);
                 pdf.setTextColor(100, 116, 139);
-                pdf.text(`Loc In: ${record.location ? `${record.location.lat.toFixed(4)}, ${record.location.lng.toFixed(4)}` : 'N/A'}`, margin + 55, currentY + 18);
-                pdf.text(`Loc Out: ${record.checkOutLocation ? `${record.checkOutLocation.lat.toFixed(4)}, ${record.checkOutLocation.lng.toFixed(4)}` : 'N/A'}`, margin + 55, currentY + 23);
+                pdf.text(`Loc In: ${formatLoc(record.locationName, record.location)}`, margin + 55, currentY + 18);
+                pdf.text(`Loc Out: ${formatLoc(record.checkOutLocationName, record.checkOutLocation)}`, margin + 55, currentY + 23);
                 pdf.setFontSize(7);
                 pdf.setTextColor(30, 41, 59);
 
@@ -722,10 +744,15 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                     pdf.text(day.record.checkOut ? new Date(day.record.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '--:--', margin + 120, currentY + 4);
                     pdf.text(day.record.notes || '', margin + 150, currentY + 4);
                     
+                    const formatLoc = (name?: string, loc?: {lat: number, lng: number}) => {
+                        if (name) return name.length > 18 ? name.substring(0, 18) + '...' : name;
+                        return loc ? `${loc.lat.toFixed(4)},${loc.lng.toFixed(4)}` : 'N/A';
+                    };
+                    
                     pdf.setFontSize(6);
                     pdf.setTextColor(100, 116, 139);
-                    pdf.text(day.record.location ? `Loc In: ${day.record.location.lat.toFixed(4)},${day.record.location.lng.toFixed(4)}` : 'Loc In: N/A', margin + 90, currentY + 8);
-                    pdf.text(day.record.checkOutLocation ? `Loc Out: ${day.record.checkOutLocation.lat.toFixed(4)},${day.record.checkOutLocation.lng.toFixed(4)}` : 'Loc Out: N/A', margin + 120, currentY + 8);
+                    pdf.text(`Loc In: ${formatLoc(day.record.locationName, day.record.location)}`, margin + 90, currentY + 8);
+                    pdf.text(`Loc Out: ${formatLoc(day.record.checkOutLocationName, day.record.checkOutLocation)}`, margin + 120, currentY + 8);
                     pdf.setFontSize(8);
                     pdf.setTextColor(30, 41, 59);
                 } else if (day.isPast) {
@@ -764,8 +791,8 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             const outTime = day.record?.checkOut ? new Date(day.record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--";
             const notes = day.record?.notes || "";
             const status = day.record ? day.record.status : (day.isPast ? "ABSENT" : "PENDING");
-            const gpsIn = day.record?.location ? `${day.record.location.lat};${day.record.location.lng}` : "";
-            const gpsOut = day.record?.checkOutLocation ? `${day.record.checkOutLocation.lat};${day.record.checkOutLocation.lng}` : "";
+            const gpsIn = day.record?.locationName || (day.record?.location ? `${day.record.location.lat};${day.record.location.lng}` : "");
+            const gpsOut = day.record?.checkOutLocationName || (day.record?.checkOutLocation ? `${day.record.checkOutLocation.lat};${day.record.checkOutLocation.lng}` : "");
 
             return [
                 `${dateStr}-${monthName}-${selectedYear}`,

@@ -370,7 +370,9 @@ export interface AttendanceRecord {
     photo?: string;
     checkOutPhoto?: string;
     location?: { lat: number; lng: number };
+    locationName?: string;
     checkOutLocation?: { lat: number; lng: number };
+    checkOutLocationName?: string;
     lastUpdated?: string;
     notes?: string;
 }
