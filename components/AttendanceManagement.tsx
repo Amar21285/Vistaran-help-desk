@@ -146,9 +146,21 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                     const data = await response.json();
                     if (data && data.display_name) {
                         setCapturedLocationName(data.display_name);
+                    } else {
+                        throw new Error("No display_name in Nominatim response");
                     }
                 } catch (e) {
-                    console.error("Geocoding failed", e);
+                    console.error("Nominatim failed, trying BigDataCloud fallback", e);
+                    try {
+                        const bdcResponse = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+                        const bdcData = await bdcResponse.json();
+                        if (bdcData && (bdcData.locality || bdcData.city)) {
+                            const locName = [bdcData.locality, bdcData.city, bdcData.principalSubdivision].filter(Boolean).join(', ');
+                            setCapturedLocationName(locName);
+                        }
+                    } catch (err) {
+                        console.error("All geocoding failed", err);
+                    }
                 }
                 
                 setLocationStatus('success');
