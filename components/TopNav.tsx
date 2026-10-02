@@ -68,7 +68,8 @@ const TopNav: React.FC<TopNavProps> = ({
         }
     };
 
-    const unreadCount = notifications.filter(n => !n.isRead).length;
+    const visibleNotifications = notifications.filter(n => (!n.targetRole || n.targetRole === user?.role) && (!n.targetUserId || n.targetUserId === user?.id));
+    const unreadCount = visibleNotifications.filter(n => !n.isRead).length;
 
     const markAllRead = () => {
         if (setNotifications) {
@@ -160,7 +161,7 @@ const TopNav: React.FC<TopNavProps> = ({
                                         <button onClick={markAllRead} className="text-[10px] font-black text-primary uppercase">Clear All</button>
                                     </header>
                                     <div className="max-h-96 overflow-y-auto custom-scrollbar">
-                                        {notifications.length > 0 ? notifications.map(notif => (
+                                        {visibleNotifications.length > 0 ? visibleNotifications.map(notif => (
                                             <div 
                                                 key={notif.id} 
                                                 onClick={() => markRead(notif.id)}

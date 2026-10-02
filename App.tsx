@@ -182,6 +182,13 @@ const AppContent: React.FC = () => {
     ]);
 
     // Wrapped setters to emit updates
+    const syncSetNotifications = useCallback((val: AppNotification[] | ((prev: AppNotification[]) => AppNotification[])) => {
+        setNotifications(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            socketService.emitUpdate('notifications', next);
+            return next;
+        });
+    }, [setNotifications]);
     const syncSetAllTickets = useCallback((val: Ticket[] | ((prev: Ticket[]) => Ticket[])) => {
         setAllTickets(prev => {
             const next = typeof val === 'function' ? val(prev) : val;
@@ -524,7 +531,7 @@ const AppContent: React.FC = () => {
                     setVendors={syncSetAllInternetVendors} 
                 />;
             case 'attendance':
-                return <AttendanceManagement users={allUsers} attendance={allAttendance} setAttendance={syncSetAllAttendance} leaves={allLeaves} setLeaves={syncSetAllLeaves} />;
+                return <AttendanceManagement users={allUsers} attendance={allAttendance} setAttendance={syncSetAllAttendance} leaves={allLeaves} setLeaves={syncSetAllLeaves} onNotify={(n) => syncSetNotifications(prev => [n, ...prev])} />;
             case 'users':
                 return <UserManagement users={allUsers} setUsers={syncSetAllUsers} globalFilter={globalFilter} onImpersonate={startImpersonation} onEditUser={setEditingUser} onPhotoUpdate={(uid, p) => syncSetAllUsers(prev => prev.map(u => u.id === uid ? {...u, photo: p} : u))} departments={allDepartments} />;
             case 'app-settings':
@@ -582,7 +589,7 @@ const AppContent: React.FC = () => {
                         onViewProfile={() => setCurrentView('my-profile')}
                         onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
                         notifications={notifications}
-                        setNotifications={setNotifications}
+                        setNotifications={syncSetNotifications}
                     />
                     <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative custom-scrollbar">
                         {scanToast && (

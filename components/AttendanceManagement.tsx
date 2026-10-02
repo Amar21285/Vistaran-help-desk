@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { AttendanceRecord, AttendanceStatus, Role, User, SalaryStructure, MonthlySalarySlip, Permission, LeaveRequest, LeaveStatus, LeaveType } from '../types';
+import { AttendanceRecord, AttendanceStatus, Role, User, SalaryStructure, MonthlySalarySlip, Permission, LeaveRequest, LeaveStatus, LeaveType, AppNotification } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { useSettings } from '../hooks/useSettings';
 import { usePayroll } from '../hooks/usePayroll';
@@ -15,6 +15,7 @@ interface AttendanceManagementProps {
     leaves?: LeaveRequest[];
     setLeaves?: React.Dispatch<React.SetStateAction<LeaveRequest[]>>;
     onAddStaff?: () => void;
+    onNotify?: (notification: AppNotification) => void;
 }
 
 const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: () => void; isOut?: boolean }> = ({ onCapture, onCancel, isOut }) => {
@@ -86,7 +87,7 @@ const CameraCapture: React.FC<{ onCapture: (dataUrl: string) => void; onCancel: 
     );
 };
 
-const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [], attendance = [], setAttendance = () => {}, leaves = [], setLeaves = () => {}, onAddStaff }) => {
+const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [], attendance = [], setAttendance = () => {}, leaves = [], setLeaves = () => {}, onAddStaff, onNotify }) => {
     const { user, realUser, can } = useAuth();
     const [activeSubTab, setActiveSubTab] = useState<'live' | 'history' | 'register' | 'leaves'>('live');
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
@@ -189,6 +190,19 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         };
         setLeaves(prev => [newLeave, ...prev]);
         setLeaveReason('');
+        
+        if (onNotify) {
+            onNotify({
+                id: `NOTIF-${Date.now()}`,
+                title: 'New Leave Request',
+                message: `${user.name} applied for ${leaveType} from ${leaveStartDate} to ${leaveEndDate}.`,
+                timestamp: new Date().toISOString(),
+                isRead: false,
+                type: 'alert',
+                targetRole: Role.ADMIN
+            });
+        }
+        
         logUserAction(realUser || user, `Leave Application: Applied for ${leaveType} from ${leaveStartDate} to ${leaveEndDate}`);
         alert('Leave application submitted successfully.');
     };

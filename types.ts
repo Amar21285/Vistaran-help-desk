@@ -238,6 +238,8 @@ export interface AppNotification {
     timestamp: string;
     isRead: boolean;
     type: 'ticket' | 'system' | 'alert';
+    targetRole?: Role;
+    targetUserId?: string;
 }
 
 export enum AssetStatus {
