@@ -397,6 +397,13 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
 
                 pdf.text(`Time: ${new Date(record.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`, margin + 55, currentY + 8);
                 pdf.text(`Exit: ${record.checkOut ? new Date(record.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : 'ACTIVE'}`, margin + 55, currentY + 13);
+                
+                pdf.setFontSize(6);
+                pdf.setTextColor(100, 116, 139);
+                pdf.text(`Loc In: ${record.location ? `${record.location.lat.toFixed(4)}, ${record.location.lng.toFixed(4)}` : 'N/A'}`, margin + 55, currentY + 18);
+                pdf.text(`Loc Out: ${record.checkOutLocation ? `${record.checkOutLocation.lat.toFixed(4)}, ${record.checkOutLocation.lng.toFixed(4)}` : 'N/A'}`, margin + 55, currentY + 23);
+                pdf.setFontSize(7);
+                pdf.setTextColor(30, 41, 59);
 
                 // Punch-In Photo
                 if (record.photo) {
@@ -700,7 +707,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             registerData.forEach((day, idx) => {
                 if (idx % 2 === 0) {
                     pdf.setFillColor(248, 250, 252);
-                    pdf.rect(margin, currentY, pageWidth - (margin * 2), 6, 'F');
+                    pdf.rect(margin, currentY, pageWidth - (margin * 2), 12, 'F');
                 }
                 
                 const dateStr = day.date.split('-')[2];
@@ -714,6 +721,13 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                     pdf.text(new Date(day.record.checkIn).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), margin + 90, currentY + 4);
                     pdf.text(day.record.checkOut ? new Date(day.record.checkOut).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '--:--', margin + 120, currentY + 4);
                     pdf.text(day.record.notes || '', margin + 150, currentY + 4);
+                    
+                    pdf.setFontSize(6);
+                    pdf.setTextColor(100, 116, 139);
+                    pdf.text(day.record.location ? `Loc In: ${day.record.location.lat.toFixed(4)},${day.record.location.lng.toFixed(4)}` : 'Loc In: N/A', margin + 90, currentY + 8);
+                    pdf.text(day.record.checkOutLocation ? `Loc Out: ${day.record.checkOutLocation.lat.toFixed(4)},${day.record.checkOutLocation.lng.toFixed(4)}` : 'Loc Out: N/A', margin + 120, currentY + 8);
+                    pdf.setFontSize(8);
+                    pdf.setTextColor(30, 41, 59);
                 } else if (day.isPast) {
                     pdf.setTextColor(225, 29, 72);
                     pdf.text("ABSENT", margin + 60, currentY + 4);
@@ -724,7 +738,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                     pdf.setTextColor(30, 41, 59);
                 }
                 
-                currentY += 6;
+                currentY += 12;
                 if (currentY > 280) {
                     pdf.addPage();
                     currentY = 20;
@@ -742,7 +756,7 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
         const employee = staffMembers.find(s => s.id === selectedEmployeeId);
         const monthName = new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' });
         
-        const headers = ["Date", "Day", "Status", "Punch In", "Punch Out", "Notes"];
+        const headers = ["Date", "Day", "Status", "Punch In", "Punch Out", "GPS In", "GPS Out", "Notes"];
         const rows = registerData.map(day => {
             const dateStr = day.date.split('-')[2];
             const dayName = new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' });
@@ -750,6 +764,8 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
             const outTime = day.record?.checkOut ? new Date(day.record.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--";
             const notes = day.record?.notes || "";
             const status = day.record ? day.record.status : (day.isPast ? "ABSENT" : "PENDING");
+            const gpsIn = day.record?.location ? `${day.record.location.lat};${day.record.location.lng}` : "";
+            const gpsOut = day.record?.checkOutLocation ? `${day.record.checkOutLocation.lat};${day.record.checkOutLocation.lng}` : "";
 
             return [
                 `${dateStr}-${monthName}-${selectedYear}`,
@@ -757,6 +773,8 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({ users = [],
                 status,
                 inTime,
                 outTime,
+                gpsIn,
+                gpsOut,
                 notes
             ];
         });
