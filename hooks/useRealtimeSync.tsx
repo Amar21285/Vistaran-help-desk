@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import useLocalStorage from './useLocalStorage';
-import { User, Ticket, Technician, ManagedFile, Symptom, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder } from '../types';
+import { User, Ticket, Technician, ManagedFile, Symptom, TicketTemplate, InventoryItem, Vendor, ReceivingChallan, Invoice, PurchaseOrder, InternetVendor } from '../types';
 
 interface SyncCollectionMap {
   'users': User[];
@@ -17,6 +17,7 @@ interface SyncCollectionMap {
   'outward-invoices': Invoice[];
   'purchase-orders': PurchaseOrder[];
   'attendance': any[];
+  'internet-vendors': InternetVendor[];
 }
 
 interface RealtimeSyncHook {
@@ -46,6 +47,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
   const [allInvoices, setAllInvoices] = useLocalStorage<Invoice[]>('vistaran-helpdesk-outward-invoices', []);
   const [allPurchaseOrders, setAllPurchaseOrders] = useLocalStorage<PurchaseOrder[]>('vistaran-helpdesk-purchase-orders', []);
   const [allAttendance, setAllAttendance] = useLocalStorage<any[]>('vistaran-helpdesk-attendance', []);
+  const [allInternetVendors, setAllInternetVendors] = useLocalStorage<InternetVendor[]>('vistaran-internet-vendors', []);
 
   // Store the previous values to detect changes
   const prevValuesRef = useRef({
@@ -62,6 +64,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
     invoices: JSON.stringify(allInvoices),
     purchaseOrders: JSON.stringify(allPurchaseOrders),
     attendance: JSON.stringify(allAttendance),
+    internetVendors: JSON.stringify(allInternetVendors),
   });
 
   // Function to connect to the sync service
@@ -191,12 +194,15 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       case 'attendance':
         setAllAttendance(data);
         break;
+      case 'internet-vendors':
+        setAllInternetVendors(data);
+        break;
       default:
         console.warn('Unknown collection for sync:', collection);
     }
   }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms,
     setAllTemplates, setAllDepartments, setAllInventory, setAllVendors,
-    setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllAttendance]);
+    setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllAttendance, setAllInternetVendors]);
 
   // Handle initial sync message
   const handleInitialSync = useCallback((message: any) => {
@@ -218,9 +224,10 @@ const useRealtimeSync = (): RealtimeSyncHook => {
     if (syncData.invoices !== undefined) setAllInvoices(syncData.invoices);
     if (syncData.purchaseOrders !== undefined) setAllPurchaseOrders(syncData.purchaseOrders);
     if (syncData.attendance !== undefined) setAllAttendance(syncData.attendance);
+    if (syncData['internet-vendors'] !== undefined) setAllInternetVendors(syncData['internet-vendors']);
   }, [setAllUsers, setAllTickets, setAllTechnicians, setAllFiles, setAllSymptoms,
     setAllTemplates, setAllDepartments, setAllInventory, setAllVendors,
-    setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllAttendance]);
+    setAllChallans, setAllInvoices, setAllPurchaseOrders, setAllAttendance, setAllInternetVendors]);
 
   // Handle full sync message
   const handleFullSync = useCallback(handleInitialSync, [handleInitialSync]);
@@ -241,6 +248,7 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       invoices: JSON.stringify(allInvoices),
       purchaseOrders: JSON.stringify(allPurchaseOrders),
       attendance: JSON.stringify(allAttendance),
+      internetVendors: JSON.stringify(allInternetVendors),
     };
 
     // Check for changes in each collection
@@ -298,11 +306,16 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       prevValuesRef.current.attendance = currentValues.attendance;
     }
 
+    if (currentValues.internetVendors !== prevValuesRef.current.internetVendors) {
+      syncCollectionChange('internet-vendors', allInternetVendors);
+      prevValuesRef.current.internetVendors = currentValues.internetVendors;
+    }
+
     // Update the previous values reference
     prevValuesRef.current = currentValues;
   }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms,
     allTemplates, allDepartments, allInventory, allVendors,
-    allChallans, allInvoices, allPurchaseOrders, allAttendance]);
+    allChallans, allInvoices, allPurchaseOrders, allAttendance, allInternetVendors]);
 
   // Helper function to sync a collection change
   const syncCollectionChange = useCallback((collection: keyof SyncCollectionMap, data: any) => {
@@ -386,12 +399,15 @@ const useRealtimeSync = (): RealtimeSyncHook => {
       case 'attendance':
         data = allAttendance;
         break;
+      case 'internet-vendors':
+        data = allInternetVendors;
+        break;
     }
 
     syncCollectionChange(collection, data);
   }, [allUsers, allTickets, allTechnicians, allFiles, allSymptoms,
     allTemplates, allDepartments, allInventory, allVendors,
-    allChallans, allInvoices, allPurchaseOrders, allAttendance, syncCollectionChange]);
+    allChallans, allInvoices, allPurchaseOrders, allAttendance, allInternetVendors, syncCollectionChange]);
 
   // Function to get sync stats
   const getSyncStats = useCallback(() => {

@@ -20,7 +20,8 @@ const fileToKeyMap = {
     'purchase-orders.json': 'vistaran-helpdesk-purchase-orders',
     'attendance.json': 'vistaran-helpdesk-attendance',
     'reimbursements.json': 'vistaran-helpdesk-reimbursements',
-    'audit-logs.json': 'vistaran-helpdesk-audit-logs'
+    'audit-logs.json': 'vistaran-helpdesk-audit-logs',
+    'internet-vendors.json': 'vistaran-internet-vendors'
 };
 
 const masterData = {
@@ -35,7 +36,8 @@ const masterData = {
         "enableSMSWhatsApp": true,
         "enableInAppNotifications": true
     },
-    "vistaran-helpdesk-theme": []
+    "vistaran-helpdesk-theme": [],
+    "vistaran-internet-vendors": []
 };
 
 try {

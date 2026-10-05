@@ -188,11 +188,8 @@ const Reports: React.FC<ReportsProps> = ({
     }, [allAttendance, startDate, endDate, deptFilter, users]);
 
     const filteredInternet = useMemo(() => {
-        return allInternet.filter(v => {
-            const matchesDate = (v.startDate && v.startDate <= endDate) && (v.expiryDate >= startDate);
-            return matchesDate;
-        });
-    }, [allInternet, startDate, endDate]);
+        return allInternet; // Include all ISPs regardless of date range
+    }, [allInternet]);
 
     const filteredLogistics = useMemo(() => {
         if (activeTab === 'receiving') return challans.filter(c => c.dateReceived.split('T')[0] >= startDate && c.dateReceived.split('T')[0] <= endDate);

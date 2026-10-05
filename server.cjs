@@ -201,7 +201,8 @@ const dataFiles = {
   'notifications': path.join(dataDir, 'notifications.json'),
   'notification-settings': path.join(dataDir, 'notification-settings.json'),
   'theme': path.join(dataDir, 'theme.json'),
-  'invoices': path.join(dataDir, 'invoices.json')
+  'invoices': path.join(dataDir, 'invoices.json'),
+  'internet-vendors': path.join(dataDir, 'internet-vendors.json')
 };
 
 // Load existing data from files with master backup fallback
@@ -228,7 +229,8 @@ function performSystemRestoration(masterData, sourceName) {
     'notificationSettings': 'vistaran-helpdesk-notificationSettings',
     'theme': 'vistaran-helpdesk-theme',
     'invoices': 'vistaran-helpdesk-invoices',
-    'branches': 'vistaran-helpdesk-branches'
+    'branches': 'vistaran-helpdesk-branches',
+    'internet-vendors': 'vistaran-internet-vendors'
   };
 
   const results = {};
@@ -330,7 +332,8 @@ function loadDataFromFile() {
     'notifications': 'vistaran-helpdesk-notifications',
     'notification-settings': 'vistaran-helpdesk-notification-settings',
     'theme': 'vistaran-helpdesk-theme',
-    'invoices': 'vistaran-helpdesk-invoices'
+    'invoices': 'vistaran-helpdesk-invoices',
+    'internet-vendors': 'vistaran-internet-vendors'
   };
 
   for (const [collection, filePath] of Object.entries(dataFiles)) {
@@ -398,7 +401,8 @@ function consolidateToMaster() {
       'notifications': 'vistaran-helpdesk-notifications',
       'notification-settings': 'vistaran-helpdesk-notification-settings',
       'theme': 'vistaran-helpdesk-theme',
-      'invoices': 'vistaran-helpdesk-invoices'
+      'invoices': 'vistaran-helpdesk-invoices',
+      'internet-vendors': 'vistaran-internet-vendors'
     };
 
     for (const [collection, file] of Object.entries(dataFiles)) {
